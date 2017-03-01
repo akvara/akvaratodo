@@ -2,10 +2,7 @@ var TaskApp = React.createClass({
 
 	getInitialState: function() {
 		return {
-			itemsToDo: [
-				'get groceries',
-				'go ham in the dolla stow'
-			],
+			itemsToDo: this.saved(),
 
 			itemsDone: [
 			],
@@ -70,6 +67,12 @@ var TaskApp = React.createClass({
   		return items.concat([trans]);
 	},
 
+	saved: function() {
+		return `
+
+		`.split(/\r?\n/).filter(Boolean)
+	},
+
 	render: function() {
 		return (
 			<div>
@@ -92,5 +95,6 @@ var TaskApp = React.createClass({
 		);
 	}
 });
+
 
 React.render(<TaskApp />, document.body)

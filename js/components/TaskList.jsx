@@ -14,9 +14,9 @@ var TaskList = React.createClass({
 
 	displayTask: function(task, i) {
 		return <li>
-			<button onClick={this.delete.bind(this, i)}>x</button>
-			&nbsp;{ task } &nbsp;
 			<button onClick={this.done.bind(this, i)}>--</button>
+			&nbsp;{ task } &nbsp;
+			<button onClick={this.delete.bind(this, i)}>x</button>
 			<button onClick={this.postpone.bind(this, i)}>v</button>
 		</li>
 	},
