@@ -7,7 +7,7 @@ var TaskDoneList = React.createClass({
 	displayTask: function(task, i) {
 		return <li>
 			{task}&nbsp;
-			<button onClick={this.undone.bind(this, i)}>-</button>
+			<button onClick={this.undone.bind(this, i)}>+</button>
 		</li>;
 	},
 

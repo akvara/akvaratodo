@@ -18,7 +18,7 @@ var TaskApp = React.createClass({
  		e.preventDefault();
 
 		this.setState({ 
-			items: this.state.items.concat([this.state.task]),
+			itemsToDo: this.state.itemsToDo.concat([this.state.task]),
 			task: ''
 		});
 	},
@@ -43,6 +43,12 @@ var TaskApp = React.createClass({
 			itemsToDo: moved.B, 
 			itemsDone: moved.A
 		});
+	},	
+
+	postponeTask: function(i){
+		this.setState({ 
+			itemsToDo: this.moveToEnd(this.state.itemsToDo, i)
+		});
 	},
 
 	onChange: function (e) {
@@ -54,7 +60,14 @@ var TaskApp = React.createClass({
   		fromA.splice(i, 1);
   		toB = toB.concat([trans]);
 
-  		return {A: fromA, B: toB}
+  		return {A: fromA, B: toB};
+	},
+
+	moveToEnd: function(items, i) {
+  		trans = items[i];
+  		items.splice(i, 1);
+
+  		return items.concat([trans]);
 	},
 
 	render: function() {
@@ -64,10 +77,15 @@ var TaskApp = React.createClass({
 				<h3>Finished</h3>
 				<TaskDoneList items={this.state.itemsDone} undone={this.unDoneTask} />
 				<h3>Remaining</h3>
-				<TaskList items={this.state.itemsToDo} delete={this.removeTask} done={this.doneTask} />
+				<TaskList 
+					items={this.state.itemsToDo} 
+					delete={this.removeTask} 
+					postpone={this.postponeTask} 
+					done={this.doneTask}
+				/>
 				<h3>Add new:</h3>
 				<form onSubmit={this.addTask}>
-					<input onChange={this.onChange} value={this.state.task} />
+					<input value={this.state.task} onChange={this.onChange} />
 					<button>Add task</button>
 				</form>
 			</div>

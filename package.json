@@ -1,0 +1,5 @@
+{
+    "browser": {
+       "fs": "react-native-level-fs" 
+    }
+}

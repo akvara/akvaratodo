@@ -8,11 +8,16 @@ var TaskList = React.createClass({
 		this.props.delete(i);
 	},
 
+	postpone: function(i){
+		this.props.postpone(i);
+	},
+
 	displayTask: function(task, i) {
 		return <li>
 			<button onClick={this.delete.bind(this, i)}>x</button>
 			&nbsp;{ task } &nbsp;
-			<button onClick={this.done.bind(this, i)}>+</button>
+			<button onClick={this.done.bind(this, i)}>--</button>
+			<button onClick={this.postpone.bind(this, i)}>v</button>
 		</li>
 	},
 	
