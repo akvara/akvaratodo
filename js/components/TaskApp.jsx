@@ -1,8 +1,30 @@
 
 var TaskApp = React.createClass({
 
+	saved: function() {
+		return `
+starts with http? a link
+Show 5
+add at +7
+read from local file
+Paleisti Sort ant Heroku
+
+https://devcenter.heroku.com/articles/getting-started-with-php#introduction
+https://blog.heroku.com/deploying-react-with-zero-configuration
+https://getforge.com/pricing
+http://docs.railsbridge.org/javascript-to-do-list-with-react/creating_a_list
+http://reactfordesigners.com/labs/reactjs-introduction-for-people-who-know-just-enough-jquery-to-get-by/
+https://laracasts.com/series/do-you-react/episodes/6
+https://scotch.io/tutorials/learning-react-getting-started-and-concepts
+
+------------------------
+		`.split(/\r?\n/).filter(entry => entry.trim() != '')
+	},
+
 	statics: {
-		apiUrl: "http://listalous.herokuapp.com/lists/akvaratodo/"
+		apiUrl: "http://listalous.herokuapp.com/lists/akvaratodo/",
+		postponeBy: 10,
+		addNewAt: 5
 	},
 
 	getInitialState: function() {
@@ -20,8 +42,9 @@ var TaskApp = React.createClass({
 	handleSubmit: function (e) {
  		e.preventDefault();
 
+ 		this.state.itemsToDo.splice(this.constructor.addNewAt - 1, 0, this.state.task);
+
 		this.setState({ 
-			itemsToDo: this.state.itemsToDo.concat([this.state.task]),
 			task: ''
 		});
 	},
@@ -30,8 +53,14 @@ var TaskApp = React.createClass({
 		this.setState({ items: this.state.itemsToDo.splice(i, 1) });
 	},
 
+    postponeTask: function(i) {
+		this.setState({ 
+			items: this.moveFromTo(this.state.itemsToDo, i, i + this.constructor.postponeBy) 
+		});
+	},
+
 	doneTask: function(i){
-		var moved = this.moveElement(this.state.itemsToDo, this.state.itemsDone, i)
+		var moved = this.moveToAnother(this.state.itemsToDo, this.state.itemsDone, i)
 		this.setState({ 
 			itemsToDo: moved.A, 
 			itemsDone: moved.B
@@ -39,14 +68,14 @@ var TaskApp = React.createClass({
 	},
 
 	unDoneTask: function(i){
-		var moved = this.moveElement(this.state.itemsDone, this.state.itemsToDo, i)
+		var moved = this.moveToAnother(this.state.itemsDone, this.state.itemsToDo, i)
 		this.setState({ 
 			itemsToDo: moved.B, 
 			itemsDone: moved.A
 		});
 	},	
 
-	postponeTask: function(i){
+	procrastinateTask: function(i){
 		this.setState({ 
 			itemsToDo: this.moveToEnd(this.state.itemsToDo, i)
 		});
@@ -56,7 +85,7 @@ var TaskApp = React.createClass({
 		this.setState({ task: e.target.value });
 	},
 
-	moveElement: function(fromA, toB, i) {
+	moveToAnother: function(fromA, toB, i) {
   		trans = fromA[i];
   		fromA.splice(i, 1);
   		toB = toB.concat([trans]);
@@ -71,16 +100,18 @@ var TaskApp = React.createClass({
   		return items.concat([trans]);
 	},
 
-	saved: function() {
-		return `
-Paleisti Sort ant Heroku
-		`.split(/\r?\n/).filter(entry => entry.trim() != '')
+	moveFromTo: function (arrayA, from, to) {
+  		trans = arrayA[from];
+		arrayA.splice(from, 1); 
+		arrayA.splice(to, 0, trans);
+
+  		return arrayA;
 	},
 
 	postItem: function(item) {
   		var creationRequest = $.ajax({
     		type: 'POST',
-    		url: this.apiUrl + "items",
+    		url: this.constructor.apiUrl + "items",
     		data: { description: itemDescription, completed: false }
   		})
 	},
@@ -88,7 +119,7 @@ Paleisti Sort ant Heroku
 	loadItems: function() {
 		var loadRequest = $.ajax({
   			type: 'GET',
-  			url: this.apiUrl
+  			url: this.constructor.apiUrl
 		});
 
 		loadRequest.done(function(dataFromServer) {
@@ -113,6 +144,7 @@ Paleisti Sort ant Heroku
 					items={this.state.itemsToDo} 
 					delete={this.removeTask} 
 					postpone={this.postponeTask} 
+					procrastinate={this.procrastinateTask} 
 					done={this.doneTask}
 				/>
 				<h3>Add new:</h3>
@@ -126,6 +158,5 @@ Paleisti Sort ant Heroku
 		);
 	}
 });
-
 
 React.render(<TaskApp />, document.body)
