@@ -1,6 +1,12 @@
+
 var TaskApp = React.createClass({
 
+	statics: {
+		apiUrl: "http://listalous.herokuapp.com/lists/akvaratodo/"
+	},
+
 	getInitialState: function() {
+
 		return {
 			itemsToDo: this.saved(),
 
@@ -11,7 +17,7 @@ var TaskApp = React.createClass({
 		}
 	},
 
-	addTask: function (e) {
+	handleSubmit: function (e) {
  		e.preventDefault();
 
 		this.setState({ 
@@ -21,9 +27,7 @@ var TaskApp = React.createClass({
 	},
 
     removeTask: function(i) {
-		var items = this.state.itemsToDo;
-		delete items[i];
-		this.setState({ items });
+		this.setState({ items: this.state.itemsToDo.splice(i, 1) });
 	},
 
 	doneTask: function(i){
@@ -69,17 +73,42 @@ var TaskApp = React.createClass({
 
 	saved: function() {
 		return `
+Paleisti Sort ant Heroku
+		`.split(/\r?\n/).filter(entry => entry.trim() != '')
+	},
 
-		`.split(/\r?\n/).filter(Boolean)
+	postItem: function(item) {
+  		var creationRequest = $.ajax({
+    		type: 'POST',
+    		url: this.apiUrl + "items",
+    		data: { description: itemDescription, completed: false }
+  		})
+	},
+
+	loadItems: function() {
+		var loadRequest = $.ajax({
+  			type: 'GET',
+  			url: this.apiUrl
+		});
+
+		loadRequest.done(function(dataFromServer) {
+      		items = dataFromServer.items;
+      		console.log("aha!");
+      // notifyComponents()
+	    })
 	},
 
 	render: function() {
 		return (
-			<div>
+			<div class="container">
+			    <div class="row">
+        <div class="col-sm-8 blog-main">
+
 				<h1>My tasks</h1>
-				<h3>Finished</h3>
+				<button onClick={this.loadItems}>Load</button>
+				<h3>Finished ({this.state.itemsDone.length})</h3>
 				<TaskDoneList items={this.state.itemsDone} undone={this.unDoneTask} />
-				<h3>Remaining</h3>
+				<h3>Remaining ({this.state.itemsToDo.length})</h3>
 				<TaskList 
 					items={this.state.itemsToDo} 
 					delete={this.removeTask} 
@@ -87,10 +116,12 @@ var TaskApp = React.createClass({
 					done={this.doneTask}
 				/>
 				<h3>Add new:</h3>
-				<form onSubmit={this.addTask}>
+				<form onSubmit={this.handleSubmit}>
 					<input value={this.state.task} onChange={this.onChange} />
 					<button>Add task</button>
 				</form>
+			</div>
+			</div>
 			</div>
 		);
 	}

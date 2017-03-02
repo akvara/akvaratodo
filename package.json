@@ -1,5 +1,13 @@
 {
-    "browser": {
-       "fs": "react-native-level-fs" 
-    }
+  "name": "akvaratodo",
+  "version": "1.0.1",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:akvara/akvaratodo.git"
+  },
+  "dependencies": {
+    "jquery": "^3.1.1",
+    "mongoose": "^4.8.5"
+  }
 }
