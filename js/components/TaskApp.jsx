@@ -1,28 +1,6 @@
-
 var TaskApp = React.createClass({
 
-	saved: function() {
-		return `
-starts with http? a link
-Show 5
-add at +7
-read from local file
-Paleisti Sort ant Heroku
-
-https://devcenter.heroku.com/articles/getting-started-with-php#introduction
-https://blog.heroku.com/deploying-react-with-zero-configuration
-https://getforge.com/pricing
-http://docs.railsbridge.org/javascript-to-do-list-with-react/creating_a_list
-http://reactfordesigners.com/labs/reactjs-introduction-for-people-who-know-just-enough-jquery-to-get-by/
-https://laracasts.com/series/do-you-react/episodes/6
-https://scotch.io/tutorials/learning-react-getting-started-and-concepts
-
-------------------------
-		`.split(/\r?\n/).filter(entry => entry.trim() != '')
-	},
-
 	statics: {
-		apiUrl: "http://listalous.herokuapp.com/lists/akvaratodo/",
 		postponeBy: 10,
 		addNewAt: 5
 	},
@@ -30,11 +8,8 @@ https://scotch.io/tutorials/learning-react-getting-started-and-concepts
 	getInitialState: function() {
 
 		return {
-			itemsToDo: this.saved(),
-
-			itemsDone: [
-			],
-
+			itemsToDo: this.props.items,
+			itemsDone: [],
 			task: ''
 		}
 	},
@@ -108,37 +83,14 @@ https://scotch.io/tutorials/learning-react-getting-started-and-concepts
   		return arrayA;
 	},
 
-	postItem: function(item) {
-  		var creationRequest = $.ajax({
-    		type: 'POST',
-    		url: this.constructor.apiUrl + "items",
-    		data: { description: itemDescription, completed: false }
-  		})
-	},
-
-	loadItems: function() {
-		var loadRequest = $.ajax({
-  			type: 'GET',
-  			url: this.constructor.apiUrl
-		});
-
-		loadRequest.done(function(dataFromServer) {
-      		items = dataFromServer.items;
-      		console.log("aha!");
-      // notifyComponents()
-	    })
-	},
-
 	render: function() {
 		return (
-			<div class="container">
-			    <div class="row">
-        <div class="col-sm-8 blog-main">
-
+			<div>
 				<h1>My tasks</h1>
-				<button onClick={this.loadItems}>Load</button>
+				<hr />
 				<h3>Finished ({this.state.itemsDone.length})</h3>
 				<TaskDoneList items={this.state.itemsDone} undone={this.unDoneTask} />
+				<hr />
 				<h3>Remaining ({this.state.itemsToDo.length})</h3>
 				<TaskList 
 					items={this.state.itemsToDo} 
@@ -147,16 +99,13 @@ https://scotch.io/tutorials/learning-react-getting-started-and-concepts
 					procrastinate={this.procrastinateTask} 
 					done={this.doneTask}
 				/>
+				<hr />
 				<h3>Add new:</h3>
 				<form onSubmit={this.handleSubmit}>
 					<input value={this.state.task} onChange={this.onChange} />
 					<button>Add task</button>
 				</form>
 			</div>
-			</div>
-			</div>
 		);
 	}
 });
-
-React.render(<TaskApp />, document.body)

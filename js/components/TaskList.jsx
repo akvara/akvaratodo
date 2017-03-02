@@ -1,4 +1,7 @@
 var TaskList = React.createClass({
+	statics: {
+		maxTaskLength: 45
+	},
 
 	done: function(i){
 		this.props.done(i);
@@ -17,19 +20,20 @@ var TaskList = React.createClass({
 	},
 
 	displayTask: function(task, i) {
-		let taskDescription = { task };
+		let taskString = task.substring(0, this.constructor.maxTaskLength);
+		let taskDescription = { taskString };
 		if (task.substring(0, 4) == "http") {
-			taskDescription = <a href={ task } target="_blank">{ task }</a>;
+			taskDescription = <a href={ task } target="_blank">{ taskString }</a>;
 		}
 		
 		return <li>
-			<button onClick={this.done.bind(this, i)}>--</button>
+			<button title="done" onClick={this.done.bind(this, i)}>--</button>
 			&nbsp; 
 			{ taskDescription }
 			&nbsp;
-			<button onClick={this.delete.bind(this, i)}>x</button>
-			<button onClick={this.procrastinate.bind(this, i)}>v</button>
-			<button onClick={this.postpone.bind(this, i)}>p</button>
+			<button title="remove" onClick={this.delete.bind(this, i)}>x</button>
+			<button title="procrastinate" onClick={this.procrastinate.bind(this, i)}>v</button>
+			<button title="postpone (+10)" onClick={this.postpone.bind(this, i)}>p</button>
 		</li>
 	},
 	
@@ -42,4 +46,3 @@ var TaskList = React.createClass({
 		);
 	}
 });
-
