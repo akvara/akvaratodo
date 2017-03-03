@@ -84,9 +84,12 @@ var TaskApp = React.createClass({
 	},
 
 	render: function() {
+		
+		var today = new Date().toISOString().slice(0, 10);
+		
 		return (
 			<div>
-				<h1>My tasks</h1>
+				<h1>My tasks: {today}</h1>
 				<hr />
 				<h3>Finished ({this.state.itemsDone.length})</h3>
 				<TaskDoneList items={this.state.itemsDone} undone={this.unDoneTask} />

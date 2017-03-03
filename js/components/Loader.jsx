@@ -4,7 +4,7 @@ var Loader = React.createClass({
 
 		return (
 			<div>
-				Loading ...
+				{ this.props.message }
 			</div>
 		);
 	}
@@ -60,14 +60,14 @@ Promise.all([
 .then(function([result1, result2]) {
 	console.log("Files loaded.");
 
-	var loadedText = result1 + "\n" + result2;
+	var loadedText = result1 + "\n" + result2 + "\n------------------------------";
 	var itemsTodo = loadedText.split(/\r?\n/).filter(entry => entry.trim() != '');
 
 	React.render(<TaskApp items={itemsTodo}/>,  document.querySelector('#app'));
 })
 .catch(err => {
-    alert("File load error: " + err);
     console.log("File load error:", err);
+	React.render(<Loader message="File load error" />, document.querySelector('#app'));
 });
 
-React.render(<Loader />, document.querySelector('#app'));
+React.render(<Loader message="Loading..." />, document.querySelector('#app'));
