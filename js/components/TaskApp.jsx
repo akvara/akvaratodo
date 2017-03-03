@@ -34,15 +34,16 @@ var TaskApp = React.createClass({
 		});
 	},
 
-	doneTask: function(i){
+	doneTask: function(i) {
 		var moved = this.moveToAnother(this.state.itemsToDo, this.state.itemsDone, i)
 		this.setState({ 
 			itemsToDo: moved.A, 
 			itemsDone: moved.B
 		});
+		this.props.backup(moved.A);
 	},
 
-	unDoneTask: function(i){
+	unDoneTask: function(i) {
 		var moved = this.moveToAnother(this.state.itemsDone, this.state.itemsToDo, i)
 		this.setState({ 
 			itemsToDo: moved.B, 
@@ -50,7 +51,7 @@ var TaskApp = React.createClass({
 		});
 	},	
 
-	procrastinateTask: function(i){
+	procrastinateTask: function(i) {
 		this.setState({ 
 			itemsToDo: this.moveToEnd(this.state.itemsToDo, i)
 		});
@@ -83,25 +84,12 @@ var TaskApp = React.createClass({
   		return arrayA;
 	},
 
-	saveFileContents: function (fileName) {
-		console.log("saving " + fileName + "...");
-		return request('POST', fileName + '.txt', './' + fileName + '.txt');
-	},
+	loadDaily: function () {
+		this.props.loadDaily();
+	},	
 
-	save: function () {
-		$.cookie('my-first-cookie', 'cookie data');
-		// var pr = new Promise(this.saveFileContents('backup'));
-
-		// pr.then(function(result) {
-		// 		console.log("Backup saved.");
-		// 	})
-		// 	.catch(err => {
-  //   			console.log("File save error:", err);
-		// 	});
-	},
-
-	load: function () {
-		console.log($.cookie('my-first-cookie'));
+	clear: function () {
+		this.props.clear();
 	},
 
 	render: function() {
@@ -111,8 +99,8 @@ var TaskApp = React.createClass({
 		return (
 			<div>
 				<h1>My tasks: {today}</h1>
-				<button onClick={this.save}>Save</button>
-				<button onClick={this.load}>Load</button>
+				<button onClick={this.loadDaily}>Load daily</button>
+				<button onClick={this.clear}>Clear</button>
 
 				<hr />
 				<h3>Finished ({this.state.itemsDone.length})</h3>

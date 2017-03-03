@@ -10,27 +10,7 @@ var Loader = React.createClass({
 	}
 });
 
-var	loadTxt = function () {
-
-	var client = new XMLHttpRequest();
-
-	console.log("Loading daily...");
-	client.open('GET', '/daily.txt?<?php echo time(); ?>', true);
-	client.onreadystatechange = function() {
-		var loadedText = client.responseText; //
-		console.log("daily loaded. Loading postponed");
-			client.open('GET', '/postponed.txt?<?php echo time(); ?>', true);
-			client.onreadystatechange = function() {
-				console.log("Postponed loaded.");
-
-				loadedText += client.responseText;
-				var itemsTodo = loadedText.split(/\r?\n/).filter(entry => entry.trim() != '');
-
-				React.render(<TaskApp items={itemsTodo}/>,  document.querySelector('#app'));
-			}
-	}
-	client.send();
-};
+var items = [];
 
 function request(method, resource, url) {
     return new Promise(function (resolve, reject) {
@@ -46,28 +26,75 @@ function request(method, resource, url) {
         xhr.onerror = () => reject(xhr.statusText);
         xhr.send();
     });
-}
+};
 
-var getFileContents = function (fileName) {
+function getFileContents (fileName) {
 	console.log("Loading " + fileName + "...");
 	return request('GET', fileName + '.txt', './' + fileName + '.txt?<?php echo time(); ?>');
+};
+
+function loadData () {
+	let backupData = $.cookie('backup-data-todo');
+
+	if (backupData) {
+		console.log('Loading from backup');
+		renderTaskApp(JSON.parse(backupData));
+	} else {
+		readFromFiles();
+	}
+};
+
+var saveBackup = function (items) {
+	$.cookie('backup-data-todo', JSON.stringify(items));
 }
 
-Promise.all([
-    getFileContents('daily'),
-    getFileContents('postponed'),
-])
-.then(function([result1, result2]) {
-	console.log("Files loaded.");
+var clear = function () {
+	$.cookie('backup-data-todo', '');
+}
 
-	var loadedText = result1 + "\n" + result2 + "\n------------------------------";
-	var itemsTodo = loadedText.split(/\r?\n/).filter(entry => entry.trim() != '');
+function renderTaskApp (items) {
+	React.render(<TaskApp items={items} backup={saveBackup} loadDaily={loadDaily} clear={clear} /> ,  document.querySelector('#app'));	
+}
 
-	React.render(<TaskApp items={itemsTodo}/>,  document.querySelector('#app'));
-})
-.catch(err => {
-    console.log("File load error:", err);
-	React.render(<Loader message="File load error" />, document.querySelector('#app'));
-});
+function textToArray (text) {
+	return text.split(/\r?\n/).filter(entry => entry.trim() != '')
+}
+
+function loadDaily () {
+	readFromFile("daily");
+}
+
+function readFromFile (fileName) {
+    getFileContents(fileName)
+	.then(function (result) {
+		items = []; // textToArray(result).concat(items).concat("aga");
+		console.log(fileName + " loaded.");
+		this.setState({ 
+			itemsToDo: items
+		});
+	})
+	.catch(err => {
+	    console.log("File load error:", err);
+	});
+}
+
+function readFromFiles () {
+	Promise.all([
+	    getFileContents('daily'),
+	    getFileContents('postponed'),
+	])
+	.then(function([result1, result2]) {
+		console.log("Files loaded.");
+
+		var items = textToArray(result1).concat(textToArray(result2)).concat(['------------------------------']);
+		
+		renderTaskApp(items);
+	})
+	.catch(err => {
+	    console.log("File load error:", err);
+		React.render(<Loader message="File load error" />, document.querySelector('#app'));
+	});
+}
 
 React.render(<Loader message="Loading..." />, document.querySelector('#app'));
+loadData();
