@@ -83,6 +83,27 @@ var TaskApp = React.createClass({
   		return arrayA;
 	},
 
+	saveFileContents: function (fileName) {
+		console.log("saving " + fileName + "...");
+		return request('POST', fileName + '.txt', './' + fileName + '.txt');
+	},
+
+	save: function () {
+		$.cookie('my-first-cookie', 'cookie data');
+		// var pr = new Promise(this.saveFileContents('backup'));
+
+		// pr.then(function(result) {
+		// 		console.log("Backup saved.");
+		// 	})
+		// 	.catch(err => {
+  //   			console.log("File save error:", err);
+		// 	});
+	},
+
+	load: function () {
+		console.log($.cookie('my-first-cookie'));
+	},
+
 	render: function() {
 		
 		var today = new Date().toISOString().slice(0, 10);
@@ -90,6 +111,9 @@ var TaskApp = React.createClass({
 		return (
 			<div>
 				<h1>My tasks: {today}</h1>
+				<button onClick={this.save}>Save</button>
+				<button onClick={this.load}>Load</button>
+
 				<hr />
 				<h3>Finished ({this.state.itemsDone.length})</h3>
 				<TaskDoneList items={this.state.itemsDone} undone={this.unDoneTask} />
