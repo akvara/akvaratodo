@@ -34,15 +34,16 @@ var TaskApp = React.createClass({
 		});
 	},
 
-	doneTask: function(i){
+	doneTask: function(i) {
 		var moved = this.moveToAnother(this.state.itemsToDo, this.state.itemsDone, i)
 		this.setState({ 
 			itemsToDo: moved.A, 
 			itemsDone: moved.B
 		});
+		this.props.backup(moved.A);
 	},
 
-	unDoneTask: function(i){
+	unDoneTask: function(i) {
 		var moved = this.moveToAnother(this.state.itemsDone, this.state.itemsToDo, i)
 		this.setState({ 
 			itemsToDo: moved.B, 
@@ -50,7 +51,7 @@ var TaskApp = React.createClass({
 		});
 	},	
 
-	procrastinateTask: function(i){
+	procrastinateTask: function(i) {
 		this.setState({ 
 			itemsToDo: this.moveToEnd(this.state.itemsToDo, i)
 		});
@@ -83,6 +84,14 @@ var TaskApp = React.createClass({
   		return arrayA;
 	},
 
+	loadDaily: function () {
+		this.props.loadDaily();
+	},	
+
+	clear: function () {
+		this.props.clear();
+	},
+
 	render: function() {
 		
 		var today = new Date().toISOString().slice(0, 10);
@@ -90,6 +99,9 @@ var TaskApp = React.createClass({
 		return (
 			<div>
 				<h1>My tasks: {today}</h1>
+				<button onClick={this.loadDaily}>Load daily</button>
+				<button onClick={this.clear}>Clear</button>
+
 				<hr />
 				<h3>Finished ({this.state.itemsDone.length})</h3>
 				<TaskDoneList items={this.state.itemsDone} undone={this.unDoneTask} />
