@@ -1,14 +1,9 @@
 var TaskApp = React.createClass({
 
-	statics: {
-		postponeBy: 15,
-		addNewAt: 5
-	},
-
 	getInitialState: function() {
 
 		return {
-			itemsToDo: this.props.items,
+			itemsToDo: [],
 			itemsDone: [],
 			task: ''
 		}
@@ -17,7 +12,7 @@ var TaskApp = React.createClass({
 	handleSubmit: function (e) {
  		e.preventDefault();
 
- 		this.state.itemsToDo.splice(this.constructor.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
+ 		this.state.itemsToDo.splice(this.props.config.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
 
 		this.setState({ 
 			itemsToDo: _.unique(this.state.itemsToDo),
@@ -31,7 +26,7 @@ var TaskApp = React.createClass({
 
     postponeTask: function(i) {
 		this.setState({ 
-			items: this.moveFromTo(this.state.itemsToDo, i, i + this.constructor.postponeBy) 
+			items: this.moveFromTo(this.state.itemsToDo, i, i + this.props.config.postponeBy) 
 		});
 	},
 
@@ -41,7 +36,7 @@ var TaskApp = React.createClass({
 			itemsToDo: moved.A, 
 			itemsDone: moved.B
 		});
-		this.props.backup(moved.A);
+		this.backup(moved.A);
 	},
 
 	unDoneTask: function(i) {
@@ -86,17 +81,86 @@ var TaskApp = React.createClass({
 	},
 
 	loadDaily: function () {
-		this.props.loadDaily();
+		this.readFromFile('daily', true);
 	},	
 
-	clear: function () {
-		this.props.clear();
+	saveBackup: function (items) {
+		$.cookie(this.props.config.cookieTodo, JSON.stringify(items));
 	},
+
+	clear: function () {
+		$.cookie(this.props.config.cookieTodo, '');
+	},
+
+	prepend: function (items) {
+		console.log('prepend', items);			
+	},
+
+	loadData: function () {
+		let backupData = $.cookie(this.props.config.cookieTodo);
+
+		if (backupData) {
+			console.log('Loading from backup');
+			this.setState({
+				itemsToDo: JSON.parse(backupData)
+			})
+		} else {
+			this.readFromFile('daily', true);
+			this.readFromFile('postponed', false);
+		}
+	},
+
+	getFileContents: function(fileName) {
+		console.log("Loading " + fileName + "...");
+		return this.request('GET', fileName + '.txt', './' + fileName + '.txt?<?php echo time(); ?>');
+	},
+
+	request: function (method, resource, url) {
+	    return new Promise(function (resolve, reject) {
+	        var xhr = new XMLHttpRequest();
+	        xhr.open(method, url);
+	        xhr.onload = () => {
+	            if (xhr.status >= 200 && xhr.status < 300) {
+	                resolve(xhr.response);
+	            } else {
+	                reject(xhr.statusText + " : " + resource);
+	            }
+	        };
+	        xhr.onerror = () => reject(xhr.statusText);
+	        xhr.send();
+	    });
+	},
+
+	readFromFile: function (fileName, comesFirst) {
+		var textToArray = (text) => text.split(/\r?\n/).filter(entry => entry.trim() != '');
+	    
+	    this.getFileContents(fileName)
+		.then(function (result) {
+			console.log(fileName + " loaded.");
+			if (comesFirst) {
+				this.setState({
+					itemsToDo: _.unique(textToArray(result).concat(this.state.itemsToDo))
+				})
+			}
+			else {
+				this.setState({
+					itemsToDo: _.unique(this.state.itemsToDo.concat(textToArray(result)))
+				})
+			}
+		}.bind(this))
+		.catch(err => {
+		    console.log("File load error:", err);
+		});
+	},
+
+	componentWillMount: function() {
+    	this.loadData();
+  	},
 
 	render: function() {
 		
 		var today = new Date().toISOString().slice(0, 10);
-		
+
 		return (
 			<div>
 				<h1>My tasks: {today}</h1>
@@ -114,6 +178,7 @@ var TaskApp = React.createClass({
 					postpone={this.postponeTask} 
 					procrastinate={this.procrastinateTask} 
 					done={this.doneTask}
+					config={this.props.config}
 				/>
 				<hr />
 				<h3>Add new:</h3>

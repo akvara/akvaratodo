@@ -1,6 +1,6 @@
 var TaskList = React.createClass({
 	statics: {
-		maxTaskLength: 45
+		
 	},
 
 	done: function (i) {
@@ -20,12 +20,12 @@ var TaskList = React.createClass({
 	},
 
 	displayTask: function (task, i) {
-		let taskString = task.substring(0, this.constructor.maxTaskLength);
+		let taskString = task.substring(0, this.props.config.maxTaskLength);
 		let taskDescription = { taskString };
 		if (task.substring(0, 4) == "http") {
 			taskDescription = <a href={ task } target="_blank">{ taskString }</a>;
 		}
-		
+		let postponeTitle = "postpone (+" + this.props.config.postponeBy + ")";
 		return <li>
 			<button title="done" onClick={this.done.bind(this, i)}>---</button>
 			&nbsp; 
@@ -33,7 +33,7 @@ var TaskList = React.createClass({
 			&nbsp;
 			<button title="remove" onClick={this.delete.bind(this, i)}>x</button>
 			<button title="procrastinate" onClick={this.procrastinate.bind(this, i)}>v</button>
-			<button title="postpone (+15)" onClick={this.postpone.bind(this, i)}>p</button>
+			<button title={postponeTitle} onClick={this.postpone.bind(this, i)}>p</button>
 		</li>
 	},
 	
