@@ -10,8 +10,6 @@ var Loader = React.createClass({
 	}
 });
 
-var items = [];
-
 function request(method, resource, url) {
     return new Promise(function (resolve, reject) {
         var xhr = new XMLHttpRequest();

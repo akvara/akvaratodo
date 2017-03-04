@@ -41,7 +41,7 @@ var TaskList = React.createClass({
 
 		return (
 			<ul>
-				{this.props.items.map(this.displayTask)}
+				{this.props.items.slice(0,20).map(this.displayTask)}
 			</ul>
 		);
 	}

@@ -1,7 +1,7 @@
 var TaskApp = React.createClass({
 
 	statics: {
-		postponeBy: 10,
+		postponeBy: 15,
 		addNewAt: 5
 	},
 
@@ -17,9 +17,10 @@ var TaskApp = React.createClass({
 	handleSubmit: function (e) {
  		e.preventDefault();
 
- 		this.state.itemsToDo.splice(this.constructor.addNewAt - 1, 0, this.state.task);
+ 		this.state.itemsToDo.splice(this.constructor.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
 
 		this.setState({ 
+			itemsToDo: _.unique(this.state.itemsToDo),
 			task: ''
 		});
 	},
@@ -118,7 +119,7 @@ var TaskApp = React.createClass({
 				<h3>Add new:</h3>
 				<form onSubmit={this.handleSubmit}>
 					<input value={this.state.task} onChange={this.onChange} />
-					<button>Add task</button>
+					<button disabled={this.state.task.trim()==''} >Add task</button>
 				</form>
 			</div>
 		);
