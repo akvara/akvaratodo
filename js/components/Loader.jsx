@@ -1,5 +1,16 @@
 var Loader = React.createClass({
 
+	loadData: function () {
+		let backupData = $.cookie('backup-data-todo');
+
+		if (backupData) {
+			console.log('Loading from backup');
+			return renderTaskApp(JSON.parse(backupData));
+		} else {
+			return readFromFiles();
+		}
+	},
+
 	render: function() {
 
 		return (
@@ -31,16 +42,6 @@ function getFileContents (fileName) {
 	return request('GET', fileName + '.txt', './' + fileName + '.txt?<?php echo time(); ?>');
 };
 
-function loadData () {
-	let backupData = $.cookie('backup-data-todo');
-
-	if (backupData) {
-		console.log('Loading from backup');
-		renderTaskApp(JSON.parse(backupData));
-	} else {
-		readFromFiles();
-	}
-};
 
 var saveBackup = function (items) {
 	$.cookie('backup-data-todo', JSON.stringify(items));
@@ -95,4 +96,4 @@ function readFromFiles () {
 }
 
 React.render(<Loader message="Loading..." />, document.querySelector('#app'));
-loadData();
+Loader.loadData();
