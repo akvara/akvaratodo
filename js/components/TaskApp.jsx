@@ -3,7 +3,7 @@ var TaskApp = React.createClass({
 	getInitialState: function() {
 
 		return {
-			itemsToDo: [],
+			itemsToDo: Array.from(Array(14).keys()).map(function (value, index) { return (index +1).toString() + "a";}),
 			itemsDone: [],
 			task: ''
 		}

@@ -20,16 +20,19 @@ var TaskList = React.createClass({
 	},
 
 	displayTask: function (task, i) {
-		let taskString = task.substring(0, this.props.config.maxTaskLength);
-		let taskDescription = { taskString };
+		let taskTruncated = task.substring(0, this.props.config.maxTaskLength);
+		let taskAsDisplayed = { taskTruncated };
 		if (task.substring(0, 4) == "http") {
-			taskDescription = <a href={ task } target="_blank">{ taskString }</a>;
+			taskAsDisplayed = <a href={ task } target="_blank">{ taskTruncated }</a>;
+		}
+		if (task.substring(0, 4) == "....") {
+			return ".....................";
 		}
 		let postponeTitle = "postpone (+" + this.props.config.postponeBy + ")";
 		return <li>
 			<button title="done" onClick={this.done.bind(this, i)}>---</button>
 			&nbsp; 
-			{ taskDescription }
+			{ taskAsDisplayed }
 			&nbsp;
 			<button title="remove" onClick={this.delete.bind(this, i)}>x</button>
 			<button title="procrastinate" onClick={this.procrastinate.bind(this, i)}>v</button>
@@ -38,10 +41,15 @@ var TaskList = React.createClass({
 	},
 	
 	render: function () {
+		taskListDisplayed = this.props.items.slice(0, this.props.config.displayFirst);
+		remainder = this.props.items.length - this.props.config.displayFirst;
+		if (remainder>0) {
+			taskListDisplayed = taskListDisplayed.concat("....").concat(this.props.items.slice(-Math.min(this.props.config.displayLast, remainder)));
+		}
 
 		return (
 			<ul>
-				{this.props.items.slice(0,20).map(this.displayTask)}
+				{taskListDisplayed.map(this.displayTask)}
 			</ul>
 		);
 	}
