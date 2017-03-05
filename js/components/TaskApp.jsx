@@ -3,7 +3,7 @@ var TaskApp = React.createClass({
 	getInitialState: function() {
 
 		return {
-			itemsToDo: Array.from(Array(14).keys()).map(function (value, index) { return (index +1).toString() + "a";}),
+			itemsToDo: [],
 			itemsDone: [],
 			task: ''
 		}
@@ -31,7 +31,7 @@ var TaskApp = React.createClass({
 	},
 
 	doneTask: function(i) {
-		var moved = this.moveToAnother(this.state.itemsToDo, this.state.itemsDone, i)
+		var moved = this.moveToAnother(this.state.itemsToDo, this.state.itemsDone, i, false)
 		this.setState({ 
 			itemsToDo: moved.A, 
 			itemsDone: moved.B
@@ -40,7 +40,7 @@ var TaskApp = React.createClass({
 	},
 
 	unDoneTask: function(i) {
-		var moved = this.moveToAnother(this.state.itemsDone, this.state.itemsToDo, i)
+		var moved = this.moveToAnother(this.state.itemsDone, this.state.itemsToDo, i, true)
 		this.setState({ 
 			itemsToDo: moved.B, 
 			itemsDone: moved.A
@@ -57,10 +57,14 @@ var TaskApp = React.createClass({
 		this.setState({ task: e.target.value });
 	},
 
-	moveToAnother: function(fromA, toB, i) {
+	moveToAnother: function(fromA, toB, i, toTop) {
   		trans = fromA[i];
   		fromA.splice(i, 1);
-  		toB = toB.concat([trans]);
+  		if (toTop) {
+	  		toB = [trans].concat(toB);	
+	  	} else {
+	  		toB = toB.concat([trans]);
+	  	}
 
   		return {A: fromA, B: toB};
 	},
@@ -163,11 +167,7 @@ var TaskApp = React.createClass({
 
 		return (
 			<div>
-				<h1>My tasks: {today}</h1>
-				<button onClick={this.loadDaily}>Load daily</button>
-				<button onClick={this.clear}>Clear</button>
-
-				<hr />
+				<h1>{today}</h1>
 				<h3>Finished ({this.state.itemsDone.length})</h3>
 				<TaskDoneList items={this.state.itemsDone} undone={this.unDoneTask} />
 				<hr />
@@ -186,6 +186,10 @@ var TaskApp = React.createClass({
 					<input value={this.state.task} onChange={this.onChange} />
 					<button disabled={this.state.task.trim()==''} >Add task</button>
 				</form>
+				<hr />
+				<button onClick={this.loadDaily}>Load daily</button>
+				<button onClick={this.clear}>Clear</button>
+				<hr />
 			</div>
 		);
 	}
