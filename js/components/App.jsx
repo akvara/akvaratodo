@@ -3,7 +3,7 @@ var CONFIG = {
     postponeBy: 15,
     addNewAt: 7,
     maxTaskLength: 45,
-    displayFirst: 15,
+    displayFirst: 10,
     displayLast: 4,
 };
 
@@ -20,4 +20,4 @@ var App = React.createClass({
     }
 });
 
-React.render(<App />, document.getElementById("app"));
+React.render(<App />, document.getElementById("app"))

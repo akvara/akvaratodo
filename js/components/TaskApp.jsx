@@ -3,7 +3,7 @@ var TaskApp = React.createClass({
 	getInitialState: function() {
 
 		return {
-			itemsToDo: [],
+			itemsToDo: [], // generate with: Array.from(Array(40)).map((e,i)=>(i).toString()),
 			itemsDone: [],
 			task: ''
 		}
@@ -94,10 +94,6 @@ var TaskApp = React.createClass({
 
 	clear: function () {
 		$.cookie(this.props.config.cookieTodo, '');
-	},
-
-	prepend: function (items) {
-		console.log('prepend', items);			
 	},
 
 	loadData: function () {
