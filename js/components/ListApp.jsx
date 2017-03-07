@@ -5,7 +5,8 @@ var ListApp = React.createClass({
 		return {
 			lists: [], // generate with: Array.from(Array(40)).map((e,i)=>(i).toString()),
 			listName: '',
-			listContent: ''
+			listContent: '', 
+			loaded: false
 		}
 	},
 
@@ -56,7 +57,10 @@ var ListApp = React.createClass({
 	loadData: function () {
 		$.get(this.props.config.listsapi + "lists")
 		.done(function(data, textStatus, jqXHR) {
-			this.setState({ lists: data });
+			this.setState({ 
+				lists: data ,
+				loaded: true
+			});
          	// console.log(data, textStatus);
         }.bind(this))
         .fail(function(jqXHR, textStatus, errorThrown) {
@@ -65,11 +69,17 @@ var ListApp = React.createClass({
 	},
 
 	componentWillMount: function() {
+		// React.render(<Loader/>, document.getElementById("app"));
+
     	this.loadData();
   	},
 
 	render: function() {
-// console.log('ListApp items done~', this.props.itemsDone);		
+// console.log('ListApp items done~', this.props.itemsDone);
+		if (!this.state.loaded)	{
+			return (<div>Loading...</div>);
+		}	
+
 		return (
 			<div>
 				<h1>Lists</h1>

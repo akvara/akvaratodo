@@ -33,15 +33,20 @@ var TaskList = React.createClass({
 		}
 
 		let postponeTitle = "postpone (+" + this.props.config.postponeBy + ")";
-		return <li>
-			<button title="done" onClick={this.done.bind(this, itemIndex)}>---</button>
-			&nbsp; 
-			{ taskAsDisplayed }
-			&nbsp;
-			<button title="remove" onClick={this.delete.bind(this, itemIndex)}>x</button>
-			<button title="procrastinate" onClick={this.procrastinate.bind(this, itemIndex)}>v</button>
-			<button title={postponeTitle} onClick={this.postpone.bind(this, itemIndex)}>p</button>
-		</li>
+		if (this.props.immutable) {
+			return <li>{ taskAsDisplayed }</li>
+		} else {
+			return <li>
+				<button title="done" onClick={this.done.bind(this, itemIndex)}>----</button>
+				&nbsp; 
+				{ taskAsDisplayed }
+				&nbsp;
+				<button title="remove" onClick={this.delete.bind(this, itemIndex)}>x</button>
+				<button title="procrastinate" onClick={this.procrastinate.bind(this, itemIndex)}>v</button>
+				<button title="procrastinate" onClick={this.procrastinate.bind(this, itemIndex)}>&gt;</button>
+				<button title={postponeTitle} onClick={this.postpone.bind(this, itemIndex)}>p</button>
+			</li>
+		}
 	},
 	
 	render: function () {

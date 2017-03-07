@@ -4,9 +4,11 @@ var TaskApp = React.createClass({
 
 		return {
 			uri: this.props.config.listsapi + "lists/" + this.props.listId,
+			listsUri: this.props.config.listsapi + "lists/",
 			itemsToDo: [], // generate with: Array.from(Array(40)).map((e,i)=>(i).toString()),
 			itemsDone: this.props.itemsDone || [],
 			listName: [],
+			immutable: false,
 			task: ''
 		}
 	},
@@ -16,27 +18,20 @@ var TaskApp = React.createClass({
 
  		this.state.itemsToDo.splice(this.props.config.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
 
- 		let items = _.unique(this.state.itemsToDo);
-
 		this.setState({ 
-			itemsToDo: items,
+			itemsToDo: _.unique(this.state.itemsToDo),
 			task: ''
-		});
-
-		this.save(items);
+		}, this.save);
 	},
 
     removeTask: function(i) {
  		this.state.itemsToDo.splice(i, 1);
-		this.setState({ itemsToDo: this.state.itemsToDo });
-
-		this.save(this.state.itemsToDo);
+		this.setState({ itemsToDo: this.state.itemsToDo }, this.save);
 	},
 
     postponeTask: function(i) {
     	let items = this.moveFromTo(this.state.itemsToDo, i, i + this.props.config.postponeBy)
-		this.setState({ itemsToDo: items });
-		this.save(items);
+		this.setState({ itemsToDo: items }, this.save);
 	},
 
 	doneTask: function(i) {
@@ -44,8 +39,7 @@ var TaskApp = React.createClass({
 		this.setState({ 
 			itemsToDo: moved.A, 
 			itemsDone: moved.B
-		});
-		this.save(moved.A);
+		}, this.save);
 	},
 
 	unDoneTask: function(i) {
@@ -53,14 +47,12 @@ var TaskApp = React.createClass({
 		this.setState({ 
 			itemsToDo: moved.B, 
 			itemsDone: moved.A
-		});
-		this.save(moved.B);
+		}, this.save);
 	},	
 
 	procrastinateTask: function(i) {
 		let items = this.moveToEnd(this.state.itemsToDo, i);
-		this.setState({ itemsToDo: items });
-		this.save(items);
+		this.setState({ itemsToDo: items }, this.save);
 	},
 
 	onChange: function (e) {
@@ -94,6 +86,20 @@ var TaskApp = React.createClass({
   		return arrayA;
 	},
 
+	loadAnoter: function (listId) {
+
+console.log("loadAnoter: ", this.state.listsUri + listId);
+		$.get(this.state.listsUri + listId)
+		.done(function(data, textStatus, jqXHR) {
+			this.setState({ 
+				itemsToDo:  _.unique(JSON.parse(data.tasks).concat(this.state.itemsToDo))
+			}, this.save);
+        }.bind(this))
+        .fail(function(jqXHR, textStatus, errorThrown) {
+        	console.log(textStatus);
+    	});
+	},	
+
 	loadDaily: function () {
 		this.readFromFile('daily', true);
 	},	
@@ -106,32 +112,41 @@ var TaskApp = React.createClass({
 		$.cookie(this.props.config.cookieTodo, JSON.stringify(items));	
 	},
 
-	save: function (items) {
+	clear: function () {
+		$.cookie(this.props.config.cookieTodo, '');
+	},
+
+	save: function () {
 		let uri = this.state.uri;
 // console.log('save kvietėte?', uri, items);		
 		$.ajax({
 			url: this.state.uri,
 			type: 'PUT',
-			data: { tasks: JSON.stringify(items) }
+			data: { 
+				tasks: JSON.stringify(this.state.itemsToDo),
+				immutable: this.state.immutable
+			}
 		})
         .fail(function(jqXHR, textStatus, errorThrown) {
         	console.log(textStatus);
     	});
 	},
 
-	clear: function () {
-		$.cookie(this.props.config.cookieTodo, '');
+	mark: function () {
+		this.setState({
+			immutable: !this.state.immutable
+		}, this.save);
 	},
 
-	loadData: function () {
+	load: function () {
 		$.get(this.state.uri)
 		.done(function(data, textStatus, jqXHR) {
 // console.log('~TaskApp data~', data);
-			if (data.tasks) {
-				this.setState({ listName: data.name, itemsToDo: JSON.parse(data.tasks) });
-			} else {
-				this.setState({ listName: data.name });
-			}
+			this.setState({ 
+				listName: data.name, 
+				immutable: data.immutable,
+				itemsToDo: data.tasks ? JSON.parse(data.tasks) : []
+			});
         }.bind(this))
         .fail(function(jqXHR, textStatus, errorThrown) {
         	console.log(textStatus);
@@ -198,13 +213,25 @@ var TaskApp = React.createClass({
   	},
 
 	componentWillMount: function() {
-    	this.loadData();
+    	this.load();
+  	},
+
+  	displayLoadButton: function (item) {
+  		console.log('displayLoadButton', item.name, item._id);
+  		var name = item.name;
+  		var id = item._id;
+
+  		return <button onClick={this.loadAnoter.bind(this, id)} >Load from { name }</button>
   	},
 
 	render: function() {
 		
 		var today = new Date().toISOString().slice(0, 10);
-// console.log('Render!');
+		var markTitle = 'Mark immutable';
+		if (this.state.immutable) 
+			markTitle = 'Unmark immutable';
+		var list = '';
+// console.log('Render!', this.props.immutables);
 		return (
 			<div>
 				<h1>{this.state.listName} {today}</h1>
@@ -214,6 +241,7 @@ var TaskApp = React.createClass({
 				<h3>Remaining ({this.state.itemsToDo.length})</h3>
 				<TaskList 
 					items={this.state.itemsToDo} 
+					immutable={this.state.immutable} 
 					delete={this.removeTask} 
 					postpone={this.postponeTask} 
 					procrastinate={this.procrastinateTask} 
@@ -227,9 +255,8 @@ var TaskApp = React.createClass({
 					<button disabled={this.state.task.trim()==''} >Add task</button>
 				</form>
 				<hr />
-				<button onClick={this.loadDaily}>Load daily</button>
-				<button onClick={this.loadPostponed}>Load postponed</button>
-				<button onClick={this.clear} disabled={true}>Clear</button>
+				{ this.props.immutables.map((list) => this.displayLoadButton(list)) }
+				<button onClick={this.mark}>{markTitle}</button>
 				<button onClick={this.handleLists}>Lists</button>
 				<hr />
 			</div>

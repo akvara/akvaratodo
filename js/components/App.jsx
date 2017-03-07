@@ -1,6 +1,6 @@
 var CONFIG = {
-    // listsapi: 'http://akvaratodoapi.link:3000/',
-    listsapi: 'http://akvaratododb.herokuapp.com/',
+    listsapi: 'http://localhost:3000/',
+    // listsapi: 'http://akvaratododb.herokuapp.com/',
     cookieTodo: 'backup-data-todo',
     postponeBy: 15,
     addNewAt: 7,

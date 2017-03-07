@@ -6,7 +6,13 @@ var ListList = React.createClass({
 
 	load: function (listId) {
 // console.log('listList listid', listId);		
-		React.render(<TaskApp config={CONFIG} listId={listId} itemsDone={this.props.itemsDone} />, document.getElementById("app"))
+		React.render(<TaskApp 
+			config={CONFIG} 
+			listId={listId} 
+			immutables={this.props.lists.filter((item) => item.immutable)}
+			itemsDone={this.props.itemsDone} 
+		/>, document.getElementById("app"));
+
 	},
 
 	displayList: function (list, i) {
@@ -20,7 +26,9 @@ var ListList = React.createClass({
 			&nbsp;
 			{ listAsDisplayed }
 			&nbsp;
-			<button title="remove" onClick={this.delete.bind(this, list._id)}>x</button>
+			{!list.immutable  &&
+				<button title="remove" onClick={this.delete.bind(this, list._id)}>x</button>
+			}
 		</li>
 	},
 	
