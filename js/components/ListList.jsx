@@ -12,7 +12,6 @@ var ListList = React.createClass({
 			immutables={this.props.lists.filter((item) => item.immutable)}
 			itemsDone={this.props.itemsDone} 
 		/>, document.getElementById("app"));
-
 	},
 
 	displayList: function (list, i) {

@@ -69,8 +69,6 @@ var ListApp = React.createClass({
 	},
 
 	componentWillMount: function() {
-		// React.render(<Loader/>, document.getElementById("app"));
-
     	this.loadData();
   	},
 

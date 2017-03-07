@@ -1,4 +1,3 @@
-
 var TaskList = React.createClass({
 
 	done: function (i) {
@@ -7,6 +6,10 @@ var TaskList = React.createClass({
 
 	delete: function (i) {
 		this.props.delete(i);
+	},
+
+	move: function (i) {
+		this.props.move(i);
 	},
 
 	procrastinate: function (i) {
@@ -32,7 +35,7 @@ var TaskList = React.createClass({
 			itemIndex = i + omitted;
 		}
 
-		let postponeTitle = "postpone (+" + this.props.config.postponeBy + ")";
+		let postponeTitle = "Postpone (+" + this.props.config.postponeBy + ")";
 		if (this.props.immutable) {
 			return <li>{ taskAsDisplayed }</li>
 		} else {
@@ -41,9 +44,9 @@ var TaskList = React.createClass({
 				&nbsp; 
 				{ taskAsDisplayed }
 				&nbsp;
-				<button title="remove" onClick={this.delete.bind(this, itemIndex)}>x</button>
-				<button title="procrastinate" onClick={this.procrastinate.bind(this, itemIndex)}>v</button>
-				<button title="procrastinate" onClick={this.procrastinate.bind(this, itemIndex)}>&gt;</button>
+				<button title="Remove" onClick={this.delete.bind(this, itemIndex)}>x</button>
+				<button title="Procrastinate" onClick={this.procrastinate.bind(this, itemIndex)}>v</button>
+				<button title="Move to another list" onClick={this.move.bind(this, itemIndex)}>&gt;</button>
 				<button title={postponeTitle} onClick={this.postpone.bind(this, itemIndex)}>p</button>
 			</li>
 		}
@@ -54,7 +57,6 @@ var TaskList = React.createClass({
 		
 		taskListDisplayed = this.props.items.slice(0, this.props.config.displayFirst);
 
-// console.log('~TaskList taskListDisplayed~', taskListDisplayed);		
 		remainder = this.props.items.length - this.props.config.displayFirst;
 		omitted = 0;
 		if (remainder>0) {

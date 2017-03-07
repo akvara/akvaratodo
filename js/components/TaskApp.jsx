@@ -7,6 +7,7 @@ var TaskApp = React.createClass({
 			listsUri: this.props.config.listsapi + "lists/",
 			itemsToDo: [], // generate with: Array.from(Array(40)).map((e,i)=>(i).toString()),
 			itemsDone: this.props.itemsDone || [],
+			receiving: this.props.receiving,
 			listName: [],
 			immutable: false,
 			task: ''
@@ -21,12 +22,24 @@ var TaskApp = React.createClass({
 		this.setState({ 
 			itemsToDo: _.unique(this.state.itemsToDo),
 			task: ''
-		}, this.save);
+		}, this.save.bind(this));
 	},
 
-    removeTask: function(i) {
+    removeTask: function(i, callback) {
+    	console.log("nugi???", callback);
+
  		this.state.itemsToDo.splice(i, 1);
-		this.setState({ itemsToDo: this.state.itemsToDo }, this.save);
+		this.setState({ itemsToDo: this.state.itemsToDo }, function (callback) { 
+			this.save();
+			if (callback) callback();
+		}.bind(this, callback));
+	},
+
+    moveOutside: function(i) {
+ 		removed = this.state.itemsToDo[i];
+ 		this.removeTask(i, function(removed) {
+			React.render(<Move config={this.props.config} item={removed} itemsDone={this.state.itemsDone}/>, document.getElementById("app"));
+ 		}.bind(this, removed));
 	},
 
     postponeTask: function(i) {
@@ -88,7 +101,7 @@ var TaskApp = React.createClass({
 
 	loadAnoter: function (listId) {
 
-console.log("loadAnoter: ", this.state.listsUri + listId);
+// console.log("loadAnoter: ", this.state.listsUri + listId);
 		$.get(this.state.listsUri + listId)
 		.done(function(data, textStatus, jqXHR) {
 			this.setState({ 
@@ -118,7 +131,7 @@ console.log("loadAnoter: ", this.state.listsUri + listId);
 
 	save: function () {
 		let uri = this.state.uri;
-// console.log('save kvietėte?', uri, items);		
+// console.log('save kvietėte?', this.state.itemsToDo);		
 		$.ajax({
 			url: this.state.uri,
 			type: 'PUT',
@@ -141,12 +154,19 @@ console.log("loadAnoter: ", this.state.listsUri + listId);
 	load: function () {
 		$.get(this.state.uri)
 		.done(function(data, textStatus, jqXHR) {
-// console.log('~TaskApp data~', data);
-			this.setState({ 
+// console.log('~TaskApp data~', this.state.uri, data);
+			let itemsToDo = data.tasks ? JSON.parse(data.tasks) : [];
+
+			if (this.state.receiving) {
+				itemsToDo = [this.state.receiving].concat(itemsToDo);
+			}
+
+			this.setState({
 				listName: data.name, 
 				immutable: data.immutable,
-				itemsToDo: data.tasks ? JSON.parse(data.tasks) : []
-			});
+				itemsToDo: itemsToDo,
+				receiving: null
+			}, this.state.receiving ? this.save : null);
         }.bind(this))
         .fail(function(jqXHR, textStatus, errorThrown) {
         	console.log(textStatus);
@@ -213,15 +233,14 @@ console.log("loadAnoter: ", this.state.listsUri + listId);
   	},
 
 	componentWillMount: function() {
-    	this.load();
+    	this.load()
   	},
 
   	displayLoadButton: function (item) {
-  		console.log('displayLoadButton', item.name, item._id);
-  		var name = item.name;
+  		var listName = item.name;
   		var id = item._id;
 
-  		return <button onClick={this.loadAnoter.bind(this, id)} >Load from { name }</button>
+  		return <button onClick={this.loadAnoter.bind(this, id)} >Load from { listName }</button>
   	},
 
 	render: function() {
@@ -243,6 +262,7 @@ console.log("loadAnoter: ", this.state.listsUri + listId);
 					items={this.state.itemsToDo} 
 					immutable={this.state.immutable} 
 					delete={this.removeTask} 
+					move={this.moveOutside} 
 					postpone={this.postponeTask} 
 					procrastinate={this.procrastinateTask} 
 					done={this.doneTask}
