@@ -4,13 +4,20 @@ var ListList = React.createClass({
 		this.props.delete(i);
 	},
 
+	load: function (listId) {
+// console.log('listList listid', listId);		
+		React.render(<TaskApp config={CONFIG} listId={listId} itemsDone={this.props.itemsDone} />, document.getElementById("app"))
+	},
+
 	displayList: function (list, i) {
-console.log(list);
 		let listName = list.name ? list.name : "[noname]";
 		let listTasks = list.tasks ? list.tasks.substr(0, 40) : "[empty]";
 
 		let listAsDisplayed = listName + " (" + listTasks + ")";
+		let title = "load " + list._id;
 		return <li>
+			<button title={title} onClick={this.load.bind(this, list._id)}>Load</button>
+			&nbsp;
 			{ listAsDisplayed }
 			&nbsp;
 			<button title="remove" onClick={this.delete.bind(this, list._id)}>x</button>

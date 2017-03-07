@@ -1,3 +1,4 @@
+
 var TaskList = React.createClass({
 
 	done: function (i) {
@@ -17,6 +18,7 @@ var TaskList = React.createClass({
 	},
 
 	displayTask: function (task, i, omitted) {
+// console.log('TaskList task', task);		
 		let taskTruncated = task.substring(0, this.props.config.maxTaskLength);
 		let taskAsDisplayed = { taskTruncated };
 		let itemIndex = i;
@@ -43,7 +45,11 @@ var TaskList = React.createClass({
 	},
 	
 	render: function () {
+// console.log('~TaskList this.props.items~', this.props.items);		
+		
 		taskListDisplayed = this.props.items.slice(0, this.props.config.displayFirst);
+
+// console.log('~TaskList taskListDisplayed~', taskListDisplayed);		
 		remainder = this.props.items.length - this.props.config.displayFirst;
 		omitted = 0;
 		if (remainder>0) {

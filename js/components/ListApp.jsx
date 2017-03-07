@@ -1,8 +1,3 @@
-
-var CONFIG = {
-    listsapi: 'http://akvaratodoapi.link:3000/',
-};
-
 var ListApp = React.createClass({
 
 	getInitialState: function() {
@@ -15,14 +10,26 @@ var ListApp = React.createClass({
 	},
 
 	handleSubmit: function (e) {
- 		e.preventDefault();
+ 		e.preventDefault(); 		
 
- 	// 	this.state.itemsToDo.splice(this.props.config.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
+ 		$.post(
+ 			this.props.config.listsapi + "lists",
+ 			{
+ 				'name': this.state.listName,
+ 				'tasks': this.state.listContent,
+ 			}
+ 		)
+		.done(function(data, textStatus, jqXHR) {
+			this.loadData();
+        }.bind(this))
+        .fail(function(jqXHR, textStatus, errorThrown) {
+        	console.log(textStatus);
+    	});
 
-		// this.setState({ 
-		// 	itemsToDo: _.unique(this.state.itemsToDo),
-		// 	task: ''
-		// });
+    	this.setState({ 
+			listName: '',
+			listContent: ''
+		});
 	},
 
     removeList: function(id) {
@@ -62,7 +69,7 @@ var ListApp = React.createClass({
   	},
 
 	render: function() {
-		
+// console.log('ListApp items done~', this.props.itemsDone);		
 		return (
 			<div>
 				<h1>Lists</h1>
@@ -70,11 +77,16 @@ var ListApp = React.createClass({
 				<ListList 
 					lists={this.state.lists} 
 					delete={this.removeList} 
+					itemsDone={this.props.itemsDone}
 					config={CONFIG}
 				/>
+				<hr />
+				<form onSubmit={this.handleSubmit}>
+					<input value={this.state.listName} onChange={this.onNameChange} />
+					<button disabled={this.state.listName.trim()==''}>Add list</button>
+				</form>
+				<hr />
 			</div>
 		);
 	}
 });
-
-React.render(<ListApp config={CONFIG}/>, document.getElementById("app"))

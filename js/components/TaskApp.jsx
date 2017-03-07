@@ -3,8 +3,10 @@ var TaskApp = React.createClass({
 	getInitialState: function() {
 
 		return {
+			uri: this.props.config.listsapi + "lists/" + this.props.listId,
 			itemsToDo: [], // generate with: Array.from(Array(40)).map((e,i)=>(i).toString()),
-			itemsDone: [],
+			itemsDone: this.props.itemsDone || [],
+			listName: [],
 			task: ''
 		}
 	},
@@ -14,20 +16,27 @@ var TaskApp = React.createClass({
 
  		this.state.itemsToDo.splice(this.props.config.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
 
+ 		let items = _.unique(this.state.itemsToDo);
+
 		this.setState({ 
-			itemsToDo: _.unique(this.state.itemsToDo),
+			itemsToDo: items,
 			task: ''
 		});
+
+		this.save(items);
 	},
 
     removeTask: function(i) {
-		this.setState({ items: this.state.itemsToDo.splice(i, 1) });
+ 		this.state.itemsToDo.splice(i, 1);
+		this.setState({ itemsToDo: this.state.itemsToDo });
+
+		this.save(this.state.itemsToDo);
 	},
 
     postponeTask: function(i) {
-		this.setState({ 
-			items: this.moveFromTo(this.state.itemsToDo, i, i + this.props.config.postponeBy) 
-		});
+    	let items = this.moveFromTo(this.state.itemsToDo, i, i + this.props.config.postponeBy)
+		this.setState({ itemsToDo: items });
+		this.save(items);
 	},
 
 	doneTask: function(i) {
@@ -36,7 +45,7 @@ var TaskApp = React.createClass({
 			itemsToDo: moved.A, 
 			itemsDone: moved.B
 		});
-		this.backup(moved.A);
+		this.save(moved.A);
 	},
 
 	unDoneTask: function(i) {
@@ -45,12 +54,13 @@ var TaskApp = React.createClass({
 			itemsToDo: moved.B, 
 			itemsDone: moved.A
 		});
+		this.save(moved.B);
 	},	
 
 	procrastinateTask: function(i) {
-		this.setState({ 
-			itemsToDo: this.moveToEnd(this.state.itemsToDo, i)
-		});
+		let items = this.moveToEnd(this.state.itemsToDo, i);
+		this.setState({ itemsToDo: items });
+		this.save(items);
 	},
 
 	onChange: function (e) {
@@ -88,8 +98,25 @@ var TaskApp = React.createClass({
 		this.readFromFile('daily', true);
 	},	
 
+	loadPostponed: function () {
+		this.readFromFile('postponed', true);
+	},	
+
 	saveBackup: function (items) {
-		$.cookie(this.props.config.cookieTodo, JSON.stringify(items));
+		$.cookie(this.props.config.cookieTodo, JSON.stringify(items));	
+	},
+
+	save: function (items) {
+		let uri = this.state.uri;
+// console.log('save kvietėte?', uri, items);		
+		$.ajax({
+			url: this.state.uri,
+			type: 'PUT',
+			data: { tasks: JSON.stringify(items) }
+		})
+        .fail(function(jqXHR, textStatus, errorThrown) {
+        	console.log(textStatus);
+    	});
 	},
 
 	clear: function () {
@@ -97,6 +124,21 @@ var TaskApp = React.createClass({
 	},
 
 	loadData: function () {
+		$.get(this.state.uri)
+		.done(function(data, textStatus, jqXHR) {
+// console.log('~TaskApp data~', data);
+			if (data.tasks) {
+				this.setState({ listName: data.name, itemsToDo: JSON.parse(data.tasks) });
+			} else {
+				this.setState({ listName: data.name });
+			}
+        }.bind(this))
+        .fail(function(jqXHR, textStatus, errorThrown) {
+        	console.log(textStatus);
+    	});
+	},
+
+	loadDataFromCookies: function () {
 		let backupData = $.cookie(this.props.config.cookieTodo);
 
 		if (backupData) {
@@ -131,27 +173,29 @@ var TaskApp = React.createClass({
 	    });
 	},
 
+	textToArray: (text) => text.split(/\r?\n/).filter(entry => entry.trim() != ''),
+
 	readFromFile: function (fileName, comesFirst) {
-		var textToArray = (text) => text.split(/\r?\n/).filter(entry => entry.trim() != '');
-	    
 	    this.getFileContents(fileName)
 		.then(function (result) {
-			console.log(fileName + " loaded.");
 			if (comesFirst) {
-				this.setState({
-					itemsToDo: _.unique(textToArray(result).concat(this.state.itemsToDo))
-				})
+				var items = _.unique(this.textToArray(result).concat(this.state.itemsToDo))
 			}
 			else {
-				this.setState({
-					itemsToDo: _.unique(this.state.itemsToDo.concat(textToArray(result)))
-				})
+				var items = _.unique(this.state.itemsToDo.concat(this.textToArray(result)))
 			}
+			this.setState({	itemsToDo: items });
+			this.save(items);
+			console.log(fileName + " loaded.");
 		}.bind(this))
 		.catch(err => {
 		    console.log("File load error:", err);
 		});
 	},
+
+	handleLists: function() {
+    	React.render(<ListApp config={this.props.config} itemsDone={this.state.itemsDone}/>, document.getElementById("app"));
+  	},
 
 	componentWillMount: function() {
     	this.loadData();
@@ -160,10 +204,10 @@ var TaskApp = React.createClass({
 	render: function() {
 		
 		var today = new Date().toISOString().slice(0, 10);
-
+// console.log('Render!');
 		return (
 			<div>
-				<h1>{today}</h1>
+				<h1>{this.state.listName} {today}</h1>
 				<h3>Finished ({this.state.itemsDone.length})</h3>
 				<TaskDoneList items={this.state.itemsDone} undone={this.unDoneTask} />
 				<hr />
@@ -184,7 +228,9 @@ var TaskApp = React.createClass({
 				</form>
 				<hr />
 				<button onClick={this.loadDaily}>Load daily</button>
-				<button onClick={this.clear}>Clear</button>
+				<button onClick={this.loadPostponed}>Load postponed</button>
+				<button onClick={this.clear} disabled={true}>Clear</button>
+				<button onClick={this.handleLists}>Lists</button>
 				<hr />
 			</div>
 		);

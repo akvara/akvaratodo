@@ -1,4 +1,6 @@
 var CONFIG = {
+    // listsapi: 'http://akvaratodoapi.link:3000/',
+    listsapi: 'http://akvaratododb.herokuapp.com/',
     cookieTodo: 'backup-data-todo',
     postponeBy: 15,
     addNewAt: 7,
@@ -7,17 +9,4 @@ var CONFIG = {
     displayLast: 4,
 };
 
-var App = React.createClass({
-
-    render: function() {
-        console.log('Starting ...');
-
-        return (
-            <div>
-                <TaskApp config={CONFIG} />
-            </div>
-        );
-    }
-});
-
-React.render(<App />, document.getElementById("app"))
+React.render(<ListApp config={CONFIG}/>, document.getElementById("app"));
