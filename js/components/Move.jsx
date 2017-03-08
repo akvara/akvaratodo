@@ -28,7 +28,7 @@ var Move = React.createClass({
 		$.get(this.props.config.listsapi + "lists")
 		.done(function(data, textStatus, jqXHR) {
 			this.setState({ 
-				lists: data ,
+				lists: data,
 				loaded: true
 			});
          	// console.log(data, textStatus);

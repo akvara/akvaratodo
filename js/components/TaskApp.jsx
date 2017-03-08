@@ -5,9 +5,10 @@ var TaskApp = React.createClass({
 		return {
 			uri: this.props.config.listsapi + "lists/" + this.props.listId,
 			listsUri: this.props.config.listsapi + "lists/",
-			itemsToDo: [], // generate with: Array.from(Array(40)).map((e,i)=>(i).toString()),
+			itemsToDo: [], 
 			itemsDone: this.props.itemsDone || [],
 			receiving: this.props.receiving,
+			hightlightIndex: null,
 			listName: [],
 			immutable: false,
 			task: ''
@@ -18,18 +19,19 @@ var TaskApp = React.createClass({
  		e.preventDefault();
 
  		this.state.itemsToDo.splice(this.props.config.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
-
 		this.setState({ 
 			itemsToDo: _.unique(this.state.itemsToDo),
+			hightlightIndex: Math.min(this.state.itemsToDo.length, this.props.config.addNewAt - 1),
 			task: ''
 		}, this.save.bind(this));
 	},
 
     removeTask: function(i, callback) {
-    	console.log("nugi???", callback);
-
  		this.state.itemsToDo.splice(i, 1);
-		this.setState({ itemsToDo: this.state.itemsToDo }, function (callback) { 
+		this.setState({ 
+			itemsToDo: this.state.itemsToDo,
+			hightlightIndex: null,
+		}, function (callback) { 
 			this.save();
 			if (callback) callback();
 		}.bind(this, callback));
@@ -42,9 +44,20 @@ var TaskApp = React.createClass({
  		}.bind(this, removed));
 	},
 
+	highlightPosition: function (i) {
+		return  Math.min(
+			this.state.itemsToDo.length - 1, 
+			this.props.config.postponeBy - 1, 
+			this.props.config.displayFirst
+		) + (this.state.itemsToDo.length >= this.props.config.displayFirst ? 1 : 0);
+	},
+
     postponeTask: function(i) {
     	let items = this.moveFromTo(this.state.itemsToDo, i, i + this.props.config.postponeBy)
-		this.setState({ itemsToDo: items }, this.save);
+		this.setState({ 
+			itemsToDo: items ,
+			hightlightIndex: this.highlightPosition(i),
+		}, this.save);
 	},
 
 	doneTask: function(i) {
@@ -59,13 +72,17 @@ var TaskApp = React.createClass({
 		var moved = this.moveToAnother(this.state.itemsDone, this.state.itemsToDo, i, true)
 		this.setState({ 
 			itemsToDo: moved.B, 
-			itemsDone: moved.A
+			itemsDone: moved.A,
+			hightlightIndex: 0
 		}, this.save);
 	},	
 
 	procrastinateTask: function(i) {
 		let items = this.moveToEnd(this.state.itemsToDo, i);
-		this.setState({ itemsToDo: items }, this.save);
+		this.setState({ 
+			itemsToDo: items,
+			hightlightIndex: this.state.itemsToDo.length
+		}, this.save);
 	},
 
 	onChange: function (e) {
@@ -101,7 +118,6 @@ var TaskApp = React.createClass({
 
 	loadAnoter: function (listId) {
 
-// console.log("loadAnoter: ", this.state.listsUri + listId);
 		$.get(this.state.listsUri + listId)
 		.done(function(data, textStatus, jqXHR) {
 			this.setState({ 
@@ -151,10 +167,16 @@ var TaskApp = React.createClass({
 		}, this.save);
 	},
 
+	loadFake: function () {
+		this.setState({
+			listName: 'Test', 
+			itemsToDo: Array.from(Array(this.props.config.displayListLength+1)).map((e,i)=>(i).toString()),
+			receiving: null
+		});
+	},
 	load: function () {
 		$.get(this.state.uri)
 		.done(function(data, textStatus, jqXHR) {
-// console.log('~TaskApp data~', this.state.uri, data);
 			let itemsToDo = data.tasks ? JSON.parse(data.tasks) : [];
 
 			if (this.state.receiving) {
@@ -233,7 +255,8 @@ var TaskApp = React.createClass({
   	},
 
 	componentWillMount: function() {
-    	this.load()
+    	this.load();
+    	// this.loadFake();
   	},
 
   	displayLoadButton: function (item) {
@@ -250,7 +273,7 @@ var TaskApp = React.createClass({
 		if (this.state.immutable) 
 			markTitle = 'Unmark immutable';
 		var list = '';
-// console.log('Render!', this.props.immutables);
+
 		return (
 			<div>
 				<h1>{this.state.listName} {today}</h1>
@@ -260,6 +283,7 @@ var TaskApp = React.createClass({
 				<h3>Remaining ({this.state.itemsToDo.length})</h3>
 				<TaskList 
 					items={this.state.itemsToDo} 
+					hightlightIndex={this.state.hightlightIndex} 
 					immutable={this.state.immutable} 
 					delete={this.removeTask} 
 					move={this.moveOutside} 

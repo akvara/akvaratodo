@@ -2,11 +2,11 @@ var CONFIG = {
     // listsapi: 'http://localhost:3000/',
     listsapi: 'http://akvaratododb.herokuapp.com/',
     cookieTodo: 'backup-data-todo',
-    postponeBy: 15,
-    addNewAt: 7,
-    maxTaskLength: 45,
-    displayFirst: 10,
-    displayLast: 4,
+    postponeBy: 10,
+    addNewAt: 6,
+    maxTaskLength: 43,
+    displayListLength: 11,
+    displayLast: 3,
     version: 170307
 };
 

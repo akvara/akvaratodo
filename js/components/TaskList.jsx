@@ -1,4 +1,7 @@
 var TaskList = React.createClass({
+	statics: {
+    	separatorString: ".........."
+    },
 
 	done: function (i) {
 		this.props.done(i);
@@ -20,29 +23,39 @@ var TaskList = React.createClass({
 		this.props.postpone(i);
 	},
 
-	displayTask: function (task, i, omitted) {
+	hightlightOnDemand(element, hightlight) {
+		if (hightlight) 
+			return <strong>{element}</strong>;
+		else
+			return {element};
+	},
+
+	displayTask: function (task, i, omitted, hightlighted) {
 // console.log('TaskList task', task);		
+		if (task == this.constructor.separatorString) {
+			return this.constructor.separatorString;
+		}
+
 		let taskTruncated = task.substring(0, this.props.config.maxTaskLength);
 		let taskAsDisplayed = { taskTruncated };
-		let itemIndex = i;
 		if (task.substring(0, 4) == "http") {
 			taskAsDisplayed = <a href={ task } target="_blank">{ taskTruncated }</a>;
 		}
-		if (task.substring(0, 4) == "....") {
-			return ".....................";
-		}
-		if (itemIndex > this.props.config.displayFirst) {
+
+		let itemIndex = i;
+		if (itemIndex >= this.props.config.displayListLength - this.props.config.displayLast ) {
 			itemIndex = i + omitted;
 		}
 
 		let postponeTitle = "Postpone (+" + this.props.config.postponeBy + ")";
+		
 		if (this.props.immutable) {
 			return <li>{ taskAsDisplayed }</li>
 		} else {
 			return <li>
 				<button title="done" onClick={this.done.bind(this, itemIndex)}>----</button>
-				&nbsp; 
-				{ taskAsDisplayed }
+				&nbsp;
+				{ this.hightlightOnDemand(taskAsDisplayed, hightlighted) }
 				&nbsp;
 				<button title="Remove" onClick={this.delete.bind(this, itemIndex)}>x</button>
 				<button title="Procrastinate" onClick={this.procrastinate.bind(this, itemIndex)}>v</button>
@@ -53,20 +66,24 @@ var TaskList = React.createClass({
 	},
 	
 	render: function () {
+		var taskListDisplayed, 
+		    shouldOmit;
 // console.log('~TaskList this.props.items~', this.props.items);		
-		
-		taskListDisplayed = this.props.items.slice(0, this.props.config.displayFirst);
-
-		remainder = this.props.items.length - this.props.config.displayFirst;
-		omitted = 0;
-		if (remainder>0) {
-			taskListDisplayed = taskListDisplayed.concat("....").concat(this.props.items.slice(-Math.min(this.props.config.displayLast, remainder)));
-			omitted = this.props.items.length - this.props.config.displayFirst - this.props.config.displayLast - 1;
+		 
+		if (this.props.items.length > this.props.config.displayListLength ) {
+			shouldOmit = this.props.items.length - this.props.config.displayListLength;
+			taskListDisplayed =	
+				this.props.items.slice(0, this.props.config.displayListLength - this.props.config.displayLast - 1)
+					.concat([this.constructor.separatorString])
+					.concat(this.props.items.slice(-this.props.config.displayLast));
+		} else {
+			shouldOmit = 0;
+			taskListDisplayed =	this.props.items;
 		}
 
 		return (
 			<ul>
-				{taskListDisplayed.map((task, index) => this.displayTask(task, index, omitted))}
+				{taskListDisplayed.map((task, index) => this.displayTask(task, index, shouldOmit, this.props.hightlightIndex == index))}
 			</ul>
 		);
 	}
