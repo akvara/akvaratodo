@@ -1,31 +1,38 @@
-var Move = React.createClass({
-	getInitialState: function() {
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+import $ from 'jquery';
+import TaskApp from './TaskApp';
+import config from './config.js';
 
-		return {
+class Move extends Component {
+
+	constructor(props, context) {
+	    super(props, context);
+
+	    this.state = {
 			lists: [],
 			loaded: false
-		}
-	},
+	    };
+	}
 
-	toAnoter: function (listId) {
-		React.render(<TaskApp 
-			config={CONFIG} 
+	toAnoter (listId) {
+		ReactDOM.render(<TaskApp 
 			listId={listId} 
 			receiving={this.props.item} 
 			immutables={this.state.lists.filter((item) => item.immutable)}
 			itemsDone={this.props.itemsDone} 
 		/>, document.getElementById("app"));
-	},
+	}
 
-  	displayToButton: function (item) {
+  	displayToButton (item) {
   		var listName = item.name;
   		var id = item._id;
 
   		return <button onClick={this.toAnoter.bind(this, id)} >To { listName }</button>
-  	},
+  	}
 
-	loadData: function () {
-		$.get(this.props.config.listsapi + "lists")
+	loadData () {
+		$.get(config.listsapi + "lists")
 		.done(function(data, textStatus, jqXHR) {
 			this.setState({ 
 				lists: data,
@@ -36,13 +43,13 @@ var Move = React.createClass({
         .fail(function(jqXHR, textStatus, errorThrown) {
         	console.log(textStatus);
     	});
-	},
+	}
 
-	componentWillMount: function() {
+	componentWillMount() {
     	this.loadData();
-  	},
+  	}
 
-	render: function() {
+	render() {
 // console.log("move", this.props.item);		
 		return (
 			<div>
@@ -51,4 +58,6 @@ var Move = React.createClass({
 			</div>
 		);
 	}
-});
+}
+
+export default Move;

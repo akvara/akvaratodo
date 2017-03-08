@@ -1,20 +1,26 @@
-var ListApp = React.createClass({
+import React, { Component } from 'react';
+import $ from 'jquery';
+import config from './config.js';
+import ListList from './ListList';
 
-	getInitialState: function() {
+class ListApp extends Component {
 
-		return {
-			lists: [], // generate with: Array.from(Array(40)).map((e,i)=>(i).toString()),
+	constructor(props, context) {
+	    super(props, context);
+
+	    this.state = {
+	        lists: [], // generate with: Array.from(Array(40)).map((e,i)=>(i).toString()),
 			listName: '',
 			listContent: '', 
 			loaded: false
-		}
-	},
+	    };
+	}
 
-	handleSubmit: function (e) {
+	handleSubmit(e) {
  		e.preventDefault(); 		
 
  		$.post(
- 			this.props.config.listsapi + "lists",
+ 			config.listsapi + "lists",
  			{
  				'name': this.state.listName,
  				'tasks': this.state.listContent,
@@ -31,11 +37,11 @@ var ListApp = React.createClass({
 			listName: '',
 			listContent: ''
 		});
-	},
+	}
 
-    removeList: function(id) {
+    removeList(id) {
 		$.ajax({
-			url: this.props.config.listsapi + "lists/" + id,
+			url: config.listsapi + "lists/" + id,
 			type: 'DELETE'
 		})
 		.success(function(result) {
@@ -44,18 +50,18 @@ var ListApp = React.createClass({
         .fail(function(jqXHR, textStatus, errorThrown) {
         	console.log(textStatus);
     	});
-   	},	
+   	}	
 
-	onNameChange: function (e) {
+	onNameChange(e) {
 		this.setState({ listName: e.target.value });
-	},
+	}
 
-	onContentChange: function (e) {
+	onContentChange(e) {
 		this.setState({ listContent: e.target.value });
-	},
+	}
 
-	loadData: function () {
-		$.get(this.props.config.listsapi + "lists")
+	loadData() {
+		$.get(config.listsapi + "lists")
 		.done(function(data, textStatus, jqXHR) {
 			this.setState({ 
 				lists: data ,
@@ -66,13 +72,14 @@ var ListApp = React.createClass({
         .fail(function(jqXHR, textStatus, errorThrown) {
         	console.log(textStatus);
     	});
-	},
+	}
 
-	componentWillMount: function() {
+	componentWillMount() {
     	this.loadData();
-  	},
+  	}
 
-	render: function() {
+	render() {
+
 // console.log('ListApp items done~', this.props.itemsDone);
 		if (!this.state.loaded)	{
 			return (<div>Loading...</div>);
@@ -84,17 +91,18 @@ var ListApp = React.createClass({
 				<hr />
 				<ListList 
 					lists={this.state.lists} 
-					delete={this.removeList} 
+					delete={this.removeList.bind(this)} 
 					itemsDone={this.props.itemsDone}
-					config={CONFIG}
 				/>
 				<hr />
-				<form onSubmit={this.handleSubmit}>
-					<input value={this.state.listName} onChange={this.onNameChange} />
-					<button disabled={this.state.listName.trim()==''}>Add list</button>
+				<form onSubmit={this.handleSubmit.bind(this)}>
+					<input value={this.state.listName} onChange={this.onNameChange.bind(this)} />
+					<button disabled={!this.state.listName.trim()}>Add list</button>
 				</form>
 				<hr />
 			</div>
 		);
 	}
-});
+}
+
+export default ListApp;

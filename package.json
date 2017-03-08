@@ -6,7 +6,20 @@
     "type": "git",
     "url": "git@github.com:akvara/akvaratodo.git"
   },
+  "dependencies": {
+    "jquery": "^3.1.1",
+    "path": "^0.12.7",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "react-scripts": "0.9.4"
+  },
   "scripts": {
-    "test": "eslint js/components/"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
   }
 }
