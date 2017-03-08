@@ -1,6 +1,7 @@
 var TaskList = React.createClass({
 	statics: {
-    	separatorString: ".........."
+    	separatorString: "..........",
+    	spacing: <span>&nbsp;&nbsp;&nbsp;</span>
     },
 
 	done: function (i) {
@@ -9,6 +10,10 @@ var TaskList = React.createClass({
 
 	delete: function (i) {
 		this.props.delete(i);
+	},
+
+	toTop: function (i) {
+		this.props.toTop(i);
 	},
 
 	move: function (i) {
@@ -48,17 +53,18 @@ var TaskList = React.createClass({
 		}
 
 		let postponeTitle = "Postpone (+" + this.props.config.postponeBy + ")";
-		
+
 		if (this.props.immutable) {
 			return <li>{ taskAsDisplayed }</li>
 		} else {
 			return <li>
 				<button title="done" onClick={this.done.bind(this, itemIndex)}>----</button>
-				&nbsp;
+				{ this.constructor.spacing }
 				{ this.hightlightOnDemand(taskAsDisplayed, hightlighted) }
-				&nbsp;
+				{ this.constructor.spacing }
 				<button title="Remove" onClick={this.delete.bind(this, itemIndex)}>x</button>
 				<button title="Procrastinate" onClick={this.procrastinate.bind(this, itemIndex)}>v</button>
+				<button title="To top" onClick={this.toTop.bind(this, itemIndex)}>!</button>
 				<button title="Move to another list" onClick={this.move.bind(this, itemIndex)}>&gt;</button>
 				<button title={postponeTitle} onClick={this.postpone.bind(this, itemIndex)}>p</button>
 			</li>

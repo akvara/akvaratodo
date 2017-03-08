@@ -85,6 +85,14 @@ var TaskApp = React.createClass({
 		}, this.save);
 	},
 
+	toTop: function(i) {
+		let items = this.moveToTop(this.state.itemsToDo, i);
+		this.setState({ 
+			itemsToDo: items,
+			hightlightIndex: 0
+		}, this.save);
+	},
+
 	onChange: function (e) {
 		this.setState({ task: e.target.value });
 	},
@@ -106,6 +114,13 @@ var TaskApp = React.createClass({
   		items.splice(i, 1);
 
   		return items.concat([trans]);
+	},
+
+	moveToTop: function(items, i) {
+  		trans = items[i];
+  		items.splice(i, 1);
+
+  		return [trans].concat(items);
 	},
 
 	moveFromTo: function (arrayA, from, to) {
@@ -287,6 +302,7 @@ var TaskApp = React.createClass({
 					immutable={this.state.immutable} 
 					delete={this.removeTask} 
 					move={this.moveOutside} 
+					toTop={this.toTop} 
 					postpone={this.postponeTask} 
 					procrastinate={this.procrastinateTask} 
 					done={this.doneTask}
