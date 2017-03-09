@@ -7,6 +7,7 @@ var config = {
     maxTaskLength: 41,
     displayListLength: 15,
     displayLast: 3,
+    loadingStringLength: 40,
     version: 170309
 };
 

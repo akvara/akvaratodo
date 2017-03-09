@@ -49,11 +49,11 @@ class ListApp extends Component {
    	}	
 
    	loadList(listId) {
-   		var immutables = this.state.lists.filter((item) => item.immutable);
+var immutables = this.state.lists.filter((item) => item.immutable);
 console.log('immutables ', immutables);		
 		ReactDOM.render(<TaskApp 
 			listId={listId} 
-			immutables={immutables}
+			immutables={this.state.lists.filter((item) => item.immutable)}
 			itemsDone={this.state.itemsDone} 
 		/>, document.getElementById("app"));
 	}
