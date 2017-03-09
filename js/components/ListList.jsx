@@ -20,7 +20,7 @@ var ListList = React.createClass({
 
 		let listAsDisplayed = listName + " (" + listTasks + ")";
 		let title = "load " + list._id;
-		return <li>
+		return <li key={'li'+i}>
 			<button title={title} onClick={this.load.bind(this, list._id)}>Load</button>
 			&nbsp;
 			{ listAsDisplayed }
