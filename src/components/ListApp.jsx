@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import config from './config.js';
 import ListList from './ListList';
+import TaskApp from './TaskApp';
 
 class ListApp extends Component {
 
@@ -12,12 +14,14 @@ class ListApp extends Component {
 	        lists: [], // generate with: Array.from(Array(40)).map((e,i)=>(i).toString()),
 			listName: '',
 			listContent: '', 
-			loaded: false
+			loaded: false,
+			loadingString: ''
 	    };
 	}
 
 	handleSubmit(e) {
- 		e.preventDefault(); 		
+ 		e.preventDefault(); 	
+ // ToDo:  console.log(this.state.lists);
 
  		$.post(
  			config.listsapi + "lists",
@@ -26,12 +30,8 @@ class ListApp extends Component {
  				'tasks': this.state.listContent,
  			}
  		)
-		.done(function(data, textStatus, jqXHR) {
-			this.loadData();
-        }.bind(this))
-        .fail(function(jqXHR, textStatus, errorThrown) {
-        	console.log(textStatus);
-    	});
+		.done((data, textStatus, jqXHR) => this.loadList(data._id))
+        .fail((jqXHR, textStatus, errorThrown) => console.log(textStatus));
 
     	this.setState({ 
 			listName: '',
@@ -44,13 +44,18 @@ class ListApp extends Component {
 			url: config.listsapi + "lists/" + id,
 			type: 'DELETE'
 		})
-		.success(function(result) {
-			this.loadData();
-        }.bind(this))
-        .fail(function(jqXHR, textStatus, errorThrown) {
-        	console.log(textStatus);
-    	});
+		.done((result) => this.loadData())
+        .fail((jqXHR, textStatus, errorThrown) => console.log(textStatus));
    	}	
+
+   	loadList(listId) {
+// console.log('listList listid', listId);		
+		ReactDOM.render(<TaskApp 
+			listId={listId} 
+			immutables={this.state.lists.filter((item) => item.immutable)}
+			itemsDone={this.state.itemsDone} 
+		/>, document.getElementById("app"));
+	}
 
 	onNameChange(e) {
 		this.setState({ listName: e.target.value });
@@ -60,18 +65,29 @@ class ListApp extends Component {
 		this.setState({ listContent: e.target.value });
 	}
 
+	tick() {
+		var loadingString = '.' + this.state.loadingString.length < 40 ? this.state.loadingString : '';
+		this.setState({loadingString});
+	}
+
 	loadData() {
+		this.interval = setInterval(this.tick.bind(this, this.loadingString), 100);
+
 		$.get(config.listsapi + "lists")
-		.done(function(data, textStatus, jqXHR) {
+		.done((data, textStatus, jqXHR) =>
 			this.setState({ 
-				lists: data ,
-				loaded: true
-			});
-         	// console.log(data, textStatus);
-        }.bind(this))
-        .fail(function(jqXHR, textStatus, errorThrown) {
-        	console.log(textStatus);
-    	});
+				lists: data,
+				loaded: true,
+				loadingString: ''
+			})
+        )
+        .fail((jqXHR, textStatus, errorThrown) => {
+        	console.log(textStatus);			
+        	this.setState({ 
+				loadingString: ' error'
+			})
+        })
+        .always(() => clearInterval(this.interval));
 	}
 
 	componentWillMount() {
@@ -82,7 +98,7 @@ class ListApp extends Component {
 
 // console.log('ListApp items done~', this.props.itemsDone);
 		if (!this.state.loaded)	{
-			return (<div>Loading...</div>);
+			return (<div>Loading {this.state.loadingString}</div>);
 		}	
 
 		return (
@@ -91,8 +107,8 @@ class ListApp extends Component {
 				<hr />
 				<ListList 
 					lists={this.state.lists} 
-					delete={this.removeList.bind(this)} 
-					itemsDone={this.props.itemsDone}
+					removeList={this.removeList.bind(this)} 
+					loadList={this.loadList.bind(this)} 
 				/>
 				<hr />
 				<form onSubmit={this.handleSubmit.bind(this)}>

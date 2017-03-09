@@ -18,11 +18,13 @@ class TaskApp extends Component {
 			listsUri: config.listsapi + "lists/",
 			itemsToDo: [], 
 			itemsDone: props.itemsDone || [],
-			receiving: props.receiving,
+			prepend: props.prepend,
 			hightlightIndex: null,
 			listName: [],
 			immutable: false,
-			task: ''
+			task: '',
+			loaded: false,
+			loadingDots: ''
 	    };
 	}
 
@@ -197,29 +199,46 @@ class TaskApp extends Component {
 		this.setState({
 			listName: 'Test', 
 			itemsToDo: Array.from(Array(config.displayListLength+1)).map((e,i)=>(i).toString()),
-			receiving: null
+			prepend: null
 		});
 	}
 
-	load() {
+	tick() {
+		if (this.state.loadingDots.length > 40) {
+			this.setState({loadingDots: '.'});
+		}
+		else {
+			this.setState({loadingDots: this.state.loadingDots + '.'});
+		}
+	}
+
+	loadData() {
+		this.interval = setInterval(this.tick.bind(this, this.loadingDots), 100);
+
 		$.get(this.state.uri)
-		.done(function(data, textStatus, jqXHR) {
+		.done((data, textStatus, jqXHR) => {
 			let itemsToDo = data.tasks ? JSON.parse(data.tasks) : [];
 
-			if (this.state.receiving) {
-				itemsToDo = [this.state.receiving].concat(itemsToDo);
+			if (this.state.prepend) {
+				itemsToDo = [this.state.prepend].concat(itemsToDo);
 			}
 
 			this.setState({
 				listName: data.name, 
 				immutable: data.immutable,
 				itemsToDo: itemsToDo,
-				receiving: null
-			}, this.state.receiving ? this.save : null);
-        }.bind(this))
-        .fail(function(jqXHR, textStatus, errorThrown) {
-        	console.log(textStatus);
-    	});
+				prepend: null,
+				loaded: true,
+				loadingDots: '',
+			}, this.state.prepend ? this.save : null)
+		})
+		.fail((jqXHR, textStatus, errorThrown) => {
+        	console.log(textStatus);			
+        	this.setState({ 
+				loadingString: ' error'
+			})
+        })
+        .always(() => clearInterval(this.interval));
 	}
 
 	loadDataFromCookies() {
@@ -285,7 +304,7 @@ class TaskApp extends Component {
   	}
 
 	componentWillMount() {
-    	this.load();
+    	this.loadData();
     	// this.loadFake();
   	}
 
@@ -297,8 +316,15 @@ class TaskApp extends Component {
   	}
 
 	render() {
-		
 		var today = new Date().toISOString().slice(0, 10);
+		if (!this.state.loaded)	{
+			return (
+				<div>
+					<h1>{this.state.listName} {today}</h1>
+					Loading {this.state.loadingDots}
+				</div>
+			);
+		}	
 		var markTitle = 'Mark immutable';
 		if (this.state.immutable) 
 			markTitle = 'Unmark immutable';

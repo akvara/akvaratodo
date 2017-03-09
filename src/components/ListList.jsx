@@ -1,38 +1,29 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import TaskApp from './TaskApp';
-// import $ from 'jquery';
-
 
 class ListList extends Component {
 
-	delete(i) {
-		this.props.delete(i);
+	removeList(i) {
+		this.props.removeList(i);
 	}
 
-	load(listId) {
-// console.log('listList listid', listId);		
-		ReactDOM.render(<TaskApp 
-			listId={listId} 
-			immutables={this.props.lists.filter((item) => item.immutable)}
-			itemsDone={this.props.itemsDone} 
-		/>, document.getElementById("app"));
+	loadList(i) {
+		this.props.loadList(i);
 	}
 
 	displayList(list, i) {
 		let listName = list.name ? list.name : "[noname]";
 		let listTasks = list.tasks ? list.tasks.substr(0, 40) : "[empty]";
 
-		let listAsDisplayed = listName + " (" + listTasks + ")";
+		let listAsDisplayed = listName + ": " + listTasks;
 		let title = "load " + list._id;
 		return (
 			<li key={'li'+i}>
-				<button title={title} onClick={this.load.bind(this, list._id)}>Load</button>
+				<button title={title} onClick={this.loadList.bind(this, list._id)}>Load</button>
 				&nbsp;
 				{ listAsDisplayed }
 				&nbsp;
 				{!list.immutable  &&
-					<button title="remove" onClick={this.delete.bind(this, list._id)}>x</button>
+					<button title="remove" onClick={this.removeList.bind(this, list._id)}>x</button>
 				}
 			</li>
 		);
