@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+# Set colors
+ESC_SEQ="\x1b["
+COL_RESET=$ESC_SEQ"39;49;00m"
+COL_RED=$ESC_SEQ"31;01m"
+COL_GREEN=$ESC_SEQ"32;01m"
+
+# Execute build
+npm run build
+
+# check failed
+if [[ $? -ne 0 ]]; then
+   echo -en "${COL_RED}Build failed!${COL_RESET}\n"
+   exit 1
+fi
+
+# Build succeded, pushing
+echo -e "${COL_GREEN}Build succeded, pushing${COL_RESET}"
+
+pushd ./build 
+git add --all . 
+git ci -m "Another build $(date +"%y-%m-%d-%r")"
+popd
+
+if [[ $? -ne 0 ]]; then
+   echo -en "${COL_RED}git failed!${COL_RESET}\n"
+   exit 1
+fi
+
+echo -e "${COL_GREEN}Push succeded.${COL_RESET}"
+
+exit 0
+

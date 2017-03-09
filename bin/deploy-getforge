@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+# Set colors
+ESC_SEQ="\x1b["
+COL_RESET=$ESC_SEQ"39;49;00m"
+COL_RED=$ESC_SEQ"31;01m"
+COL_GREEN=$ESC_SEQ"32;01m"
+
+check_git_result () {
+   if [[ $? -ne 0 ]]; then
+      echo -en "${COL_RED}git failed!${COL_RESET}\n"
+      popd
+      exit 1
+   fi
+}
+
+# Execute build
+npm run build
+
+# Check if build failed
+if [[ $? -ne 0 ]]; then
+   echo -en "${COL_RED}Build failed!${COL_RESET}\n"
+   exit 1
+fi
+
+# Recreating git files in build directory
+mkdir build/.git
+cp -r build_git_backup/* build/.git/
+
+# Build succeded, pushing
+echo -e "Build succeded, pushing to git"
+
+pushd ./build
+
+echo -e "Performng git add --all ."
+git add --all . 
+check_git_result
+
+echo -e "Performng git commit"
+git ci -m "Another build $(date +"%y-%m-%d-%r")"
+check_git_result
+
+echo -e "Pushing"
+git push -fu origin master
+check_git_result
+
+popd
+
+echo -e "${COL_GREEN}Push succeded.${COL_RESET}"
+
+exit 0
+
