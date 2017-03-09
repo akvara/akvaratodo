@@ -1,6 +1,7 @@
 var config = { 
-    listsapi: 'http://localhost:5000/',
-    // listsapi: 'http://akvaratododb.herokuapp.com/',
+    apiHost: 'http://localhost:5000/',
+    // apiHost: 'http://akvaratododb.herokuapp.com/',
+    listsAddon: "lists",
     cookieTodo: 'backup-data-todo',
     postponeBy: 10,
     addNewAt: 6,

@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import config from './config.js';
+import config from '../config.js';
 
-class Loader extends Component {
+class LoadingDecorator extends Component {
 	constructor(props, context) {
 	    super(props, context);
 
 	    this.state = {
 			loadingString: ''
 	    }
+	    console.log('LoadingDecorator called');
 	}
 
 	componentWillMount() {
@@ -40,4 +41,4 @@ class Loader extends Component {
 	}
 }
 
-export default Loader;
+export default LoadingDecorator;
