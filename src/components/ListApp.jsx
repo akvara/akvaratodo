@@ -28,15 +28,15 @@ class ListApp extends Component {
 			return this.loadList(list._id)
 		}
 
- 	// 	$.post(
- 	// 		config.listsapi + "lists",
- 	// 		{
- 	// 			'name': this.state.listName,
- 	// 			'tasks': this.state.listContent,
- 	// 		}
- 	// 	)
-		// .done((data, textStatus, jqXHR) => this.loadList(data._id))
-  //       .fail((jqXHR, textStatus, errorThrown) => console.log(textStatus));
+ 		$.post(
+ 			config.listsapi + "lists",
+ 			{
+ 				'name': this.state.listName,
+ 				'tasks': this.state.listContent,
+ 			}
+ 		)
+		.done((data, textStatus, jqXHR) => this.loadList(data._id))
+        .fail((jqXHR, textStatus, errorThrown) => console.log(textStatus));
 	}
 
     removeList(id) {
@@ -49,10 +49,11 @@ class ListApp extends Component {
    	}	
 
    	loadList(listId) {
-// console.log('listList listid', listId);		
+   		var immutables = this.state.lists.filter((item) => item.immutable);
+console.log('immutables ', immutables);		
 		ReactDOM.render(<TaskApp 
 			listId={listId} 
-			immutables={this.state.lists.filter((item) => item.immutable)}
+			immutables={immutables}
 			itemsDone={this.state.itemsDone} 
 		/>, document.getElementById("app"));
 	}

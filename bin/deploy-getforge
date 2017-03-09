@@ -23,18 +23,25 @@ if [[ $? -ne 0 ]]; then
    exit 1
 fi
 
+# Recreating git files in build directory
+mkdir build/.git
+cp -r build_git_backup/* build/.git/
+
 # Build succeded, pushing
-echo -e "Build succeded, pushing to getforge"
+echo -e "Build succeded, pushing to git"
 
 pushd ./build
 
+echo -e "Performng git add --all ."
 git add --all . 
 check_git_result
 
+echo -e "Performng git commit"
 git ci -m "Another build $(date +"%y-%m-%d-%r")"
 check_git_result
 
-git push origin master
+echo -e "Pushing"
+git push -fu origin master
 check_git_result
 
 popd

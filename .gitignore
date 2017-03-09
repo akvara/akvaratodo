@@ -6,6 +6,7 @@
 
 # production
 /build
+/build_git_backup
 
 # misc
 .DS_Store

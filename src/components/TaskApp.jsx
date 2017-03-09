@@ -311,8 +311,9 @@ class TaskApp extends Component {
   	displayLoadButton(item) {
   		var listName = item.name;
   		var id = item._id;
-
-  		return <button onClick={this.loadAnoter.bind(this, id)} >Load from { listName }</button>
+console.log('displayLoadButton item', item);
+  		// return <button onClick={this.loadAnoter.bind(this, id)} >Load from { listName }</button>
+  		return "aha";
   	}
 
 	render() {
@@ -328,6 +329,7 @@ class TaskApp extends Component {
 		var markTitle = 'Mark immutable';
 		if (this.state.immutable) 
 			markTitle = 'Unmark immutable';
+console.log('this.props.immutables', this.props.immutables);
 
 		return (
 			<div>
@@ -354,7 +356,10 @@ class TaskApp extends Component {
 					<button disabled={!this.state.task.trim()}>Add task</button>
 				</form>
 				<hr />
-				{ this.props.immutables.map((list) => this.displayLoadButton.bind(this, list)) }
+				
+
+				
+				{ ['a', 'b'].map((list) => this.displayLoadButton) }
 				<button onClick={this.mark.bind(this)}>{markTitle}</button>
 				<button onClick={this.handleLists.bind(this)}>Lists</button>
 				<hr />
