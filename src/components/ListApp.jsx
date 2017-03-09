@@ -21,22 +21,22 @@ class ListApp extends Component {
 
 	handleSubmit(e) {
  		e.preventDefault(); 	
- // ToDo:  console.log(this.state.lists);
 
- 		$.post(
- 			config.listsapi + "lists",
- 			{
- 				'name': this.state.listName,
- 				'tasks': this.state.listContent,
- 			}
- 		)
-		.done((data, textStatus, jqXHR) => this.loadList(data._id))
-        .fail((jqXHR, textStatus, errorThrown) => console.log(textStatus));
+		var list = this.state.lists.find(list => list.name === this.state.listName)
 
-    	this.setState({ 
-			listName: '',
-			listContent: ''
-		});
+		if (list) {
+			return this.loadList(list._id)
+		}
+
+ 	// 	$.post(
+ 	// 		config.listsapi + "lists",
+ 	// 		{
+ 	// 			'name': this.state.listName,
+ 	// 			'tasks': this.state.listContent,
+ 	// 		}
+ 	// 	)
+		// .done((data, textStatus, jqXHR) => this.loadList(data._id))
+  //       .fail((jqXHR, textStatus, errorThrown) => console.log(textStatus));
 	}
 
     removeList(id) {
