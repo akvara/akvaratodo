@@ -8,9 +8,10 @@ class DummyComponent extends Component {
         super(props, context);
 
         this.state = {
+            a: 11
         }
 
-console.log('DummyComponent called');
+console.log('DummyComponent constructor');
     }
 
     componentWillMount() {
@@ -26,7 +27,7 @@ console.log('DummyComponent Did Un');
     }
 
     render() {
-console.log('DummyComponent Will Mount');
+console.log('DummyComponent render');
         return null;
     }
 }

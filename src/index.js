@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ListApp from './components/ListApp';
+import ExtendedComponent from './reusable/ExtendedComponent';
 
-console.log('Starting ...');
+console.log('Starting ExtendedComponent ...');
 
 ReactDOM.render(
-    <ListApp />,
+    <ExtendedComponent />,
     document.getElementById('app')
 );
 
