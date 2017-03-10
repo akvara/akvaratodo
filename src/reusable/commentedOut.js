@@ -15,16 +15,4 @@ var promiseWrapper = function(wrappable) {
   });
 }
 
-
-
-	componentWillMount() {
-console.log('Whatever Will Mount');
-	}
-
-	componentDidMount() {
-console.log('Whatever Did Mount');
-	}
-
-	componentWillUnmount() {
-console.log('Whatever Did Un');
-	}
+    React.unmountComponentAtNode(mountNode);
