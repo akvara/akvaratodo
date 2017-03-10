@@ -12,9 +12,7 @@ class Loadable extends Component {
 	    super(props, context);
 
 	    this.state = {
-			lists: [],
-			listName: '',
-			notYetLoaded: true
+            // Must be set in inherited classes
 	    };
 
         this.loaderNode = document.getElementById('loading');
@@ -33,7 +31,7 @@ class Loadable extends Component {
                 callback={callback} 
                 action={message} 
             />, this.loaderNode
-        ).bind(this);
+        );
     }
 
     loadListsRequest(resolve, reject) {

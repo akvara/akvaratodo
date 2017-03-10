@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import config from '../config.js';
 
 class Messenger extends Component {
 	render() {

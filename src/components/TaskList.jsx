@@ -33,10 +33,8 @@ class TaskList extends Component {
 	}
 
 	hightlightOnDemand(element, index) {
-console.log('this.props.hightlightIndex', this.props.hightlightIndex);
-console.log('index', index);
 		if (this.props.hightlightIndex === index) 
-			return <strong>ooooo{element}</strong>;
+			return <strong>{element}</strong>;
 		else
 			return element;
 	}
