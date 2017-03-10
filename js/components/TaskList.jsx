@@ -43,10 +43,10 @@ var TaskList = React.createClass({
 
 		let taskTruncated = task.substring(0, this.props.config.maxTaskLength);
 		let taskAsDisplayed = { taskTruncated };
-		if (task.substring(0, 4) == "http") {
+		if (task.substring(0, 4) === "http") {
+			taskTruncated = taskTruncated.substr(taskTruncated.indexOf('://')+3);
 			taskAsDisplayed = <a href={ task } target="_blank">{ taskTruncated }</a>;
 		}
-
 		let itemIndex = i;
 		if (itemIndex >= this.props.config.displayListLength - this.props.config.displayLast ) {
 			itemIndex = i + omitted;
