@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import TaskApp from './TaskApp';
-import config from './config.js';
+import config from '../config.js';
 
 class Move extends Component {
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import config from './config.js';
+import config from '../config.js';
 
 class TaskList extends Component {
 
@@ -32,14 +32,16 @@ class TaskList extends Component {
 		this.props.postpone(i);
 	}
 
-	hightlightOnDemand(element, hightlight) {
-		if (hightlight) 
-			return <strong>{element}</strong>;
+	hightlightOnDemand(element, index) {
+console.log('this.props.hightlightIndex', this.props.hightlightIndex);
+console.log('index', index);
+		if (this.props.hightlightIndex === index) 
+			return <strong>ooooo{element}</strong>;
 		else
 			return element;
 	}
 
-	displayTask(task, i, omitted, hightlighted) {
+	displayTask(task, i, omitted) {
 // console.log('displayTask', task);		
 		if (task === this.constructor.consts.separatorString) {
 			return this.constructor.consts.separatorString;
@@ -65,7 +67,7 @@ class TaskList extends Component {
 			return <li key={'li'+i}>
 				<button title="done" onClick={this.done.bind(this, itemIndex)}>----</button>
 				&nbsp;
-				{ this.hightlightOnDemand(taskAsDisplayed, hightlighted) }
+				{ this.hightlightOnDemand(taskAsDisplayed, itemIndex) }
 				&nbsp;
 				<button title="Remove" onClick={this.delete.bind(this, itemIndex)}>x</button>
 				<button title="Procrastinate" onClick={this.procrastinate.bind(this, itemIndex)}>v</button>
@@ -80,7 +82,7 @@ class TaskList extends Component {
 		var taskListDisplayed, 
 		    shouldOmit;
 // console.log('~TaskList items~', this.props.items);	
-// console.log(consts);
+console.log('this.props.hightlightIndex', this.props.hightlightIndex);
 
 		if (this.props.items.length > config.displayListLength ) {
 			shouldOmit = this.props.items.length - config.displayListLength;
@@ -92,10 +94,10 @@ class TaskList extends Component {
 			shouldOmit = 0;
 			taskListDisplayed =	this.props.items;
 		}
-// console.log('~displayed~',taskListDisplayed);
+
 		return (
 			<ul>
-				{taskListDisplayed.map((task, index) => this.displayTask(task, index, shouldOmit, this.props.hightlightIndex === index))}
+				{taskListDisplayed.map((task, index) => this.displayTask(task, index, shouldOmit))}
 			</ul>
 		);
 	}

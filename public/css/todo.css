@@ -1,3 +1,20 @@
 .done{
 	text-decoration: line-through;
 }
+
+.messenger{
+    font-style: italic;
+}
+
+.messenger-info{
+    color: gray;
+    font-style: italic;
+}
+
+.messenger-success{
+    color: green;
+}
+
+.messenger-error{
+    color: red;
+}

@@ -30,7 +30,7 @@ class ListList extends Component {
 	}
 	
 	render() {
-
+console.log("ListList", this.props.lists);
 		return (
 			<ul>
 				{this.props.lists.map(this.displayList.bind(this))}

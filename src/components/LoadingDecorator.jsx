@@ -6,27 +6,34 @@ class LoadingDecorator extends Component {
 	    super(props, context);
 
 	    this.state = {
-			loadingString: ''
+			loadingString: '',
+			finished: false
 	    }
-	    console.log('LoadingDecorator called');
 	}
 
-	componentWillMount() {
+	componentDidMount() {
 		this.interval = setInterval(this.tick.bind(this), 100);
 
 		new Promise((resolve, reject) => this.props.request(resolve, reject))
 	    	.then((val) => {
 	    		clearInterval(this.interval);
-	    		this.props.callback(val);
-	    		console.log("fulfilled:", val);
+	    		this.interval = 0;
+
+				this.props.callback(val);
+				console.log("fulfilled:", val);
+				   
 	    	})
  			.catch((err) => {
  				clearInterval(this.interval);
+ 				this.interval = 0;
  				this.setState({ 
 					loadingString: ' error'
 				})
  				console.log("rejected:", err);
  			});
+	}
+
+	componentWillUnmount() {
 	}
 
 	tick() {
@@ -37,7 +44,9 @@ class LoadingDecorator extends Component {
 	}
 
 	render() {
-		return <div>Loading {this.state.loadingString}</div>
+	    if (this.state.finished)
+	    	return null;
+		return <div>{this.props.action} {this.state.loadingString}</div>
 	}
 }
 
