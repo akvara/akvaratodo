@@ -1,59 +1,119 @@
-import React from 'react';
+import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
+import config from '../config.js';
 import Loadable from './Loadable';
 
 import LoadingDecorator from './LoadingDecorator';
-// import Messenger from './Messenger';
 import ListList from './ListList';
 import TaskApp from './TaskApp';
-// import config from '../config.js';
-// import $ from 'jquery';
+import Messenger from './Messenger';
+import $ from 'jquery';
 
-class ListApp extends Loadable {
+class ListApp extends Component {
 	constructor(props, context) {
 	    super(props, context);
 
 	    this.state = {
 			lists: [],
 			listName: '',
+			notYetLoaded: true
 	    };
-        console.log('this.state', this.state);        
+        this.loaderNode = document.getElementById('loading');
 	}
 
-    loadData() {
-console.log('this.loadListsRequest', this.loadListsRequest);               
-console.log('this.loadListsCallback', this.loadListsCallback);               
+    componentDidMount() {
+        this.load();
+    }
+
+    loadData() {        
         this.load(this.loadListsRequest, this.loadListsCallback, 'Loading ToDo lists');
     }
 
-	handleSubmit(e) {
- 		e.preventDefault(); 	
-
-		var list = this.state.lists.find(list => list.name === this.state.listName)
-
-		if (list) {
-			return this.loadList(list._id)
-		}
-        this.setState({
-            listName: '',
-        }); 
-
+    load(request, callback, message) {
         ReactDOM.render(
             <LoadingDecorator 
-                request={this.addAListRequest.bind(this)} 
-                callback={this.addAListCallback.bind(this)} 
-                action='Adding' 
-
+                request={this.loadListsRequest} 
+                callback={this.loadListsCallback} 
+                action={'Loading ToDo lists'} 
             />, this.loaderNode
-        );
-	}
+        ).bind(this);
+    }
+
+    loadListsRequest(resolve, reject) {
+        return $.get(config.apiHost + config.listsAddon)
+            .done((data) => {
+                resolve(data);
+            })
+            .fail((err) => {
+                reject(err)
+            });
+    }
+
+    loadListsCallback(data) { 
+        this.setState({ 
+            lists: data, 
+            notYetLoaded: false 
+        });
+        ReactDOM.render(<Messenger info="Lists loaded." />, this.loaderNode);    
+    }
 
 	onNameChange(e) {
 		this.setState({ listName: e.target.value });
 	}	
 
+    addAListRequest(resolve, reject) {
+		return $.post(
+            config.apiHost + config.listsAddon,
+            {
+                'name': this.state.listName
+            })
+			.done((data) => {
+				resolve(data);
+			})
+	        .fail((err) => {
+	        	reject(err)
+	        });
+	}
 
-	loadList(listId) {
+	addAListCallback(data) { 
+        this.setState({ 
+            lists: this.state.lists.concat(data), 
+            notYetLoaded: false 
+        });
+        ReactDOM.render(<Messenger info="Added." />, this.loaderNode);
+        this.loadList(data._id);    
+	}
+
+	removeListRequest(listId, resolve, reject) {
+		return $.ajax({
+			url: config.apiHost + config.listAddon + listId,
+			type: 'DELETE'
+		})
+		.done((data) => {
+			resolve(data);
+		})
+        .fail((err) => {
+        	reject(err)
+        });
+    }
+
+    removeListCallback(listId) {
+		this.setState({ lists: this.state.lists.filter(list => list._id !== listId) });
+        ReactDOM.render(<Messenger info="Removed." />, this.loaderNode);    
+	}
+
+	removeList(listId) {
+		ReactDOM.render(
+			<LoadingDecorator 
+				request={this.removeListRequest.bind(this, listId)} 
+				callback={this.removeListCallback.bind(this, listId)}
+                action='Removing'
+			/>, this.loaderNode);
+	}	
+
+
+	loadList(listId, name) {
+		document.title = name;
 		ReactDOM.render(<TaskApp 
 			listId={listId} 
 			immutables={this.state.lists.filter((item) => item.immutable)}
@@ -63,7 +123,7 @@ console.log('this.loadListsCallback', this.loadListsCallback);
 
 	render() {
 		if (this.state.notYetLoaded) {
-			return (<div id="l"><h1>Lists</h1></div>);
+			return (<div id="l"><h1>Lists</h1>v{config.version}</div>);
         }
 
 		return (

@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 
 class ListList extends Component {
 
-	removeList(i) {
-		this.props.removeList(i);
+	removeList(id) {
+		this.props.removeList(id);
 	}
 
-	loadList(i) {
-		this.props.loadList(i);
+	loadList(id, name) {
+		this.props.loadList(id, name);
 	}
 
 	displayList(list, i) {
@@ -18,7 +18,7 @@ class ListList extends Component {
 		let title = "load " + list._id;
 		return (
 			<li key={'li'+i}>
-				<button title={title} onClick={this.loadList.bind(this, list._id)}>Load</button>
+				<button title={title} onClick={this.loadList.bind(this, list._id, list.name)}>Load</button>
 				&nbsp;
 				{ listAsDisplayed }
 				&nbsp;
@@ -30,7 +30,6 @@ class ListList extends Component {
 	}
 	
 	render() {
-console.log("ListList", this.props.lists);
 		return (
 			<ul>
 				{this.props.lists.map(this.displayList.bind(this))}
