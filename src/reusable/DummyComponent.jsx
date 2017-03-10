@@ -26,6 +26,17 @@ console.log('DummyComponent Did Mount');
 console.log('DummyComponent Did Un');
     }
 
+    parentUpdateState() {
+        this.setState({
+            a: this.state.a + 1,
+            b: this.state.b + 1
+        })
+    }
+
+    callbackCaller(callback) {
+        callback();
+    }
+
     render() {
 console.log('DummyComponent render');
         return null;

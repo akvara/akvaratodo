@@ -9,6 +9,7 @@ class ExtendedComponent extends DummyComponent {
         super(props, context);
 
         this.state = {
+            a: 11,
             b: 22
         }
 
@@ -17,6 +18,10 @@ console.log('ExtendedComponent constructor');
 
     componentWillMount() {
 console.log('ExtendedComponent Will Mount');
+        console.log('this.state.a', this.state.a);
+        console.log('this.state.b', this.state.b);
+
+        this.callbackCaller(this.parentUpdateState.bind(this));
     }
 
     componentDidMount() {
@@ -29,6 +34,9 @@ console.log('ExtendedComponent Did Un');
 
     render() {
 console.log('ExtendedComponent render');
+        console.log('this.state.a', this.state.a);
+        console.log('this.state.b', this.state.b);
+        
         return null;
     }
 }
