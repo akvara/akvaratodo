@@ -61,7 +61,6 @@ var ListApp = React.createClass({
 				lists: data ,
 				loaded: true
 			});
-         	// console.log(data, textStatus);
         }.bind(this))
         .fail(function(jqXHR, textStatus, errorThrown) {
         	console.log(textStatus);
@@ -73,14 +72,13 @@ var ListApp = React.createClass({
   	},
 
 	render: function() {
-// console.log('ListApp items done~', this.props.itemsDone);
 		if (!this.state.loaded)	{
 			return (<div>Loading...</div>);
 		}	
 
 		return (
 			<div>
-				<h1>Lists</h1>v0310-1
+				<h1>Lists</h1>v0311
 				<hr />
 				<ListList 
 					lists={this.state.lists} 

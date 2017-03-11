@@ -21,7 +21,7 @@ var Move = React.createClass({
   		var listName = item.name;
   		var id = item._id;
 
-  		return <button onClick={this.toAnoter.bind(this, id)} >To { listName }</button>
+  		return <button onClick={this.toAnoter.bind(this, id)} >To <strong>{ listName }</strong></button>
   	},
 
 	loadData: function () {
@@ -43,7 +43,6 @@ var Move = React.createClass({
   	},
 
 	render: function() {
-// console.log("move", this.props.item);		
 		return (
 			<div>
 				<h2>{this.props.item}</h2>

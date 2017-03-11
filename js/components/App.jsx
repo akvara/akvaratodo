@@ -7,7 +7,7 @@ var CONFIG = {
     maxTaskLength: 40,
     displayListLength: 17,
     displayLast: 3,
-    version: 170310
+    version: 170311
 };
 
 React.render(<ListApp config={CONFIG}/>, document.getElementById("app"));

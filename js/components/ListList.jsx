@@ -5,7 +5,6 @@ var ListList = React.createClass({
 	},
 
 	load: function (listId) {
-// console.log('listList listid', listId);		
 		React.render(<TaskApp 
 			config={CONFIG} 
 			listId={listId} 
@@ -18,14 +17,15 @@ var ListList = React.createClass({
 		let listName = list.name ? list.name : "[noname]";
 		let listTasks = list.tasks ? list.tasks.substr(0, 40) : "[empty]";
 
-		let listAsDisplayed = listName + " (" + listTasks + ")";
+		let listAsDisplayed = listName + " " + listTasks;
 		let title = "load " + list._id;
+		let deletable = list.tasks ? list.tasks ==="[]" && !list.immutable : true
 		return <li key={'li'+i}>
 			<button title={title} onClick={this.load.bind(this, list._id)}>Load</button>
 			&nbsp;
 			{ listAsDisplayed }
 			&nbsp;
-			{!list.immutable  &&
+			{deletable  &&
 				<button title="remove" onClick={this.delete.bind(this, list._id)}>x</button>
 			}
 		</li>

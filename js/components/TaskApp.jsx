@@ -162,7 +162,6 @@ var TaskApp = React.createClass({
 
 	save: function () {
 		let uri = this.state.uri;
-// console.log('save kvietėte?', this.state.itemsToDo);		
 		$.ajax({
 			url: this.state.uri,
 			type: 'PUT',
@@ -278,12 +277,12 @@ var TaskApp = React.createClass({
   		var listName = item.name;
   		var id = item._id;
 
-  		return <button onClick={this.loadAnoter.bind(this, id)} >Load from { listName }</button>
+  		return <button onClick={this.loadAnoter.bind(this, id)} >Load from <strong>{ listName }</strong></button>
   	},
 
 	render: function() {
 		
-		var today = new Date().toISOString().slice(0, 10);
+		// var today = new Date().toISOString().slice(0, 10);
 		var markTitle = 'Mark immutable';
 		if (this.state.immutable) 
 			markTitle = 'Unmark immutable';
@@ -291,7 +290,7 @@ var TaskApp = React.createClass({
 
 		return (
 			<div>
-				<h1>{this.state.listName} {today}</h1>
+				<h1>{this.state.listName}</h1>
 				<h3>Finished ({this.state.itemsDone.length})</h3>
 				<TaskDoneList items={this.state.itemsDone} undone={this.unDoneTask} />
 				<hr />
