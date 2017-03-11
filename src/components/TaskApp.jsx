@@ -17,37 +17,46 @@ class TaskApp extends Loadable {
 	    super(props, context);
 
 	    this.state = {
-			itemsToDo: [], 
+			itemsToDo: [],
 			itemsDone: props.itemsDone || [],
 			prepend: props.prepend,
-			hightlightIndex: null,
+			hightlightIndex: props.prepend ? 0 : null,
 			immutable: false,
 			task: '',
 			notYetLoaded: true
 	    };
-	    this.loaderNode = document.getElementById('loading');
 	}
 
+    componentDidMount() {
+console.log('TaskApp Did Mount');
+    }
+
+    componentWillUnmount() {
+console.log('TaskApp Did Un');
+    }
+
     loadData() {
+console.log('before', this.state.itemsToDo);
+    	// if (this.props.receiving)
         ReactDOM.render(
-            <LoadingDecorator 
-                request={this.loadAListRequest.bind(this, this.props.listId)} 
-                callback={this.loadAListCallback.bind(this)} 
-                action='Loading ToDo lists' 
+            <LoadingDecorator
+                request={this.loadAListRequest.bind(this, this.props.listId)}
+                callback={this.loadAListCallback.bind(this)}
+                action='Loading ToDo lists'
             />, this.loaderNode
         );
     }
 
   	goToLists() {
-    	ReactDOM.render(<ListApp itemsDone={this.state.itemsDone}/>, document.getElementById("app"));
+    	ReactDOM.render(<ListApp itemsDone={this.state.itemsDone}/>, this.appNode);
   	}
 
 	saveTask() {
 		ReactDOM.render(
-            <LoadingDecorator 
-                request={this.saveTaskRequest.bind(this, this.props.listId)} 
-                callback={this.saveTaskCallback.bind(this)} 
-                action='Saving' 
+            <LoadingDecorator
+                request={this.saveTaskRequest.bind(this, this.props.listId)}
+                callback={this.saveTaskCallback.bind(this)}
+                action='Saving'
             />, this.loaderNode
         );
 	}
@@ -56,9 +65,10 @@ class TaskApp extends Loadable {
 		return $.ajax({
 			url: config.apiHost + config.listsAddon + "/" + listId,
 			type: 'PUT',
-			data: { 
+			data: {
 				tasks: JSON.stringify(this.state.itemsToDo),
 				immutable: this.state.immutable,
+				hightlightIndex: this.state.hightlightIndex,
                 updated_at: new Date()
 			}
 		})
@@ -67,7 +77,7 @@ class TaskApp extends Loadable {
 	}
 
 	saveTaskCallback() {
-	    ReactDOM.render(<Messenger info="Saved." />, this.loaderNode);    
+	    ReactDOM.render(<Messenger info="Saved." />, this.loaderNode);
 	}
 
 	mark() {
@@ -82,44 +92,46 @@ class TaskApp extends Loadable {
 
 	handleSubmit(e) {
  		e.preventDefault();
-
+ 		let highlightPosition = Math.min(this.state.itemsToDo.length, config.addNewAt - 1);
+		console.log("hhhh", highlightPosition);
  		this.state.itemsToDo.splice(config.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
-		this.setState({ 
+		this.setState({
 			itemsToDo: _.unique(this.state.itemsToDo),
-			hightlightIndex: Math.min(this.state.itemsToDo.length, config.addNewAt - 1),
+			hightlightIndex: highlightPosition,
 			task: ''
 		}, this.saveTask.bind(this));
 	}
 
     removeTask(i, callback) {
  		this.state.itemsToDo.splice(i, 1);
-		this.setState({ 
+		this.setState({
 			itemsToDo: this.state.itemsToDo,
 			hightlightIndex: null,
-		}, function (callback) { 
+		}, function (callback) {
 			this.saveTask();
-			if (callback) callback();
+			if (callback) callback()
 		}.bind(this, callback));
 	}
 
     moveOutside(i) {
  		var removed = this.state.itemsToDo[i];
  		this.removeTask(i, function(removed) {
-			ReactDOM.render(<Move config={config} item={removed} itemsDone={this.state.itemsDone}/>, document.getElementById("app"));
+			ReactDOM.unmountComponentAtNode(this.loaderNode);
+			ReactDOM.render(<Move item={removed} itemsDone={this.state.itemsDone}/>, this.appNode);
  		}.bind(this, removed));
 	}
 
-	highlightPosition (i) {
+	highlightPosition(i) {
 		return  Math.min(
-			this.state.itemsToDo.length - 1, 
-			config.postponeBy - 1, 
-			config.displayFirst
-		) + (this.state.itemsToDo.length >= config.displayFirst ? 1 : 0);
+			this.state.itemsToDo.length - 1,
+			config.postponeBy - 1,
+			config.displayListLength
+		) + (this.state.itemsToDo.length >= config.displayListLength ? 1 : 0);
 	}
 
     postponeTask(i) {
     	let items = this.moveFromTo(this.state.itemsToDo, i, i + config.postponeBy)
-		this.setState({ 
+		this.setState({
 			itemsToDo: items ,
 			hightlightIndex: this.highlightPosition(i),
 		}, this.saveTask);
@@ -127,24 +139,24 @@ class TaskApp extends Loadable {
 
 	doneTask(i) {
 		var moved = this.moveToAnother(this.state.itemsToDo, this.state.itemsDone, i, false)
-		this.setState({ 
-			itemsToDo: moved.A, 
+		this.setState({
+			itemsToDo: moved.A,
 			itemsDone: moved.B
 		}, this.saveTask);
 	}
 
 	unDoneTask(i) {
 		var moved = this.moveToAnother(this.state.itemsDone, this.state.itemsToDo, i, true)
-		this.setState({ 
-			itemsToDo: moved.B, 
+		this.setState({
+			itemsToDo: moved.B,
 			itemsDone: moved.A,
 			hightlightIndex: 0
 		}, this.saveTask);
-	}	
+	}
 
 	procrastinateTask(i) {
 		let items = this.moveToEnd(this.state.itemsToDo, i);
-		this.setState({ 
+		this.setState({
 			itemsToDo: items,
 			hightlightIndex: this.state.itemsToDo.length
 		}, this.saveTask);
@@ -153,7 +165,7 @@ class TaskApp extends Loadable {
 	toTop(i) {
 		console.log(this.state);
 		let items = this.moveToTop(this.state.itemsToDo, i);
-		this.setState({ 
+		this.setState({
 			itemsToDo: items,
 			hightlightIndex: 0
 		}, this.saveTask);
@@ -165,7 +177,7 @@ class TaskApp extends Loadable {
   		let trans = fromA[i];
   		fromA.splice(i, 1);
   		if (toTop) {
-	  		toB = [trans].concat(toB);	
+	  		toB = [trans].concat(toB);
 	  	} else {
 	  		toB = toB.concat([trans]);
 	  	}
@@ -189,7 +201,7 @@ class TaskApp extends Loadable {
 
 	moveFromTo(arrayA, from, to) {
   		let trans = arrayA[from];
-		arrayA.splice(from, 1); 
+		arrayA.splice(from, 1);
 		arrayA.splice(to, 0, trans);
 
   		return arrayA;
@@ -200,6 +212,7 @@ class TaskApp extends Loadable {
 	}
 
 	render() {
+console.log("this.state.hightlightIndex at render", this.state.hightlightIndex)
 		var today = new Date().toISOString().slice(0, 10);
 		if (this.state.notYetLoaded) {
 			return (
@@ -211,7 +224,7 @@ class TaskApp extends Loadable {
 		}
 
 		var markTitle = 'Mark immutable';
-		if (this.state.immutable) 
+		if (this.state.immutable)
 			markTitle = 'Unmark immutable';
 
 		return (
@@ -221,15 +234,15 @@ class TaskApp extends Loadable {
 				<TaskDoneList items={this.state.itemsDone} undone={this.unDoneTask} />
 				<hr />
 				<h3>Remaining ({this.state.itemsToDo.length})</h3>
-				<TaskList 
-					items={this.state.itemsToDo} 
-					hightlightIndex={this.state.hightlightIndex} 
-					immutable={this.state.immutable} 
-					delete={this.removeTask.bind(this)} 
-					move={this.moveOutside.bind(this)} 
-					toTop={this.toTop.bind(this)} 
-					postpone={this.postponeTask.bind(this)} 
-					procrastinate={this.procrastinateTask.bind(this)} 
+				<TaskList
+					items={this.state.itemsToDo}
+					hightlightIndex={this.state.hightlightIndex}
+					immutable={this.state.immutable}
+					delete={this.removeTask.bind(this)}
+					move={this.moveOutside.bind(this)}
+					toTop={this.toTop.bind(this)}
+					postpone={this.postponeTask.bind(this)}
+					procrastinate={this.procrastinateTask.bind(this)}
 					done={this.doneTask.bind(this)}
 				/>
 				{!this.state.immutable &&

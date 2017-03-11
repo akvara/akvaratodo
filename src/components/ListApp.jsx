@@ -9,19 +9,27 @@ class ListApp extends Loadable {
 	constructor(props, context) {
 	    super(props, context);
 
-	    this.state = { 
+	    this.state = {
 			lists: [],
 			listName: '',
 			notYetLoaded: true
 	    };
 	}
 
-    loadData() {        
+    componentDidMount() {
+console.log('ListApp Did Mount');
+    }
+
+    componentWillUnmount() {
+console.log('ListApp Did Un');
+    }
+
+    loadData() {
         this.load(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists');
     }
 
 	handleSubmit(e) {
- 		e.preventDefault(); 	
+ 		e.preventDefault();
 
 		var list = this.state.lists.find(list => list.name === this.state.listName)
 
@@ -32,33 +40,31 @@ class ListApp extends Loadable {
         this.setState({
             listName: '',
             // notYetLoaded: true
-        }); 
+        });
 
         ReactDOM.render(
-            <LoadingDecorator 
-                request={this.addAListRequest.bind(this)} 
-                callback={this.addAListCallback.bind(this, this.state.lists)} 
-                action='Adding' 
-
+            <LoadingDecorator
+                request={this.addAListRequest.bind(this)}
+                callback={this.addAListCallback.bind(this, this.state.lists)}
+                action='Adding'
             />, this.loaderNode
         );
 	}
 
 	onNameChange(e) {
 		this.setState({ listName: e.target.value });
-	}	
+	}
 
 	loadList(lists, itemsDone, listId, listName) {
         document.title = listName;
-        ReactDOM.render(<TaskApp 
-            listId={listId} 
+        ReactDOM.render(<TaskApp
+            listId={listId}
             immutables={lists.filter((item) => item.immutable)}
-            itemsDone={itemsDone} 
-        />, document.getElementById("app"));
+            itemsDone={itemsDone}
+        />, this.appNode);
     }
 
 	render() {
-
 		if (this.state.notYetLoaded) {
 			return (<div id="l"><h1>Lists</h1></div>);
         }
@@ -67,10 +73,10 @@ class ListApp extends Loadable {
 			<div>
 				<h1>Lists</h1>
 				<hr />
-				<ListList 
+				<ListList
 					lists={this.state.lists}
-					loadList={this.loadList.bind(this, this.state.lists, this.state.itemsDone)} 
-					removeList={this.removeList.bind(this)} 
+					loadList={this.loadList.bind(this, this.state.lists, this.state.itemsDone)}
+					removeList={this.removeList.bind(this)}
 				/>
 				<hr />
 				<form onSubmit={this.handleSubmit.bind(this)}>

@@ -1,60 +1,60 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
-import $ from 'jquery';
-import TaskApp from './TaskApp';
 import config from '../config.js';
+import $ from 'jquery';
+import Loadable from './Loadable';
+import TaskApp from './TaskApp';
 
-class Move extends Component {
+class Move extends Loadable {
 
 	constructor(props, context) {
 	    super(props, context);
 
 	    this.state = {
 			lists: [],
-			loaded: false
+			listName: '',
+			notYetLoaded: true
 	    };
 	}
 
+	componentDidMount() {
+console.log('Move Did Mount');
+    }
+
+    componentWillUnmount() {
+console.log('Move Did Un');
+    }
+
 	toAnoter (listId) {
-		ReactDOM.render(<TaskApp 
-			listId={listId} 
-			receiving={this.props.item} 
-			immutables={this.state.lists.filter((item) => item.immutable)}
-			itemsDone={this.props.itemsDone} 
-		/>, document.getElementById("app"));
+		ReactDOM.render(<TaskApp
+			listId={listId}
+			prepend={this.props.item}
+			// immutables={this.state.lists.filter((item) => item.immutable)}
+			itemsDone={this.props.itemsDone}
+		/>, this.appNode);
 	}
 
   	displayToButton (item) {
-  		var listName = item.name;
-  		var id = item._id;
-
-  		return <button onClick={this.toAnoter.bind(this, id)} >To { listName }</button>
+  		return <button key={'btn'+item._id} onClick={this.toAnoter.bind(this, item._id)} >To <strong>{ item.name }</strong></button>
   	}
 
-	loadData () {
-		$.get(config.listsapi + "lists")
-		.done(function(data, textStatus, jqXHR) {
-			this.setState({ 
-				lists: data,
-				loaded: true
-			});
-         	// console.log(data, textStatus);
-        }.bind(this))
-        .fail(function(jqXHR, textStatus, errorThrown) {
-        	console.log(textStatus);
-    	});
-	}
-
-	componentWillMount() {
-    	this.loadData();
-  	}
+    loadData() {
+        this.load(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading lists');
+    }
 
 	render() {
-// console.log("move", this.props.item);		
+		if (this.state.notYetLoaded) {
+			return (
+				<div>
+					<h1>Please wait</h1>
+				</div>
+			);
+		}
+
 		return (
 			<div>
 				<h2>{this.props.item}</h2>
-				{ this.state.lists.map((list) => this.displayToButton(list)) }
+				{ this.state.lists.filter((item) => !item.immutable).map((list) => this.displayToButton(list)) }
 			</div>
 		);
 	}
