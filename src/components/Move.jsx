@@ -1,7 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import config from '../config.js';
-import $ from 'jquery';
 import Loadable from './Loadable';
 import TaskApp from './TaskApp';
 

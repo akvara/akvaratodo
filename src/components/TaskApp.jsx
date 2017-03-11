@@ -10,6 +10,7 @@ import Move from './Move';
 import ListApp from './ListApp';
 import TaskList from './TaskList';
 import TaskDoneList from './TaskDoneList';
+import * as Utils from '../utils/utils.js';
 
 class TaskApp extends Loadable {
 
@@ -36,8 +37,6 @@ console.log('TaskApp Did Un');
     }
 
     loadData() {
-console.log('before', this.state.itemsToDo);
-    	// if (this.props.receiving)
         ReactDOM.render(
             <LoadingDecorator
                 request={this.loadAListRequest.bind(this, this.props.listId)}
@@ -93,7 +92,6 @@ console.log('before', this.state.itemsToDo);
 	handleSubmit(e) {
  		e.preventDefault();
  		let highlightPosition = Math.min(this.state.itemsToDo.length, config.addNewAt - 1);
-		console.log("hhhh", highlightPosition);
  		this.state.itemsToDo.splice(config.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
 		this.setState({
 			itemsToDo: _.unique(this.state.itemsToDo),
@@ -211,8 +209,23 @@ console.log('before', this.state.itemsToDo);
 		return text.split(/\r?\n/).filter(entry => entry.trim() !== '')
 	}
 
+	loadFromAnother(listId) {
+console.log("this", this.props.listId);
+		// ReactDOM.unmountComponentAtNode(this.loaderNode);
+        ReactDOM.render(
+            <LoadingDecorator
+                request={this.loadAListRequest.bind(this, listId)}
+                callback={this.loadAForeignListCallback.bind(this)}
+                action='Loading a list'
+            />, this.loaderNode
+        );
+	}
+
+  	displayFromButton (item) {
+  		return <button key={'btn'+item._id} onClick={this.loadFromAnother.bind(this, item._id)} >Load from <strong>{ item.name }</strong></button>
+  	}
+
 	render() {
-console.log("this.state.hightlightIndex at render", this.state.hightlightIndex)
 		var today = new Date().toISOString().slice(0, 10);
 		if (this.state.notYetLoaded) {
 			return (
@@ -256,6 +269,7 @@ console.log("this.state.hightlightIndex at render", this.state.hightlightIndex)
 					</div>
 				}
 				<hr />
+				{ this.props.immutables.map((list) => this.displayFromButton(list)) }
 				<button disabled={this.state.task.trim()} onClick={this.mark.bind(this)}>{markTitle}</button>
 				<button disabled={this.state.task.trim()} onClick={this.goToLists.bind(this)}>Lists</button>
 				<hr />

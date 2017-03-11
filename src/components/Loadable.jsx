@@ -5,6 +5,7 @@ import Messenger from './Messenger';
 import sortArrOfObjectsByParam from '../utils/utils.js';
 import config from '../config.js';
 import $ from 'jquery';
+import _ from 'underscore';
 
 class Loadable extends Component {
 	constructor(props, context) {
@@ -125,6 +126,17 @@ class Loadable extends Component {
             prepend: null,
             notYetLoaded: false,
         }, this.state.prepend ? this.save : null);
+
+        ReactDOM.render(<Messenger info="Loaded." />, this.loaderNode);
+    }
+
+    loadAForeignListCallback(data) {
+        let loadedItems = data.tasks ? JSON.parse(data.tasks) : [];
+        this.setState({
+            itemsToDo: _.unique(loadedItems.concat(this.state.itemsToDo)),
+            prepend: null,
+            notYetLoaded: false,
+        });
 
         ReactDOM.render(<Messenger info="Loaded." />, this.loaderNode);
     }
