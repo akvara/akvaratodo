@@ -17,7 +17,6 @@ class Messenger extends Component {
 		}
 		if (!message) return null;
 
-		let divClass = "messenger messenger-" + type;
 		return <div className={"messenger messenger-" + type}>{message}</div>
 	}
 }

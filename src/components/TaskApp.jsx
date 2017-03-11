@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React  from 'react';
 import ReactDOM from 'react-dom';
 import config from '../config.js';
 import _ from 'underscore';
 import $ from 'jquery';
+import Loadable from './Loadable';
 import LoadingDecorator from './LoadingDecorator';
 import Messenger from './Messenger';
 import Move from './Move';
@@ -10,13 +11,12 @@ import ListApp from './ListApp';
 import TaskList from './TaskList';
 import TaskDoneList from './TaskDoneList';
 
-class TaskApp extends Component {
+class TaskApp extends Loadable {
 
 	constructor(props, context) {
 	    super(props, context);
 
 	    this.state = {
-	    	uri: config.apiHost + config.listsAddon + "/" + props.listId,
 			itemsToDo: [], 
 			itemsDone: props.itemsDone || [],
 			prepend: props.prepend,
@@ -28,84 +28,52 @@ class TaskApp extends Component {
 	    this.loaderNode = document.getElementById('loading');
 	}
 
-    componentWillMount() {
-console.log('Task App Will Mount');
-    }
-
-    componentDidMount() {
-        this.loadData();
-    }
-
-    componentWillUnmount() {
-console.log('Task App Did Un');
-    }
-
     loadData() {
         ReactDOM.render(
             <LoadingDecorator 
-                request={this.loadListRequest.bind(this)} 
-                callback={this.loadListCallback.bind(this)} 
+                request={this.loadAListRequest.bind(this, this.props.listId)} 
+                callback={this.loadAListCallback.bind(this)} 
                 action='Loading ToDo lists' 
             />, this.loaderNode
         );
     }
 
-    loadListRequest(resolve, reject) {
-        return $.get(this.state.uri)
-            .done((data) => { resolve(data) })
-            .fail((err) => { reject(err) });
-    }
+  	goToLists() {
+    	ReactDOM.render(<ListApp itemsDone={this.state.itemsDone}/>, document.getElementById("app"));
+  	}
 
-    loadListCallback(data) { 
-          let itemsToDo = data.tasks ? JSON.parse(data.tasks) : [];
+	saveTask() {
+		ReactDOM.render(
+            <LoadingDecorator 
+                request={this.saveTaskRequest.bind(this, this.props.listId)} 
+                callback={this.saveTaskCallback.bind(this)} 
+                action='Saving' 
+            />, this.loaderNode
+        );
+	}
 
-            if (this.state.prepend) {
-                itemsToDo = [this.state.prepend].concat(itemsToDo);
-            }
-
-            this.setState({
-                listName: data.name, 
-                immutable: data.immutable,
-                itemsToDo: itemsToDo,
-                prepend: null,
-                notYetLoaded: false,
-            }, this.state.prepend ? this.save : null)
-
-        ReactDOM.render(<Messenger info="Loaded." />, this.loaderNode);    
-    }
-
-	saveRequest(resolve, reject) {
+	saveTaskRequest(listId, resolve, reject) {
 		return $.ajax({
-			url: this.state.uri,
+			url: config.apiHost + config.listsAddon + "/" + listId,
 			type: 'PUT',
 			data: { 
 				tasks: JSON.stringify(this.state.itemsToDo),
-				immutable: this.state.immutable
+				immutable: this.state.immutable,
+                updated_at: new Date()
 			}
 		})
 		.done((data) => { resolve(data) })
         .fail((err) => { reject(err) });
 	}
 
-	saveCallback() {
+	saveTaskCallback() {
 	    ReactDOM.render(<Messenger info="Saved." />, this.loaderNode);    
-	}
-
-	save() {
-// console.log('save kvietėte?', this.state.itemsToDo);		
-		ReactDOM.render(
-            <LoadingDecorator 
-                request={this.saveRequest.bind(this)} 
-                callback={this.saveCallback.bind(this)} 
-                action='Saving' 
-            />, this.loaderNode
-        );
 	}
 
 	mark() {
 		this.setState({
 			immutable: !this.state.immutable
-		}, this.save);
+		}, this.saveTask);
 	}
 
     onChange (e) {
@@ -120,7 +88,7 @@ console.log('Task App Did Un');
 			itemsToDo: _.unique(this.state.itemsToDo),
 			hightlightIndex: Math.min(this.state.itemsToDo.length, config.addNewAt - 1),
 			task: ''
-		}, this.save.bind(this));
+		}, this.saveTask.bind(this));
 	}
 
     removeTask(i, callback) {
@@ -129,7 +97,7 @@ console.log('Task App Did Un');
 			itemsToDo: this.state.itemsToDo,
 			hightlightIndex: null,
 		}, function (callback) { 
-			this.save();
+			this.saveTask();
 			if (callback) callback();
 		}.bind(this, callback));
 	}
@@ -154,7 +122,7 @@ console.log('Task App Did Un');
 		this.setState({ 
 			itemsToDo: items ,
 			hightlightIndex: this.highlightPosition(i),
-		}, this.save);
+		}, this.saveTask);
 	}
 
 	doneTask(i) {
@@ -162,7 +130,7 @@ console.log('Task App Did Un');
 		this.setState({ 
 			itemsToDo: moved.A, 
 			itemsDone: moved.B
-		}, this.save);
+		}, this.saveTask);
 	}
 
 	unDoneTask(i) {
@@ -171,7 +139,7 @@ console.log('Task App Did Un');
 			itemsToDo: moved.B, 
 			itemsDone: moved.A,
 			hightlightIndex: 0
-		}, this.save);
+		}, this.saveTask);
 	}	
 
 	procrastinateTask(i) {
@@ -179,7 +147,7 @@ console.log('Task App Did Un');
 		this.setState({ 
 			itemsToDo: items,
 			hightlightIndex: this.state.itemsToDo.length
-		}, this.save);
+		}, this.saveTask);
 	}
 
 	toTop(i) {
@@ -188,7 +156,7 @@ console.log('Task App Did Un');
 		this.setState({ 
 			itemsToDo: items,
 			hightlightIndex: 0
-		}, this.save);
+		}, this.saveTask);
 	}
 
 	// Helper functions
@@ -227,41 +195,9 @@ console.log('Task App Did Un');
   		return arrayA;
 	}
 
-	loadAnoter(listId) {
-		$.get(this.state.listsUri + listId)
-		.done(function(data, textStatus, jqXHR) {
-			this.setState({ 
-				itemsToDo:  _.unique(JSON.parse(data.tasks).concat(this.state.itemsToDo))
-			}, this.save);
-        }.bind(this))
-        .fail(function(jqXHR, textStatus, errorThrown) {
-        	console.log(textStatus);
-    	});
-	}	
-
-		loadFake() {
-		this.setState({
-			listName: 'Test', 
-			itemsToDo: Array.from(Array(config.displayListLength+1)).map((e,i)=>(i).toString()),
-			prepend: null
-		});
-	}
-
 	textToArray(text) {
 		return text.split(/\r?\n/).filter(entry => entry.trim() !== '')
 	}
-
-	handleLists() {
-    	ReactDOM.render(<ListApp itemsDone={this.state.itemsDone}/>, document.getElementById("app"));
-  	}
-
-  	displayLoadButton(item) {
-  		// var listName = item.name;
-  		// var id = item._id;
-console.log('displayLoadButton item', item);
-  		// return <button onClick={this.loadAnoter.bind(this, id)} >Load from { listName }</button>
-  		return "aha";
-  	}
 
 	render() {
 		var today = new Date().toISOString().slice(0, 10);
@@ -307,8 +243,8 @@ console.log('displayLoadButton item', item);
 					</div>
 				}
 				<hr />
-				<button onClick={this.mark.bind(this)}>{markTitle}</button>
-				<button onClick={this.handleLists.bind(this)}>Lists</button>
+				<button disabled={this.state.task.trim()} onClick={this.mark.bind(this)}>{markTitle}</button>
+				<button disabled={this.state.task.trim()} onClick={this.goToLists.bind(this)}>Lists</button>
 				<hr />
 			</div>
 		);

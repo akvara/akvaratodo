@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Loadable from './Loadable';
+import TaskApp from './TaskApp';
 import LoadingDecorator from './LoadingDecorator';
 import ListList from './ListList';
 
@@ -14,10 +15,6 @@ class ListApp extends Loadable {
 			notYetLoaded: true
 	    };
 	}
-
-    componentDidMount() {
-        this.loadData();
-    }
 
     loadData() {        
         this.load(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists');
@@ -51,7 +48,17 @@ class ListApp extends Loadable {
 		this.setState({ listName: e.target.value });
 	}	
 
+	loadList(lists, itemsDone, listId, listName) {
+        document.title = listName;
+        ReactDOM.render(<TaskApp 
+            listId={listId} 
+            immutables={lists.filter((item) => item.immutable)}
+            itemsDone={itemsDone} 
+        />, document.getElementById("app"));
+    }
+
 	render() {
+
 		if (this.state.notYetLoaded) {
 			return (<div id="l"><h1>Lists</h1></div>);
         }

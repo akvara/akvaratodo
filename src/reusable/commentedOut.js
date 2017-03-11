@@ -16,3 +16,24 @@ var promiseWrapper = function(wrappable) {
 }
 
     React.unmountComponentAtNode(mountNode);
+
+
+
+    
+    loadListCallback(data) { 
+          let itemsToDo = data.tasks ? JSON.parse(data.tasks) : [];
+
+            if (this.state.prepend) {
+                itemsToDo = [this.state.prepend].concat(itemsToDo);
+            }
+
+            this.setState({
+                listName: data.name, 
+                immutable: data.immutable,
+                itemsToDo: itemsToDo,
+                prepend: null,
+                notYetLoaded: false,
+            }, this.state.prepend ? this.save : null)
+
+        ReactDOM.render(<Messenger info="Loaded." />, this.loaderNode);    
+    }

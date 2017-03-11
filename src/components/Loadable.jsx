@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import LoadingDecorator from './LoadingDecorator';
 import Messenger from './Messenger';
-import TaskApp from './TaskApp';
+import sortArrOfObjectsByParam from '../utils/utils.js';
 import config from '../config.js';
 import $ from 'jquery';
 
@@ -18,6 +18,10 @@ class Loadable extends Component {
      // console.log('React.findDOMNode', ReactDOM.findDOMNode(document.getElementById('loading')));
 	 //    this.loadingNode = React.findDOMNode();
 	}
+
+    componentDidMount() {
+        this.loadData();
+    }
 
     load(request, callback, actionMessage) {
         ReactDOM.render(
@@ -40,9 +44,8 @@ class Loadable extends Component {
     }
 
     loadListsCallback(data) { 
-        console.log('loadListsCallback ', data);        
         this.setState({ 
-            lists: data, 
+            lists: sortArrOfObjectsByParam(data, 'updatedAt', true), 
             notYetLoaded: false 
         });
         ReactDOM.render(<Messenger info="Lists loaded." />, this.loaderNode);    
@@ -98,13 +101,22 @@ class Loadable extends Component {
             />, this.loaderNode);
     }
 
-    loadList(lists, itemsDone, listId, listName) {
-        document.title = listName;
-        ReactDOM.render(<TaskApp 
-            listId={listId} 
-            immutables={lists.filter((item) => item.immutable)}
-            itemsDone={itemsDone} 
-        />, document.getElementById("app"));
+    loadAListRequest(listId, resolve, reject) {
+        return $.get(config.apiHost + config.listsAddon + "/" + listId)
+            .done((data) => { resolve(data) })
+            .fail((err) => { reject(err) });
+    }
+
+    loadAListCallback(data) { 
+        this.setState({
+            listName: data.name, 
+            immutable: data.immutable,
+            itemsToDo: data.tasks ? JSON.parse(data.tasks) : [],
+            prepend: null,
+            notYetLoaded: false,
+        })
+
+        ReactDOM.render(<Messenger info="Loaded." />, this.loaderNode);    
     }
 
     render() {

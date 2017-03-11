@@ -10,7 +10,7 @@ var config = {
     displayListLength: 15,
     displayLast: 3,
     loadingStringLength: 40,
-    version: 170309
+    version: 170311
 };
 
 export default Object.freeze(config);
