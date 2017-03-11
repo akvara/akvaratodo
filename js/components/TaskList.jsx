@@ -1,6 +1,7 @@
 var TaskList = React.createClass({
 	statics: {
-    	separatorString: ".........."
+    	separatorString: "..........",
+    	spacing: <span>&nbsp;&nbsp;&nbsp;</span>
     },
 
 	done: function (i) {
@@ -9,6 +10,10 @@ var TaskList = React.createClass({
 
 	delete: function (i) {
 		this.props.delete(i);
+	},
+
+	toTop: function (i) {
+		this.props.toTop(i);
 	},
 
 	move: function (i) {
@@ -38,27 +43,28 @@ var TaskList = React.createClass({
 
 		let taskTruncated = task.substring(0, this.props.config.maxTaskLength);
 		let taskAsDisplayed = { taskTruncated };
-		if (task.substring(0, 4) == "http") {
+		if (task.substring(0, 4) === "http") {
+			taskTruncated = taskTruncated.substr(taskTruncated.indexOf('://')+3);
 			taskAsDisplayed = <a href={ task } target="_blank">{ taskTruncated }</a>;
 		}
-
 		let itemIndex = i;
 		if (itemIndex >= this.props.config.displayListLength - this.props.config.displayLast ) {
 			itemIndex = i + omitted;
 		}
 
 		let postponeTitle = "Postpone (+" + this.props.config.postponeBy + ")";
-		
+
 		if (this.props.immutable) {
 			return <li>{ taskAsDisplayed }</li>
 		} else {
 			return <li>
 				<button title="done" onClick={this.done.bind(this, itemIndex)}>----</button>
-				&nbsp;
+				{ this.constructor.spacing }
 				{ this.hightlightOnDemand(taskAsDisplayed, hightlighted) }
-				&nbsp;
+				{ this.constructor.spacing }
 				<button title="Remove" onClick={this.delete.bind(this, itemIndex)}>x</button>
 				<button title="Procrastinate" onClick={this.procrastinate.bind(this, itemIndex)}>v</button>
+				<button title="To top" onClick={this.toTop.bind(this, itemIndex)}>!</button>
 				<button title="Move to another list" onClick={this.move.bind(this, itemIndex)}>&gt;</button>
 				<button title={postponeTitle} onClick={this.postpone.bind(this, itemIndex)}>p</button>
 			</li>

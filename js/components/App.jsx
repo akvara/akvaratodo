@@ -4,10 +4,10 @@ var CONFIG = {
     cookieTodo: 'backup-data-todo',
     postponeBy: 10,
     addNewAt: 6,
-    maxTaskLength: 43,
-    displayListLength: 11,
+    maxTaskLength: 40,
+    displayListLength: 17,
     displayLast: 3,
-    version: 170307
+    version: 170310
 };
 
 React.render(<ListApp config={CONFIG}/>, document.getElementById("app"));
