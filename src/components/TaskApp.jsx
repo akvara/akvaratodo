@@ -128,7 +128,7 @@ console.log('TaskApp Did Un');
 	}
 
     postponeTask(i) {
-    	let items = this.moveFromTo(this.state.itemsToDo, i, i + config.postponeBy)
+    	let items = Utils.moveFromTo(this.state.itemsToDo, i, i + config.postponeBy)
 		this.setState({
 			itemsToDo: items ,
 			hightlightIndex: this.highlightPosition(i),
@@ -136,7 +136,7 @@ console.log('TaskApp Did Un');
 	}
 
 	doneTask(i) {
-		var moved = this.moveToAnother(this.state.itemsToDo, this.state.itemsDone, i, false)
+		var moved = Utils.moveToAnother(this.state.itemsToDo, this.state.itemsDone, i, false)
 		this.setState({
 			itemsToDo: moved.A,
 			itemsDone: moved.B
@@ -144,7 +144,7 @@ console.log('TaskApp Did Un');
 	}
 
 	unDoneTask(i) {
-		var moved = this.moveToAnother(this.state.itemsDone, this.state.itemsToDo, i, true)
+		var moved = Utils.moveToAnother(this.state.itemsDone, this.state.itemsToDo, i, true)
 		this.setState({
 			itemsToDo: moved.B,
 			itemsDone: moved.A,
@@ -153,7 +153,7 @@ console.log('TaskApp Did Un');
 	}
 
 	procrastinateTask(i) {
-		let items = this.moveToEnd(this.state.itemsToDo, i);
+		let items = Utils.moveToEnd(this.state.itemsToDo, i);
 		this.setState({
 			itemsToDo: items,
 			hightlightIndex: this.state.itemsToDo.length
@@ -162,55 +162,14 @@ console.log('TaskApp Did Un');
 
 	toTop(i) {
 		console.log(this.state);
-		let items = this.moveToTop(this.state.itemsToDo, i);
+		let items = Utils.moveToTop(this.state.itemsToDo, i);
 		this.setState({
 			itemsToDo: items,
 			hightlightIndex: 0
 		}, this.saveTask);
 	}
 
-	// Helper functions
-
-	moveToAnother(fromA, toB, i, toTop) {
-  		let trans = fromA[i];
-  		fromA.splice(i, 1);
-  		if (toTop) {
-	  		toB = [trans].concat(toB);
-	  	} else {
-	  		toB = toB.concat([trans]);
-	  	}
-
-  		return {A: fromA, B: toB};
-	}
-
-	moveToEnd(items, i) {
-  		let trans = items[i];
-  		items.splice(i, 1);
-
-  		return items.concat([trans]);
-	}
-
-	moveToTop(items, i) {
-  		let trans = items[i];
-  		items.splice(i, 1);
-
-  		return [trans].concat(items);
-	}
-
-	moveFromTo(arrayA, from, to) {
-  		let trans = arrayA[from];
-		arrayA.splice(from, 1);
-		arrayA.splice(to, 0, trans);
-
-  		return arrayA;
-	}
-
-	textToArray(text) {
-		return text.split(/\r?\n/).filter(entry => entry.trim() !== '')
-	}
-
 	loadFromAnother(listId) {
-console.log("this", this.props.listId);
 		// ReactDOM.unmountComponentAtNode(this.loaderNode);
         ReactDOM.render(
             <LoadingDecorator

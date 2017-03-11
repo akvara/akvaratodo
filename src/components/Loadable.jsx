@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import LoadingDecorator from './LoadingDecorator';
 import Messenger from './Messenger';
-import sortArrOfObjectsByParam from '../utils/utils.js';
+import * as Utils from '../utils/utils.js';
 import config from '../config.js';
 import $ from 'jquery';
 import _ from 'underscore';
@@ -50,7 +50,7 @@ class Loadable extends Component {
     loadListsCallback(data) {
 // console.log("loadListsCallback result", data);
         this.setState({
-            lists: sortArrOfObjectsByParam(data, 'updatedAt', true),
+            lists: Utils.sortArrOfObjectsByParam(data, 'updatedAt', true),
             notYetLoaded: false
         });
         ReactDOM.render(<Messenger info="Lists loaded." />, this.loaderNode);

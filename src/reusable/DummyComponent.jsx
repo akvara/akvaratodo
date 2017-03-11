@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import config from '../config.js';
-
+import * as Utils from '../utils/utils.js';
 
 class DummyComponent extends Component {
     constructor(props, context) {
@@ -20,6 +20,8 @@ console.log('DummyComponent Will Mount');
 
     componentDidMount() {
 console.log('DummyComponent Did Mount');
+console.log('Utils', Utils);
+
     }
 
     componentWillUnmount() {
