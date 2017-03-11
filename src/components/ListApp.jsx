@@ -1,129 +1,59 @@
-import React, {Component} from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
-import config from '../config.js';
 import Loadable from './Loadable';
-
 import LoadingDecorator from './LoadingDecorator';
 import ListList from './ListList';
-import TaskApp from './TaskApp';
-import Messenger from './Messenger';
-import $ from 'jquery';
 
-class ListApp extends Component {
+class ListApp extends Loadable {
 	constructor(props, context) {
 	    super(props, context);
 
-	    this.state = {
+	    this.state = { 
 			lists: [],
 			listName: '',
 			notYetLoaded: true
 	    };
-        this.loaderNode = document.getElementById('loading');
 	}
 
     componentDidMount() {
-        this.load();
+        this.loadData();
     }
 
     loadData() {        
-        this.load(this.loadListsRequest, this.loadListsCallback, 'Loading ToDo lists');
+        this.load(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists');
     }
 
-    load(request, callback, message) {
+	handleSubmit(e) {
+ 		e.preventDefault(); 	
+
+		var list = this.state.lists.find(list => list.name === this.state.listName)
+
+		if (list) {
+			// (lists, itemsDone, listId, listName)
+			return this.loadList(this.state.lists, this.state.itemsDone, list._id, list.name)
+		}
+        this.setState({
+            listName: '',
+            // notYetLoaded: true
+        }); 
+
         ReactDOM.render(
             <LoadingDecorator 
-                request={this.loadListsRequest} 
-                callback={this.loadListsCallback} 
-                action={'Loading ToDo lists'} 
+                request={this.addAListRequest.bind(this)} 
+                callback={this.addAListCallback.bind(this, this.state.lists)} 
+                action='Adding' 
+
             />, this.loaderNode
-        ).bind(this);
-    }
-
-    loadListsRequest(resolve, reject) {
-        return $.get(config.apiHost + config.listsAddon)
-            .done((data) => {
-                resolve(data);
-            })
-            .fail((err) => {
-                reject(err)
-            });
-    }
-
-    loadListsCallback(data) { 
-        this.setState({ 
-            lists: data, 
-            notYetLoaded: false 
-        });
-        ReactDOM.render(<Messenger info="Lists loaded." />, this.loaderNode);    
-    }
+        );
+	}
 
 	onNameChange(e) {
 		this.setState({ listName: e.target.value });
 	}	
 
-    addAListRequest(resolve, reject) {
-		return $.post(
-            config.apiHost + config.listsAddon,
-            {
-                'name': this.state.listName
-            })
-			.done((data) => {
-				resolve(data);
-			})
-	        .fail((err) => {
-	        	reject(err)
-	        });
-	}
-
-	addAListCallback(data) { 
-        this.setState({ 
-            lists: this.state.lists.concat(data), 
-            notYetLoaded: false 
-        });
-        ReactDOM.render(<Messenger info="Added." />, this.loaderNode);
-        this.loadList(data._id);    
-	}
-
-	removeListRequest(listId, resolve, reject) {
-		return $.ajax({
-			url: config.apiHost + config.listAddon + listId,
-			type: 'DELETE'
-		})
-		.done((data) => {
-			resolve(data);
-		})
-        .fail((err) => {
-        	reject(err)
-        });
-    }
-
-    removeListCallback(listId) {
-		this.setState({ lists: this.state.lists.filter(list => list._id !== listId) });
-        ReactDOM.render(<Messenger info="Removed." />, this.loaderNode);    
-	}
-
-	removeList(listId) {
-		ReactDOM.render(
-			<LoadingDecorator 
-				request={this.removeListRequest.bind(this, listId)} 
-				callback={this.removeListCallback.bind(this, listId)}
-                action='Removing'
-			/>, this.loaderNode);
-	}	
-
-
-	loadList(listId, name) {
-		document.title = name;
-		ReactDOM.render(<TaskApp 
-			listId={listId} 
-			immutables={this.state.lists.filter((item) => item.immutable)}
-			itemsDone={this.state.itemsDone} 
-		/>, document.getElementById("app"));
-	}
-
 	render() {
 		if (this.state.notYetLoaded) {
-			return (<div id="l"><h1>Lists</h1>v{config.version}</div>);
+			return (<div id="l"><h1>Lists</h1></div>);
         }
 
 		return (
@@ -132,7 +62,7 @@ class ListApp extends Component {
 				<hr />
 				<ListList 
 					lists={this.state.lists}
-					loadList={this.loadList.bind(this)} 
+					loadList={this.loadList.bind(this, this.state.lists, this.state.itemsDone)} 
 					removeList={this.removeList.bind(this)} 
 				/>
 				<hr />

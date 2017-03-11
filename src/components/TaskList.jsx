@@ -40,7 +40,6 @@ class TaskList extends Component {
 	}
 
 	displayTask(task, i, omitted) {
-// console.log('displayTask', task);		
 		if (task === this.constructor.consts.separatorString) {
 			return this.constructor.consts.separatorString;
 		}
@@ -79,8 +78,6 @@ class TaskList extends Component {
 	render() {
 		var taskListDisplayed, 
 		    shouldOmit;
-// console.log('~TaskList items~', this.props.items);	
-console.log('this.props.hightlightIndex', this.props.hightlightIndex);
 
 		if (this.props.items.length > config.displayListLength ) {
 			shouldOmit = this.props.items.length - config.displayListLength;

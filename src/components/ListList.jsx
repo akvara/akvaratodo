@@ -6,8 +6,9 @@ class ListList extends Component {
 		this.props.removeList(id);
 	}
 
-	loadList(id, name) {
-		this.props.loadList(id, name);
+	loadList(...params) {
+		this.props.loadList(...params);
+// console.log("params", ...params);		
 	}
 
 	displayList(list, i) {

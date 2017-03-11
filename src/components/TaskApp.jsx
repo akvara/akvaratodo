@@ -33,7 +33,6 @@ console.log('Task App Will Mount');
     }
 
     componentDidMount() {
-console.log('Task App Did Mount');
         this.loadData();
     }
 
@@ -58,8 +57,6 @@ console.log('Task App Did Un');
     }
 
     loadListCallback(data) { 
-console.log('loadListCallback ', data);  
-
           let itemsToDo = data.tasks ? JSON.parse(data.tasks) : [];
 
             if (this.state.prepend) {

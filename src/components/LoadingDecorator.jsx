@@ -20,7 +20,7 @@ class LoadingDecorator extends Component {
 	    		this.interval = 0;
 
 				this.props.callback(val);
-				console.log("fulfilled:", val);
+				// console.log("fulfilled:", val);
 				   
 	    	})
  			.catch((err) => {
@@ -29,11 +29,8 @@ class LoadingDecorator extends Component {
  				this.setState({ 
 					loadingString: ' error'
 				})
- 				console.log("rejected:", err);
+ 				// console.log("rejected:", err);
  			});
-	}
-
-	componentWillUnmount() {
 	}
 
 	tick() {

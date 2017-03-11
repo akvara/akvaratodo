@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import LoadingDecorator from './LoadingDecorator';
 import Messenger from './Messenger';
-import ListList from './ListList';
 import TaskApp from './TaskApp';
 import config from '../config.js';
 import $ from 'jquery';
@@ -11,25 +10,21 @@ class Loadable extends Component {
 	constructor(props, context) {
 	    super(props, context);
 
-	    this.state = {
-            // Must be set in inherited classes
-	    };
+//	    this.state = {
+//          Must be set in inherited classes
+//	    };
 
         this.loaderNode = document.getElementById('loading');
-// console.log('React.findDOMNode', ReactDOM.findDOMNode(document.getElementById('app')));
+     // console.log('React.findDOMNode', ReactDOM.findDOMNode(document.getElementById('loading')));
 	 //    this.loadingNode = React.findDOMNode();
 	}
 
-    componentDidMount() {
-        this.loadData();
-    }
-
-    load(request, callback, message) {
+    load(request, callback, actionMessage) {
         ReactDOM.render(
             <LoadingDecorator 
                 request={request} 
                 callback={callback} 
-                action={message} 
+                actionMessage={actionMessage} 
             />, this.loaderNode
         );
     }
@@ -45,6 +40,7 @@ class Loadable extends Component {
     }
 
     loadListsCallback(data) { 
+        console.log('loadListsCallback ', data);        
         this.setState({ 
             lists: data, 
             notYetLoaded: false 
@@ -52,61 +48,66 @@ class Loadable extends Component {
         ReactDOM.render(<Messenger info="Lists loaded." />, this.loaderNode);    
     }
 
-	onNameChange(e) {
-		this.setState({ listName: e.target.value });
-	}	
-
     addAListRequest(resolve, reject) {
-		return $.post(
+        return $.post(
             config.apiHost + config.listsAddon,
             {
                 'name': this.state.listName
             })
-			.done((data) => {
-				resolve(data);
-			})
-	        .fail((err) => {
-	        	reject(err)
-	        });
-	}
+            .done((data) => {
+                resolve(data);
+            })
+            .fail((err) => {
+                reject(err)
+            });
+    }
 
-	addAListCallback(data) { 
+    addAListCallback(lists, data) { 
         this.setState({ 
-            lists: this.state.lists.concat(data), 
+            lists: lists.concat(data), 
             notYetLoaded: false 
         });
         ReactDOM.render(<Messenger info="Added." />, this.loaderNode);
-        this.loadList(data._id);    
-	}
+        return this.loadList(lists, [' Transferring of ItemsDone -> To Be Done'], data._id, data.name);
+    }
 
-	removeListRequest(listId, resolve, reject) {
-		return $.ajax({
-			url: config.apiHost + config.listAddon + listId,
-			type: 'DELETE'
-		})
-		.done((data) => {
-			resolve(data);
-		})
+    removeListRequest(listId, resolve, reject) {
+        return $.ajax({
+            url: config.apiHost + config.listAddon + listId,
+            type: 'DELETE'
+        })
+        .done((data) => {
+            resolve(data);
+        })
         .fail((err) => {
-        	reject(err)
+            reject(err)
         });
     }
 
     removeListCallback(listId) {
-		this.setState({ lists: this.state.lists.filter(list => list._id !== listId) });
+        this.setState({ lists: this.state.lists.filter(list => list._id !== listId) });
         ReactDOM.render(<Messenger info="Removed." />, this.loaderNode);    
-	}
+    }
 
-	removeList(listId) {
-		ReactDOM.render(
-			<LoadingDecorator 
-				request={this.removeListRequest.bind(this, listId)} 
-				callback={this.removeListCallback.bind(this, listId)}
+    removeList(listId) {
+        ReactDOM.render(
+            <LoadingDecorator 
+                request={this.removeListRequest.bind(this, listId)} 
+                callback={this.removeListCallback.bind(this, listId)}
                 action='Removing'
-			/>, this.loaderNode);
-	}	
+            />, this.loaderNode);
+    }
 
-	render() {
+    loadList(lists, itemsDone, listId, listName) {
+        document.title = listName;
+        ReactDOM.render(<TaskApp 
+            listId={listId} 
+            immutables={lists.filter((item) => item.immutable)}
+            itemsDone={itemsDone} 
+        />, document.getElementById("app"));
+    }
+
+    render() {
         return null;
 	}
 
