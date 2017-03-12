@@ -69,6 +69,7 @@ var ListApp = React.createClass({
 
 	componentWillMount: function() {
     	this.loadData();
+        // document.title = 'ToDo Lists';
   	},
 
 	render: function() {
@@ -78,7 +79,7 @@ var ListApp = React.createClass({
 
 		return (
 			<div>
-				<h1>Lists</h1>v0311
+				<h1>Lists</h1>v0312
 				<hr />
 				<ListList 
 					lists={this.state.lists} 

@@ -4,7 +4,7 @@ var CONFIG = {
     cookieTodo: 'backup-data-todo',
     postponeBy: 10,
     addNewAt: 6,
-    maxTaskLength: 40,
+    maxTaskLength: 50,
     displayListLength: 17,
     displayLast: 3,
     version: 170311

@@ -9,7 +9,7 @@ var TaskApp = React.createClass({
 			itemsDone: this.props.itemsDone || [],
 			receiving: this.props.receiving,
 			hightlightIndex: null,
-			listName: [],
+			listName: 'Loading',
 			immutable: false,
 			task: ''
 		}
@@ -196,7 +196,6 @@ var TaskApp = React.createClass({
 			if (this.state.receiving) {
 				itemsToDo = [this.state.receiving].concat(itemsToDo);
 			}
-
 			this.setState({
 				listName: data.name, 
 				immutable: data.immutable,
@@ -272,12 +271,12 @@ var TaskApp = React.createClass({
     	this.load();
     	// this.loadFake();
   	},
+	componentDidMount: function() {
+    	document.title = this.props.listName;
+  	},
 
   	displayLoadButton: function (item) {
-  		var listName = item.name;
-  		var id = item._id;
-
-  		return <button onClick={this.loadAnoter.bind(this, id)} >Load from <strong>{ listName }</strong></button>
+  		return <button onClick={this.loadAnoter.bind(this, item._id)} >Load from <strong>{ item.name }</strong></button>
   	},
 
 	render: function() {
@@ -311,12 +310,12 @@ var TaskApp = React.createClass({
 				<h3>Add new:</h3>
 				<form onSubmit={this.handleSubmit}>
 					<input value={this.state.task} onChange={this.onChange} />
-					<button disabled={this.state.task.trim()==''} >Add task</button>
+					<button disabled={this.state.task.trim()===''} >Add task</button>
 				</form>
 				<hr />
 				{ this.props.immutables.map((list) => this.displayLoadButton(list)) }
-				<button onClick={this.mark}>{markTitle}</button>
-				<button onClick={this.handleLists}>Lists</button>
+				<button disabled={!this.state.task.trim()===''} onClick={this.mark}>{markTitle}</button>
+				<button disabled={!this.state.task.trim()===''} onClick={this.handleLists}>Lists</button>
 				<hr />
 			</div>
 		);

@@ -4,10 +4,11 @@ var ListList = React.createClass({
 		this.props.delete(i);
 	},
 
-	load: function (listId) {
+	loadList: function (listId, listName) {
 		React.render(<TaskApp 
 			config={CONFIG} 
-			listId={listId} 
+			listId={listId}
+			listName={listName}
 			immutables={this.props.lists.filter((item) => item.immutable)}
 			itemsDone={this.props.itemsDone} 
 		/>, document.getElementById("app"));
@@ -21,7 +22,7 @@ var ListList = React.createClass({
 		let title = "load " + list._id;
 		let deletable = list.tasks ? list.tasks ==="[]" && !list.immutable : true
 		return <li key={'li'+i}>
-			<button title={title} onClick={this.load.bind(this, list._id)}>Load</button>
+			<button title={title} onClick={this.loadList.bind(this, list._id, listName)}>Load</button>
 			&nbsp;
 			{ listAsDisplayed }
 			&nbsp;
