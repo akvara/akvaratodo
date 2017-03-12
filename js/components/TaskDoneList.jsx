@@ -5,9 +5,10 @@ var TaskDoneList = React.createClass({
 	},
 
 	displayTask: function(task, i) {
-		return <li>
-			{task}&nbsp;
+		return <li key={'li'+i}>
 			<button onClick={this.undone.bind(this, i)}>+</button>
+			&nbsp;
+			{task}
 		</li>;
 	},
 

@@ -55,9 +55,9 @@ var TaskList = React.createClass({
 		let postponeTitle = "Postpone (+" + this.props.config.postponeBy + ")";
 
 		if (this.props.immutable) {
-			return <li>{ taskAsDisplayed }</li>
+			return <li key={'li'+i}>{ taskAsDisplayed }</li>
 		} else {
-			return <li>
+			return <li key={'li'+i}>
 				<button title="done" onClick={this.done.bind(this, itemIndex)}>----</button>
 				{ this.constructor.spacing }
 				{ this.hightlightOnDemand(taskAsDisplayed, hightlighted) }
@@ -89,7 +89,7 @@ var TaskList = React.createClass({
 
 		return (
 			<ul>
-				{taskListDisplayed.map((task, index) => this.displayTask(task, index, shouldOmit, this.props.hightlightIndex == index))}
+				{taskListDisplayed.map((task, index) => this.displayTask(task, index, shouldOmit, this.props.hightlightIndex === index))}
 			</ul>
 		);
 	}

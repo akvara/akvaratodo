@@ -23,7 +23,7 @@ var TaskApp = React.createClass({
 			itemsToDo: _.unique(this.state.itemsToDo),
 			hightlightIndex: Math.min(this.state.itemsToDo.length, this.props.config.addNewAt - 1),
 			task: ''
-		}, this.save.bind(this));
+		}, this.save);
 	},
 
     removeTask: function(i, callback) {
@@ -276,7 +276,7 @@ var TaskApp = React.createClass({
   	},
 
   	displayLoadButton: function (item) {
-  		return <button onClick={this.loadAnoter.bind(this, item._id)} >Load from <strong>{ item.name }</strong></button>
+  		return <button key='load' onClick={this.loadAnoter.bind(this, item._id)} >Load from <strong>{ item.name }</strong></button>
   	},
 
 	render: function() {
@@ -314,8 +314,8 @@ var TaskApp = React.createClass({
 				</form>
 				<hr />
 				{ this.props.immutables.map((list) => this.displayLoadButton(list)) }
-				<button disabled={!this.state.task.trim()===''} onClick={this.mark}>{markTitle}</button>
-				<button disabled={!this.state.task.trim()===''} onClick={this.handleLists}>Lists</button>
+				<button key='mark' disabled={!this.state.task.trim()===''} onClick={this.mark}>{markTitle}</button>
+				<button key='lists' disabled={!this.state.task.trim()===''} onClick={this.handleLists}>Lists</button>
 				<hr />
 			</div>
 		);

@@ -8,5 +8,8 @@
   },
   "scripts": {
     "test": "eslint js/components/"
+  },
+  "devDependencies": {
+    "concurrently": "^3.4.0"
   }
 }
