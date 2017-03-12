@@ -1,6 +1,7 @@
 var config = { 
     apiHost: 'http://localhost:5000/',
     // apiHost: 'http://akvaratododb.herokuapp.com/',
+    loadListIfExists: 'Current',
     listAddon: "lists/",
     listsAddon: "lists",
     cookieTodo: 'backup-data-todo',

@@ -21,7 +21,7 @@ class ListList extends Component {
 		}
 
 		let buttonTitle = "load " + list._id;
-		let deletable = list.tasks ? (list.tasks.length !=="[]" && !list.immutable) : true;
+		let deletable = list.tasks ? (list.tasks === '[]' && !list.immutable) : true;
 
 		return (
 			<li key={'li'+i}>
