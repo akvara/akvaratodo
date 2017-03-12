@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import config from '../config.js';
+import CONFIG from '../config.js';
 
 class LoadingDecorator extends Component {
 	constructor(props, context) {
 	    super(props, context);
 
 	    this.state = {
+	    	actionString: this.props.action || "Loading",
 			loadingString: '',
 			finished: false
 	    }
@@ -20,22 +21,22 @@ class LoadingDecorator extends Component {
 	    		this.interval = 0;
 
 				this.props.callback(val);
-				// console.log("fulfilled:", val);
-				   
+// console.log("fulfilled:", val);
+
 	    	})
  			.catch((err) => {
  				clearInterval(this.interval);
  				this.interval = 0;
- 				this.setState({ 
+ 				this.setState({
 					loadingString: ' error'
 				})
- 				// console.log("rejected:", err);
+				console.log("rejected:", err);
  			});
 	}
 
 	tick() {
 		var loadingString = '.';
-		loadingString += this.state.loadingString.length < config.loadingStringLength ? this.state.loadingString : '';
+		loadingString += this.state.loadingString.length < CONFIG.loadingStringLength ? this.state.loadingString : '';
 
 		this.setState({loadingString});
 	}
@@ -43,7 +44,7 @@ class LoadingDecorator extends Component {
 	render() {
 	    if (this.state.finished)
 	    	return null;
-		return <div>{this.props.action} {this.state.loadingString}</div>
+		return <div>{this.state.actionString} {this.state.loadingString}</div>
 	}
 }
 

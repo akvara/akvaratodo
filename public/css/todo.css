@@ -18,3 +18,11 @@
 .messenger-error{
     color: red;
 }
+
+.status-bar{
+    font-style: italic;
+}
+
+.right-align{
+    text-align: right;
+}

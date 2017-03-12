@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import config from '../config.js';
+import CONFIG from '../config.js';
 
 class ListList extends Component {
 
@@ -13,12 +13,15 @@ class ListList extends Component {
 
 	displayList(list, i) {
 		let listName = list.name ? list.name : "[noname]";
-		let listTasks = list.tasks ? list.tasks.substr(0, config.maxTaskLength) : " ";
+		let listTasks = list.tasks ? list.tasks.substr(0, CONFIG.maxTaskLength) : " ";
 
 		let listAsDisplayed = listName + ": " + listTasks;
-		if (list.updatedAt) {
-			listAsDisplayed = list.updatedAt.substr(-13, 8) + " - " + listAsDisplayed
+		if (list.immutable) {
+			listAsDisplayed = <i>{listAsDisplayed}</i>
 		}
+		// if (list.updatedAt) {
+		// 	listAsDisplayed = list.updatedAt.substr(-13, 8) + " - " + listAsDisplayed
+		// }
 
 		let buttonTitle = "load " + list._id;
 		let deletable = list.tasks ? (list.tasks === '[]' && !list.immutable) : true;

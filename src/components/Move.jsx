@@ -23,17 +23,18 @@ console.log('Move Did Mount');
 console.log('Move Did Un');
     }
 
-	toAnoter (listId) {
+	toAnoter(listId, listName) {
 		ReactDOM.render(<TaskApp
 			listId={listId}
+			listName={listName}
+			immutables={this.state.lists.filter((item) => item.immutable)}
 			prepend={this.props.item}
-			// immutables={this.state.lists.filter((item) => item.immutable)}
 			itemsDone={this.props.itemsDone}
 		/>, this.appNode);
 	}
 
-  	displayToButton (item) {
-  		return <button key={'btn'+item._id} onClick={this.toAnoter.bind(this, item._id)} >To <strong>{ item.name }</strong></button>
+  	displayToButton(item) {
+  		return <button key={'btn'+item._id} onClick={this.toAnoter.bind(this, item._id, item.name)} >To <strong>{ item.name }</strong></button>
   	}
 
     loadData() {
@@ -41,13 +42,7 @@ console.log('Move Did Un');
     }
 
 	render() {
-		if (this.state.notYetLoaded) {
-			return (
-				<div>
-					<h1>Please wait</h1>
-				</div>
-			);
-		}
+		if (this.state.notYetLoaded) return this.notYetLoadedReturn;
 
 		return (
 			<div>

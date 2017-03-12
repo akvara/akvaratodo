@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
-import config from '../config.js';
+import CONFIG from '../config.js';
 
 class TaskList extends Component {
-
-	static consts = {
-    	separatorString: "..........",
-    	// spacing: <span>&nbsp;&nbsp;&nbsp;</span>
-    }
 
 	done(i) {
 		this.props.done(i);
@@ -33,18 +28,18 @@ class TaskList extends Component {
 	}
 
 	hightlightOnDemand(element, index) {
-		if (this.props.hightlightIndex === index) 
+		if (this.props.hightlightIndex === index)
 			return <strong>{element}</strong>;
 		else
 			return element;
 	}
 
 	displayTask(task, i, omitted) {
-		if (task === this.constructor.consts.separatorString) {
-			return this.constructor.consts.separatorString;
+		if (task === CONFIG.separatorString) {
+			return CONFIG.separatorString;
 		}
 
-		let taskTruncated = task.substring(0, config.maxTaskLength);
+		let taskTruncated = task.substring(0, CONFIG.maxTaskLength);
 		let taskAsDisplayed = taskTruncated;
 		if (task.substring(0, 4) === "http") {
 			taskTruncated = taskTruncated.substr(taskTruncated.indexOf('://')+3);
@@ -52,17 +47,17 @@ class TaskList extends Component {
 		}
 
 		let itemIndex = i;
-		if (itemIndex >= config.displayListLength - config.displayLast ) {
+		if (itemIndex >= CONFIG.displayListLength - CONFIG.displayLast ) {
 			itemIndex = i + omitted;
 		}
 
-		let postponeTitle = "Postpone (+" + config.postponeBy + ")";
+		let postponeTitle = "Postpone (+" + CONFIG.postponeBy + ")";
 
 		if (this.props.immutable) {
 			return <li key={'li'+i}>{ taskAsDisplayed }</li>
 		} else {
 			return <li key={'li'+i}>
-				<button title="done" onClick={this.done.bind(this, itemIndex)}>----</button>
+				<button title="done" onClick={this.done.bind(this, itemIndex)}>---</button>
 				&nbsp;
 				{ this.hightlightOnDemand(taskAsDisplayed, itemIndex) }
 				&nbsp;
@@ -74,17 +69,17 @@ class TaskList extends Component {
 			</li>
 		}
 	}
-	
+
 	render() {
-		var taskListDisplayed, 
+		var taskListDisplayed,
 		    shouldOmit;
 
-		if (this.props.items.length > config.displayListLength ) {
-			shouldOmit = this.props.items.length - config.displayListLength;
-			taskListDisplayed =	
-				this.props.items.slice(0, config.displayListLength - config.displayLast - 1)
-					.concat([this.constructor.consts.separatorString])
-					.concat(this.props.items.slice(-config.displayLast));
+		if (this.props.items.length > CONFIG.displayListLength ) {
+			shouldOmit = this.props.items.length - CONFIG.displayListLength;
+			taskListDisplayed =
+				this.props.items.slice(0, CONFIG.displayListLength - CONFIG.displayLast - 1)
+					.concat([CONFIG.separatorString])
+					.concat(this.props.items.slice(-CONFIG.displayLast));
 		} else {
 			shouldOmit = 0;
 			taskListDisplayed =	this.props.items;

@@ -1,6 +1,6 @@
 import React  from 'react';
 import ReactDOM from 'react-dom';
-import config from '../config.js';
+import CONFIG from '../config.js';
 import _ from 'underscore';
 import $ from 'jquery';
 import Loadable from './Loadable';
@@ -22,6 +22,7 @@ class TaskApp extends Loadable {
 			itemsDone: props.itemsDone || [],
 			prepend: props.prepend,
 			hightlightIndex: props.prepend ? 0 : null,
+			// immutables: props.immutables || [],
 			immutable: false,
 			task: '',
 			notYetLoaded: true
@@ -64,7 +65,7 @@ console.log('TaskApp Did Un');
 
 	saveTaskRequest(listId, resolve, reject) {
 		return $.ajax({
-			url: config.apiHost + config.listsAddon + "/" + listId,
+			url: CONFIG.apiHost + CONFIG.listsAddon + "/" + listId,
 			type: 'PUT',
 			data: {
 				tasks: JSON.stringify(this.state.itemsToDo),
@@ -93,8 +94,8 @@ console.log('TaskApp Did Un');
 
 	handleSubmit(e) {
  		e.preventDefault();
- 		let highlightPosition = Math.min(this.state.itemsToDo.length, config.addNewAt - 1);
- 		this.state.itemsToDo.splice(config.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
+ 		let highlightPosition = Math.min(this.state.itemsToDo.length, CONFIG.addNewAt - 1);
+ 		this.state.itemsToDo.splice(CONFIG.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
 		this.setState({
 			itemsToDo: _.unique(this.state.itemsToDo),
 			hightlightIndex: highlightPosition,
@@ -124,13 +125,13 @@ console.log('TaskApp Did Un');
 	highlightPosition(i) {
 		return  Math.min(
 			this.state.itemsToDo.length - 1,
-			config.postponeBy - 1,
-			config.displayListLength
-		) + (this.state.itemsToDo.length >= config.displayListLength ? 1 : 0);
+			CONFIG.postponeBy - 1,
+			CONFIG.displayListLength
+		) + (this.state.itemsToDo.length >= CONFIG.displayListLength ? 1 : 0);
 	}
 
     postponeTask(i) {
-    	let items = Utils.moveFromTo(this.state.itemsToDo, i, i + config.postponeBy)
+    	let items = Utils.moveFromTo(this.state.itemsToDo, i, i + CONFIG.postponeBy)
 		this.setState({
 			itemsToDo: items ,
 			hightlightIndex: this.highlightPosition(i),
@@ -183,19 +184,12 @@ console.log('TaskApp Did Un');
 	}
 
   	displayFromButton (item) {
-  		return <button key={'btn'+item._id} onClick={this.loadFromAnother.bind(this, item._id)} >Load from <strong>{ item.name }</strong></button>
+  		return <button key={'btn'+item._id} onClick={this.loadFromAnother.bind(this, item._id)} >Load from <i>{ item.name }</i></button>
   	}
 
 	render() {
-		var today = new Date().toISOString().slice(0, 10);
-		if (this.state.notYetLoaded) {
-			return (
-				<div>
-					<h1>{this.state.listName} {today}</h1>
-					<div id="l"></div>
-				</div>
-			);
-		}
+		// var today = new Date().toISOString().slice(0, 10);
+		if (this.state.notYetLoaded) return this.notYetLoadedReturn;
 
 		var markTitle = 'Mark immutable';
 		if (this.state.immutable)
@@ -203,9 +197,9 @@ console.log('TaskApp Did Un');
 
 		return (
 			<div>
-				<h1>{this.state.listName} {today}</h1>
+				<h1>{this.state.listName}</h1>
 				<h3>Finished ({this.state.itemsDone.length})</h3>
-				<TaskDoneList items={this.state.itemsDone} undone={this.unDoneTask} />
+				<TaskDoneList items={this.state.itemsDone} undone={this.unDoneTask.bind(this)} />
 				<hr />
 				<h3>Remaining ({this.state.itemsToDo.length})</h3>
 				<TaskList

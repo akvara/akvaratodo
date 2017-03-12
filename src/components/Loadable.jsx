@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import LoadingDecorator from './LoadingDecorator';
 import Messenger from './Messenger';
 import * as Utils from '../utils/utils.js';
-import config from '../config.js';
+import CONFIG from '../config.js';
 import $ from 'jquery';
 import _ from 'underscore';
 
@@ -17,6 +17,7 @@ class Loadable extends Component {
 
         this.loaderNode = document.getElementById('loading');
         this.appNode = document.getElementById('app');
+        this.notYetLoadedReturn = <div><h1>...</h1></div>;
 
      // console.log('React.findDOMNode', ReactDOM.findDOMNode(document.getElementById('loading')));
 	 //    this.loadingNode = React.findDOMNode();
@@ -37,8 +38,8 @@ class Loadable extends Component {
     }
 
     loadListsRequest(resolve, reject) {
-// console.log("loadListsRequest", config.apiHost + config.listsAddon)
-        return $.get(config.apiHost + config.listsAddon)
+// console.log("loadListsRequest", CONFIG.apiHost + CONFIG.listsAddon)
+        return $.get(CONFIG.apiHost + CONFIG.listsAddon)
             .done((data) => {
                 resolve(data);
             })
@@ -58,7 +59,7 @@ class Loadable extends Component {
 
     addAListRequest(resolve, reject) {
         return $.post(
-            config.apiHost + config.listsAddon,
+            CONFIG.apiHost + CONFIG.listsAddon,
             {
                 'name': this.state.listName
             })
@@ -81,7 +82,7 @@ class Loadable extends Component {
 
     removeListRequest(listId, resolve, reject) {
         return $.ajax({
-            url: config.apiHost + config.listAddon + listId,
+            url: CONFIG.apiHost + CONFIG.listAddon + listId,
             type: 'DELETE'
         })
         .done((data) => {
@@ -107,7 +108,7 @@ class Loadable extends Component {
     }
 
     loadAListRequest(listId, resolve, reject) {
-        return $.get(config.apiHost + config.listsAddon + "/" + listId)
+        return $.get(CONFIG.apiHost + CONFIG.listsAddon + "/" + listId)
             .done((data) => { resolve(data) })
             .fail((err) => { reject(err) });
     }
@@ -127,7 +128,7 @@ class Loadable extends Component {
             notYetLoaded: false,
         }, this.state.prepend ? this.save : null);
 
-        ReactDOM.render(<Messenger info="Loaded." />, this.loaderNode);
+        ReactDOM.render(<Messenger info={data.name + " loaded."} />, this.loaderNode);
     }
 
     loadAForeignListCallback(data) {
@@ -138,7 +139,7 @@ class Loadable extends Component {
             notYetLoaded: false,
         });
 
-        ReactDOM.render(<Messenger info="Loaded." />, this.loaderNode);
+        ReactDOM.render(<Messenger info={data.name + " loaded."} />, this.loaderNode);
     }
 
     render() {

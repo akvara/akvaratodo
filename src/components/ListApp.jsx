@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Loadable from './Loadable';
-import TaskApp from './TaskApp';
 import LoadingDecorator from './LoadingDecorator';
+import TaskApp from './TaskApp';
 import ListList from './ListList';
 
 class ListApp extends Loadable {
@@ -10,9 +10,9 @@ class ListApp extends Loadable {
 	    super(props, context);
 
 	    this.state = {
-			lists: [],
+			lists: this.props.lists || null,
 			listName: '',
-			notYetLoaded: true
+			notYetLoaded: !this.props.lists
 	    };
 	}
 
@@ -26,7 +26,8 @@ console.log('ListApp Did Un');
 
     loadData() {
         document.title = "ToDo lists";
-        this.load(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists');
+        if (!this.state.lists)
+        	this.load(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists');
     }
 
 	handleSubmit(e) {
@@ -38,9 +39,9 @@ console.log('ListApp Did Un');
 			// (lists, itemsDone, listId, listName)
 			return this.loadList(this.state.lists, this.state.itemsDone, list._id, list.name)
 		}
+
         this.setState({
-            listName: '',
-            // notYetLoaded: true
+            listName: ''
         });
 
         ReactDOM.render(
@@ -66,9 +67,7 @@ console.log('ListApp Did Un');
     }
 
 	render() {
-		if (this.state.notYetLoaded) {
-			return (<div id="l"><h1>Lists</h1></div>);
-        }
+		if (this.state.notYetLoaded) return this.notYetLoadedReturn;
 
 		return (
 			<div>

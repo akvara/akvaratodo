@@ -8,8 +8,9 @@ class TaskDoneList extends Component {
 
 	displayTask(task, i) {
 		return <li key={'li'+i}>
-			{task}&nbsp;
 			<button onClick={this.undone.bind(this, i)}>+</button>
+			&nbsp;
+			{task}
 		</li>;
 	}
 
