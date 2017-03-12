@@ -25,6 +25,7 @@ console.log('ListApp Did Un');
     }
 
     loadData() {
+        document.title = "ToDo lists";
         this.load(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists');
     }
 
@@ -56,9 +57,9 @@ console.log('ListApp Did Un');
 	}
 
 	loadList(lists, itemsDone, listId, listName) {
-        document.title = listName;
         ReactDOM.render(<TaskApp
             listId={listId}
+            listName={listName}
             immutables={lists.filter((item) => item.immutable)}
             itemsDone={itemsDone}
         />, this.appNode);

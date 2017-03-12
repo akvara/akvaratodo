@@ -37,6 +37,8 @@ console.log('TaskApp Did Un');
     }
 
     loadData() {
+        document.title = this.props.listName;
+
         ReactDOM.render(
             <LoadingDecorator
                 request={this.loadAListRequest.bind(this, this.props.listId)}

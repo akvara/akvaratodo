@@ -22,10 +22,11 @@ class App extends Loadable {
         var current =  this.state.lists.find((item)  => item.name === config.loadListIfExists);
         ReactDOM.unmountComponentAtNode(this.loaderNode);
         if (current) {
-            document.title = current.name;
+            
             // ReactDOM.unmountComponentAtNode(this.loaderNode);
             ReactDOM.render(<TaskApp
                 listId={current._id}
+                listName={current.name}
                 immutables={this.state.lists.filter((item) => item.immutable)}
             />, this.appNode);
         } else {
