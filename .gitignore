@@ -5,7 +5,7 @@
 /coverage
 
 # production
-/build
+#/build
 /build_git_backup
 
 # misc

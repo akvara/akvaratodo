@@ -1,0 +1,28 @@
+.done{
+	text-decoration: line-through;
+}
+
+.messenger{
+    font-style: italic;
+}
+
+.messenger-info{
+    color: gray;
+    font-style: italic;
+}
+
+.messenger-success{
+    color: green;
+}
+
+.messenger-error{
+    color: red;
+}
+
+.status-bar{
+    font-style: italic;
+}
+
+.right-align{
+    text-align: right;
+}
