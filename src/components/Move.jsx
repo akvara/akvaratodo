@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Loadable from './Loadable';
 import TaskApp from './TaskApp';
-import Messenger from './Messenger';
 import * as Utils from '../utils/utils.js';
 
 class Move extends Loadable {

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import LoadingDecorator from './LoadingDecorator';
-import Messenger from './Messenger';
 import * as Utils from '../utils/utils.js';
 import CONFIG from '../config.js';
 import $ from 'jquery';

@@ -5,7 +5,6 @@ import Loadable from './Loadable';
 import ListApp from './ListApp';
 import TaskApp from './TaskApp';
 import * as Utils from '../utils/utils.js';
-import Messenger from './Messenger';
 
 class App extends Loadable {
     constructor(props, context) {
