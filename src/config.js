@@ -4,7 +4,7 @@ var CONFIG = {
     separatorString: "............",
     listAddon: "lists/",
     listsAddon: "lists",
-    maxTaskLength: 41,
+    maxTaskLength: 50,
     loadingStringLength: 40,
     user: {
         id: '1',

@@ -54,21 +54,27 @@ class TaskList extends Component {
 		let postponeTitle = "Postpone (+" + CONFIG.postponeBy + ")";
 
 		if (this.props.immutable) {
-			return <li key={'li'+i}>{ taskAsDisplayed }</li>
+			return <tr key={'tr'+i}><td>{ taskAsDisplayed }</td></tr>
 		} else {
-			return <li key={'li'+i}>
-				<button title="done" onClick={this.done.bind(this, itemIndex)}>
-					<span className="glyphicon glyphicon-ok" aria-hidden="true"></span>
-				</button>
-				<span className="list-item">
-					{ this.hightlightOnDemand(taskAsDisplayed, itemIndex) }
-				</span>
-				<button title="Remove" onClick={this.delete.bind(this, itemIndex)}>x</button>
-				<button title="Procrastinate" onClick={this.procrastinate.bind(this, itemIndex)}>v</button>
-				<button title="To top" onClick={this.toTop.bind(this, itemIndex)}>!</button>
-				<button title="Move to another list" onClick={this.move.bind(this, itemIndex)}>&gt;</button>
-				<button title={postponeTitle} onClick={this.postpone.bind(this, itemIndex)}>p</button>
-			</li>
+			return <tr key={'tr'+i}>
+				<td>
+					<button title="done" onClick={this.done.bind(this, itemIndex)}>
+						---
+					</button>
+				</td>
+				<td>
+					<span className="list-item">
+						{ this.hightlightOnDemand(taskAsDisplayed, itemIndex) }
+					</span>
+				</td>
+				<td>
+					<button title="Remove" onClick={this.delete.bind(this, itemIndex)}>x</button>
+					<button title="Procrastinate" onClick={this.procrastinate.bind(this, itemIndex)}>v</button>
+					<button title="To top" onClick={this.toTop.bind(this, itemIndex)}>!</button>
+					<button title="Move to another list" onClick={this.move.bind(this, itemIndex)}>&gt;</button>
+					<button title={postponeTitle} onClick={this.postpone.bind(this, itemIndex)}>p</button>
+				</td>
+			</tr>
 		}
 	}
 
@@ -88,9 +94,11 @@ class TaskList extends Component {
 		}
 
 		return (
-			<ul>
-				{taskListDisplayed.map((task, index) => this.displayTask(task, index, shouldOmit))}
-			</ul>
+			<table className="table table-sm table-condensed table-hover">
+				<tbody>
+					{taskListDisplayed.map((task, index) => this.displayTask(task, index, shouldOmit))}
+				</tbody>
+			</table>
 		);
 	}
 }

@@ -31,6 +31,14 @@
     padding-right: 20px;
 }
 
+.list-item-immutable{
+    font-style: italic;
+}
+
+.list-item-current{
+    font-style: bold italic;
+}
+
 .settings-item{
     padding-left: 10px;
     padding-right: 10px;

@@ -12,47 +12,40 @@ class ListList extends Component {
 	}
 
 	displayList(list, i) {
-		let listName = list.name ? list.name : "[noname]";
-		let listTasks = list.tasks ? list.tasks.substr(0, CONFIG.maxTaskLength) : " ";
-
-		let listAsDisplayed = listName + ": " + listTasks;
+		var itemClass = "list-item";
 
 		if (list.immutable) {
-			listAsDisplayed = <i>{listAsDisplayed}</i>
+			itemClass += " list-item-immutable"
 		}
 
 		if (list.name === CONFIG.user.loadListIfExists) {
-			listAsDisplayed = <strong><i>{listAsDisplayed}</i></strong>
+			itemClass += " list-item-current"
 		}
-		// if (list.updatedAt) {
-		// 	listAsDisplayed = list.updatedAt.substr(-13, 8) + " - " + listAsDisplayed
-		// }
 
 		let buttonTitle = "load " + list._id;
 		let deletable = list.tasks ? (list.tasks === '[]' && !list.immutable) : true;
 
 		return (
-			<li key={'li'+i}>
-				<button title={buttonTitle} onClick={this.loadList.bind(this, list._id, list.name)}>
-					<span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> Load
-				</button>
-				<span className="list-item">
-					{ listAsDisplayed }
-				</span>
+			<tr key={'tr'+i} onClick={this.loadList.bind(this, list._id, list.name)}>
+				<td className={itemClass}>
+					{ list.name }
+				</td>
+				<td>
 				{deletable &&
-					<button title="remove" onClick={this.removeList.bind(this, list._id)}>
-						<span className="glyphicon glyphicon-trash" aria-hidden="true"></span>
-					</button>
+					<span className="glyphicon glyphicon-trash" aria-hidden="true" onClick={this.removeList.bind(this, list._id)}></span>
 				}
-			</li>
+				</td>
+			</tr>
 		);
 	}
 
 	render() {
 		return (
-			<ul>
-				{this.props.lists.map(this.displayList.bind(this))}
-			</ul>
+			<table className="table table-hover">
+				<tbody>
+					{this.props.lists.map(this.displayList.bind(this))}
+				</tbody>
+			</table>
 		);
 	}
 }

@@ -73,18 +73,15 @@ class ListApp extends Loadable {
 		return (
 			<div>
 				<h1>Lists</h1>
-				<hr />
 				<ListList
 					lists={this.state.lists}
 					loadList={this.loadList.bind(this, this.state.lists, this.props.itemsDone)}
 					removeList={this.removeList.bind(this)}
 				/>
-				<hr />
 				<form onSubmit={this.handleSubmit.bind(this)}>
 					<input className="list-input" value={this.state.listName} onChange={this.onNameChange.bind(this)} />
 					<button disabled={!this.state.listName.trim()}>Add list</button>
 				</form>
-				<hr />
 			</div>
 		);
 	}
