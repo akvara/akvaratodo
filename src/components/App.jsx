@@ -19,7 +19,7 @@ class App extends Loadable {
     loadListsCallback(data) {
         var lists = Utils.sortArrOfObjectsByParam(data, 'updatedAt', true);
 
-        ReactDOM.render(<Messenger info={"Lists loaded."} />, this.loaderNode);
+        // ReactDOM.render(<Messenger info={"Lists loaded."} />, this.loaderNode);
         var current = lists.find((item)  => item.name === CONFIG.loadListIfExists);
         if (current) {
             ReactDOM.render(<TaskApp

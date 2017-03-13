@@ -50,7 +50,7 @@ class Move extends Loadable {
 	}
 
     saveTaskCallback() {
-        ReactDOM.render(<Messenger info="Removed from previous." />, this.loaderNode);
+        // ReactDOM.render(<Messenger info="Removed from previous." />, this.loaderNode);
 
 		ReactDOM.render(<TaskApp
 			listId={this.toListId}

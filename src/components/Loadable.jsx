@@ -56,7 +56,7 @@ class Loadable extends Component {
             lists: Utils.sortArrOfObjectsByParam(data, 'updatedAt', true),
             notYetLoaded: false
         });
-        ReactDOM.render(<Messenger info="Lists loaded." />, this.loaderNode);
+        // ReactDOM.render(<Messenger info="Lists loaded." />, this.loaderNode);
     }
 
     addAListRequest(resolve, reject) {
@@ -78,7 +78,7 @@ class Loadable extends Component {
             lists: lists.concat(data),
             notYetLoaded: false
         });
-        ReactDOM.render(<Messenger info="Added." />, this.loaderNode);
+        // ReactDOM.render(<Messenger info="Added." />, this.loaderNode);
         return this.loadList(lists, [' Transferring of ItemsDone -> To Be Done'], data._id, data.name);
     }
 
@@ -97,7 +97,7 @@ class Loadable extends Component {
 
     removeListCallback(listId) {
         this.setState({ lists: this.state.lists.filter(list => list._id !== listId) });
-        ReactDOM.render(<Messenger info="Removed." />, this.loaderNode);
+        // ReactDOM.render(<Messenger info="Removed." />, this.loaderNode);
     }
 
     removeList(listId) {
@@ -131,7 +131,7 @@ class Loadable extends Component {
         }, this.state.prepend ? this.saveTask : null);
 
         document.title = data.name;
-        ReactDOM.render(<Messenger info={data.name + " loaded."} />, this.loaderNode);
+        // ReactDOM.render(<Messenger info={data.name + " loaded."} />, this.loaderNode);
     }
 
     loadAForeignListCallback(data) {
@@ -142,7 +142,7 @@ class Loadable extends Component {
             notYetLoaded: false,
         });
 
-        ReactDOM.render(<Messenger info={data.name + " loaded."} />, this.loaderNode);
+        // ReactDOM.render(<Messenger info={data.name + " loaded."} />, this.loaderNode);
     }
 
 
@@ -170,7 +170,7 @@ class Loadable extends Component {
     }
 
     saveTaskCallback() {
-        ReactDOM.render(<Messenger info="Saved." />, this.loaderNode);
+        // ReactDOM.render(<Messenger info="Saved." />, this.loaderNode);
     }
 
     render() {
