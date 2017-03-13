@@ -28,11 +28,12 @@ class ListList extends Component {
 		return (
 			<tr key={'tr'+i} onClick={this.loadList.bind(this, list._id, list.name)}>
 				<td className={itemClass}>
+					<span className="glyphicon glyphicon-folder-open list-item" aria-hidden="true"></span>
 					{ list.name }
 				</td>
 				<td>
 				{deletable &&
-					<span className="glyphicon glyphicon-trash" aria-hidden="true" onClick={this.removeList.bind(this, list._id)}></span>
+					<span className="glyphicon glyphicon-trash action-button" aria-hidden="true" onClick={this.removeList.bind(this, list._id)}></span>
 				}
 				</td>
 			</tr>

@@ -53,7 +53,11 @@
     width: 200px;
 }
 
-.horizontal_dotted_line{
-  border-bottom: 10 px dotted gray;
-  width: 100px;
+.action-button {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.action-button:hover{
+    -webkit-transform: scale(1.3);
 }

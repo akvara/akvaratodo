@@ -9,7 +9,7 @@ class User extends Component {
 	render() {
 		return <div>
 			{CONFIG.version}
-			<span className="glyphicon glyphicon-cog list-item" aria-hidden="true" onClick={this.settings.bind(this, this.props.lists)}></span>
+			<span className="glyphicon glyphicon-cog action-button" aria-hidden="true" onClick={this.settings.bind(this, this.props.lists)}></span>
 			{CONFIG.user.name}
 		</div>
 	}

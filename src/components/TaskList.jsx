@@ -58,21 +58,19 @@ class TaskList extends Component {
 		} else {
 			return <tr key={'tr'+i}>
 				<td>
-					<button title="done" onClick={this.done.bind(this, itemIndex)}>
-						---
-					</button>
+					<span className="glyphicon glyphicon-unchecked action-button" aria-hidden="true" onClick={this.done.bind(this, itemIndex)}></span>
 				</td>
 				<td>
-					<span className="list-item">
-						{ this.hightlightOnDemand(taskAsDisplayed, itemIndex) }
-					</span>
+				<span className="list-item task">
+					{ this.hightlightOnDemand(taskAsDisplayed, itemIndex) }
+				</span>
 				</td>
 				<td>
-					<button title="Remove" onClick={this.delete.bind(this, itemIndex)}>x</button>
-					<button title="Procrastinate" onClick={this.procrastinate.bind(this, itemIndex)}>v</button>
-					<button title="To top" onClick={this.toTop.bind(this, itemIndex)}>!</button>
-					<button title="Move to another list" onClick={this.move.bind(this, itemIndex)}>&gt;</button>
-					<button title={postponeTitle} onClick={this.postpone.bind(this, itemIndex)}>p</button>
+					<span className="glyphicon glyphicon-trash action-button" aria-hidden="true" onClick={this.delete.bind(this, itemIndex)}></span>
+					<span className="glyphicon glyphicon-arrow-down action-button" aria-hidden="true" onClick={this.procrastinate.bind(this, itemIndex)}></span>
+					<span className="glyphicon glyphicon-arrow-up action-button" aria-hidden="true"onClick={this.toTop.bind(this, itemIndex)}></span>
+					<span className="glyphicon glyphicon-random action-button" aria-hidden="true" onClick={this.move.bind(this, itemIndex)}></span>
+					<span className="glyphicon glyphicon-thumbs-down action-button	" aria-hidden="true" onClick={this.postpone.bind(this, itemIndex)}></span>
 				</td>
 			</tr>
 		}

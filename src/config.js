@@ -4,7 +4,7 @@ var CONFIG = {
     separatorString: "............",
     listAddon: "lists/",
     listsAddon: "lists",
-    maxTaskLength: 50,
+    maxTaskLength: 55,
     loadingStringLength: 40,
     user: {
         id: '1',
@@ -18,7 +18,7 @@ var CONFIG = {
         displayLast: {explain: 'Display number of tasks at bottom',  default: 3, handler: 'numeric', min: 1, max: 50},
         loadListIfExists: {explain: 'Load this list on start', handler: 'selector', field: ''},
     },
-    version: '0313-18'
+    version: '0314'
 };
 
 export default Object.freeze(CONFIG);
