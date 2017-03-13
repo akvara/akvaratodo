@@ -27,15 +27,17 @@
     text-align: right;
 }
 
-.task {
+.list-item{
     padding-left: 10px;
     padding-right: 20px;
 }
 
-.hiding-button {
-  display: none; /* Hide button */
+.task-input {
+    width: 500px;
 }
 
-.hiding-button:hover button {
-   display: block; /* On :hover of div show button */
+.horizontal_dotted_line{
+  border-bottom: 10 px dotted gray;
+  width: 100px;
 }
+

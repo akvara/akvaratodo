@@ -28,12 +28,16 @@ class ListList extends Component {
 
 		return (
 			<li key={'li'+i}>
-				<button title={buttonTitle} onClick={this.loadList.bind(this, list._id, list.name)}>Load</button>
-				&nbsp;
-				{ listAsDisplayed }
-				&nbsp;
+				<button title={buttonTitle} onClick={this.loadList.bind(this, list._id, list.name)}>
+					<span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> Load
+				</button>
+				<span className="list-item">
+					{ listAsDisplayed }
+				</span>
 				{deletable &&
-					<button title="remove" onClick={this.removeList.bind(this, list._id)}>x</button>
+					<button title="remove" onClick={this.removeList.bind(this, list._id)}>
+						<span className="glyphicon glyphicon-trash" aria-hidden="true"></span>
+					</button>
 				}
 			</li>
 		);

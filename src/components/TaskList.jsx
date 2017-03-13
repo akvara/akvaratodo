@@ -36,7 +36,7 @@ class TaskList extends Component {
 
 	displayTask(task, i, omitted) {
 		if (task === CONFIG.separatorString) {
-			return CONFIG.separatorString;
+			return CONFIG.separatorString
 		}
 
 		let taskTruncated = task.substring(0, CONFIG.maxTaskLength);
@@ -60,7 +60,7 @@ class TaskList extends Component {
 				<button title="done" onClick={this.done.bind(this, itemIndex)}>
 					<span className="glyphicon glyphicon-ok" aria-hidden="true"></span>
 				</button>
-				<span className="task">
+				<span className="list-item">
 					{ this.hightlightOnDemand(taskAsDisplayed, itemIndex) }
 				</span>
 				<button title="Remove" onClick={this.delete.bind(this, itemIndex)}>x</button>
