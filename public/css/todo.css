@@ -31,8 +31,18 @@
     padding-right: 20px;
 }
 
+.settings-item{
+    padding-left: 10px;
+    padding-right: 10px;
+    font-style: bold;
+}
+
 .task-input {
-    width: 500px;
+    width: 400px;
+}
+
+.list-input {
+    width: 200px;
 }
 
 .horizontal_dotted_line{

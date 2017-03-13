@@ -1,19 +1,24 @@
 var CONFIG = {
-    apiHost: 'http://localhost:5000/',
-    // apiHost: 'http://akvaratododb.herokuapp.com/',
-    userId: 'akvara',
+    // apiHost: 'http://localhost:5000/',
+    apiHost: 'http://akvaratododb.herokuapp.com/',
     separatorString: "............",
-    loadListIfExists: 'Current',
     listAddon: "lists/",
     listsAddon: "lists",
-    cookieTodo: 'backup-data-todo',
-    postponeBy: 10,
-    addNewAt: 6,
     maxTaskLength: 41,
-    displayListLength: 15,
-    displayLast: 3,
     loadingStringLength: 40,
-    version: '0313'
+    user: {
+        id: '1',
+        name: 'akvara',
+        settings: {}
+    },
+    settingsConfig: {
+        addNewAt: {explain: 'Add new item at position', handler: 'numeric', default: 6, min: 1, max: 10},
+        postponeBy: {explain: 'Postpone task by', default: 10, handler: 'numeric', min: 1, max: 50},
+        displayListLength: {explain: 'Display numer of tasks at once', default: 6, handler: 'numeric', min: 1, max: 50},
+        displayLast: {explain: 'Display number of tasks at bottom',  default: 3, handler: 'numeric', min: 1, max: 50},
+        loadListIfExists: {explain: 'Load this list on start', handler: 'selector', field: ''},
+    },
+    version: '0313-18'
 };
 
 export default Object.freeze(CONFIG);

@@ -16,8 +16,13 @@ class ListList extends Component {
 		let listTasks = list.tasks ? list.tasks.substr(0, CONFIG.maxTaskLength) : " ";
 
 		let listAsDisplayed = listName + ": " + listTasks;
+
 		if (list.immutable) {
 			listAsDisplayed = <i>{listAsDisplayed}</i>
+		}
+
+		if (list.name === CONFIG.user.loadListIfExists) {
+			listAsDisplayed = <strong><i>{listAsDisplayed}</i></strong>
 		}
 		// if (list.updatedAt) {
 		// 	listAsDisplayed = list.updatedAt.substr(-13, 8) + " - " + listAsDisplayed

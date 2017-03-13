@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import CONFIG from '../config.js';
 import Loadable from './Loadable';
+import User from './User';
+import Settings from './Settings';
 import ListApp from './ListApp';
 import TaskApp from './TaskApp';
 import * as Utils from '../utils/utils.js';
@@ -13,12 +15,15 @@ class App extends Loadable {
         this.state = {
             lists: [],
         };
+        this.userNode = document.getElementById('user');
     }
 
     loadListsCallback(data) {
         var lists = Utils.sortArrOfObjectsByParam(data, 'updatedAt', true);
 
-        var current = lists.find((item)  => item.name === CONFIG.loadListIfExists);
+        ReactDOM.render(<User lists={lists} settings={this.settings.bind(this)} />, this.userNode);
+
+        var current = lists.find((item)  => item.name === CONFIG.user.loadListIfExists);
         if (current) {
             ReactDOM.render(<TaskApp
                 listId={current._id}
@@ -32,6 +37,10 @@ class App extends Loadable {
 
     loadData() {
         this.loadLists(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists', 'Lists loaded.');
+    }
+
+    settings(lists) {
+        ReactDOM.render(<Settings lists={lists} back={this.loadData.bind(this)}/>, this.appNode);
     }
 
     render() {
