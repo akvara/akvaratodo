@@ -15,7 +15,7 @@ var promiseWrapper = function(wrappable) {
   });
 }
 
-    React.unmountComponentAtNode(mountNode);
+    ReactDOM.unmountComponentAtNode(mountNode);
 
 
 

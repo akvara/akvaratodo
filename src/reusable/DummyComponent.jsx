@@ -10,7 +10,6 @@ class DummyComponent extends Component {
         this.state = {
             a: 11
         }
-
 console.log('DummyComponent constructor');
     }
 
@@ -20,12 +19,18 @@ console.log('DummyComponent Will Mount');
 
     componentDidMount() {
 console.log('DummyComponent Did Mount');
-console.log('Utils', Utils);
-
     }
 
     componentWillUnmount() {
 console.log('DummyComponent Did Un');
+    }
+
+    componentWillUpdate() {
+console.log('DummyComponent Will Update');
+    }
+
+    componentDidUpdate() {
+console.log('DummyComponent Did Update');
     }
 
     parentUpdateState() {

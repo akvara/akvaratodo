@@ -17,17 +17,19 @@ class ListApp extends Loadable {
 	}
 
     componentDidMount() {
-console.log('ListApp Did Mount');
+// console.log('ListApp Did Mount');
     }
 
     componentWillUnmount() {
-console.log('ListApp Did Un');
+// console.log('ListApp Did Un');
+    }
+    componentDidUpdate() {
+// console.log('ListApp Did Update');
     }
 
     loadData() {
         document.title = "ToDo lists";
-        if (!this.state.lists)
-        	this.load(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists');
+        if (!this.state.lists) this.load(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists');
     }
 
 	handleSubmit(e) {

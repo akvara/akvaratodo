@@ -17,20 +17,18 @@ class App extends Loadable {
     }
 
     loadListsCallback(data) {
-        this.setState({
-            lists: Utils.sortArrOfObjectsByParam(data, 'updatedAt', true),
-        });
+        var lists = Utils.sortArrOfObjectsByParam(data, 'updatedAt', true);
+
         ReactDOM.render(<Messenger info={"Lists loaded."} />, this.loaderNode);
-        var current = this.state.lists.find((item)  => item.name === CONFIG.loadListIfExists);
+        var current = lists.find((item)  => item.name === CONFIG.loadListIfExists);
         if (current) {
-            // ReactDOM.unmountComponentAtNode(this.loaderNode);
             ReactDOM.render(<TaskApp
                 listId={current._id}
                 listName={current.name}
-                immutables={this.state.lists.filter((item) => item.immutable)}
+                immutables={lists.filter((item) => item.immutable)}
             />, this.appNode);
         } else {
-            ReactDOM.render(<ListApp lists={this.state.lists}/>, this.appNode);
+            ReactDOM.render(<ListApp lists={lists}/>, this.appNode);
         }
    }
 

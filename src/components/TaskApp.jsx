@@ -2,10 +2,8 @@ import React  from 'react';
 import ReactDOM from 'react-dom';
 import CONFIG from '../config.js';
 import _ from 'underscore';
-import $ from 'jquery';
 import Loadable from './Loadable';
 import LoadingDecorator from './LoadingDecorator';
-import Messenger from './Messenger';
 import Move from './Move';
 import ListApp from './ListApp';
 import TaskList from './TaskList';
@@ -29,17 +27,19 @@ class TaskApp extends Loadable {
 	    };
 	}
 
+    componentWillMount() {
+        this.loadData();
+    }
+
     componentDidMount() {
-console.log('TaskApp Did Mount');
+// console.log('TaskApp Did Mount');
     }
 
     componentWillUnmount() {
-console.log('TaskApp Did Un');
+// console.log('TaskApp Did Un');
     }
 
     loadData() {
-        document.title = this.props.listName;
-
         ReactDOM.render(
             <LoadingDecorator
                 request={this.loadAListRequest.bind(this, this.props.listId)}
@@ -52,35 +52,6 @@ console.log('TaskApp Did Un');
   	goToLists() {
     	ReactDOM.render(<ListApp itemsDone={this.state.itemsDone}/>, this.appNode);
   	}
-
-	saveTask() {
-		ReactDOM.render(
-            <LoadingDecorator
-                request={this.saveTaskRequest.bind(this, this.props.listId)}
-                callback={this.saveTaskCallback.bind(this)}
-                action='Saving'
-            />, this.loaderNode
-        );
-	}
-
-	saveTaskRequest(listId, resolve, reject) {
-		return $.ajax({
-			url: CONFIG.apiHost + CONFIG.listsAddon + "/" + listId,
-			type: 'PUT',
-			data: {
-				tasks: JSON.stringify(this.state.itemsToDo),
-				immutable: this.state.immutable,
-				hightlightIndex: this.state.hightlightIndex,
-                updated_at: new Date()
-			}
-		})
-		.done((data) => { resolve(data) })
-        .fail((err) => { reject(err) });
-	}
-
-	saveTaskCallback() {
-	    ReactDOM.render(<Messenger info="Saved." />, this.loaderNode);
-	}
 
 	mark() {
 		this.setState({
@@ -103,23 +74,18 @@ console.log('TaskApp Did Un');
 		}, this.saveTask.bind(this));
 	}
 
-    removeTask(i, callback) {
- 		this.state.itemsToDo.splice(i, 1);
+    removeTask(i) {
 		this.setState({
-			itemsToDo: this.state.itemsToDo,
+			itemsToDo: Utils.removeItem(this.state.itemsToDo, i),
 			hightlightIndex: null,
-		}, function (callback) {
-			this.saveTask();
-			if (callback) callback()
-		}.bind(this, callback));
+		},
+		this.saveTask.bind(this))
 	}
 
     moveOutside(i) {
- 		var removed = this.state.itemsToDo[i];
- 		this.removeTask(i, function(removed) {
-			ReactDOM.unmountComponentAtNode(this.loaderNode);
-			ReactDOM.render(<Move item={removed} itemsDone={this.state.itemsDone}/>, this.appNode);
- 		}.bind(this, removed));
+ 		// var removed = this.state.itemsToDo[i];
+ 		// this.removeTask(i, this.moveItem.bind(this, removed));
+		ReactDOM.render(<Move state={this.state} itemIndex={i} fromList={this.state.listId}/>, this.appNode);
 	}
 
 	highlightPosition(i) {

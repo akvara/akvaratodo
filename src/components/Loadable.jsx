@@ -27,6 +27,10 @@ class Loadable extends Component {
         this.loadData();
     }
 
+    componentDidUpdate() {
+// console.log('Loadable Did Update', this.state);
+    }
+
     load(request, callback, actionMessage) {
         ReactDOM.render(
             <LoadingDecorator
@@ -38,7 +42,6 @@ class Loadable extends Component {
     }
 
     loadListsRequest(resolve, reject) {
-// console.log("loadListsRequest", CONFIG.apiHost + CONFIG.listsAddon)
         return $.get(CONFIG.apiHost + CONFIG.listsAddon)
             .done((data) => {
                 resolve(data);
@@ -49,7 +52,6 @@ class Loadable extends Component {
     }
 
     loadListsCallback(data) {
-// console.log("loadListsCallback result", data);
         this.setState({
             lists: Utils.sortArrOfObjectsByParam(data, 'updatedAt', true),
             notYetLoaded: false
@@ -115,19 +117,20 @@ class Loadable extends Component {
 
     loadAListCallback(data) {
         let itemsToDo = data.tasks ? JSON.parse(data.tasks) : [];
-
         if (this.state.prepend) {
-            itemsToDo = [this.state.prepend].concat(itemsToDo);
+            itemsToDo = _.unique([this.state.prepend].concat(itemsToDo));
         }
 
         this.setState({
+            listId: data._id,
             listName: data.name,
             immutable: data.immutable,
             itemsToDo: itemsToDo,
             prepend: null,
             notYetLoaded: false,
-        }, this.state.prepend ? this.save : null);
+        }, this.state.prepend ? this.saveTask : null);
 
+        document.title = data.name;
         ReactDOM.render(<Messenger info={data.name + " loaded."} />, this.loaderNode);
     }
 
@@ -140,6 +143,34 @@ class Loadable extends Component {
         });
 
         ReactDOM.render(<Messenger info={data.name + " loaded."} />, this.loaderNode);
+    }
+
+
+    saveTask() {
+        ReactDOM.render(
+            <LoadingDecorator
+                request={this.saveTaskRequest.bind(this, this.state.listId)}
+                callback={this.saveTaskCallback.bind(this)}
+                action='Saving'
+            />, this.loaderNode
+        );
+    }
+
+    saveTaskRequest(listId, resolve, reject) {
+        return $.ajax({
+            url: CONFIG.apiHost + CONFIG.listsAddon + "/" + listId,
+            type: 'PUT',
+            data: {
+                tasks: JSON.stringify(this.state.itemsToDo),
+                immutable: this.state.immutable,
+            }
+        })
+        .done((data) => { resolve(data) })
+        .fail((err) => { reject(err) });
+    }
+
+    saveTaskCallback() {
+        ReactDOM.render(<Messenger info="Saved." />, this.loaderNode);
     }
 
     render() {

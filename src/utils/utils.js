@@ -37,12 +37,18 @@ exports.moveToTop = function(items, i) {
     return [trans].concat(items);
 }
 
-exports.moveFromTo = function(arrayA, from, to) {
-    let trans = arrayA[from];
-    arrayA.splice(from, 1);
-    arrayA.splice(to, 0, trans);
+exports.moveFromTo = function(items, fromPos, toPos) {
+    let trans = items[fromPos];
+    items.splice(fromPos, 1);
+    items.splice(toPos, 0, trans);
 
-    return arrayA;
+    return items;
+}
+
+exports.removeItem = function(items, i) {
+    items.splice(i, 1);
+
+    return items;
 }
 
 exports.textToArray = function(text) {
