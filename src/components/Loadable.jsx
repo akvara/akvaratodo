@@ -72,12 +72,12 @@ class Loadable extends Component {
             });
     }
 
-    addAListCallback(lists, data) {
+    addAListCallback(lists, doneItems, data) {
         this.setState({
             lists: lists.concat(data),
             notYetLoaded: false
         });
-        return this.loadList(lists, [' Transferring of ItemsDone -> To Be Done'], data._id, data.name);
+        return this.loadList(lists, doneItems, data._id, data.name);
     }
 
     removeListRequest(listId, resolve, reject) {

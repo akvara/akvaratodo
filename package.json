@@ -19,6 +19,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "both": "concurrently \"react-scripts start\" \"cd ../akvaratodoApi && yarn run start\"",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
