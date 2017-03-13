@@ -25,8 +25,8 @@ class Settings extends Component {
 		if (obj[property]>=CONFIG.settingsConfig[property].min) this.setState(obj)
 	}
 
-	handleChange() {
-
+	handleChange(e) {
+    	this.setState({loadListIfExists: e.target.value }, console.log(this.state))
 	}
 
 	back() {
@@ -34,7 +34,13 @@ class Settings extends Component {
 	}
 
 	displayList(listItem, i) {
-		return <option key={"o"+ i}>nufak</option>
+		return <option key={"o"+ i}>{{listItem}}</option>
+	}
+
+	displaySelect(property) {
+		return React.createElement("select", { value: this.state[property], onChange: this.handleChange.bind(this) },
+			this.props.lists.map((item) => React.createElement("option", { value: item.name }, item.name ))
+         )
 	}
 
 	displayRow(property) {
@@ -59,9 +65,7 @@ class Settings extends Component {
 				<td>{CONFIG.settingsConfig[property].explain}</td>
 				<td>
 					<span>
-						<select value={this.state[property]} onChange={this.handleChange}>
-							{ this.props.lists.map(this.displayList.bind(this)) }
-					    </select>
+				      { this.displaySelect(property) }
 					</span>
 				</td>
 			</tr>

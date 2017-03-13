@@ -22,7 +22,7 @@ class ListList extends Component {
 			itemClass += " list-item-current"
 		}
 
-		let buttonTitle = "load " + list._id;
+		// let buttonTitle = "load " + list._id;
 		let deletable = list.tasks ? (list.tasks === '[]' && !list.immutable) : true;
 
 		return (

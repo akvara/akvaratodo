@@ -51,7 +51,7 @@ class TaskList extends Component {
 			itemIndex = i + omitted;
 		}
 
-		let postponeTitle = "Postpone (+" + CONFIG.postponeBy + ")";
+		// let postponeTitle = "Postpone (+" + CONFIG.postponeBy + ")";
 
 		if (this.props.immutable) {
 			return <tr key={'tr'+i}><td>{ taskAsDisplayed }</td></tr>
