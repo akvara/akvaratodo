@@ -20,7 +20,7 @@ class TaskApp extends Loadable {
 			itemsDone: props.itemsDone || [],
 			prepend: props.prepend,
 			hightlightIndex: props.prepend ? 0 : null,
-			// immutables: props.immutables || [],
+			immutables: props.immutables || [],
 			immutable: false,
 			task: '',
 			notYetLoaded: true
@@ -84,8 +84,6 @@ class TaskApp extends Loadable {
 	}
 
     moveOutside(i) {
- 		// var removed = this.state.itemsToDo[i];
- 		// this.removeTask(i, this.moveItem.bind(this, removed));
 		ReactDOM.render(<Move state={this.state} itemIndex={i} fromList={this.state.listId}/>, this.appNode);
 	}
 
@@ -140,7 +138,6 @@ class TaskApp extends Loadable {
 	}
 
 	loadFromAnother(listId) {
-		// ReactDOM.unmountComponentAtNode(this.loaderNode);
         ReactDOM.render(
             <LoadingDecorator
                 request={this.loadAListRequest.bind(this, listId)}
@@ -157,7 +154,6 @@ class TaskApp extends Loadable {
   	}
 
 	render() {
-		// var today = new Date().toISOString().slice(0, 10);
 		if (this.state.notYetLoaded) return this.notYetLoadedReturn;
 
 		var markTitle = 'Mark immutable';

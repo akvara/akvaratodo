@@ -33,12 +33,9 @@ class Move extends Loadable {
     }
 
 	toAnoter(toListId, listName) {
-
-		// this.prepend = this.movingItem;
 		if (toListId === this.props.fromList) {
 			ReactDOM.render(<TaskApp
 				listId={this.props.fromList}
-				// listName={this.state.listName}
 				immutables={this.state.lists.filter((list) => list.immutable)}
 				itemsDone={this.props.itemsDone}
 			/>, this.appNode);
@@ -46,19 +43,14 @@ class Move extends Loadable {
 			this.toListId = toListId;
 			this.saveTask();
 		}
-
 	}
 
     saveTaskCallback() {
-        // ReactDOM.render(<Messenger info="Removed from previous." />, this.loaderNode);
-
 		ReactDOM.render(<TaskApp
 			listId={this.toListId}
 			prepend={this.movingItem}
-			// reikia. Arba sugalvoti kaip settinti document
-			// listName={this.state.listName}
 			immutables={this.state.lists.filter((list) => list.immutable)}
-			itemsDone={this.props.itemsDone}
+			itemsDone={this.state.itemsDone}
 		/>, this.appNode);
 	}
 

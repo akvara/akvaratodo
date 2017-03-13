@@ -76,7 +76,7 @@ class ListApp extends Loadable {
 				<hr />
 				<ListList
 					lists={this.state.lists}
-					loadList={this.loadList.bind(this, this.state.lists, this.state.itemsDone)}
+					loadList={this.loadList.bind(this, this.state.lists, this.props.itemsDone)}
 					removeList={this.removeList.bind(this)}
 				/>
 				<hr />
