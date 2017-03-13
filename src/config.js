@@ -1,7 +1,8 @@
 var CONFIG = {
     apiHost: 'http://localhost:5000/',
     // apiHost: 'http://akvaratododb.herokuapp.com/',
-    separatorString: "..........",
+    userId: 'akvara',
+    separatorString: "............",
     loadListIfExists: 'Current',
     listAddon: "lists/",
     listsAddon: "lists",

@@ -40,11 +40,11 @@ class Move extends Loadable {
 			/>, this.appNode);
 		} else {
 			this.toListId = toListId;
-			this.saveTask();
+			this.saveTaskList();
 		}
 	}
 
-    saveTaskCallback() {
+    saveTaskListCallback() {
 		ReactDOM.render(<TaskApp
 			listId={this.toListId}
 			prepend={this.movingItem}

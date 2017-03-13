@@ -56,7 +56,6 @@ class Loadable extends Component {
             lists: Utils.sortArrOfObjectsByParam(data, 'updatedAt', true),
             notYetLoaded: false
         });
-        // ReactDOM.render(<Messenger info="Lists loaded." />, this.loaderNode);
     }
 
     addAListRequest(resolve, reject) {
@@ -78,7 +77,6 @@ class Loadable extends Component {
             lists: lists.concat(data),
             notYetLoaded: false
         });
-        // ReactDOM.render(<Messenger info="Added." />, this.loaderNode);
         return this.loadList(lists, [' Transferring of ItemsDone -> To Be Done'], data._id, data.name);
     }
 
@@ -97,7 +95,6 @@ class Loadable extends Component {
 
     removeListCallback(listId) {
         this.setState({ lists: this.state.lists.filter(list => list._id !== listId) });
-        // ReactDOM.render(<Messenger info="Removed." />, this.loaderNode);
     }
 
     removeList(listId) {
@@ -128,10 +125,9 @@ class Loadable extends Component {
             itemsToDo: itemsToDo,
             prepend: null,
             notYetLoaded: false,
-        }, this.state.prepend ? this.saveTask : null);
+        }, this.state.prepend ? this.saveTaskList : null);
 
         document.title = data.name;
-        // ReactDOM.render(<Messenger info={data.name + " loaded."} />, this.loaderNode);
     }
 
     loadAForeignListCallback(data) {
@@ -140,24 +136,21 @@ class Loadable extends Component {
             itemsToDo: _.unique(loadedItems.concat(this.state.itemsToDo)),
             prepend: null,
             notYetLoaded: false,
-        });
-
-        // ReactDOM.render(<Messenger info={data.name + " loaded."} />, this.loaderNode);
+        }, this.saveTaskList);
     }
 
-
-    saveTask() {
+    saveTaskList() {
         ReactDOM.render(
             <LoadingDecorator
-                request={this.saveTaskRequest.bind(this, this.state.listId)}
-                callback={this.saveTaskCallback.bind(this)}
+                request={this.saveTaskListRequest.bind(this, this.state.listId)}
+                callback={this.saveTaskListCallback.bind(this)}
                 actionMessage='Saving'
                 finishedMessage='Saved'
             />, this.loaderNode
         );
     }
 
-    saveTaskRequest(listId, resolve, reject) {
+    saveTaskListRequest(listId, resolve, reject) {
         return $.ajax({
             url: CONFIG.apiHost + CONFIG.listsAddon + "/" + listId,
             type: 'PUT',
@@ -170,8 +163,7 @@ class Loadable extends Component {
         .fail((err) => { reject(err) });
     }
 
-    saveTaskCallback() {
-        // ReactDOM.render(<Messenger info="Saved." />, this.loaderNode);
+    saveTaskListCallback() {
     }
 
     render() {

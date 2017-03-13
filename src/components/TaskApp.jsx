@@ -57,7 +57,7 @@ class TaskApp extends Loadable {
 	mark() {
 		this.setState({
 			immutable: !this.state.immutable
-		}, this.saveTask);
+		}, this.saveTaskList);
 	}
 
     onChange (e) {
@@ -72,7 +72,7 @@ class TaskApp extends Loadable {
 			itemsToDo: _.unique(this.state.itemsToDo),
 			hightlightIndex: highlightPosition,
 			task: ''
-		}, this.saveTask.bind(this));
+		}, this.saveTaskList.bind(this));
 	}
 
     removeTask(i) {
@@ -80,7 +80,7 @@ class TaskApp extends Loadable {
 			itemsToDo: Utils.removeItem(this.state.itemsToDo, i),
 			hightlightIndex: null,
 		},
-		this.saveTask.bind(this))
+		this.saveTaskList.bind(this))
 	}
 
     moveOutside(i) {
@@ -100,7 +100,7 @@ class TaskApp extends Loadable {
 		this.setState({
 			itemsToDo: items ,
 			hightlightIndex: this.highlightPosition(i),
-		}, this.saveTask);
+		}, this.saveTaskList);
 	}
 
 	doneTask(i) {
@@ -108,7 +108,7 @@ class TaskApp extends Loadable {
 		this.setState({
 			itemsToDo: moved.A,
 			itemsDone: moved.B
-		}, this.saveTask);
+		}, this.saveTaskList);
 	}
 
 	unDoneTask(i) {
@@ -117,7 +117,7 @@ class TaskApp extends Loadable {
 			itemsToDo: moved.B,
 			itemsDone: moved.A,
 			hightlightIndex: 0
-		}, this.saveTask);
+		}, this.saveTaskList);
 	}
 
 	procrastinateTask(i) {
@@ -125,7 +125,7 @@ class TaskApp extends Loadable {
 		this.setState({
 			itemsToDo: items,
 			hightlightIndex: this.state.itemsToDo.length
-		}, this.saveTask);
+		}, this.saveTaskList);
 	}
 
 	toTop(i) {
@@ -134,7 +134,7 @@ class TaskApp extends Loadable {
 		this.setState({
 			itemsToDo: items,
 			hightlightIndex: 0
-		}, this.saveTask);
+		}, this.saveTaskList);
 	}
 
 	loadFromAnother(listId) {
@@ -165,7 +165,6 @@ class TaskApp extends Loadable {
 			markGlyphicon = 'screen-shot'
 		}
 
-
 		return (
 			<div>
 				<h1>{this.state.listName}</h1>
@@ -189,7 +188,7 @@ class TaskApp extends Loadable {
 					<hr />
 					<h3>Add new:</h3>
 					<form onSubmit={this.handleSubmit.bind(this)}>
-						<input value={this.state.task} onChange={this.onChange.bind(this)} />
+						<input className="task-input" value={this.state.task} onChange={this.onChange.bind(this)} />
 						<button disabled={!this.state.task.trim()}>Add task</button>
 					</form>
 					</div>
@@ -200,7 +199,7 @@ class TaskApp extends Loadable {
 					<span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true"></span> {markTitle}
 				</button>
 				<button disabled={this.state.task.trim()} onClick={this.goToLists.bind(this)}>
-					<span className="glyphicon glyphicon-align-justify" aria-hidden="true"></span> Lists
+					<span className="glyphicon glyphicon-tasks	" aria-hidden="true"></span> Lists
 				</button>
 				<hr />
 			</div>

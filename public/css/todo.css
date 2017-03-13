@@ -8,7 +8,6 @@
 
 .messenger-info{
     color: gray;
-    font-style: italic;
 }
 
 .messenger-success{
@@ -40,4 +39,3 @@
   border-bottom: 10 px dotted gray;
   width: 100px;
 }
-
