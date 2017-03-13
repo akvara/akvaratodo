@@ -26,3 +26,16 @@
 .right-align{
     text-align: right;
 }
+
+.task {
+    padding-left: 10px;
+    padding-right: 20px;
+}
+
+.hiding-button {
+  display: none; /* Hide button */
+}
+
+.hiding-button:hover button {
+   display: block; /* On :hover of div show button */
+}

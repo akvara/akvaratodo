@@ -8,15 +8,17 @@ class TaskDoneList extends Component {
 
 	displayTask(task, i) {
 		return <li key={'li'+i}>
-			<button onClick={this.undone.bind(this, i)}>+</button>
+			<button onClick={this.undone.bind(this, i)}><span className="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
 			&nbsp;
-			{task}
+			<span className="done" aria-hidden="true">
+				{task}
+			</span>
 		</li>;
 	}
 
 	render() {
 		return (
-			<ul className="done">
+			<ul>
 				{ this.props.items.map(this.displayTask.bind(this)) }
 			</ul>
 		);

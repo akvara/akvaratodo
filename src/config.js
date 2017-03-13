@@ -1,6 +1,6 @@
 var CONFIG = {
-    // apiHost: 'http://localhost:5000/',
-    apiHost: 'http://akvaratododb.herokuapp.com/',
+    apiHost: 'http://localhost:5000/',
+    // apiHost: 'http://akvaratododb.herokuapp.com/',
     separatorString: "..........",
     loadListIfExists: 'Current',
     listAddon: "lists/",
@@ -12,7 +12,7 @@ var CONFIG = {
     displayListLength: 15,
     displayLast: 3,
     loadingStringLength: 40,
-    version: '0312-1'
+    version: '0313'
 };
 
 export default Object.freeze(CONFIG);

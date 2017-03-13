@@ -57,15 +57,27 @@ class TaskList extends Component {
 			return <li key={'li'+i}>{ taskAsDisplayed }</li>
 		} else {
 			return <li key={'li'+i}>
-				<button title="done" onClick={this.done.bind(this, itemIndex)}>---</button>
-				&nbsp;
-				{ this.hightlightOnDemand(taskAsDisplayed, itemIndex) }
-				&nbsp;
-				<button title="Remove" onClick={this.delete.bind(this, itemIndex)}>x</button>
-				<button title="Procrastinate" onClick={this.procrastinate.bind(this, itemIndex)}>v</button>
-				<button title="To top" onClick={this.toTop.bind(this, itemIndex)}>!</button>
-				<button title="Move to another list" onClick={this.move.bind(this, itemIndex)}>&gt;</button>
-				<button title={postponeTitle} onClick={this.postpone.bind(this, itemIndex)}>p</button>
+				<button title="done" onClick={this.done.bind(this, itemIndex)}>
+					<span className="glyphicon glyphicon-ok" aria-hidden="true"></span>
+				</button>
+				<span className="task">
+					{ this.hightlightOnDemand(taskAsDisplayed, itemIndex) }
+				</span>
+				<button title="Remove" onClick={this.delete.bind(this, itemIndex)}>
+					<span className="glyphicon glyphicon-trash" aria-hidden="true"></span>
+				</button>
+				<button title="Procrastinate" onClick={this.procrastinate.bind(this, itemIndex)}>
+					<span className="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+				</button>
+				<button title="To top" onClick={this.toTop.bind(this, itemIndex)}>
+					<span className="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+				</button>
+				<button title="Move to another list" onClick={this.move.bind(this, itemIndex)}>
+					<span className="glyphicon glyphicon-random" aria-hidden="true"></span>
+				</button>
+				<button title={postponeTitle} onClick={this.postpone.bind(this, itemIndex)}>
+					<span className="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>
+				</button>
 			</li>
 		}
 	}

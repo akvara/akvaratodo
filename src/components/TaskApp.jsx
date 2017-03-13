@@ -147,18 +147,24 @@ class TaskApp extends Loadable {
         );
 	}
 
-  	displayFromButton(item) {
+  	displayLoadFromButton(item) {
   		if (this.state.immutable) return null;
 
-  		return <button key={'btn'+item._id} onClick={this.loadFromAnother.bind(this, item._id)} >Load from <i>{ item.name }</i></button>
+  		return <button key={'btn'+item._id} onClick={this.loadFromAnother.bind(this, item._id)} >
+  			Load from <span className={'glyphicon glyphicon-upload'} aria-hidden="true"></span> <i>{ item.name }</i>
+  		</button>
   	}
 
 	render() {
 		if (this.state.notYetLoaded) return this.notYetLoadedReturn;
 
-		var markTitle = 'Mark immutable';
-		if (this.state.immutable)
-			markTitle = 'Unmark immutable';
+		var markTitle = 'Protect';
+		var markGlyphicon = 'exclamation-sign'
+		if (this.state.immutable)  {
+			markTitle = 'Unprotect';
+			markGlyphicon = 'screen-shot'
+		}
+
 
 		return (
 			<div>
@@ -189,9 +195,13 @@ class TaskApp extends Loadable {
 					</div>
 				}
 				<hr />
-				{ this.props.immutables.map((list) => this.displayFromButton(list)) }
-				<button disabled={this.state.task.trim()} onClick={this.mark.bind(this)}>{markTitle}</button>
-				<button disabled={this.state.task.trim()} onClick={this.goToLists.bind(this)}>Lists</button>
+				{ this.props.immutables.map((list) => this.displayLoadFromButton(list)) }
+				<button disabled={this.state.task.trim()} onClick={this.mark.bind(this)}>
+					<span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true"></span> {markTitle}
+				</button>
+				<button disabled={this.state.task.trim()} onClick={this.goToLists.bind(this)}>
+					<span className="glyphicon glyphicon-align-justify" aria-hidden="true"></span> Lists
+				</button>
 				<hr />
 			</div>
 		);
