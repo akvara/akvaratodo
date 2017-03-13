@@ -151,6 +151,8 @@ class TaskApp extends Loadable {
 	}
 
   	displayFromButton(item) {
+  		if (this.state.immutable) return null;
+
   		return <button key={'btn'+item._id} onClick={this.loadFromAnother.bind(this, item._id)} >Load from <i>{ item.name }</i></button>
   	}
 
