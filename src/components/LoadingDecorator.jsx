@@ -6,11 +6,8 @@ class LoadingDecorator extends Component {
 	    super(props, context);
 
 	    this.state = {
-	    	// actionString: props.actionMessage,// || "Loading",
-	    	// finishedString: props.finishedMessage,// || "Loading",
 	    	message: '',
-			loadingString: '',
-			// finished: false
+			loadingString: ''
 	    }
 	}
 
@@ -35,7 +32,6 @@ console.log('Decorator Will Un');
 
 	componentWillMount() {
 // console.log('Decorator Will Mount');
-// console.log('Messages:', this.props.actionMessage, this.props.finishedMessage);
 		this.doAction(this.props.request, this.props.callback, this.props.actionMessage, this.props.finishedMessage);
 	}
 
@@ -57,8 +53,7 @@ console.log('Decorator Will Un');
 	    		this.interval = 0;
 	    		this.setState({
 	    			message: finishedMessage,
-	    			loadingString: '',
-    				// finished: true,
+	    			loadingString: ''
 	    		});
 	    		callback(val);
 	// console.log("fulfilled:", val);
@@ -67,7 +62,6 @@ console.log('Decorator Will Un');
 					clearInterval(this.interval);
 					this.interval = 0;
 					this.setState({
-	    				finished: true,
 						loadingString: ' error'
 					})
 				console.log("rejected:", err);
@@ -82,8 +76,6 @@ console.log('Decorator Will Un');
 	}
 
 	render() {
-		// var message = this.props.actionMessage;
-		// if (this.finished) message = this.props.finishedMessage;
 		return <div>{this.state.message} {this.state.loadingString}</div>
 	}
 }
