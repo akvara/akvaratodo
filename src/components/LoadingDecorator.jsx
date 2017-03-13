@@ -6,14 +6,16 @@ class LoadingDecorator extends Component {
 	    super(props, context);
 
 	    this.state = {
-	    	actionString: props.action || "Loading",
+	    	// actionString: props.actionMessage,// || "Loading",
+	    	// finishedString: props.finishedMessage,// || "Loading",
+	    	message: '',
 			loadingString: '',
-			finished: false
+			// finished: false
 	    }
 	}
 
     componentDidMount() {
-console.log('Decorator Did Mount');
+// console.log('Decorator Did Mount');
     }
 
     componentWillUnmount() {
@@ -21,47 +23,53 @@ console.log('Decorator Will Un');
     }
 
     componentWillUpdate() {
-console.log('Decorator Will Update');
+// console.log('Decorator Will Update');
     }
 
     componentDidUpdate() {
     	// if (this.state.finished) {
     		// this.props.callback(this.state.val);
     	// }
-console.log('Decorator Did Update');
+// console.log('Decorator Did Update');
     }
 
 	componentWillMount() {
-console.log('Decorator Will Mount');
-		this.doAction(this.props.request, this.props.callback);
+// console.log('Decorator Will Mount');
+// console.log('Messages:', this.props.actionMessage, this.props.finishedMessage);
+		this.doAction(this.props.request, this.props.callback, this.props.actionMessage, this.props.finishedMessage);
 	}
 
 	componentWillReceiveProps(nextProps) {
-console.log('Decorator Will Receive PROPS', this.props , nextProps);
-		if (this.props !== nextProps) this.doAction(nextProps.request, nextProps.callback);
+// console.log('Decorator Will Receive PROPS', this.props , nextProps);
+		if (this.props !== nextProps) this.doAction(nextProps.request, nextProps.callback, nextProps.actionMessage, nextProps.finishedMessage);
 	}
 
-	doAction(request, callback) {
+	doAction(request, callback, actionMessage, finishedMessage) {
 		this.interval = setInterval(this.tick.bind(this), 100);
-
+		this.setState({
+			message: actionMessage,
+			loadingString: '',
+			// finished: false,
+		});
 		new Promise((resolve, reject) => request(resolve, reject))
 	    	.then((val) => {
 	    		clearInterval(this.interval);
 	    		this.interval = 0;
+	    		this.setState({
+	    			message: finishedMessage,
+	    			loadingString: '',
+    				// finished: true,
+	    		});
 	    		callback(val);
-	    		// this.setState({
-	    		// 	finished: true,
-	    		// 	val: val
-	    		// });
 	// console.log("fulfilled:", val);
 	    	})
 				.catch((err) => {
 					clearInterval(this.interval);
 					this.interval = 0;
-					// this.setState({
-	    // 				finished: true,
-					// 	loadingString: ' error'
-					// })
+					this.setState({
+	    				finished: true,
+						loadingString: ' error'
+					})
 				console.log("rejected:", err);
 				});
 	}
@@ -74,7 +82,9 @@ console.log('Decorator Will Receive PROPS', this.props , nextProps);
 	}
 
 	render() {
-		return <div>{this.state.actionString} {this.state.loadingString}</div>
+		// var message = this.props.actionMessage;
+		// if (this.finished) message = this.props.finishedMessage;
+		return <div>{this.state.message} {this.state.loadingString}</div>
 	}
 }
 

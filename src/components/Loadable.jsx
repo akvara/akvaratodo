@@ -31,12 +31,13 @@ class Loadable extends Component {
 // console.log('Loadable Did Update', this.state);
     }
 
-    load(request, callback, actionMessage) {
+    loadLists(request, callback, actionMessage, finishedMessage) {
         ReactDOM.render(
             <LoadingDecorator
                 request={request}
                 callback={callback}
                 actionMessage={actionMessage}
+                finishedMessage={finishedMessage}
             />, this.loaderNode
         );
     }
@@ -151,7 +152,8 @@ class Loadable extends Component {
             <LoadingDecorator
                 request={this.saveTaskRequest.bind(this, this.state.listId)}
                 callback={this.saveTaskCallback.bind(this)}
-                action='Saving'
+                actionMessage='Saving'
+                finishedMessage='Saved'
             />, this.loaderNode
         );
     }

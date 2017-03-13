@@ -29,7 +29,7 @@ class ListApp extends Loadable {
 
     loadData() {
         document.title = "ToDo lists";
-        if (!this.state.lists) this.load(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists');
+        if (!this.state.lists) this.loadLists(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists', 'Lists loaded.');
     }
 
 	handleSubmit(e) {
@@ -38,7 +38,6 @@ class ListApp extends Loadable {
 		var list = this.state.lists.find(list => list.name === this.state.listName)
 
 		if (list) {
-			// (lists, itemsDone, listId, listName)
 			return this.loadList(this.state.lists, this.state.itemsDone, list._id, list.name)
 		}
 

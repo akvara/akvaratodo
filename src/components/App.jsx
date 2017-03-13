@@ -19,7 +19,6 @@ class App extends Loadable {
     loadListsCallback(data) {
         var lists = Utils.sortArrOfObjectsByParam(data, 'updatedAt', true);
 
-        // ReactDOM.render(<Messenger info={"Lists loaded."} />, this.loaderNode);
         var current = lists.find((item)  => item.name === CONFIG.loadListIfExists);
         if (current) {
             ReactDOM.render(<TaskApp
@@ -33,7 +32,7 @@ class App extends Loadable {
    }
 
     loadData() {
-        this.load(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists');
+        this.loadLists(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists', 'Lists loaded.');
     }
 
     render() {

@@ -64,7 +64,7 @@ class Move extends Loadable {
 
 
     loadData() {
-        this.load(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading lists');
+        this.loadLists(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading lists', 'Lists loaded');
     }
 
   	displayToButton(list) {

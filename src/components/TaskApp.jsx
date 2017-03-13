@@ -44,7 +44,8 @@ class TaskApp extends Loadable {
             <LoadingDecorator
                 request={this.loadAListRequest.bind(this, this.props.listId)}
                 callback={this.loadAListCallback.bind(this)}
-                action='Loading ToDo lists'
+                actionMessage='Loading list'
+                finishedMessage='Loaded.'
             />, this.loaderNode
         );
     }
@@ -149,7 +150,7 @@ class TaskApp extends Loadable {
         );
 	}
 
-  	displayFromButton (item) {
+  	displayFromButton(item) {
   		return <button key={'btn'+item._id} onClick={this.loadFromAnother.bind(this, item._id)} >Load from <i>{ item.name }</i></button>
   	}
 
