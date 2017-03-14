@@ -39,7 +39,7 @@ class Settings extends Component {
 
 	displaySelect(property) {
 		return React.createElement("select", { value: this.state[property], onChange: this.handleChange.bind(this) },
-			this.props.lists.map((item) => React.createElement("option", { value: item.name }, item.name ))
+			this.props.lists.map((item) => React.createElement("option", { value: item.name, key: "o" + item.name }, item.name ))
          )
 	}
 
@@ -52,7 +52,7 @@ class Settings extends Component {
 			var add = () => this.add(property);
 			return <tr key={"tr" + property}>
 				<td>{CONFIG.settingsConfig[property].explain}</td>
-				<td>
+				<td className="right-align">
 					<span>
 						<button key={"sub" + property} onClick={sub}>-</button>
 						<span className="settings-item">{this.state[property]}</span>
@@ -63,7 +63,7 @@ class Settings extends Component {
 		} else {
 			return <tr key={"tr" + property}>
 				<td>{CONFIG.settingsConfig[property].explain}</td>
-				<td>
+				<td className="right-align">
 					<span>
 				      { this.displaySelect(property) }
 					</span>

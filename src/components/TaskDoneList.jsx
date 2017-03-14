@@ -7,19 +7,23 @@ class TaskDoneList extends Component {
 	}
 
 	displayTask(task, i) {
-		return <li key={'li'+i}>
-			<button onClick={this.undone.bind(this, i)}><span className="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
-			<span className="list-item done" aria-hidden="true">
-				{task}
-			</span>
-		</li>;
+		return <tr key={'tr'+i}>
+				<td>
+					<span className="glyphicon glyphicon-unchecked action-button" aria-hidden="true" onClick={this.undone.bind(this, i)}></span>
+					<span className="list-item task">
+						{task}
+					</span>
+				</td>
+		</tr>;
 	}
 
 	render() {
 		return (
-			<ul>
-				{ this.props.items.map(this.displayTask.bind(this)) }
-			</ul>
+			<table className="table table-sm table-condensed table-hover">
+				<tbody>
+					{ this.props.items.map(this.displayTask.bind(this)) }
+			</tbody>
+			</table>
 		);
 	}
 }

@@ -1,6 +1,6 @@
 var CONFIG = {
-    apiHost: 'http://localhost:5000/',
-    // apiHost: 'http://akvaratododb.herokuapp.com/',
+    // apiHost: 'http://localhost:5000/',
+    apiHost: 'http://akvaratododb.herokuapp.com/',
     separatorString: "............",
     listAddon: "lists/",
     listsAddon: "lists",
@@ -9,7 +9,9 @@ var CONFIG = {
     user: {
         id: '1',
         name: 'akvara',
-        settings: {}
+        settings: {
+            loadListIfExists: "Current",
+        }
     },
     settingsConfig: {
         addNewAt: {explain: 'Add new item at position', handler: 'numeric', default: 6, min: 1, max: 10},
@@ -18,7 +20,7 @@ var CONFIG = {
         displayLast: {explain: 'Display number of tasks at bottom',  default: 3, handler: 'numeric', min: 1, max: 50},
         loadListIfExists: {explain: 'Load this list on start', handler: 'selector', field: ''},
     },
-    version: '0314'
+    version: '0314-7'
 };
 
 export default Object.freeze(CONFIG);

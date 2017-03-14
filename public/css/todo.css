@@ -27,8 +27,12 @@
 }
 
 .list-item{
-    padding-left: 10px;
-    padding-right: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.list-last-item{
+    padding-left: 15px;
 }
 
 .list-item-immutable{
@@ -58,8 +62,7 @@
 }
 
 .action-button{
-    padding-left: 5px;
-    padding-right: 5px;
+    padding-left: 10px;
 }
 
 .action-button:hover{

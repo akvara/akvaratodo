@@ -22,8 +22,8 @@ class App extends Loadable {
         var lists = Utils.sortArrOfObjectsByParam(data, 'updatedAt', true);
 
         ReactDOM.render(<User lists={lists} settings={this.settings.bind(this)} />, this.userNode);
-
-        var current = lists.find((item)  => item.name === CONFIG.user.loadListIfExists);
+// console.log( CONFIG.user);
+        var current = lists.find((item)  => item.name === CONFIG.user.settings.loadListIfExists);
         if (current) {
             ReactDOM.render(<TaskApp
                 listId={current._id}
