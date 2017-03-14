@@ -5,7 +5,7 @@ var TaskApp = React.createClass({
 		return {
 			uri: this.props.config.listsapi + "lists/" + this.props.listId,
 			listsUri: this.props.config.listsapi + "lists/",
-			itemsToDo: [], 
+			itemsToDo: [],
 			itemsDone: this.props.itemsDone || [],
 			receiving: this.props.receiving,
 			hightlightIndex: null,
@@ -19,7 +19,7 @@ var TaskApp = React.createClass({
  		e.preventDefault();
 
  		this.state.itemsToDo.splice(this.props.config.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
-		this.setState({ 
+		this.setState({
 			itemsToDo: _.unique(this.state.itemsToDo),
 			hightlightIndex: Math.min(this.state.itemsToDo.length, this.props.config.addNewAt - 1),
 			task: ''
@@ -28,10 +28,10 @@ var TaskApp = React.createClass({
 
     removeTask: function(i, callback) {
  		this.state.itemsToDo.splice(i, 1);
-		this.setState({ 
+		this.setState({
 			itemsToDo: this.state.itemsToDo,
 			hightlightIndex: null,
-		}, function (callback) { 
+		}, function (callback) {
 			this.save();
 			if (callback) callback();
 		}.bind(this, callback));
@@ -46,15 +46,15 @@ var TaskApp = React.createClass({
 
 	highlightPosition: function (i) {
 		return  Math.min(
-			this.state.itemsToDo.length - 1, 
-			this.props.config.postponeBy - 1, 
-			this.props.config.displayFirst
-		) + (this.state.itemsToDo.length >= this.props.config.displayFirst ? 1 : 0);
+			this.state.itemsToDo.length - 1,
+			this.props.config.postponeBy);
+			// this.props.config.displayFirst
+		// ) + (this.state.itemsToDo.length >= this.props.config.displayFirst ? 1 : 0);
 	},
 
     postponeTask: function(i) {
     	let items = this.moveFromTo(this.state.itemsToDo, i, i + this.props.config.postponeBy)
-		this.setState({ 
+		this.setState({
 			itemsToDo: items ,
 			hightlightIndex: this.highlightPosition(i),
 		}, this.save);
@@ -62,24 +62,24 @@ var TaskApp = React.createClass({
 
 	doneTask: function(i) {
 		var moved = this.moveToAnother(this.state.itemsToDo, this.state.itemsDone, i, false)
-		this.setState({ 
-			itemsToDo: moved.A, 
+		this.setState({
+			itemsToDo: moved.A,
 			itemsDone: moved.B
 		}, this.save);
 	},
 
 	unDoneTask: function(i) {
 		var moved = this.moveToAnother(this.state.itemsDone, this.state.itemsToDo, i, true)
-		this.setState({ 
-			itemsToDo: moved.B, 
+		this.setState({
+			itemsToDo: moved.B,
 			itemsDone: moved.A,
 			hightlightIndex: 0
 		}, this.save);
-	},	
+	},
 
 	procrastinateTask: function(i) {
 		let items = this.moveToEnd(this.state.itemsToDo, i);
-		this.setState({ 
+		this.setState({
 			itemsToDo: items,
 			hightlightIndex: this.state.itemsToDo.length
 		}, this.save);
@@ -87,7 +87,7 @@ var TaskApp = React.createClass({
 
 	toTop: function(i) {
 		let items = this.moveToTop(this.state.itemsToDo, i);
-		this.setState({ 
+		this.setState({
 			itemsToDo: items,
 			hightlightIndex: 0
 		}, this.save);
@@ -101,7 +101,7 @@ var TaskApp = React.createClass({
   		trans = fromA[i];
   		fromA.splice(i, 1);
   		if (toTop) {
-	  		toB = [trans].concat(toB);	
+	  		toB = [trans].concat(toB);
 	  	} else {
 	  		toB = toB.concat([trans]);
 	  	}
@@ -125,7 +125,7 @@ var TaskApp = React.createClass({
 
 	moveFromTo: function (arrayA, from, to) {
   		trans = arrayA[from];
-		arrayA.splice(from, 1); 
+		arrayA.splice(from, 1);
 		arrayA.splice(to, 0, trans);
 
   		return arrayA;
@@ -135,25 +135,25 @@ var TaskApp = React.createClass({
 
 		$.get(this.state.listsUri + listId)
 		.done(function(data, textStatus, jqXHR) {
-			this.setState({ 
+			this.setState({
 				itemsToDo:  _.unique(JSON.parse(data.tasks).concat(this.state.itemsToDo))
 			}, this.save);
         }.bind(this))
         .fail(function(jqXHR, textStatus, errorThrown) {
         	console.log(textStatus);
     	});
-	},	
+	},
 
 	loadDaily: function () {
 		this.readFromFile('daily', true);
-	},	
+	},
 
 	loadPostponed: function () {
 		this.readFromFile('postponed', true);
-	},	
+	},
 
 	saveBackup: function (items) {
-		$.cookie(this.props.config.cookieTodo, JSON.stringify(items));	
+		$.cookie(this.props.config.cookieTodo, JSON.stringify(items));
 	},
 
 	clear: function () {
@@ -165,7 +165,7 @@ var TaskApp = React.createClass({
 		$.ajax({
 			url: this.state.uri,
 			type: 'PUT',
-			data: { 
+			data: {
 				tasks: JSON.stringify(this.state.itemsToDo),
 				immutable: this.state.immutable
 			}
@@ -183,7 +183,7 @@ var TaskApp = React.createClass({
 
 	loadFake: function () {
 		this.setState({
-			listName: 'Test', 
+			listName: 'Test',
 			itemsToDo: Array.from(Array(this.props.config.displayListLength+1)).map((e,i)=>(i).toString()),
 			receiving: null
 		});
@@ -197,7 +197,7 @@ var TaskApp = React.createClass({
 				itemsToDo = [this.state.receiving].concat(itemsToDo);
 			}
 			this.setState({
-				listName: data.name, 
+				listName: data.name,
 				immutable: data.immutable,
 				itemsToDo: itemsToDo,
 				receiving: null
@@ -280,10 +280,10 @@ var TaskApp = React.createClass({
   	},
 
 	render: function() {
-		
+
 		// var today = new Date().toISOString().slice(0, 10);
 		var markTitle = 'Mark immutable';
-		if (this.state.immutable) 
+		if (this.state.immutable)
 			markTitle = 'Unmark immutable';
 		var list = '';
 
@@ -294,15 +294,15 @@ var TaskApp = React.createClass({
 				<TaskDoneList items={this.state.itemsDone} undone={this.unDoneTask} />
 				<hr />
 				<h3>Remaining ({this.state.itemsToDo.length})</h3>
-				<TaskList 
-					items={this.state.itemsToDo} 
-					hightlightIndex={this.state.hightlightIndex} 
-					immutable={this.state.immutable} 
-					delete={this.removeTask} 
-					move={this.moveOutside} 
-					toTop={this.toTop} 
-					postpone={this.postponeTask} 
-					procrastinate={this.procrastinateTask} 
+				<TaskList
+					items={this.state.itemsToDo}
+					hightlightIndex={this.state.hightlightIndex}
+					immutable={this.state.immutable}
+					delete={this.removeTask}
+					move={this.moveOutside}
+					toTop={this.toTop}
+					postpone={this.postponeTask}
+					procrastinate={this.procrastinateTask}
 					done={this.doneTask}
 					config={this.props.config}
 				/>
