@@ -106,6 +106,7 @@ class TaskApp extends Loadable {
 	doneTask(i) {
 		var moved = Utils.moveToAnother(this.state.itemsToDo, this.state.itemsDone, i, false)
 		this.setState({
+			hightlightIndex: null,
 			itemsToDo: moved.A,
 			itemsDone: moved.B
 		}, this.saveTaskList);

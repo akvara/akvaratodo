@@ -1,8 +1,7 @@
 var CONFIG = {
     // apiHost: 'http://localhost:5000/',
     apiHost: 'http://akvaratododb.herokuapp.com/',
-    separatorString: "............",
-    // listAddon: "lists/",
+    separatorString: "..................",
     listsAddon: "lists",
     maxTaskLength: 50,
     loadingStringLength: 40,
@@ -24,7 +23,7 @@ var CONFIG = {
         displayLast: {explain: 'Display number of tasks at bottom',  default: 3, handler: 'numeric', min: 1, max: 50},
         loadListIfExists: {explain: 'Load this list on start', handler: 'selector', field: ''},
     },
-    version: '0314-14'
+    version: '0314-18'
 };
 
 export default Object.freeze(CONFIG);
