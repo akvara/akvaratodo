@@ -45,15 +45,19 @@
     font-style: bold;
 }
 
-.task-input {
+.task-input{
     width: 400px;
 }
 
-.list-input {
+.list-input{
     width: 200px;
 }
 
-.action-button {
+.actions{
+    text-align: right;
+}
+
+.action-button{
     padding-left: 5px;
     padding-right: 5px;
 }

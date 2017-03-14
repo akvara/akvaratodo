@@ -26,12 +26,12 @@ class ListList extends Component {
 		let deletable = list.tasks ? (list.tasks === '[]' && !list.immutable) : true;
 
 		return (
-			<tr key={'tr'+i} onClick={this.loadList.bind(this, list._id, list.name)}>
-				<td className={itemClass}>
+			<tr key={'tr'+i}>
+				<td className={itemClass} onClick={this.loadList.bind(this, list._id, list.name)} >
 					<span className="glyphicon glyphicon-folder-open list-item" aria-hidden="true"></span>
 					{ list.name }
 				</td>
-				<td>
+				<td className="actions">
 				{deletable &&
 					<span className="glyphicon glyphicon-trash action-button" aria-hidden="true" onClick={this.removeList.bind(this, list._id)}></span>
 				}

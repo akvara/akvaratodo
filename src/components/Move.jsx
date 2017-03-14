@@ -10,8 +10,8 @@ class Move extends Loadable {
 	    super(props, context);
 	    this.state = props.state;
 
-	    this.movingItem = props.state.itemsToDo[props.itemIndex]
-	    this.state.itemsToDo = Utils.removeItem(props.state.itemsToDo);
+	    this.movingItem = props.state.itemsToDo[props.itemIndex];
+	    this.state.itemsToDo = Utils.removeItem(props.state.itemsToDo, props.itemIndex);
 	    this.state.notYetLoaded = true;
 	    this.state.finishedSaving = false;
 	}
