@@ -16,7 +16,7 @@ class LoadingDecorator extends Component {
     }
 
     componentWillUnmount() {
-console.log('Decorator Will Un');
+// console.log('Decorator Will Un');
     }
 
     componentWillUpdate() {
@@ -71,7 +71,6 @@ console.log('Decorator Will Un');
 	tick() {
 		var loadingString = '.';
 		loadingString += this.state.loadingString.length < CONFIG.loadingStringLength ? this.state.loadingString : '';
-// console.log("tick");
 		this.setState({loadingString});
 	}
 

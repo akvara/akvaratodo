@@ -47,11 +47,11 @@ class TaskList extends Component {
 		}
 
 		let itemIndex = i;
-		if (itemIndex >= CONFIG.displayListLength - CONFIG.displayLast ) {
+		if (itemIndex >= CONFIG.user.settings.displayListLength - CONFIG.user.settings.displayLast ) {
 			itemIndex = i + omitted;
 		}
 
-		// let postponeTitle = "Postpone (+" + CONFIG.postponeBy + ")";
+		// let postponeTitle = "Postpone (+" + CONFIG.user.settings.postponeBy + ")";
 
 		if (this.props.immutable) {
 			return <tr key={'tr'+i}><td>{ taskAsDisplayed }</td></tr>
@@ -78,12 +78,12 @@ class TaskList extends Component {
 		var taskListDisplayed,
 		    shouldOmit;
 
-		if (this.props.items.length > CONFIG.displayListLength ) {
-			shouldOmit = this.props.items.length - CONFIG.displayListLength;
+		if (this.props.items.length > CONFIG.user.settings.displayListLength ) {
+			shouldOmit = this.props.items.length - CONFIG.user.settings.displayListLength;
 			taskListDisplayed =
-				this.props.items.slice(0, CONFIG.displayListLength - CONFIG.displayLast - 1)
+				this.props.items.slice(0, CONFIG.user.settings.displayListLength - CONFIG.user.settings.displayLast - 1)
 					.concat([CONFIG.separatorString])
-					.concat(this.props.items.slice(-CONFIG.displayLast));
+					.concat(this.props.items.slice(-CONFIG.user.settings.displayLast));
 		} else {
 			shouldOmit = 0;
 			taskListDisplayed =	this.props.items;

@@ -66,8 +66,8 @@ class TaskApp extends Loadable {
 
 	handleSubmit(e) {
  		e.preventDefault();
- 		let highlightPosition = Math.min(this.state.itemsToDo.length, CONFIG.addNewAt - 1);
- 		this.state.itemsToDo.splice(CONFIG.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
+ 		let highlightPosition = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
+ 		this.state.itemsToDo.splice(CONFIG.user.settings.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
 		this.setState({
 			itemsToDo: _.unique(this.state.itemsToDo),
 			hightlightIndex: highlightPosition,
@@ -90,13 +90,13 @@ class TaskApp extends Loadable {
 	highlightPosition(i) {
 		return  Math.min(
 			this.state.itemsToDo.length - 1,
-			CONFIG.postponeBy - 1,
-			CONFIG.displayListLength
-		) + (this.state.itemsToDo.length >= CONFIG.displayListLength ? 1 : 0);
+			CONFIG.user.settings.postponeBy - 1,
+			CONFIG.user.settings.displayListLength
+		) + (this.state.itemsToDo.length >= CONFIG.user.settings.displayListLength ? 1 : 0);
 	}
 
     postponeTask(i) {
-    	let items = Utils.moveFromTo(this.state.itemsToDo, i, i + CONFIG.postponeBy)
+    	let items = Utils.moveFromTo(this.state.itemsToDo, i, i + CONFIG.user.settings.postponeBy)
 		this.setState({
 			itemsToDo: items ,
 			hightlightIndex: this.highlightPosition(i),
@@ -159,10 +159,10 @@ class TaskApp extends Loadable {
 		if (this.state.notYetLoaded) return this.notYetLoadedReturn;
 
 		var markTitle = 'Protect';
-		var markGlyphicon = 'exclamation-sign'
+		var markGlyphicon = 'exclamation-sign';
 		if (this.state.immutable)  {
 			markTitle = 'Unprotect';
-			markGlyphicon = 'screen-shot'
+			markGlyphicon = 'screen-shot';
 		}
 
 		return (
@@ -199,7 +199,7 @@ class TaskApp extends Loadable {
 					<span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true"></span> {markTitle}
 				</button>
 				<button disabled={this.state.task.trim()} onClick={this.goToLists.bind(this)}>
-					<span className="glyphicon glyphicon-tasks	" aria-hidden="true"></span> Lists
+					<span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> Lists
 				</button>
 				<hr />
 			</div>

@@ -18,7 +18,7 @@ class ListList extends Component {
 			itemClass += " list-item-immutable"
 		}
 
-		if (list.name === CONFIG.user.loadListIfExists) {
+		if (list.name === CONFIG.user.settings.loadListIfExists) {
 			itemClass += " list-item-current"
 		}
 

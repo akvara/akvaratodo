@@ -9,8 +9,8 @@ class TaskDoneList extends Component {
 	displayTask(task, i) {
 		return <tr key={'tr'+i}>
 				<td>
-					<span className="glyphicon glyphicon-unchecked action-button" aria-hidden="true" onClick={this.undone.bind(this, i)}></span>
-					<span className="list-item task">
+					<span className="glyphicon glyphicon-ok action-button" aria-hidden="true" onClick={this.undone.bind(this, i)}></span>
+					<span className="list-item task done">
 						{task}
 					</span>
 				</td>

@@ -5,5 +5,3 @@ import App from './components/App';
 console.log('Starting App ...');
 
 ReactDOM.render(<App />, document.getElementById('app'));
-
-export default App;

@@ -80,7 +80,7 @@ class ListApp extends Loadable {
 				/>
 				<form onSubmit={this.handleSubmit.bind(this)}>
 					<input className="list-input" value={this.state.listName} onChange={this.onNameChange.bind(this)} />
-					<button disabled={!this.state.listName.trim()}>Add list</button>
+					<button disabled={!this.state.listName.trim()}>Create new list</button>
 				</form>
 			</div>
 		);

@@ -66,5 +66,6 @@
 }
 
 .action-button:hover{
+    cursor: pointer;
     -webkit-transform: scale(1.3);
 }

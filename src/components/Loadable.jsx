@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import LoadingDecorator from './LoadingDecorator';
-import * as Utils from '../utils/utils.js';
 import CONFIG from '../config.js';
+import * as Utils from '../utils/utils.js';
+import * as UrlUtils from '../utils/urlUtils.js';
 import $ from 'jquery';
 import _ from 'underscore';
 
@@ -14,20 +15,13 @@ class Loadable extends Component {
 //          Must be set in inherited classes
 //	    };
 
+        this.notYetLoadedReturn = <div><h1>...</h1></div>;
         this.loaderNode = document.getElementById('loading');
         this.appNode = document.getElementById('app');
-        this.notYetLoadedReturn = <div><h1>...</h1></div>;
-
-     // console.log('React.findDOMNode', ReactDOM.findDOMNode(document.getElementById('loading')));
-	 //    this.loadingNode = React.findDOMNode();
 	}
 
     componentWillMount() {
         this.loadData();
-    }
-
-    componentDidUpdate() {
-// console.log('Loadable Did Update', this.state);
     }
 
     loadLists(request, callback, actionMessage, finishedMessage) {
@@ -42,7 +36,7 @@ class Loadable extends Component {
     }
 
     loadListsRequest(resolve, reject) {
-        return $.get(CONFIG.apiHost + CONFIG.listsAddon)
+        return $.get(UrlUtils.getListsUrl())
             .done((data) => {
                 resolve(data);
             })
@@ -60,9 +54,10 @@ class Loadable extends Component {
 
     addAListRequest(resolve, reject) {
         return $.post(
-            CONFIG.apiHost + CONFIG.listsAddon,
+            UrlUtils.getListsUrl(),
             {
-                'name': this.state.listName
+                'name': this.state.listName,
+                'userId': CONFIG.user.id
             })
             .done((data) => {
                 resolve(data);
@@ -82,7 +77,7 @@ class Loadable extends Component {
 
     removeListRequest(listId, resolve, reject) {
         return $.ajax({
-            url: CONFIG.apiHost + CONFIG.listAddon + listId,
+            url: UrlUtils.getAListUrl(listId),
             type: 'DELETE'
         })
         .done((data) => {
@@ -107,7 +102,7 @@ class Loadable extends Component {
     }
 
     loadAListRequest(listId, resolve, reject) {
-        return $.get(CONFIG.apiHost + CONFIG.listsAddon + "/" + listId)
+        return $.get(UrlUtils.getAListUrl(listId))
             .done((data) => { resolve(data) })
             .fail((err) => { reject(err) });
     }
@@ -152,7 +147,7 @@ class Loadable extends Component {
 
     saveTaskListRequest(listId, resolve, reject) {
         return $.ajax({
-            url: CONFIG.apiHost + CONFIG.listsAddon + "/" + listId,
+            url: UrlUtils.getAListUrl(listId),
             type: 'PUT',
             data: {
                 tasks: JSON.stringify(this.state.itemsToDo),
