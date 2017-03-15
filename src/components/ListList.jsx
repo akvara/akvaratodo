@@ -28,7 +28,7 @@ class ListList extends Component {
 		return (
 			<tr key={'tr'+i}>
 				<td className={itemClass} onClick={this.loadList.bind(this, list._id, list.name)} >
-					<span className="glyphicon glyphicon-folder-open action-button" aria-hidden="true"></span>
+					<span className="glyphicon glyphicon-folder-open list-item list-item-glyph" aria-hidden="true"></span>
 					{ list.name }
 				</td>
 				<td className="actions">

@@ -1,12 +1,13 @@
 var CONFIG = {
-    // apiHost: 'http://localhost:5000/',
-    apiHost: 'http://akvaratododb.herokuapp.com/',
+    apiHost: 'http://localhost:5000/',
+    // apiHost: 'http://akvaratododb.herokuapp.com/',
     separatorString: "..................",
     listsAddon: "lists",
+    settingsAddon: "settings",
     maxTaskLength: 50,
     loadingStringLength: 40,
     user: {
-        id: '1',
+        id: 1,
         name: 'akvara',
         settings: {
             loadListIfExists: "Current",

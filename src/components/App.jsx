@@ -7,6 +7,8 @@ import Settings from './Settings';
 import ListApp from './ListApp';
 import TaskApp from './TaskApp';
 import * as Utils from '../utils/utils.js';
+import * as UrlUtils from '../utils/urlUtils.js';
+import $ from 'jquery';
 
 class App extends Loadable {
     constructor(props, context) {
@@ -32,10 +34,57 @@ class App extends Loadable {
         } else {
             ReactDOM.render(<ListApp lists={lists}/>, this.appNode);
         }
-   }
+    }
+
+    setUserSettings(settings) {
+        console.log("gavau", settings);
+
+        if (settings.length===0) {
+            settings = this.getDefaultSettings();
+            settings.userId = CONFIG.user.id;
+            this.saveSettings(settings);
+        }
+        console.log("atiduodu", settings);
+        this.loadLists(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists', 'Lists loaded.');
+
+    }
+
+    getDefaultSettings() {
+        var obj = {};
+        Object.keys(CONFIG.settingsConfig).map((property) => obj[property] = CONFIG.settingsConfig[property].default);
+        return obj;
+    }
+
+    loadUserSettings(userId) {
+        return $.get(UrlUtils.getUserSettingsUrl(userId))
+            .done((data) => { this.setUserSettings(data) })
+            .fail((err) => { 
+                console.log(err); 
+                this.setUserSettings([]) 
+            });
+    }
+
+    saveSettings(settings) {
+        $.post(
+            UrlUtils.getUserSettingsUrl(settings.userId), settings)
+            .fail((err) => {
+                console.log(err); 
+            });
+    }
+
+    aIsPressed() {
+        alert("A is pressed");
+        $(document).off("keydown");
+    }
+
+    registerAPress() {
+        $(document).on("keydown", () => this.aIsPressed() )
+    }
 
     loadData() {
-        this.loadLists(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists', 'Lists loaded.');
+        // this.registerAPress();
+        console.log("AAAAAAA", CONFIG.user.id)
+        this.loadUserSettings(CONFIG.user.id)
     }
 
     settings(lists) {

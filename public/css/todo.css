@@ -31,6 +31,10 @@
     padding-right: 15px;
 }
 
+.list-item .list-item-glyph{
+    cursor: pointer;
+}
+
 .list-last-item{
     padding-left: 15px;
 }
