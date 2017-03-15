@@ -6,11 +6,9 @@ class Settings extends Component {
 	constructor(props, context) {
 	    super(props, context);
 
-	    var obj = {};
+	    this.state = this.props.extractSettings(props.user.settings);
+	    console.log("Settings constructor", this.state);
 
-		Object.keys(CONFIG.settingsConfig).map((property) => obj[property] = CONFIG.settingsConfig[property].default);
-
-	    this.state = obj;
 	}
 
 	add(property) {
@@ -25,12 +23,20 @@ class Settings extends Component {
 		if (obj[property]>=CONFIG.settingsConfig[property].min) this.setState(obj)
 	}
 
-	handleChange(e) {
-    	this.setState({loadListIfExists: e.target.value }, console.log(this.state))
+	setMin(property) {
+		var obj  = {}
+		obj[property] = CONFIG.settingsConfig[property].min;
+		this.setState(obj)
 	}
 
-	back() {
-		this.props.back();
+	handleSelectChange(e) {
+		console.log('e.target.value', e.target.value);
+    	this.setState({loadListIfExists: e.target.value }, console.log("po Set State", this.state))
+	}
+
+	saveSettings() {
+		console.log("Settings saveSettings:", this.state);
+		this.props.saveSettings(this.state);
 	}
 
 	displayList(listItem, i) {
@@ -38,33 +44,41 @@ class Settings extends Component {
 	}
 
 	displaySelect(property) {
-		return React.createElement("select", { value: this.state[property], onChange: this.handleChange.bind(this) },
+		return React.createElement(
+			"select",
+			{
+				// valueLink: { value: this.state[property], requestChange: this.handleSelectChange.bind(this)}
+				value: this.state[property], onChange: this.handleSelectChange.bind(this)
+			},
 			this.props.lists.map((item) => React.createElement("option", { value: item.name, key: "o" + item.name }, item.name ))
          )
 	}
 
 	displayRow(property) {
-		// console.log(CONFIG.settingsConfig);
-		// console.log(property);
-		// console.log(CONFIG.settingsConfig[property]);
 		if (CONFIG.settingsConfig[property].handler === 'numeric') {
-			var sub = () => this.sub(property);
-			var add = () => this.add(property);
 			return <tr key={"tr" + property}>
-				<td>{CONFIG.settingsConfig[property].explain}</td>
-				<td className="right-align">
-					<span>
-						<button key={"sub" + property} onClick={sub}>-</button>
-						<span className="settings-item">{this.state[property]}</span>
-						<button key={"add" + property} onClick={add}>+</button>
-					</span>
+				<td className="table-description-cell">{CONFIG.settingsConfig[property].explain}</td>
+				<td className="table-control-button-cell" onClick={this.setMin.bind(this, property)}>
+					{CONFIG.settingsConfig[property].min}&nbsp;&le;
+				</td>
+				<td className="table-control-button-cell">
+					<button key={"sub" + property} onClick={this.sub.bind(this, property)}>-</button>
+				</td>
+				<td className="table-control-button-cell settings-item">
+					{this.state[property]}
+				</td>
+				<td className="table-control-button-cell">
+					<button key={"add" + property} onClick={this.add.bind(this, property)}>+</button>
+				</td>
+				<td className="table-control-button-cell" onClick={this.setMin.bind(this, property)}>
+					&le;&nbsp;{CONFIG.settingsConfig[property].max}
 				</td>
 			</tr>
 		} else {
 			return <tr key={"tr" + property}>
 				<td>{CONFIG.settingsConfig[property].explain}</td>
-				<td className="right-align">
-					<span>
+				<td colSpan="5">
+					<span className="right-align">
 				      { this.displaySelect(property) }
 					</span>
 				</td>
@@ -76,13 +90,13 @@ class Settings extends Component {
 	render() {
 		return <div>
 			<h1>Settings</h1>
-			<table className="table table-condensed table-hover">
+			<table className="table table-condensed table-hover table-bordered">
 				<tbody>
 				{ Object.keys(CONFIG.settingsConfig).map(this.displayRow.bind(this)) }
 				</tbody>
 			</table>
 
-			<button onClick={this.back.bind(this)}>
+			<button onClick={this.saveSettings.bind(this)}>
 				<span className="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save
 			</button>
 		</div>

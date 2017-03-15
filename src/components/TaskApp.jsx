@@ -32,7 +32,7 @@ class TaskApp extends Loadable {
     }
 
     componentDidMount() {
-// console.log('TaskApp Did Mount');
+// console.log('TaskApp Did Mount', Session.get('someVar'));
     }
 
     componentWillUnmount() {

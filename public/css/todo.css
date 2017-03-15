@@ -48,9 +48,8 @@
 }
 
 .settings-item{
-    padding-left: 10px;
-    padding-right: 10px;
-    font-style: bold;
+    font-style: bold italic;
+    color: red;
 }
 
 .task-input{
@@ -73,3 +72,16 @@
     cursor: pointer;
     -webkit-transform: scale(1.3);
 }
+
+.table-description-cell{
+    width:90%;
+}
+
+.table-decorator-cell{
+    width:1%;
+}
+
+.table-control-button-cell{
+    width:2%;
+}
+

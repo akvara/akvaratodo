@@ -16,17 +16,58 @@ class App extends Loadable {
 
         this.state = {
             lists: [],
+            user: {id: CONFIG.user.id}
         };
         this.userNode = document.getElementById('user');
+    }
+
+    loadData() {
+        // this.registerAPress();
+        console.log("loadData. User Id", this.state.user.id);
+        this.loadUserSettings(this.state.user.id)
+    }
+
+    loadUserSettings(userId) {
+        console.log("loadUserSettings");
+        return $.get(UrlUtils.getUserSettingsUrl(userId))
+            .done((data) => { this.setUserSettings(data) })
+            .fail((err) => {
+                console.log(err);
+                this.setUserSettings([])
+            });
+    }
+
+    setUserSettings(settings) {
+        console.log("setUserSettings", settings);
+
+        // if (settings.length===0) {
+        //     settings = this.getDefaultSettings();
+        //     settings.userId = CONFIG.user.id;
+        //     this.saveSettings(settings);
+        // }
+        // console.log("atiduodu", settings);
+
+        var saving = this.state.user;
+        saving.settings = this.extractSettings(settings);
+        console.log("setUserSettings", saving);
+        // Session.set('someVar', "Perduodu");
+        // this.setState({ user: saving });
+        this.loadMainView();
+    }
+
+    loadMainView(user) {
+        console.log("loadMainView. User, state", this.state.user);
+        this.loadLists(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists', 'Lists loaded.')
     }
 
     loadListsCallback(data) {
         var lists = Utils.sortArrOfObjectsByParam(data, 'updatedAt', true);
 
-        ReactDOM.render(<User lists={lists} settings={this.settings.bind(this)} />, this.userNode);
+        ReactDOM.render(<User lists={lists} renderSettings={this.renderSettings.bind(this)} />, this.userNode);
         var current = lists.find((item)  => item.name === CONFIG.user.settings.loadListIfExists);
         if (current) {
             ReactDOM.render(<TaskApp
+                listId={current._id}
                 listId={current._id}
                 listName={current.name}
                 immutables={lists.filter((item) => item.immutable)}
@@ -36,17 +77,10 @@ class App extends Loadable {
         }
     }
 
-    setUserSettings(settings) {
-        console.log("gavau", settings);
-
-        if (settings.length===0) {
-            settings = this.getDefaultSettings();
-            settings.userId = CONFIG.user.id;
-            this.saveSettings(settings);
-        }
-        console.log("atiduodu", settings);
-        this.loadLists(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists', 'Lists loaded.');
-
+    extractSettings(fromObj) {
+        var obj = {};
+        Object.keys(CONFIG.settingsConfig).map((property) => obj[property] = fromObj[property]);
+        return obj;
     }
 
     getDefaultSettings() {
@@ -55,21 +89,29 @@ class App extends Loadable {
         return obj;
     }
 
-    loadUserSettings(userId) {
-        return $.get(UrlUtils.getUserSettingsUrl(userId))
-            .done((data) => { this.setUserSettings(data) })
-            .fail((err) => { 
-                console.log(err); 
-                this.setUserSettings([]) 
-            });
-    }
-
     saveSettings(settings) {
+        console.log("App saveSettings:", settings);
         $.post(
             UrlUtils.getUserSettingsUrl(settings.userId), settings)
+            .done(this.setUserSettings(settings))
             .fail((err) => {
-                console.log(err); 
-            });
+                console.log(err);
+            })
+    }
+
+    renderSettings(lists) {
+        ReactDOM.render(
+            <Settings
+                lists={lists}
+                user={this.state.user}
+                extractSettings={this.extractSettings}
+                saveSettings={this.saveSettings.bind(this)}
+            />, this.appNode
+        );
+    }
+
+    render() {
+        return null;
     }
 
     aIsPressed() {
@@ -79,20 +121,6 @@ class App extends Loadable {
 
     registerAPress() {
         $(document).on("keydown", () => this.aIsPressed() )
-    }
-
-    loadData() {
-        // this.registerAPress();
-        console.log("AAAAAAA", CONFIG.user.id)
-        this.loadUserSettings(CONFIG.user.id)
-    }
-
-    settings(lists) {
-        ReactDOM.render(<Settings lists={lists} back={this.loadData.bind(this)}/>, this.appNode);
-    }
-
-    render() {
-        return null;
     }
 }
 
