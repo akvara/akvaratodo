@@ -1,0 +1,4 @@
+{
+	"url": "mongodb://heroku_b8t53dm4:jok24um5b82q369dfg6iec1t21@ds119220.mlab.com:19220/heroku_b8t53dm4",
+	"directory": "./migrations"
+}
