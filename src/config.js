@@ -24,7 +24,7 @@ var CONFIG = {
         displayLast: {explain: 'Display number of tasks at bottom',  default: 3, handler: 'numeric', min: 1, max: 50},
         loadListIfExists: {explain: 'Load this list on start', handler: 'selector', field: ''},
     },
-    version: '0315-11'
+    version: '0316-15'
 };
 
 export default Object.freeze(CONFIG);

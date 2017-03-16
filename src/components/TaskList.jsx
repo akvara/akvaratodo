@@ -43,6 +43,10 @@ class TaskList extends Component {
 		let taskAsDisplayed = taskTruncated;
 		if (task.substring(0, 4) === "http") {
 			taskTruncated = taskTruncated.substr(taskTruncated.indexOf('://')+3);
+			if (taskTruncated[taskTruncated.length-1] === "/") {
+				taskTruncated = taskTruncated.substr(0, taskTruncated.length-1);
+			}
+			console.log("taskTruncated", taskTruncated[taskTruncated.length-1], taskTruncated.substr(0, taskTruncated.length-1))
 			taskAsDisplayed = <a href={ task } target="_blank">{ taskTruncated }</a>;
 		}
 
