@@ -29,7 +29,6 @@ class ListList extends Component {
 			<tr key={'tr'+i}>
 				<td className={itemClass} onClick={this.loadList.bind(this, list._id, list.name)} >
 					<span className="glyphicon glyphicon-folder-open list-item list-item-glyph" aria-hidden="true"></span>
-					{ list.name }
 				</td>
 				<td className="actions">
 				{deletable &&
@@ -44,6 +43,7 @@ class ListList extends Component {
 		return (
 			<table className="table table-hover">
 				<tbody>
+				<tr></tr>
 					{this.props.lists.map(this.displayList.bind(this))}
 				</tbody>
 			</table>

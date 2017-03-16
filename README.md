@@ -10,3 +10,9 @@ Test functionality:
 * Delete a list
 * Load a list
 * Add item, save
+
+Migrations:
+* create:  ./node_modules/.bin/mm create {migration-name} --config=migrations/config/mm-config-{local}.json
+* migrate: ./node_modules/.bin/mm --config=migrations/config/mm-config-{local}.json
+
+index.js -> App:loadData ->App:loadUserSettings ->App:setUserSettings -> -> -> ->

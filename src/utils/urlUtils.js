@@ -1,7 +1,11 @@
 var CONFIG = require('../config.js');
 
+var getHostUrl = function() {
+    return process.env.NODE_ENV === 'development' ? CONFIG.default.devHost : CONFIG.default.apiHost;
+};
+
 var getBaseUrl = function() {
-    return CONFIG.default.apiHost + CONFIG.default.user.id + "/";
+    return getHostUrl() + CONFIG.default.user.id + "/";
 };
 
 var getListsUrl = function() {

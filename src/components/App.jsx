@@ -22,13 +22,10 @@ class App extends Loadable {
     }
 
     loadData() {
-        // this.registerAPress();
-        console.log("loadData. User Id", this.state.user.id);
         this.loadUserSettings(this.state.user.id)
     }
 
     loadUserSettings(userId) {
-        console.log("loadUserSettings");
         return $.get(UrlUtils.getUserSettingsUrl(userId))
             .done((data) => { this.setUserSettings(data) })
             .fail((err) => {
@@ -38,20 +35,15 @@ class App extends Loadable {
     }
 
     setUserSettings(settings) {
-        console.log("setUserSettings", settings);
-
-        // if (settings.length===0) {
-        //     settings = this.getDefaultSettings();
-        //     settings.userId = CONFIG.user.id;
-        //     this.saveSettings(settings);
-        // }
-        // console.log("atiduodu", settings);
-
         var saving = this.state.user;
-        saving.settings = this.extractSettings(settings);
+
+        console.log("settings", settings);
+        saving.settings = settings ? this.extractSettings(settings) : this.getDefaultSettings();
         console.log("setUserSettings", saving);
+
         // Session.set('someVar', "Perduodu");
         // this.setState({ user: saving });
+
         this.loadMainView();
     }
 
@@ -90,7 +82,7 @@ class App extends Loadable {
     }
 
     saveSettings(settings) {
-        console.log("App saveSettings:", settings);
+        console.log("App saveSettings:", settings); this.setUserSettings(settings);
         $.post(
             UrlUtils.getUserSettingsUrl(settings.userId), settings)
             .done(this.setUserSettings(settings))
@@ -113,15 +105,8 @@ class App extends Loadable {
     render() {
         return null;
     }
-
-    aIsPressed() {
-        alert("A is pressed");
-        $(document).off("keydown");
-    }
-
-    registerAPress() {
-        $(document).on("keydown", () => this.aIsPressed() )
-    }
 }
 
 export default App;
+
+//

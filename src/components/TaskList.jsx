@@ -36,7 +36,10 @@ class TaskList extends Component {
 
 	displayTask(task, i, omitted) {
 		if (task === CONFIG.separatorString) {
-			return CONFIG.separatorString
+			return <tr key={'tr'+i}>
+				<td>{CONFIG.separatorString}</td>
+				<td className="right-align">{CONFIG.separatorString}</td>
+			</tr>
 		}
 
 		let taskTruncated = task.substring(0, CONFIG.maxTaskLength);
@@ -46,7 +49,6 @@ class TaskList extends Component {
 			if (taskTruncated[taskTruncated.length-1] === "/") {
 				taskTruncated = taskTruncated.substr(0, taskTruncated.length-1);
 			}
-			console.log("taskTruncated", taskTruncated[taskTruncated.length-1], taskTruncated.substr(0, taskTruncated.length-1))
 			taskAsDisplayed = <a href={ task } target="_blank">{ taskTruncated }</a>;
 		}
 
@@ -94,9 +96,9 @@ class TaskList extends Component {
 		}
 
 		return (
-			<table className="table table-sm table-condensed table-hover">
+			<table className="table table-condensed table-hover">
 				<tbody>
-					{taskListDisplayed.map((task, index) => this.displayTask(task, index, shouldOmit))}
+					{ taskListDisplayed.map((task, index) => this.displayTask(task, index, shouldOmit)) }
 				</tbody>
 			</table>
 		);
