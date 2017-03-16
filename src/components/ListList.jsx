@@ -12,6 +12,7 @@ class ListList extends Component {
 	}
 
 	displayList(list, i) {
+
 		var itemClass = "list-item";
 
 		if (list.immutable) {
@@ -29,6 +30,7 @@ class ListList extends Component {
 			<tr key={'tr'+i}>
 				<td className={itemClass} onClick={this.loadList.bind(this, list._id, list.name)} >
 					<span className="glyphicon glyphicon-folder-open list-item list-item-glyph" aria-hidden="true"></span>
+				{ list.name }
 				</td>
 				<td className="actions">
 				{deletable &&

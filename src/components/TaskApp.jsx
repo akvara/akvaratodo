@@ -143,7 +143,7 @@ class TaskApp extends Loadable {
             <LoadingDecorator
                 request={this.loadAListRequest.bind(this, listId)}
                 callback={this.loadAForeignListCallback.bind(this)}
-                action='Loading a list'
+                actionMessage='Loading a list'
             />, this.loaderNode
         );
 	}
