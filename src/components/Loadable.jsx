@@ -115,15 +115,17 @@ class Loadable extends Component {
         if (this.props.prepend) {
             itemsToDo = _.unique([this.state.prepend].concat(itemsToDo));
             dataToSave.itemsToDo = itemsToDo;
-            let callback = this.callbackForSettingState.bind(this, 0, dataToSave);
+            let callback = this.callbackForSettingState.bind(this, 0, dataToSave, data);
             this.saveTaskList(data._id, dataToSave, callback);
         } else {
-            this.callbackForSettingState(null, dataToSave);
+            this.callbackForSettingState(null, dataToSave, data);
         }
     }
 
     /* Data for setState */
-    callbackForSettingState(highlightPosition, data) {
+    callbackForSettingState(highlightPosition, data, other) {
+console.log('data', data.updatedAt);
+console.log('other', other.updatedAt);
         this.setState({
             itemsToDo: data.itemsToDo,
             itemsDone: data.itemsDone,
@@ -163,17 +165,22 @@ class Loadable extends Component {
 
     /* Callback after date check() */
     checkCallback(lastAction, callback, data) {
-console.log('check lastAction, data', lastAction, data.updatedAt);
-        if (lastAction === data.updatedAt) {
-console.log('goooooood', callback);
+
                     callback(data);
-        }  else {
-console.log('wrong!!!!');
-                    console.log('lastAction', lastAction);
+
+
+
+// console.log('check lastAction, data', lastAction, data.updatedAt);
+//         if (lastAction === data.updatedAt) {
+// console.log('goooooood', callback);
+//                     callback(data);
+//         }  else {
+// console.log('wrong!!!!');
+//                     console.log('lastAction', lastAction);
                     // console.log('===?', lastAction === data.lastAction);
                     /////// Reload list and then add
-                    // this.reloadData();
-        }
+                  // this.reloadData();
+        // }
     }
 
     /* cloning State */

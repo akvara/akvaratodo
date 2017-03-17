@@ -30,7 +30,7 @@ class ListList extends Component {
 			<tr key={'tr'+i}>
 				<td className={itemClass} onClick={this.loadList.bind(this, list._id, list.name)} >
 					<span className="glyphicon glyphicon-folder-open list-item list-item-glyph" aria-hidden="true"></span>
-				{ list.name }
+				{ list.name } { list.updatedAt.substr(11, 8) }
 				</td>
 				<td className="actions">
 				{deletable &&
