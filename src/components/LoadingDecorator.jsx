@@ -45,7 +45,7 @@ class LoadingDecorator extends Component {
 		this.setState({
 			message: actionMessage,
 			loadingString: '',
-			// finished: false,
+			// finished: false,put
 		});
 		new Promise((resolve, reject) => request(resolve, reject))
 	    	.then((val) => {

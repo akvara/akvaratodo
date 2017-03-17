@@ -9,33 +9,32 @@ import ListApp from './ListApp';
 import TaskList from './TaskList';
 import TaskDoneList from './TaskDoneList';
 import * as Utils from '../utils/utils.js';
-import $ from 'jquery';
 
 
 class TaskApp extends Loadable {
 	constructor(props, context) {
 	    super(props, context);
 
+        // this.list = props.list; //????
+        this.immutables = props.immutables || [];
+
 	    this.state = {
 			itemsToDo: [],
 			itemsDone: props.itemsDone || [],
 			prepend: props.prepend,
 			hightlightIndex: props.prepend ? 0 : null,
-			immutables: props.immutables || [],
 			immutable: false,
 			task: '',
 			notYetLoaded: true
 	    };
 	}
 
-    componentWillMount() {
-        this.loadData();
-    }
-
+    /* Load A List */
     loadData() {
+        document.title = this.props.list.name;
         ReactDOM.render(
             <LoadingDecorator
-                request={this.loadAListRequest.bind(this, this.props.listId)}
+                request={this.loadAListRequest.bind(this, this.props.list.id)}
                 callback={this.loadAListCallback.bind(this)}
                 actionMessage='Loading list'
                 finishedMessage='Loaded.'
@@ -43,124 +42,119 @@ class TaskApp extends Loadable {
         );
     }
 
-    reloadData() {
-        ReactDOM.render(
-            <LoadingDecorator
-                request={this.loadAListRequest.bind(this, this.props.listId)}
-                callback={this.addItem.bind(this)}
-                actionMessage='Conflict, roading list'
-                finishedMessage='Loaded.'
-            />, this.loaderNode
-        );
-    }
-
+    /* Render list of TaskLists */
   	goToLists() {
     	ReactDOM.render(<ListApp itemsDone={this.state.itemsDone}/>, this.appNode);
   	}
 
-	mark() {
-		this.setState({
-			immutable: !this.state.immutable
-		}, this.saveTaskList);
-	}
-
+    /* User input */
     onChange (e) {
 		this.setState({ task: e.target.value });
 	}
 
-    addItem() {
-        var dataToSave = {};
-        let highlightPosition = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
-
-        dataToSave.tasks = this.state.itemsToDo.slice(); // making a copy
-        dataToSave.listId = this.state.listId;
-        dataToSave.immutable = this.state.immutable;
-        dataToSave.lastAction = new Date().toISOString();
-
-        dataToSave.tasks.splice(CONFIG.user.settings.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
-        dataToSave.tasks = _.unique(dataToSave.tasks);
-
-        var callback = (dataToSave) => {
-            console.log("handleSubmit", dataToSave, highlightPosition)
-            this.setState({
-                itemsToDo: dataToSave.tasks,
-                lastAction: dataToSave.lastAction,
-                hightlightIndex: highlightPosition,
-                task: ''
-            });
-        };
-
-        this.checkIfSame(this.state.listId, this.state.lastAction, this.saveTaskList.bind(this, dataToSave, callback));
-    }
-
+    /* User submit */
 	handleSubmit(e) {
  		e.preventDefault();
-        this.addItem();
+
+        var dataToSave = this.prepareClone();
+        dataToSave.itemsToDo.splice(CONFIG.user.settings.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
+        dataToSave.itemsToDo = _.unique(dataToSave.itemsToDo);
+
+        let highlightPosition = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
+        let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
+        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, dataToSave, callback));
 	}
 
+    /* Remove task at i */
     removeTask(i) {
-        this.saveTaskList(
-            this.setState({
-                itemsToDo: Utils.removeItem(this.state.itemsToDo, i),
-                hightlightIndex: null,
-            })
-        )
+        var dataToSave = this.prepareClone();
+        dataToSave.itemsToDo = Utils.removeItem(this.state.itemsToDo, i);
+
+        let callback = this.callbackForSettingState.bind(this, null, dataToSave);
+        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, dataToSave, callback));
 	}
 
+    /* Move task to another list */
     moveOutside(i) {
-		ReactDOM.render(<Move state={this.state} itemIndex={i} fromList={this.state.listId}/>, this.appNode);
+		ReactDOM.render(<Move state={this.state} itemIndex={i} fromList={this.props.list.id}/>, this.appNode);
 	}
 
-	highlightPosition(i) {
-		return  Math.min(
+    /* Calculations */
+	calculateHighlightPosition(i) {
+		return Math.min(
 			this.state.itemsToDo.length - 1,
 			CONFIG.user.settings.postponeBy - 1,
 			CONFIG.user.settings.displayListLength
-		) + (this.state.itemsToDo.length >= CONFIG.user.settings.displayListLength ? 1 : 0);
+		)
+        + (this.state.itemsToDo.length >= CONFIG.user.settings.displayListLength ? 1 : 0);
 	}
 
+    /* Move task down by settings.postponeBy */
     postponeTask(i) {
-    	let items = Utils.moveFromTo(this.state.itemsToDo, i, i + CONFIG.user.settings.postponeBy)
-		this.setState({
-			itemsToDo: items ,
-			hightlightIndex: this.highlightPosition(i),
-		}, this.saveTaskList);
+        var dataToSave = this.prepareClone();
+        dataToSave.itemsToDo = Utils.moveFromTo(this.state.itemsToDo, i, i + CONFIG.user.settings.postponeBy)
+
+        let highlightPosition = this.calculateHighlightPosition(i);
+        let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
+
+        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, dataToSave, callback));
 	}
 
+    /* Move task to Done tasks array */
 	doneTask(i) {
-		var moved = Utils.moveToAnother(this.state.itemsToDo, this.state.itemsDone, i, false)
-		this.setState({
-			hightlightIndex: null,
-			itemsToDo: moved.A,
-			itemsDone: moved.B
-		}, this.saveTaskList);
+        var dataToSave = this.prepareClone();
+        var moved = Utils.moveToAnother(this.state.itemsToDo, this.state.itemsDone, i, false)
+
+        dataToSave.itemsToDo = moved.A;
+        dataToSave.itemsDone = moved.B;
+
+        let callback = this.callbackForSettingState.bind(this, null, dataToSave);
+        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, dataToSave, callback));
 	}
 
+    /* Move task back from Done tasks array */
 	unDoneTask(i) {
-		var moved = Utils.moveToAnother(this.state.itemsDone, this.state.itemsToDo, i, true)
-		this.setState({
-			itemsToDo: moved.B,
-			itemsDone: moved.A,
-			hightlightIndex: 0
-		}, this.saveTaskList);
+        var dataToSave = this.prepareClone();
+        var moved = Utils.moveToAnother(this.state.itemsDone, this.state.itemsToDo, i, true)
+
+        dataToSave.itemsToDo = moved.B;
+        dataToSave.itemsDone = moved.A;
+
+        let highlightPosition = 0;
+        let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
+        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, dataToSave, callback));
 	}
 
+    /* Move task to bottom */
 	procrastinateTask(i) {
-		let items = Utils.moveToEnd(this.state.itemsToDo, i);
-		this.setState({
-			itemsToDo: items,
-			hightlightIndex: this.state.itemsToDo.length
-		}, this.saveTaskList);
+        var dataToSave = this.prepareClone();
+
+        dataToSave.itemsToDo = Utils.moveToEnd(this.state.itemsToDo, i);
+
+        let highlightPosition = this.state.itemsToDo.length;
+        let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
+        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, dataToSave, callback));
 	}
 
-	toTop(i) {
-		console.log(this.state);
-		let items = Utils.moveToTop(this.state.itemsToDo, i);
-		this.setState({
-			itemsToDo: items,
-			hightlightIndex: 0
-		}, this.saveTaskList);
+    /* Move task to bottom */
+    toTop(i) {
+        var dataToSave = this.prepareClone();
+
+        dataToSave.itemsToDo = Utils.moveToTop(this.state.itemsToDo, i);
+
+        let highlightPosition = 0;
+        let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
+        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, dataToSave, callback));
 	}
+
+    /* Toggle immutable. No checking if changed */
+    mark() {
+        var dataToSave = this.prepareClone();
+        dataToSave.immutable = !this.state.immutable;
+
+        let callback = this.callbackForSettingState.bind(this, null, dataToSave);
+        this.saveTaskList(dataToSave, callback);
+    }
 
 	loadFromAnother(listId) {
         ReactDOM.render(
@@ -172,6 +166,16 @@ class TaskApp extends Loadable {
         );
 	}
 
+    loadAForeignListCallback(data) {
+        var dataToSave = this.prepareClone();
+        let loadedItems = data.tasks ? JSON.parse(data.tasks) : [];
+        dataToSave.itemsToDo = _.unique(loadedItems.concat(this.state.itemsToDo));
+
+        let callback = this.callbackForSettingState.bind(this, null, dataToSave);
+        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, dataToSave, callback));
+    }
+
+    /* Button for loading tasks from another list */
   	displayLoadFromButton(item) {
   		if (this.state.immutable) return null;
 
@@ -180,6 +184,7 @@ class TaskApp extends Loadable {
   		</button>
   	}
 
+    /* The Renderer */
 	render() {
 		if (this.state.notYetLoaded) return this.notYetLoadedReturn;
 
@@ -190,9 +195,10 @@ class TaskApp extends Loadable {
 			markGlyphicon = 'screen-shot';
 		}
 
-		return (
+// console.log("taskApp. render" , this.state);
+        return (
 			<div>
-				<h1>{this.state.listName}</h1>
+				<h1>{this.props.list.name}</h1>
 				<h3>Finished ({this.state.itemsDone.length})</h3>
 				<TaskDoneList items={this.state.itemsDone} undone={this.unDoneTask.bind(this)} />
 				<hr />

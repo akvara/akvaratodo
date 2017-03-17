@@ -16,17 +16,6 @@ class ListApp extends Loadable {
 	    };
 	}
 
-    componentDidMount() {
-// console.log('ListApp Did Mount');
-    }
-
-    componentWillUnmount() {
-// console.log('ListApp Did Un');
-    }
-    componentDidUpdate() {
-// console.log('ListApp Did Update');
-    }
-
     loadData() {
         document.title = "ToDo lists";
         if (!this.state.lists) this.loadLists(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists', 'Lists loaded.');
@@ -59,9 +48,9 @@ class ListApp extends Loadable {
 	}
 
 	loadList(lists, itemsDone, listId, listName) {
+        var list = {id: listId, name: listName};
         ReactDOM.render(<TaskApp
-            listId={listId}
-            listName={listName}
+            list={list}
             immutables={lists.filter((item) => item.immutable)}
             itemsDone={itemsDone}
         />, this.appNode);

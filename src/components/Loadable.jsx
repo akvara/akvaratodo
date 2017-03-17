@@ -107,35 +107,61 @@ class Loadable extends Component {
             .fail((err) => { reject(err) });
     }
 
+    /* Result from get(listId) */
     loadAListCallback(data) {
-        let itemsToDo = data.tasks ? JSON.parse(data.tasks) : [];
-        if (this.state.prepend) {
+console.log("loadAListCallback", data);
+        var dataToSave = this.state; //{};// this.prepareClone();
+        var itemsToDo = data.tasks ? JSON.parse(data.tasks) : [];
+            dataToSave.itemsToDo = itemsToDo;
+        if (this.props.prepend) {
             itemsToDo = _.unique([this.state.prepend].concat(itemsToDo));
+            dataToSave.itemsToDo = itemsToDo;
+            let callback = this.callbackForSettingState.bind(this, 0, dataToSave);
+            this.saveTaskList(dataToSave, callback);
+        } else {
+console.log('loadAListCallback', dataToSave);
+            this.callbackForSettingState(null, dataToSave);
         }
+    }
 
+    // callbackForLoadedState(dataToSave, highlightPosition) {
+    //     console.log("callbackForLOADINGState", dataToSave, highlightPosition);
+
+    //     this.setState({
+    //         listId: dataToSave.id,
+    //         listName: dataToSave.name,
+    //         immutable: dataToSave.immutable,
+    //         itemsToDo: dataToSave.tasks,
+    //         lastAction: dataToSave.lastAction,
+    //         hightlightIndex: highlightPosition,
+    //         prepend: null,
+    //         notYetLoaded: false
+    //     });
+    // }
+
+    /* Data for setState */
+    callbackForSettingState(highlightPosition, data) {
+        console.log("callbackForSAVINGState. data", data)
         this.setState({
-            listId: data._id,
-            listName: data.name,
+            // listId: dataToSave._id,
+            // listName: dataToSave.name,
+            itemsToDo: data.itemsToDo,
+            itemsDone: data.itemsDone,
+            // lastAction: dataToSave.lastAction,
+            hightlightIndex: highlightPosition,
             immutable: data.immutable,
-            itemsToDo: itemsToDo,
-            lastAction: data.lastAction,
+            updatedAt: data.updatedAt,
+
             prepend: null,
             notYetLoaded: false,
-        }, this.state.prepend ? this.saveTaskList : null);
+            task: ''
+        });
+    };
 
-        document.title = data.name;
-    }
 
-    loadAForeignListCallback(data) {
-        let loadedItems = data.tasks ? JSON.parse(data.tasks) : [];
-        this.setState({
-            itemsToDo: _.unique(loadedItems.concat(this.state.itemsToDo)),
-            prepend: null,
-            notYetLoaded: false,
-        }, this.saveTaskList);
-    }
-
+    /* Request putting task data and call callback on success */
     saveTaskList(dataToSave, callback) {
+console.log('saveTaskList dataToSave', dataToSave);
         ReactDOM.render(
             <LoadingDecorator
                 request={this.saveTaskListRequest.bind(this, dataToSave) }
@@ -152,28 +178,47 @@ class Loadable extends Component {
                 request={this.loadAListRequest.bind(this, listId)}
                 callback={this.checkCallback.bind(this, lastAction, callback)}
                 actionMessage='Checking'
-                finishedMessage='Ok'
+                finishedMessage='Data conflict, please reload'
             />, this.loaderNode
         );
     }
 
+    /* Callback after date check() */
     checkCallback(lastAction, callback, data) {
-        if (data.lastAction===undefined || this.state.lastAction === data.lastAction) {
-                    console.log('goooooood', callback);
+console.log('check Callback data', callback, data);
+        if (data.lastAction===undefined || lastAction === data.updatedAt) {
+console.log('goooooood', callback);
                     callback(data);
         }  else {
-                    console.log('wrong!!!!');
+console.log('wrong!!!!');
+                    console.log('lastAction', lastAction);
+                    // console.log('===?', lastAction === data.lastAction);
                     /////// Reload list and then add
                     // this.reloadData();
         }
     }
 
+    /* cloning State */
+    prepareClone() {
+        var clone = {};
+        clone.list = this.props.list;
+        clone.itemsToDo = this.state.itemsToDo.slice();
+        clone.itemsDone = this.state.itemsDone.slice();
+        clone.immutable = this.state.immutable;
+        clone.updatedAt = this.state.updatedAt;
+
+        return clone;
+    }
+
+    /* Request to PUT task data */
     saveTaskListRequest(dataToSave, resolve, reject) {
+console.log('putting to server', dataToSave);
         $.ajax({
-            url: UrlUtils.getAListUrl(dataToSave.listId),
+            url: UrlUtils.getAListUrl(dataToSave.list.id),
             type: 'PUT',
             data: {
-                tasks: JSON.stringify(dataToSave.tasks),
+                // Saving tasks as string
+                tasks: JSON.stringify(dataToSave.itemsToDo),
                 immutable: dataToSave.immutable,
                 lastAction: dataToSave.lastAction,
             }

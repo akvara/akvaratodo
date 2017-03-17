@@ -14,15 +14,17 @@ class App extends Loadable {
     constructor(props, context) {
         super(props, context);
 
-        this.state = {
-            lists: [],
-            user: {id: CONFIG.user.id}
-        };
+        this.user = {id: CONFIG.user.id};
+
+        // this.state = {
+            // lists: [],
+        // };
+
         this.userNode = document.getElementById('user');
     }
 
     loadData() {
-        this.loadUserSettings(this.state.user.id)
+        this.loadUserSettings(this.user.id)
     }
 
     loadUserSettings(userId) {
@@ -35,20 +37,14 @@ class App extends Loadable {
     }
 
     setUserSettings(settings) {
-        var saving = this.state.user;
+        var saving = this.user;
 
-        // console.log("settings", settings);
         saving.settings = settings ? this.extractSettings(settings) : this.getDefaultSettings();
-        // console.log("setUserSettings", saving);
-
-        // Session.set('someVar', "Perduodu");
-        // this.setState({ user: saving });
 
         this.loadMainView();
     }
 
     loadMainView(user) {
-        // console.log("loadMainView. User, state", this.state.user);
         this.loadLists(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists', 'Lists loaded.')
     }
 
@@ -94,7 +90,7 @@ class App extends Loadable {
         ReactDOM.render(
             <Settings
                 lists={lists}
-                user={this.state.user}
+                user={this.user}
                 extractSettings={this.extractSettings}
                 saveSettings={this.saveSettings.bind(this)}
             />, this.appNode
