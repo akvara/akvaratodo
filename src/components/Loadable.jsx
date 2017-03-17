@@ -170,25 +170,25 @@ console.log('other', other.updatedAt);
     /* Callback after date check() */
     checkCallback(lastAction, callback, data) {
 
-                    callback(data);
+                    // callback(data);
 
 
         var dataLast = data.lastAction ? data.lastAction.substr(11, 8) : ' '
 
-console.log('check2: param', lastAction.substr(11, 8));
+console.log('check1: param', lastAction.substr(11, 8));
 console.log('check1: data.lastAction', dataLast);
 console.log('check3: data.updatedAt',  data.updatedAt.substr(11, 8));
 // console.log('check4:', lastAction, last);
-//         if (lastAction === data.updatedAt) {
-// console.log('goooooood', callback);
-//                     callback(data);
-//         }  else {
-// console.log('wrong!!!!');
+        if (lastAction === data.lastAction) {
+console.log('goooooood', callback);
+                    callback(data);
+        }  else {
+console.log('wrong!!!!');
 //                     console.log('lastAction', lastAction);
                     // console.log('===?', lastAction === data.lastAction);
                     /////// Reload list and then add
                   // this.reloadData();
-        // }
+        }
     }
 
     /* cloning State */

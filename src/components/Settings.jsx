@@ -66,7 +66,7 @@ class Settings extends Component {
 				<td className="table-control-button-cell">
 					<button key={"add" + property} onClick={this.add.bind(this, property)}>+</button>
 				</td>
-				<td className="table-control-button-cell" onClick={this.setMin.bind(this, property)}>
+				<td className="table-control-button-cell" onClick={this.setMax.bind(this, property)}>
 					&le;&nbsp;{CONFIG.settingsConfig[property].max}
 				</td>
 			</tr>
