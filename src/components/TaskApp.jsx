@@ -80,21 +80,16 @@ class TaskApp extends Loadable {
 	}
 
     /* Calculations */
-	calculateHighlightPosition(i) {
-		return Math.min(
-			this.state.itemsToDo.length - 1,
-			CONFIG.user.settings.postponeBy - 1,
-			CONFIG.user.settings.displayListLength
-		)
-        + (this.state.itemsToDo.length >= CONFIG.user.settings.displayListLength ? 1 : 0);
+	postponeBy(){
+		return Math.floor(this.state.itemsToDo.length / 2)
 	}
 
-    /* Move task down by settings.postponeBy */
+	/* Move task down by 1/2 length */
     postponeTask(i) {
         var dataToSave = this.prepareClone();
-        dataToSave.itemsToDo = Utils.moveFromTo(this.state.itemsToDo, i, i + CONFIG.user.settings.postponeBy)
+        dataToSave.itemsToDo = Utils.moveFromTo(this.state.itemsToDo, i, i + this.postponeBy())
 
-        let highlightPosition = this.calculateHighlightPosition(i);
+        let highlightPosition = Math.min(this.state.itemsToDo.length - 1, i + this.postponeBy());
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
 
         this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, dataToSave, callback));
