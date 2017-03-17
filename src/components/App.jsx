@@ -37,9 +37,9 @@ class App extends Loadable {
     setUserSettings(settings) {
         var saving = this.state.user;
 
-        console.log("settings", settings);
+        // console.log("settings", settings);
         saving.settings = settings ? this.extractSettings(settings) : this.getDefaultSettings();
-        console.log("setUserSettings", saving);
+        // console.log("setUserSettings", saving);
 
         // Session.set('someVar', "Perduodu");
         // this.setState({ user: saving });
@@ -48,7 +48,7 @@ class App extends Loadable {
     }
 
     loadMainView(user) {
-        console.log("loadMainView. User, state", this.state.user);
+        // console.log("loadMainView. User, state", this.state.user);
         this.loadLists(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists', 'Lists loaded.')
     }
 
@@ -59,7 +59,6 @@ class App extends Loadable {
         var current = lists.find((item)  => item.name === CONFIG.user.settings.loadListIfExists);
         if (current) {
             ReactDOM.render(<TaskApp
-                listId={current._id}
                 listId={current._id}
                 listName={current.name}
                 immutables={lists.filter((item) => item.immutable)}
@@ -109,4 +108,3 @@ class App extends Loadable {
 
 export default App;
 
-//

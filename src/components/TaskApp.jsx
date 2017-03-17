@@ -9,9 +9,10 @@ import ListApp from './ListApp';
 import TaskList from './TaskList';
 import TaskDoneList from './TaskDoneList';
 import * as Utils from '../utils/utils.js';
+import $ from 'jquery';
+
 
 class TaskApp extends Loadable {
-
 	constructor(props, context) {
 	    super(props, context);
 
@@ -31,20 +32,23 @@ class TaskApp extends Loadable {
         this.loadData();
     }
 
-    componentDidMount() {
-// console.log('TaskApp Did Mount', Session.get('someVar'));
-    }
-
-    componentWillUnmount() {
-// console.log('TaskApp Did Un');
-    }
-
     loadData() {
         ReactDOM.render(
             <LoadingDecorator
                 request={this.loadAListRequest.bind(this, this.props.listId)}
                 callback={this.loadAListCallback.bind(this)}
                 actionMessage='Loading list'
+                finishedMessage='Loaded.'
+            />, this.loaderNode
+        );
+    }
+
+    reloadData() {
+        ReactDOM.render(
+            <LoadingDecorator
+                request={this.loadAListRequest.bind(this, this.props.listId)}
+                callback={this.addItem.bind(this)}
+                actionMessage='Conflict, roading list'
                 finishedMessage='Loaded.'
             />, this.loaderNode
         );
@@ -64,23 +68,43 @@ class TaskApp extends Loadable {
 		this.setState({ task: e.target.value });
 	}
 
+    addItem() {
+        var dataToSave = {};
+        let highlightPosition = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
+
+        dataToSave.tasks = this.state.itemsToDo.slice(); // making a copy
+        dataToSave.listId = this.state.listId;
+        dataToSave.immutable = this.state.immutable;
+        dataToSave.lastAction = new Date().toISOString();
+
+        dataToSave.tasks.splice(CONFIG.user.settings.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
+        dataToSave.tasks = _.unique(dataToSave.tasks);
+
+        var callback = (dataToSave) => {
+            console.log("handleSubmit", dataToSave, highlightPosition)
+            this.setState({
+                itemsToDo: dataToSave.tasks,
+                lastAction: dataToSave.lastAction,
+                hightlightIndex: highlightPosition,
+                task: ''
+            });
+        };
+
+        this.checkIfSame(this.state.listId, this.state.lastAction, this.saveTaskList.bind(this, dataToSave, callback));
+    }
+
 	handleSubmit(e) {
  		e.preventDefault();
- 		let highlightPosition = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
- 		this.state.itemsToDo.splice(CONFIG.user.settings.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
-		this.setState({
-			itemsToDo: _.unique(this.state.itemsToDo),
-			hightlightIndex: highlightPosition,
-			task: ''
-		}, this.saveTaskList.bind(this));
+        this.addItem();
 	}
 
     removeTask(i) {
-		this.setState({
-			itemsToDo: Utils.removeItem(this.state.itemsToDo, i),
-			hightlightIndex: null,
-		},
-		this.saveTaskList.bind(this))
+        this.saveTaskList(
+            this.setState({
+                itemsToDo: Utils.removeItem(this.state.itemsToDo, i),
+                hightlightIndex: null,
+            })
+        )
 	}
 
     moveOutside(i) {

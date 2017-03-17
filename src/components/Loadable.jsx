@@ -118,6 +118,7 @@ class Loadable extends Component {
             listName: data.name,
             immutable: data.immutable,
             itemsToDo: itemsToDo,
+            lastAction: data.lastAction,
             prepend: null,
             notYetLoaded: false,
         }, this.state.prepend ? this.saveTaskList : null);
@@ -134,31 +135,51 @@ class Loadable extends Component {
         }, this.saveTaskList);
     }
 
-    saveTaskList() {
+    saveTaskList(dataToSave, callback) {
         ReactDOM.render(
             <LoadingDecorator
-                request={this.saveTaskListRequest.bind(this, this.state.listId)}
-                callback={this.saveTaskListCallback.bind(this)}
+                request={this.saveTaskListRequest.bind(this, dataToSave) }
+                callback={callback.bind(this, dataToSave)}
                 actionMessage='Saving'
                 finishedMessage='Saved'
+            />, this.loaderNode
+        )
+    }
+
+    checkIfSame(listId, lastAction, callback) {
+        ReactDOM.render(
+            <LoadingDecorator
+                request={this.loadAListRequest.bind(this, listId)}
+                callback={this.checkCallback.bind(this, lastAction, callback)}
+                actionMessage='Checking'
+                finishedMessage='Ok'
             />, this.loaderNode
         );
     }
 
-    saveTaskListRequest(listId, resolve, reject) {
-        return $.ajax({
-            url: UrlUtils.getAListUrl(listId),
+    checkCallback(lastAction, callback, data) {
+        if (data.lastAction===undefined || this.state.lastAction === data.lastAction) {
+                    console.log('goooooood', callback);
+                    callback(data);
+        }  else {
+                    console.log('wrong!!!!');
+                    /////// Reload list and then add
+                    // this.reloadData();
+        }
+    }
+
+    saveTaskListRequest(dataToSave, resolve, reject) {
+        $.ajax({
+            url: UrlUtils.getAListUrl(dataToSave.listId),
             type: 'PUT',
             data: {
-                tasks: JSON.stringify(this.state.itemsToDo),
-                immutable: this.state.immutable,
+                tasks: JSON.stringify(dataToSave.tasks),
+                immutable: dataToSave.immutable,
+                lastAction: dataToSave.lastAction,
             }
         })
         .done((data) => { resolve(data) })
         .fail((err) => { reject(err) });
-    }
-
-    saveTaskListCallback() {
     }
 
     render() {
