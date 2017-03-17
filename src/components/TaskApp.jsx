@@ -10,13 +10,14 @@ import TaskList from './TaskList';
 import TaskDoneList from './TaskDoneList';
 import * as Utils from '../utils/utils.js';
 
-
 class TaskApp extends Loadable {
 	constructor(props, context) {
 	    super(props, context);
 
         // this.list = props.list; //????
         this.immutables = props.immutables || [];
+
+        // this.list = props.list;
 
 	    this.state = {
 			itemsToDo: [],
@@ -62,7 +63,8 @@ class TaskApp extends Loadable {
 
         let highlightPosition = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
-        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, dataToSave, callback));
+        console.log('this.state', this.state);
+        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
 	}
 
     /* Remove task at i */
@@ -71,12 +73,13 @@ class TaskApp extends Loadable {
         dataToSave.itemsToDo = Utils.removeItem(this.state.itemsToDo, i);
 
         let callback = this.callbackForSettingState.bind(this, null, dataToSave);
-        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, dataToSave, callback));
+        console.log('this.state', this.state);
+        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
 	}
 
     /* Move task to another list */
     moveOutside(i) {
-		ReactDOM.render(<Move state={this.state} itemIndex={i} fromList={this.props.list.id}/>, this.appNode);
+		ReactDOM.render(<Move fromList={this.props.list} itemIndex={i} state={this.state} />, this.appNode);
 	}
 
     /* Calculations */
@@ -92,7 +95,8 @@ class TaskApp extends Loadable {
         let highlightPosition = Math.min(this.state.itemsToDo.length - 1, i + this.postponeBy());
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
 
-        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, dataToSave, callback));
+console.log('this.state', this.state);
+        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
 	}
 
     /* Move task to Done tasks array */
@@ -104,7 +108,8 @@ class TaskApp extends Loadable {
         dataToSave.itemsDone = moved.B;
 
         let callback = this.callbackForSettingState.bind(this, null, dataToSave);
-        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, dataToSave, callback));
+        console.log('this.state', this.state);
+        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
 	}
 
     /* Move task back from Done tasks array */
@@ -117,7 +122,8 @@ class TaskApp extends Loadable {
 
         let highlightPosition = 0;
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
-        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, dataToSave, callback));
+        console.log('this.state', this.state);
+        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
 	}
 
     /* Move task to bottom */
@@ -128,7 +134,8 @@ class TaskApp extends Loadable {
 
         let highlightPosition = this.state.itemsToDo.length;
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
-        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, dataToSave, callback));
+        console.log('this.state', this.state);
+        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
 	}
 
     /* Move task to bottom */
@@ -139,7 +146,8 @@ class TaskApp extends Loadable {
 
         let highlightPosition = 0;
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
-        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, dataToSave, callback));
+        console.log('this.state', this.state);
+        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
 	}
 
     /* Toggle immutable. No checking if changed */
@@ -148,10 +156,10 @@ class TaskApp extends Loadable {
         dataToSave.immutable = !this.state.immutable;
 
         let callback = this.callbackForSettingState.bind(this, null, dataToSave);
-        this.saveTaskList(dataToSave, callback);
+        this.saveTaskList(this.props.list.id, dataToSave, callback);
     }
 
-	loadFromAnother(listId) {
+	loadAnotherList(listId) {
         ReactDOM.render(
             <LoadingDecorator
                 request={this.loadAListRequest.bind(this, listId)}
@@ -167,14 +175,15 @@ class TaskApp extends Loadable {
         dataToSave.itemsToDo = _.unique(loadedItems.concat(this.state.itemsToDo));
 
         let callback = this.callbackForSettingState.bind(this, null, dataToSave);
-        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, dataToSave, callback));
+        console.log('this.state', this.state);
+        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
     }
 
     /* Button for loading tasks from another list */
   	displayLoadFromButton(item) {
   		if (this.state.immutable) return null;
 
-  		return <button key={'btn'+item._id} onClick={this.loadFromAnother.bind(this, item._id)} >
+  		return <button key={'btn'+item._id} onClick={this.loadAnotherList.bind(this, item._id)} >
   			Load from <span className={'glyphicon glyphicon-upload'} aria-hidden="true"></span> <i>{ item.name }</i>
   		</button>
   	}
@@ -190,7 +199,6 @@ class TaskApp extends Loadable {
 			markGlyphicon = 'screen-shot';
 		}
 
-// console.log("taskApp. render" , this.state);
         return (
 			<div>
 				<h1>{this.props.list.name}</h1>

@@ -109,7 +109,6 @@ class Loadable extends Component {
 
     /* Result from get(listId) */
     loadAListCallback(data) {
-console.log("loadAListCallback", data);
         var dataToSave = this.state; //{};// this.prepareClone();
         var itemsToDo = data.tasks ? JSON.parse(data.tasks) : [];
             dataToSave.itemsToDo = itemsToDo;
@@ -117,37 +116,17 @@ console.log("loadAListCallback", data);
             itemsToDo = _.unique([this.state.prepend].concat(itemsToDo));
             dataToSave.itemsToDo = itemsToDo;
             let callback = this.callbackForSettingState.bind(this, 0, dataToSave);
-            this.saveTaskList(dataToSave, callback);
+            this.saveTaskList(data._id, dataToSave, callback);
         } else {
-console.log('loadAListCallback', dataToSave);
             this.callbackForSettingState(null, dataToSave);
         }
     }
 
-    // callbackForLoadedState(dataToSave, highlightPosition) {
-    //     console.log("callbackForLOADINGState", dataToSave, highlightPosition);
-
-    //     this.setState({
-    //         listId: dataToSave.id,
-    //         listName: dataToSave.name,
-    //         immutable: dataToSave.immutable,
-    //         itemsToDo: dataToSave.tasks,
-    //         lastAction: dataToSave.lastAction,
-    //         hightlightIndex: highlightPosition,
-    //         prepend: null,
-    //         notYetLoaded: false
-    //     });
-    // }
-
     /* Data for setState */
     callbackForSettingState(highlightPosition, data) {
-        console.log("callbackForSAVINGState. data", data)
         this.setState({
-            // listId: dataToSave._id,
-            // listName: dataToSave.name,
             itemsToDo: data.itemsToDo,
             itemsDone: data.itemsDone,
-            // lastAction: dataToSave.lastAction,
             hightlightIndex: highlightPosition,
             immutable: data.immutable,
             updatedAt: data.updatedAt,
@@ -160,11 +139,10 @@ console.log('loadAListCallback', dataToSave);
 
 
     /* Request putting task data and call callback on success */
-    saveTaskList(dataToSave, callback) {
-console.log('saveTaskList dataToSave', dataToSave);
+    saveTaskList(listId, dataToSave, callback) {
         ReactDOM.render(
             <LoadingDecorator
-                request={this.saveTaskListRequest.bind(this, dataToSave) }
+                request={this.saveTaskListRequest.bind(this, listId, dataToSave) }
                 callback={callback.bind(this, dataToSave)}
                 actionMessage='Saving'
                 finishedMessage='Saved'
@@ -185,8 +163,8 @@ console.log('saveTaskList dataToSave', dataToSave);
 
     /* Callback after date check() */
     checkCallback(lastAction, callback, data) {
-console.log('check Callback data', callback, data);
-        if (data.lastAction===undefined || lastAction === data.updatedAt) {
+console.log('check lastAction, data', lastAction, data.updatedAt);
+        if (lastAction === data.updatedAt) {
 console.log('goooooood', callback);
                     callback(data);
         }  else {
@@ -211,16 +189,14 @@ console.log('wrong!!!!');
     }
 
     /* Request to PUT task data */
-    saveTaskListRequest(dataToSave, resolve, reject) {
-console.log('putting to server', dataToSave);
+    saveTaskListRequest(listId, dataToSave, resolve, reject) {
         $.ajax({
-            url: UrlUtils.getAListUrl(dataToSave.list.id),
+            url: UrlUtils.getAListUrl(listId),
             type: 'PUT',
             data: {
                 // Saving tasks as string
                 tasks: JSON.stringify(dataToSave.itemsToDo),
                 immutable: dataToSave.immutable,
-                lastAction: dataToSave.lastAction,
             }
         })
         .done((data) => { resolve(data) })

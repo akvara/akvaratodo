@@ -11,32 +11,11 @@ class LoadingDecorator extends Component {
 	    }
 	}
 
-    componentDidMount() {
-// console.log('Decorator Did Mount');
-    }
-
-    componentWillUnmount() {
-// console.log('Decorator Will Un');
-    }
-
-    componentWillUpdate() {
-// console.log('Decorator Will Update');
-    }
-
-    componentDidUpdate() {
-    	// if (this.state.finished) {
-    		// this.props.callback(this.state.val);
-    	// }
-// console.log('Decorator Did Update');
-    }
-
 	componentWillMount() {
-// console.log('Decorator Will Mount');
 		this.doAction(this.props.request, this.props.callback, this.props.actionMessage, this.props.finishedMessage);
 	}
 
 	componentWillReceiveProps(nextProps) {
-// console.log('Decorator Will Receive PROPS', this.props , nextProps);
 		if (this.props !== nextProps) this.doAction(nextProps.request, nextProps.callback, nextProps.actionMessage, nextProps.finishedMessage);
 	}
 

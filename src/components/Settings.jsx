@@ -7,7 +7,6 @@ class Settings extends Component {
 	    super(props, context);
 
 	    this.state = this.props.extractSettings(props.user.settings);
-	    console.log("Settings constructor", this.state);
 
 	}
 
@@ -30,12 +29,10 @@ class Settings extends Component {
 	}
 
 	handleSelectChange(e) {
-		console.log('e.target.value', e.target.value);
-    	this.setState({loadListIfExists: e.target.value }, console.log("po Set State", this.state))
+    	this.setState({loadListIfExists: e.target.value })
 	}
 
 	saveSettings() {
-		console.log("Settings saveSettings:", this.state);
 		this.props.saveSettings(this.state);
 	}
 
@@ -47,7 +44,6 @@ class Settings extends Component {
 		return React.createElement(
 			"select",
 			{
-				// valueLink: { value: this.state[property], requestChange: this.handleSelectChange.bind(this)}
 				value: this.state[property], onChange: this.handleSelectChange.bind(this)
 			},
 			this.props.lists.map((item) => React.createElement("option", { value: item.name, key: "o" + item.name }, item.name ))
