@@ -25,12 +25,12 @@ class ListList extends Component {
 
 		// let buttonTitle = "load " + list._id;
 		let deletable = list.tasks ? (list.tasks === '[]' && !list.immutable) : true;
-
+		var last = list.lastAction ? list.lastAction.substr(11, 8) : ' '
 		return (
 			<tr key={'tr'+i}>
 				<td className={itemClass} onClick={this.loadList.bind(this, list._id, list.name)} >
 					<span className="glyphicon glyphicon-folder-open list-item list-item-glyph" aria-hidden="true"></span>
-				{ list.name } { list.updatedAt.substr(11, 8) }
+				{ list.name } { list.updatedAt.substr(11, 8) } { last }
 				</td>
 				<td className="actions">
 				{deletable &&

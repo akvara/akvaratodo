@@ -64,7 +64,7 @@ class TaskApp extends Loadable {
         let highlightPosition = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
         console.log('this.state', this.state);
-        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
+        this.checkIfSame(this.props.list.id, this.state.lastAction, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
 	}
 
     /* Remove task at i */
@@ -74,7 +74,7 @@ class TaskApp extends Loadable {
 
         let callback = this.callbackForSettingState.bind(this, null, dataToSave);
         console.log('this.state', this.state);
-        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
+        this.checkIfSame(this.props.list.id, this.state.lastAction, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
 	}
 
     /* Move task to another list */
@@ -96,7 +96,7 @@ class TaskApp extends Loadable {
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
 
 console.log('this.state', this.state);
-        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
+        this.checkIfSame(this.props.list.id, this.state.lastAction, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
 	}
 
     /* Move task to Done tasks array */
@@ -109,7 +109,7 @@ console.log('this.state', this.state);
 
         let callback = this.callbackForSettingState.bind(this, null, dataToSave);
         console.log('this.state', this.state);
-        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
+        this.checkIfSame(this.props.list.id, this.state.lastAction, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
 	}
 
     /* Move task back from Done tasks array */
@@ -123,7 +123,7 @@ console.log('this.state', this.state);
         let highlightPosition = 0;
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
         console.log('this.state', this.state);
-        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
+        this.checkIfSame(this.props.list.id, this.state.lastAction, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
 	}
 
     /* Move task to bottom */
@@ -135,7 +135,7 @@ console.log('this.state', this.state);
         let highlightPosition = this.state.itemsToDo.length;
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
         console.log('this.state', this.state);
-        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
+        this.checkIfSame(this.props.list.id, this.state.lastAction, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
 	}
 
     /* Move task to bottom */
@@ -147,7 +147,7 @@ console.log('this.state', this.state);
         let highlightPosition = 0;
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
         console.log('this.state', this.state);
-        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
+        this.checkIfSame(this.props.list.id, this.state.lastAction, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
 	}
 
     /* Toggle immutable. No checking if changed */
@@ -176,7 +176,7 @@ console.log('this.state', this.state);
 
         let callback = this.callbackForSettingState.bind(this, null, dataToSave);
         console.log('this.state', this.state);
-        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
+        this.checkIfSame(this.props.list.id, this.state.lastAction, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
     }
 
     /* Button for loading tasks from another list */

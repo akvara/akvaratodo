@@ -112,6 +112,9 @@ class Loadable extends Component {
         var dataToSave = this.state; //{};// this.prepareClone();
         var itemsToDo = data.tasks ? JSON.parse(data.tasks) : [];
             dataToSave.itemsToDo = itemsToDo;
+            dataToSave.immutable = data.immutable;
+            dataToSave.updatedAt = data.updatedAt;
+            dataToSave.lastAction = data.lastAction;
         if (this.props.prepend) {
             itemsToDo = _.unique([this.state.prepend].concat(itemsToDo));
             dataToSave.itemsToDo = itemsToDo;
@@ -132,6 +135,7 @@ console.log('other', other.updatedAt);
             hightlightIndex: highlightPosition,
             immutable: data.immutable,
             updatedAt: data.updatedAt,
+            lastAction: data.lastAction,
 
             prepend: null,
             notYetLoaded: false,
@@ -169,8 +173,12 @@ console.log('other', other.updatedAt);
                     callback(data);
 
 
+        var dataLast = data.lastAction ? data.lastAction.substr(11, 8) : ' '
 
-// console.log('check lastAction, data', lastAction, data.updatedAt);
+console.log('check2: param', lastAction.substr(11, 8));
+console.log('check1: data.lastAction', dataLast);
+console.log('check3: data.updatedAt',  data.updatedAt.substr(11, 8));
+// console.log('check4:', lastAction, last);
 //         if (lastAction === data.updatedAt) {
 // console.log('goooooood', callback);
 //                     callback(data);
@@ -191,12 +199,14 @@ console.log('other', other.updatedAt);
         clone.itemsDone = this.state.itemsDone.slice();
         clone.immutable = this.state.immutable;
         clone.updatedAt = this.state.updatedAt;
+        clone.lastAction = new Date().toISOString();
 
         return clone;
     }
 
     /* Request to PUT task data */
     saveTaskListRequest(listId, dataToSave, resolve, reject) {
+        console.log("saveTaskListRequest", dataToSave);
         $.ajax({
             url: UrlUtils.getAListUrl(listId),
             type: 'PUT',
@@ -204,6 +214,7 @@ console.log('other', other.updatedAt);
                 // Saving tasks as string
                 tasks: JSON.stringify(dataToSave.itemsToDo),
                 immutable: dataToSave.immutable,
+                lastAction: dataToSave.lastAction
             }
         })
         .done((data) => { resolve(data) })

@@ -62,11 +62,18 @@ class ListApp extends Loadable {
 		return (
 			<div>
 				<h1>Lists</h1>
-				<ListList
-					lists={this.state.lists}
-					loadList={this.loadList.bind(this, this.state.lists, this.props.itemsDone)}
-					removeList={this.removeList.bind(this)}
-				/>
+                <ListList
+                    lists={this.state.lists.filter(list => !list.immutable)}
+                    loadList={this.loadList.bind(this, this.state.lists, this.props.itemsDone)}
+                    removeList={this.removeList.bind(this)}
+                />
+                <h3>Protected</h3>
+
+                <ListList
+                    lists={this.state.lists.filter(list => list.immutable)}
+                    loadList={this.loadList.bind(this, this.state.lists, this.props.itemsDone)}
+                    removeList={this.removeList.bind(this)}
+                />
 				<form onSubmit={this.handleSubmit.bind(this)}>
 					<input className="list-input" value={this.state.listName} onChange={this.onNameChange.bind(this)} />
 					<button disabled={!this.state.listName.trim()}>Create new list</button>
