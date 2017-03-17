@@ -87,19 +87,27 @@ class TaskApp extends Loadable {
 		ReactDOM.render(<Move state={this.state} itemIndex={i} fromList={this.state.listId}/>, this.appNode);
 	}
 
+	postponeBy(){
+		return Math.floor(this.state.itemsToDo.length / 2)
+	}
+
 	highlightPosition(i) {
 		return  Math.min(
 			this.state.itemsToDo.length - 1,
-			CONFIG.user.settings.postponeBy - 1,
-			CONFIG.user.settings.displayListLength
-		) + (this.state.itemsToDo.length >= CONFIG.user.settings.displayListLength ? 1 : 0);
+			i + this.postponeBy(),
+		// 	CONFIG.user.settings.displayListLength
+		// ) + (this.state.itemsToDo.length >= CONFIG.user.settings.displayListLength ? 1 : 0);
+		)
 	}
 
     postponeTask(i) {
-    	let items = Utils.moveFromTo(this.state.itemsToDo, i, i + CONFIG.user.settings.postponeBy)
+console.log('postponeBy', this.postponeBy());
+console.log('i', i);
+console.log('to', i + this.postponeBy());
+    	let items = Utils.moveFromTo(this.state.itemsToDo, i, i + this.postponeBy())
 		this.setState({
 			itemsToDo: items ,
-			hightlightIndex: this.highlightPosition(i),
+			hightlightIndex: Math.min(this.state.itemsToDo.length - 1, i + this.postponeBy())
 		}, this.saveTaskList);
 	}
 
