@@ -23,19 +23,22 @@ class ListList extends Component {
 			itemClass += " list-item-current"
 		}
 
-		// let buttonTitle = "load " + list._id;
 		let deletable = list.tasks ? (list.tasks === '[]' && !list.immutable) : true;
-		var last = list.lastAction ? list.lastAction.substr(11, 8) : ' '
+		var updatedDateOrTime = new Date().toISOString().substr(0, 10) === list.updatedAt.substr(0, 10) ?
+			list.updatedAt.substr(11, 8) : list.updatedAt.substr(11, 8)
 		return (
 			<tr key={'tr'+i}>
 				<td className={itemClass} onClick={this.loadList.bind(this, list._id, list.name)} >
 					<span className="glyphicon glyphicon-folder-open list-item list-item-glyph" aria-hidden="true"></span>
-				{ list.name } { list.updatedAt.substr(11, 8) } { last }
+				{ list.name }
 				</td>
 				<td className="actions">
 				{deletable &&
 					<span className="glyphicon glyphicon-trash action-button" aria-hidden="true" onClick={this.removeList.bind(this, list._id)}></span>
 				}
+				</td>
+				<td className="right-align">
+					{ updatedDateOrTime }
 				</td>
 			</tr>
 		);

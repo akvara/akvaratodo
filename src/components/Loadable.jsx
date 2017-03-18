@@ -114,7 +114,6 @@ class Loadable extends Component {
             dataToSave.itemsToDo = itemsToDo;
             dataToSave.immutable = data.immutable;
             dataToSave.updatedAt = data.updatedAt;
-            dataToSave.lastAction = data.lastAction;
         if (this.props.prepend) {
             itemsToDo = _.unique([this.state.prepend].concat(itemsToDo));
             dataToSave.itemsToDo = itemsToDo;
@@ -127,15 +126,14 @@ class Loadable extends Component {
 
     /* Data for setState */
     callbackForSettingState(highlightPosition, data, other) {
-console.log('data', data.updatedAt);
-console.log('other', other.updatedAt);
+// console.log('data', data);
+// console.log('other', other);
         this.setState({
             itemsToDo: data.itemsToDo,
             itemsDone: data.itemsDone,
-            hightlightIndex: highlightPosition,
             immutable: data.immutable,
             updatedAt: data.updatedAt,
-            lastAction: data.lastAction,
+            hightlightIndex: highlightPosition,
 
             prepend: null,
             notYetLoaded: false,
@@ -155,6 +153,9 @@ console.log('other', other.updatedAt);
             />, this.loaderNode
         )
     }
+    checkWrapper(dataToSave, callback) {
+        this.checkIfSame(this.props.list.id, this.state.updatedAt, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
+    }
 
     checkIfSame(listId, lastAction, callback) {
         ReactDOM.render(
@@ -169,24 +170,15 @@ console.log('other', other.updatedAt);
 
     /* Callback after date check() */
     checkCallback(lastAction, callback, data) {
+        // var dataLast = data.lastAction ? data.lastAction.substr(11, 8) : ' data.lastAction ie EMPTY'
+        var actionLast = lastAction ? lastAction.substr(11, 8) : 'param lastAction is EMPTY'
 
-                    // callback(data);
-
-
-        var dataLast = data.lastAction ? data.lastAction.substr(11, 8) : ' '
-
-console.log('check1: param', lastAction.substr(11, 8));
-console.log('check1: data.lastAction', dataLast);
-console.log('check3: data.updatedAt',  data.updatedAt.substr(11, 8));
-// console.log('check4:', lastAction, last);
-        if (lastAction === data.lastAction) {
+console.log('check1: parameter', lastAction);
+        if (lastAction === data.updatedAt) {
 console.log('goooooood', callback);
-                    callback(data);
+            callback(data);
         }  else {
 console.log('wrong!!!!');
-//                     console.log('lastAction', lastAction);
-                    // console.log('===?', lastAction === data.lastAction);
-                    /////// Reload list and then add
                   // this.reloadData();
         }
     }
@@ -224,7 +216,6 @@ console.log('wrong!!!!');
     render() {
         return null;
 	}
-
 }
 
 export default Loadable;

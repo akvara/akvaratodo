@@ -14,10 +14,7 @@ class TaskApp extends Loadable {
 	constructor(props, context) {
 	    super(props, context);
 
-        // this.list = props.list; //????
         this.immutables = props.immutables || [];
-
-        // this.list = props.list;
 
 	    this.state = {
 			itemsToDo: [],
@@ -26,7 +23,8 @@ class TaskApp extends Loadable {
 			hightlightIndex: props.prepend ? 0 : null,
 			immutable: false,
 			task: '',
-			notYetLoaded: true
+            notYetLoaded: true,
+			reloadNeeded: false
 	    };
 	}
 
@@ -63,8 +61,7 @@ class TaskApp extends Loadable {
 
         let highlightPosition = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
-        console.log('this.state', this.state);
-        this.checkIfSame(this.props.list.id, this.state.lastAction, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
+        this.checkWrapper(dataToSave, callback);
 	}
 
     /* Remove task at i */
@@ -74,7 +71,7 @@ class TaskApp extends Loadable {
 
         let callback = this.callbackForSettingState.bind(this, null, dataToSave);
         console.log('this.state', this.state);
-        this.checkIfSame(this.props.list.id, this.state.lastAction, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
+        this.checkWrapper(dataToSave, callback);
 	}
 
     /* Move task to another list */
@@ -96,7 +93,7 @@ class TaskApp extends Loadable {
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
 
 console.log('this.state', this.state);
-        this.checkIfSame(this.props.list.id, this.state.lastAction, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
+        this.checkWrapper(dataToSave, callback);
 	}
 
     /* Move task to Done tasks array */
@@ -109,7 +106,7 @@ console.log('this.state', this.state);
 
         let callback = this.callbackForSettingState.bind(this, null, dataToSave);
         console.log('this.state', this.state);
-        this.checkIfSame(this.props.list.id, this.state.lastAction, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
+        this.checkWrapper(dataToSave, callback);
 	}
 
     /* Move task back from Done tasks array */
@@ -123,7 +120,7 @@ console.log('this.state', this.state);
         let highlightPosition = 0;
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
         console.log('this.state', this.state);
-        this.checkIfSame(this.props.list.id, this.state.lastAction, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
+        this.checkWrapper(dataToSave, callback);
 	}
 
     /* Move task to bottom */
@@ -135,7 +132,7 @@ console.log('this.state', this.state);
         let highlightPosition = this.state.itemsToDo.length;
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
         console.log('this.state', this.state);
-        this.checkIfSame(this.props.list.id, this.state.lastAction, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
+        this.checkWrapper(dataToSave, callback);
 	}
 
     /* Move task to bottom */
@@ -147,7 +144,7 @@ console.log('this.state', this.state);
         let highlightPosition = 0;
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
         console.log('this.state', this.state);
-        this.checkIfSame(this.props.list.id, this.state.lastAction, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
+        this.checkWrapper(dataToSave, callback);
 	}
 
     /* Toggle immutable. No checking if changed */
@@ -176,17 +173,21 @@ console.log('this.state', this.state);
 
         let callback = this.callbackForSettingState.bind(this, null, dataToSave);
         console.log('this.state', this.state);
-        this.checkIfSame(this.props.list.id, this.state.lastAction, this.saveTaskList.bind(this, this.props.list.id, dataToSave, callback));
+        this.checkWrapper(dataToSave, callback);
     }
 
     /* Button for loading tasks from another list */
   	displayLoadFromButton(item) {
   		if (this.state.immutable) return null;
 
-  		return <button key={'btn'+item._id} onClick={this.loadAnotherList.bind(this, item._id)} >
+  		return <button key={'btn'+item._id} disabled={this.state.reloadNeeded} onClick={this.loadAnotherList.bind(this, item._id)} >
   			Load from <span className={'glyphicon glyphicon-upload'} aria-hidden="true"></span> <i>{ item.name }</i>
   		</button>
   	}
+
+    reload() {
+        this.loadData();
+    }
 
     /* The Renderer */
 	render() {
@@ -215,6 +216,7 @@ console.log('this.state', this.state);
 					toTop={this.toTop.bind(this)}
 					postpone={this.postponeTask.bind(this)}
 					procrastinate={this.procrastinateTask.bind(this)}
+                    reloadNeeded={this.state.reloadNeeded}
 					done={this.doneTask.bind(this)}
 				/>
 				{!this.state.immutable &&
@@ -229,8 +231,11 @@ console.log('this.state', this.state);
 				}
 				<hr />
 				{ this.props.immutables.map((list) => this.displayLoadFromButton(list)) }
-				<button disabled={this.state.task.trim()} onClick={this.mark.bind(this)}>
-					<span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true"></span> {markTitle}
+                <button disabled={this.state.task.trim() || this.state.reloadNeeded} onClick={this.mark.bind(this)}>
+                    <span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true"></span> {markTitle}
+                </button>
+                <button onClick={this.reload.bind(this)}>
+					<span className={'glyphicon glyphicon-refresh'} aria-hidden="true"></span> Reload
 				</button>
 				<button disabled={this.state.task.trim()} onClick={this.goToLists.bind(this)}>
 					<span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> Lists
