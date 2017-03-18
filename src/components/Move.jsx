@@ -42,6 +42,7 @@ class Move extends Loadable {
     saveTaskListCallback(list) {
 		ReactDOM.render(<TaskApp
 			list={list}
+            previousList={this.props.fromList}
 			prepend={this.movingItem}
 			immutables={this.state.lists.filter((aList) => aList.immutable)}
 			itemsDone={this.state.itemsDone}

@@ -25,7 +25,7 @@ class ListList extends Component {
 
 		let deletable = list.tasks ? (list.tasks === '[]' && !list.immutable) : true;
 		var updatedDateOrTime = new Date().toISOString().substr(0, 10) === list.updatedAt.substr(0, 10) ?
-			list.updatedAt.substr(11, 8) : list.updatedAt.substr(11, 8)
+			list.updatedAt.substr(0, 10) : list.updatedAt.substr(11, 8)
 		return (
 			<tr key={'tr'+i}>
 				<td className={itemClass} onClick={this.loadList.bind(this, list._id, list.name)} >
@@ -38,7 +38,7 @@ class ListList extends Component {
 				}
 				</td>
 				<td className="right-align">
-					{ updatedDateOrTime }
+					{list.tasks.count} { updatedDateOrTime }
 				</td>
 			</tr>
 		);

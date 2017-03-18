@@ -35,7 +35,8 @@ class LoadingDecorator extends Component {
 	    			loadingString: ''
 	    		});
 	    		callback(val);
-	// console.log("fulfilled:", val);
+	console.log("fulfilled:", val.updatedAt ? val.updatedAt.substr(11, 8) : val)//;
+	// console.log("callback was:", callback);
 	    	})
 				.catch((err) => {
 					clearInterval(this.interval);

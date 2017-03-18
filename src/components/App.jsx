@@ -78,7 +78,8 @@ class App extends Loadable {
     }
 
     saveSettings(settings) {
-        console.log("App saveSettings:", settings); this.setUserSettings(settings);
+        console.log("App saveSettings:", settings);
+        this.setUserSettings(settings);
         $.post(
             UrlUtils.getUserSettingsUrl(settings.userId), settings)
             .done(this.setUserSettings(settings))

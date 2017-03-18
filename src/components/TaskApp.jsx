@@ -4,6 +4,7 @@ import CONFIG from '../config.js';
 import _ from 'underscore';
 import Loadable from './Loadable';
 import LoadingDecorator from './LoadingDecorator';
+import ListChanger from './ListChanger';
 import Move from './Move';
 import ListApp from './ListApp';
 import TaskList from './TaskList';
@@ -42,8 +43,20 @@ class TaskApp extends Loadable {
     }
 
     /* Render list of TaskLists */
-  	goToLists() {
-    	ReactDOM.render(<ListApp itemsDone={this.state.itemsDone}/>, this.appNode);
+    goToLists() {
+        ReactDOM.render(<ListApp itemsDone={this.state.itemsDone}/>, this.appNode);
+    }
+
+    /* Render a ListChanger */
+  	listChanger() {
+    	ReactDOM.render(<ListChanger
+            toList={this.props.previousList}
+            previousList={this.props.list}
+            immutables={this.immutables}
+            itemsDone={this.state.itemsDone}
+            appNode={this.appNode}
+            />, this.appNode
+        );
   	}
 
     /* User input */
@@ -61,6 +74,7 @@ class TaskApp extends Loadable {
 
         let highlightPosition = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
+
         this.checkWrapper(dataToSave, callback);
 	}
 
@@ -70,7 +84,7 @@ class TaskApp extends Loadable {
         dataToSave.itemsToDo = Utils.removeItem(this.state.itemsToDo, i);
 
         let callback = this.callbackForSettingState.bind(this, null, dataToSave);
-        console.log('this.state', this.state);
+
         this.checkWrapper(dataToSave, callback);
 	}
 
@@ -81,7 +95,7 @@ class TaskApp extends Loadable {
 
     /* Calculations */
 	postponeBy(){
-		return Math.floor(this.state.itemsToDo.length / 2)
+		return Math.floor(this.state.itemsToDo.length / 2) + 1;
 	}
 
 	/* Move task down by 1/2 length */
@@ -92,7 +106,6 @@ class TaskApp extends Loadable {
         let highlightPosition = Math.min(this.state.itemsToDo.length - 1, i + this.postponeBy());
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
 
-console.log('this.state', this.state);
         this.checkWrapper(dataToSave, callback);
 	}
 
@@ -105,7 +118,7 @@ console.log('this.state', this.state);
         dataToSave.itemsDone = moved.B;
 
         let callback = this.callbackForSettingState.bind(this, null, dataToSave);
-        console.log('this.state', this.state);
+
         this.checkWrapper(dataToSave, callback);
 	}
 
@@ -119,7 +132,7 @@ console.log('this.state', this.state);
 
         let highlightPosition = 0;
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
-        console.log('this.state', this.state);
+
         this.checkWrapper(dataToSave, callback);
 	}
 
@@ -131,7 +144,7 @@ console.log('this.state', this.state);
 
         let highlightPosition = this.state.itemsToDo.length;
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
-        console.log('this.state', this.state);
+
         this.checkWrapper(dataToSave, callback);
 	}
 
@@ -143,7 +156,7 @@ console.log('this.state', this.state);
 
         let highlightPosition = 0;
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
-        console.log('this.state', this.state);
+
         this.checkWrapper(dataToSave, callback);
 	}
 
@@ -172,7 +185,7 @@ console.log('this.state', this.state);
         dataToSave.itemsToDo = _.unique(loadedItems.concat(this.state.itemsToDo));
 
         let callback = this.callbackForSettingState.bind(this, null, dataToSave);
-        console.log('this.state', this.state);
+
         this.checkWrapper(dataToSave, callback);
     }
 
@@ -191,7 +204,9 @@ console.log('this.state', this.state);
 
     /* The Renderer */
 	render() {
-		if (this.state.notYetLoaded) return this.notYetLoadedReturn;
+		if (this.state.notYetLoaded) {
+            return this.notYetLoadedReturn;
+        }
 
 		var markTitle = 'Protect';
 		var markGlyphicon = 'exclamation-sign';
@@ -237,9 +252,14 @@ console.log('this.state', this.state);
                 <button onClick={this.reload.bind(this)}>
 					<span className={'glyphicon glyphicon-refresh'} aria-hidden="true"></span> Reload
 				</button>
-				<button disabled={this.state.task.trim()} onClick={this.goToLists.bind(this)}>
-					<span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> Lists
-				</button>
+                {this.props.previousList &&
+                    <button disabled={this.state.task.trim()} onClick={this.listChanger.bind(this)}>
+    					<span className="glyphicon glyphicon-share-alt" aria-hidden="true"></span> {this.props.previousList.name}
+    				</button>
+                }
+                <button disabled={this.state.task.trim()} onClick={this.goToLists.bind(this)}>
+                    <span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> Lists
+                </button>
 				<hr />
 			</div>
 		);
