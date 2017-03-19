@@ -134,6 +134,7 @@ class Loadable extends Component {
     callbackForSettingState(highlightPosition, dataToSave, responseData) {
         this.setState({
             itemsToDo: dataToSave.itemsToDo,
+            itemsDone: dataToSave.itemsDone ? dataToSave.itemsDone : [],
             immutable: dataToSave.immutable,
             updatedAt: dataToSave.lastAction,
             hightlightIndex: highlightPosition,
