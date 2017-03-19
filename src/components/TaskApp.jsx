@@ -19,7 +19,7 @@ class TaskApp extends Loadable {
 
 	    this.state = {
 			itemsToDo: [],
-			itemsDone: props.itemsDone || [],
+			itemsDone: [],
 			prepend: props.prepend,
 			hightlightIndex: props.prepend ? 0 : null,
 			immutable: false,
@@ -44,7 +44,7 @@ class TaskApp extends Loadable {
 
     /* Render list of TaskLists */
     goToLists() {
-        ReactDOM.render(<ListApp itemsDone={this.state.itemsDone}/>, this.appNode);
+        ReactDOM.render(<ListApp />, this.appNode);
     }
 
     /* Render a ListChanger */
@@ -53,7 +53,6 @@ class TaskApp extends Loadable {
             toList={this.props.previousList}
             previousList={this.props.list}
             immutables={this.immutables}
-            itemsDone={this.state.itemsDone}
             appNode={this.appNode}
             />, this.appNode
         );

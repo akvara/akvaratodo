@@ -72,12 +72,12 @@ class Loadable extends Component {
             });
     }
 
-    addAListCallback(lists, doneItems, data) {
+    addAListCallback(lists, data) {
         this.setState({
             lists: lists.concat(data),
             notYetLoaded: false
         });
-        return this.loadList(lists, doneItems, data._id, data.name);
+        return this.loadList(lists, data._id, data.name);
     }
 
     removeListRequest(listId, resolve, reject) {
@@ -118,6 +118,7 @@ class Loadable extends Component {
     loadAListCallback(data) {
         var dataToSave = {};
         dataToSave.itemsToDo = data.tasks ? JSON.parse(data.tasks) : [];
+        dataToSave.itemsDone = data.done ? JSON.parse(data.done) : [];
         dataToSave.immutable = data.immutable;
         dataToSave.lastAction = data.lastAction; // data.updatedAt; //      new Date();
 
@@ -134,7 +135,7 @@ class Loadable extends Component {
     callbackForSettingState(highlightPosition, dataToSave, responseData) {
         this.setState({
             itemsToDo: dataToSave.itemsToDo,
-            itemsDone: dataToSave.itemsDone ? dataToSave.itemsDone : [],
+            itemsDone: dataToSave.itemsDone, // ? dataToSave.itemsDone : [],
             immutable: dataToSave.immutable,
             updatedAt: dataToSave.lastAction,
             hightlightIndex: highlightPosition,
@@ -201,6 +202,7 @@ class Loadable extends Component {
             data: {
                 // Saving tasks as string
                 tasks: JSON.stringify(dataToSave.itemsToDo),
+                done: JSON.stringify(dataToSave.itemsDone),
                 immutable: dataToSave.immutable,
                 lastAction: dataToSave.lastAction
             }
