@@ -4,6 +4,7 @@ import CONFIG from '../config.js';
 import _ from 'underscore';
 import Loadable from './Loadable';
 import LoadingDecorator from './LoadingDecorator';
+import ListChanger from './ListChanger';
 import Move from './Move';
 import ListApp from './ListApp';
 import TaskList from './TaskList';
@@ -11,38 +12,29 @@ import TaskDoneList from './TaskDoneList';
 import * as Utils from '../utils/utils.js';
 
 class TaskApp extends Loadable {
-
 	constructor(props, context) {
 	    super(props, context);
+
+        this.immutables = props.immutables || [];
 
 	    this.state = {
 			itemsToDo: [],
 			itemsDone: props.itemsDone || [],
 			prepend: props.prepend,
 			hightlightIndex: props.prepend ? 0 : null,
-			immutables: props.immutables || [],
 			immutable: false,
 			task: '',
-			notYetLoaded: true
+            notYetLoaded: true,
+			reloadNeeded: false
 	    };
 	}
 
-    componentWillMount() {
-        this.loadData();
-    }
-
-    componentDidMount() {
-// console.log('TaskApp Did Mount', Session.get('someVar'));
-    }
-
-    componentWillUnmount() {
-// console.log('TaskApp Did Un');
-    }
-
+    /* Load A List */
     loadData() {
+        document.title = this.props.list.name;
         ReactDOM.render(
             <LoadingDecorator
-                request={this.loadAListRequest.bind(this, this.props.listId)}
+                request={this.loadAListRequest.bind(this, this.props.list.id)}
                 callback={this.loadAListCallback.bind(this)}
                 actionMessage='Loading list'
                 finishedMessage='Loaded.'
@@ -50,103 +42,134 @@ class TaskApp extends Loadable {
         );
     }
 
-  	goToLists() {
-    	ReactDOM.render(<ListApp itemsDone={this.state.itemsDone}/>, this.appNode);
+    /* Render list of TaskLists */
+    goToLists() {
+        ReactDOM.render(<ListApp itemsDone={this.state.itemsDone}/>, this.appNode);
+    }
+
+    /* Render a ListChanger */
+  	listChanger() {
+    	ReactDOM.render(<ListChanger
+            toList={this.props.previousList}
+            previousList={this.props.list}
+            immutables={this.immutables}
+            itemsDone={this.state.itemsDone}
+            appNode={this.appNode}
+            />, this.appNode
+        );
   	}
 
-	mark() {
-		this.setState({
-			immutable: !this.state.immutable
-		}, this.saveTaskList);
-	}
-
+    /* User input */
     onChange (e) {
 		this.setState({ task: e.target.value });
 	}
 
+    /* User submit */
 	handleSubmit(e) {
  		e.preventDefault();
- 		let highlightPosition = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
- 		this.state.itemsToDo.splice(CONFIG.user.settings.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
-		this.setState({
-			itemsToDo: _.unique(this.state.itemsToDo),
-			hightlightIndex: highlightPosition,
-			task: ''
-		}, this.saveTaskList.bind(this));
+
+        var dataToSave = this.prepareClone();
+        dataToSave.itemsToDo.splice(CONFIG.user.settings.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
+        dataToSave.itemsToDo = _.unique(dataToSave.itemsToDo);
+
+        let highlightPosition = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
+        let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
+
+        this.checkWrapper(dataToSave, callback);
 	}
 
+    /* Remove task at i */
     removeTask(i) {
-		this.setState({
-			itemsToDo: Utils.removeItem(this.state.itemsToDo, i),
-			hightlightIndex: null,
-		},
-		this.saveTaskList.bind(this))
+        var dataToSave = this.prepareClone();
+        dataToSave.itemsToDo = Utils.removeItem(this.state.itemsToDo, i);
+
+        let callback = this.callbackForSettingState.bind(this, null, dataToSave);
+
+        this.checkWrapper(dataToSave, callback);
 	}
 
+    /* Move task to another list */
     moveOutside(i) {
-		ReactDOM.render(<Move state={this.state} itemIndex={i} fromList={this.state.listId}/>, this.appNode);
+		ReactDOM.render(<Move fromList={this.props.list} itemIndex={i} state={this.state} />, this.appNode);
 	}
 
+    /* Calculations */
 	postponeBy(){
-		return Math.floor(this.state.itemsToDo.length / 2)
+		return Math.floor(this.state.itemsToDo.length / 2);
 	}
 
-	highlightPosition(i) {
-		return  Math.min(
-			this.state.itemsToDo.length - 1,
-			i + this.postponeBy(),
-		// 	CONFIG.user.settings.displayListLength
-		// ) + (this.state.itemsToDo.length >= CONFIG.user.settings.displayListLength ? 1 : 0);
-		)
-	}
-
+	/* Move task down by 1/2 length */
     postponeTask(i) {
-console.log('postponeBy', this.postponeBy());
-console.log('i', i);
-console.log('to', i + this.postponeBy());
-    	let items = Utils.moveFromTo(this.state.itemsToDo, i, i + this.postponeBy())
-		this.setState({
-			itemsToDo: items ,
-			hightlightIndex: Math.min(this.state.itemsToDo.length - 1, i + this.postponeBy())
-		}, this.saveTaskList);
+        var dataToSave = this.prepareClone();
+        dataToSave.itemsToDo = Utils.moveFromTo(this.state.itemsToDo, i, i + this.postponeBy())
+
+        let highlightPosition = Math.min(this.state.itemsToDo.length - 1, i + this.postponeBy());
+        let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
+
+        this.checkWrapper(dataToSave, callback);
 	}
 
+    /* Move task to Done tasks array */
 	doneTask(i) {
-		var moved = Utils.moveToAnother(this.state.itemsToDo, this.state.itemsDone, i, false)
-		this.setState({
-			hightlightIndex: null,
-			itemsToDo: moved.A,
-			itemsDone: moved.B
-		}, this.saveTaskList);
+        var dataToSave = this.prepareClone();
+        var moved = Utils.moveToAnother(this.state.itemsToDo, this.state.itemsDone, i, false)
+
+        dataToSave.itemsToDo = moved.A;
+        dataToSave.itemsDone = moved.B;
+
+        let callback = this.callbackForSettingState.bind(this, null, dataToSave);
+
+        this.checkWrapper(dataToSave, callback);
 	}
 
+    /* Move task back from Done tasks array */
 	unDoneTask(i) {
-		var moved = Utils.moveToAnother(this.state.itemsDone, this.state.itemsToDo, i, true)
-		this.setState({
-			itemsToDo: moved.B,
-			itemsDone: moved.A,
-			hightlightIndex: 0
-		}, this.saveTaskList);
+        var dataToSave = this.prepareClone();
+        var moved = Utils.moveToAnother(this.state.itemsDone, this.state.itemsToDo, i, true)
+
+        dataToSave.itemsToDo = moved.B;
+        dataToSave.itemsDone = moved.A;
+
+        let highlightPosition = 0;
+        let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
+
+        this.checkWrapper(dataToSave, callback);
 	}
 
+    /* Move task to bottom */
 	procrastinateTask(i) {
-		let items = Utils.moveToEnd(this.state.itemsToDo, i);
-		this.setState({
-			itemsToDo: items,
-			hightlightIndex: this.state.itemsToDo.length
-		}, this.saveTaskList);
+        var dataToSave = this.prepareClone();
+
+        dataToSave.itemsToDo = Utils.moveToEnd(this.state.itemsToDo, i);
+
+        let highlightPosition = this.state.itemsToDo.length;
+        let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
+
+        this.checkWrapper(dataToSave, callback);
 	}
 
-	toTop(i) {
-		console.log(this.state);
-		let items = Utils.moveToTop(this.state.itemsToDo, i);
-		this.setState({
-			itemsToDo: items,
-			hightlightIndex: 0
-		}, this.saveTaskList);
+    /* Move task to bottom */
+    toTop(i) {
+        var dataToSave = this.prepareClone();
+
+        dataToSave.itemsToDo = Utils.moveToTop(this.state.itemsToDo, i);
+
+        let highlightPosition = 0;
+        let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
+
+        this.checkWrapper(dataToSave, callback);
 	}
 
-	loadFromAnother(listId) {
+    /* Toggle immutable. No checking if changed */
+    mark() {
+        var dataToSave = this.prepareClone();
+        dataToSave.immutable = !this.state.immutable;
+
+        let callback = this.callbackForSettingState.bind(this, null, dataToSave);
+        this.saveTaskList(this.props.list.id, dataToSave, callback);
+    }
+
+	loadAnotherList(listId) {
         ReactDOM.render(
             <LoadingDecorator
                 request={this.loadAListRequest.bind(this, listId)}
@@ -156,16 +179,34 @@ console.log('to', i + this.postponeBy());
         );
 	}
 
+    loadAForeignListCallback(data) {
+        var dataToSave = this.prepareClone();
+        let loadedItems = data.tasks ? JSON.parse(data.tasks) : [];
+        dataToSave.itemsToDo = _.unique(loadedItems.concat(this.state.itemsToDo));
+
+        let callback = this.callbackForSettingState.bind(this, null, dataToSave);
+
+        this.checkWrapper(dataToSave, callback);
+    }
+
+    /* Button for loading tasks from another list */
   	displayLoadFromButton(item) {
   		if (this.state.immutable) return null;
 
-  		return <button key={'btn'+item._id} onClick={this.loadFromAnother.bind(this, item._id)} >
+  		return <button key={'btn'+item._id} disabled={this.state.reloadNeeded} onClick={this.loadAnotherList.bind(this, item._id)} >
   			Load from <span className={'glyphicon glyphicon-upload'} aria-hidden="true"></span> <i>{ item.name }</i>
   		</button>
   	}
 
+    reload() {
+        this.loadData();
+    }
+
+    /* The Renderer */
 	render() {
-		if (this.state.notYetLoaded) return this.notYetLoadedReturn;
+		if (this.state.notYetLoaded) {
+            return this.notYetLoadedReturn;
+        }
 
 		var markTitle = 'Protect';
 		var markGlyphicon = 'exclamation-sign';
@@ -174,9 +215,9 @@ console.log('to', i + this.postponeBy());
 			markGlyphicon = 'screen-shot';
 		}
 
-		return (
+        return (
 			<div>
-				<h1>{this.state.listName}</h1>
+				<h1>{this.props.list.name}</h1>
 				<h3>Finished ({this.state.itemsDone.length})</h3>
 				<TaskDoneList items={this.state.itemsDone} undone={this.unDoneTask.bind(this)} />
 				<hr />
@@ -190,6 +231,7 @@ console.log('to', i + this.postponeBy());
 					toTop={this.toTop.bind(this)}
 					postpone={this.postponeTask.bind(this)}
 					procrastinate={this.procrastinateTask.bind(this)}
+                    reloadNeeded={this.state.reloadNeeded}
 					done={this.doneTask.bind(this)}
 				/>
 				{!this.state.immutable &&
@@ -204,12 +246,20 @@ console.log('to', i + this.postponeBy());
 				}
 				<hr />
 				{ this.props.immutables.map((list) => this.displayLoadFromButton(list)) }
-				<button disabled={this.state.task.trim()} onClick={this.mark.bind(this)}>
-					<span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true"></span> {markTitle}
+                <button disabled={this.state.task.trim() || this.state.reloadNeeded} onClick={this.mark.bind(this)}>
+                    <span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true"></span> {markTitle}
+                </button>
+                <button onClick={this.reload.bind(this)}>
+					<span className={'glyphicon glyphicon-refresh'} aria-hidden="true"></span> Reload
 				</button>
-				<button disabled={this.state.task.trim()} onClick={this.goToLists.bind(this)}>
-					<span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> Lists
-				</button>
+                {this.props.previousList &&
+                    <button disabled={this.state.task.trim()} onClick={this.listChanger.bind(this)}>
+    					<span className="glyphicon glyphicon-share-alt" aria-hidden="true"></span> {this.props.previousList.name}
+    				</button>
+                }
+                <button disabled={this.state.task.trim()} onClick={this.goToLists.bind(this)}>
+                    <span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> Lists
+                </button>
 				<hr />
 			</div>
 		);

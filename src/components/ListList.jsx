@@ -23,9 +23,9 @@ class ListList extends Component {
 			itemClass += " list-item-current"
 		}
 
-		// let buttonTitle = "load " + list._id;
 		let deletable = list.tasks ? (list.tasks === '[]' && !list.immutable) : true;
-
+		var updatedDateOrTime = new Date().toISOString().substr(0, 10) === list.updatedAt.substr(0, 10) ?
+			list.updatedAt.substr(11, 5) : list.updatedAt.substr(0, 10);
 		return (
 			<tr key={'tr'+i}>
 				<td className={itemClass} onClick={this.loadList.bind(this, list._id, list.name)} >
@@ -36,6 +36,11 @@ class ListList extends Component {
 				{deletable &&
 					<span className="glyphicon glyphicon-trash action-button" aria-hidden="true" onClick={this.removeList.bind(this, list._id)}></span>
 				}
+				</td>
+				<td className="right-align">
+					(<strong>{ JSON.parse(list.tasks).length }</strong>)
+					&nbsp;
+					{ updatedDateOrTime }
 				</td>
 			</tr>
 		);

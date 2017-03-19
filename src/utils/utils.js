@@ -39,12 +39,8 @@ exports.moveToTop = function(items, i) {
 
 exports.moveFromTo = function(items, fromPos, toPos) {
     let trans = items[fromPos];
-// console.log("items", items);
-// console.log("fromPos", fromPos);
-// console.log("toPos", toPos);
     items.splice(fromPos, 1);
     items.splice(toPos, 0, trans);
-// console.log("items", items);
 
     return items;
 }

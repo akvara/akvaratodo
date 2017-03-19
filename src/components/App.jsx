@@ -14,15 +14,17 @@ class App extends Loadable {
     constructor(props, context) {
         super(props, context);
 
-        this.state = {
-            lists: [],
-            user: {id: CONFIG.user.id}
-        };
+        this.user = {id: CONFIG.user.id};
+
+        // this.state = {
+            // lists: [],
+        // };
+
         this.userNode = document.getElementById('user');
     }
 
     loadData() {
-        this.loadUserSettings(this.state.user.id)
+        this.loadUserSettings(this.user.id)
     }
 
     loadUserSettings(userId) {
@@ -35,20 +37,14 @@ class App extends Loadable {
     }
 
     setUserSettings(settings) {
-        var saving = this.state.user;
+        var saving = this.user;
 
-        console.log("settings", settings);
         saving.settings = settings ? this.extractSettings(settings) : this.getDefaultSettings();
-        console.log("setUserSettings", saving);
 
-        // Session.set('someVar', "Perduodu");
-        // this.setState({ user: saving });
-
-        this.loadMainView();
+        this.loadMainView(CONFIG.user);
     }
 
     loadMainView(user) {
-        console.log("loadMainView. User, state", this.state.user);
         this.loadLists(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists', 'Lists loaded.')
     }
 
@@ -56,12 +52,12 @@ class App extends Loadable {
         var lists = Utils.sortArrOfObjectsByParam(data, 'updatedAt', true);
 
         ReactDOM.render(<User lists={lists} renderSettings={this.renderSettings.bind(this)} />, this.userNode);
-        var current = lists.find((item)  => item.name === CONFIG.user.settings.loadListIfExists);
+        var current = lists.find((item) => item.name === CONFIG.user.settings.loadListIfExists);
+
         if (current) {
+            var list = { id: current._id, name: current.name }
             ReactDOM.render(<TaskApp
-                listId={current._id}
-                listId={current._id}
-                listName={current.name}
+                list={list}
                 immutables={lists.filter((item) => item.immutable)}
             />, this.appNode);
         } else {
@@ -82,7 +78,8 @@ class App extends Loadable {
     }
 
     saveSettings(settings) {
-        console.log("App saveSettings:", settings); this.setUserSettings(settings);
+        console.log("App saveSettings:", settings);
+        this.setUserSettings(settings);
         $.post(
             UrlUtils.getUserSettingsUrl(settings.userId), settings)
             .done(this.setUserSettings(settings))
@@ -95,7 +92,7 @@ class App extends Loadable {
         ReactDOM.render(
             <Settings
                 lists={lists}
-                user={this.state.user}
+                user={this.user}
                 extractSettings={this.extractSettings}
                 saveSettings={this.saveSettings.bind(this)}
             />, this.appNode
@@ -109,4 +106,3 @@ class App extends Loadable {
 
 export default App;
 
-//
