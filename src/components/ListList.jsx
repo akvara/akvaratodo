@@ -38,7 +38,7 @@ class ListList extends Component {
 				}
 				</td>
 				<td className="right-align">
-					(<strong>{ JSON.parse(list.tasks).length }</strong>)
+					(<strong>{ list.tasks ? JSON.parse(list.tasks).length : 0 }</strong>)
 					&nbsp;
 					{ updatedDateOrTime }
 				</td>

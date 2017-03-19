@@ -253,7 +253,7 @@ class TaskApp extends Loadable {
 				</button>
                 {this.props.previousList &&
                     <button disabled={this.state.task.trim()} onClick={this.listChanger.bind(this)}>
-    					<span className="glyphicon glyphicon-share-alt" aria-hidden="true"></span> {this.props.previousList.name}
+    					<span className="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> {this.props.previousList.name}
     				</button>
                 }
                 <button disabled={this.state.task.trim()} onClick={this.goToLists.bind(this)}>

@@ -28,6 +28,12 @@ class Settings extends Component {
 		this.setState(obj)
 	}
 
+	setMax(property) {
+		var obj  = {}
+		obj[property] = CONFIG.settingsConfig[property].max;
+		this.setState(obj)
+	}
+
 	handleSelectChange(e) {
     	this.setState({loadListIfExists: e.target.value })
 	}

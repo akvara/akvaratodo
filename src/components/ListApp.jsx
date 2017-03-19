@@ -37,7 +37,7 @@ class ListApp extends Loadable {
         ReactDOM.render(
             <LoadingDecorator
                 request={this.addAListRequest.bind(this)}
-                callback={this.addAListCallback.bind(this, this.state.lists, this.props.itemsDone)}
+                callback={this.addAListCallback.bind(this, this.state.lists)}
                 action='Adding'
             />, this.loaderNode
         );
