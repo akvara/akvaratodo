@@ -11,32 +11,11 @@ class LoadingDecorator extends Component {
 	    }
 	}
 
-    componentDidMount() {
-// console.log('Decorator Did Mount');
-    }
-
-    componentWillUnmount() {
-// console.log('Decorator Will Un');
-    }
-
-    componentWillUpdate() {
-// console.log('Decorator Will Update');
-    }
-
-    componentDidUpdate() {
-    	// if (this.state.finished) {
-    		// this.props.callback(this.state.val);
-    	// }
-// console.log('Decorator Did Update');
-    }
-
 	componentWillMount() {
-// console.log('Decorator Will Mount');
 		this.doAction(this.props.request, this.props.callback, this.props.actionMessage, this.props.finishedMessage);
 	}
 
 	componentWillReceiveProps(nextProps) {
-// console.log('Decorator Will Receive PROPS', this.props , nextProps);
 		if (this.props !== nextProps) this.doAction(nextProps.request, nextProps.callback, nextProps.actionMessage, nextProps.finishedMessage);
 	}
 
@@ -45,7 +24,7 @@ class LoadingDecorator extends Component {
 		this.setState({
 			message: actionMessage,
 			loadingString: '',
-			// finished: false,
+			// finished: false,put
 		});
 		new Promise((resolve, reject) => request(resolve, reject))
 	    	.then((val) => {
@@ -56,7 +35,8 @@ class LoadingDecorator extends Component {
 	    			loadingString: ''
 	    		});
 	    		callback(val);
-	// console.log("fulfilled:", val);
+	console.log("fulfilled:", val.updatedAt ? val.updatedAt.substr(11, 8) : val)//;
+	// console.log("callback was:", callback);
 	    	})
 				.catch((err) => {
 					clearInterval(this.interval);

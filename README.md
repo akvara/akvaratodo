@@ -16,3 +16,13 @@ Migrations:
 * migrate: ./node_modules/.bin/mm --config=migrations/config/mm-config-{local}.json
 
 index.js -> App:loadData ->App:loadUserSettings ->App:setUserSettings -> -> -> ->
+
+
+
+
+
+* TaskApp workfow:
+** after each user action on list:
+** 1) checkWrapper(dataToSave, callback) // dataToSave == this.state analogas/kopija
+** 2) callbackForSettingState.bind(this, highlightPosition)
+

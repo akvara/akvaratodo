@@ -16,17 +16,6 @@ class ListApp extends Loadable {
 	    };
 	}
 
-    componentDidMount() {
-// console.log('ListApp Did Mount');
-    }
-
-    componentWillUnmount() {
-// console.log('ListApp Did Un');
-    }
-    componentDidUpdate() {
-// console.log('ListApp Did Update');
-    }
-
     loadData() {
         document.title = "ToDo lists";
         if (!this.state.lists) this.loadLists(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists', 'Lists loaded.');
@@ -59,9 +48,9 @@ class ListApp extends Loadable {
 	}
 
 	loadList(lists, itemsDone, listId, listName) {
+        var list = {id: listId, name: listName};
         ReactDOM.render(<TaskApp
-            listId={listId}
-            listName={listName}
+            list={list}
             immutables={lists.filter((item) => item.immutable)}
             itemsDone={itemsDone}
         />, this.appNode);
@@ -73,11 +62,18 @@ class ListApp extends Loadable {
 		return (
 			<div>
 				<h1>Lists</h1>
-				<ListList
-					lists={this.state.lists}
-					loadList={this.loadList.bind(this, this.state.lists, this.props.itemsDone)}
-					removeList={this.removeList.bind(this)}
-				/>
+                <ListList
+                    lists={this.state.lists.filter(list => !list.immutable)}
+                    loadList={this.loadList.bind(this, this.state.lists, this.props.itemsDone)}
+                    removeList={this.removeList.bind(this)}
+                />
+                <h3>Protected</h3>
+
+                <ListList
+                    lists={this.state.lists.filter(list => list.immutable)}
+                    loadList={this.loadList.bind(this, this.state.lists, this.props.itemsDone)}
+                    removeList={this.removeList.bind(this)}
+                />
 				<form onSubmit={this.handleSubmit.bind(this)}>
 					<input className="list-input" value={this.state.listName} onChange={this.onNameChange.bind(this)} />
 					<button disabled={!this.state.listName.trim()}>Create new list</button>
