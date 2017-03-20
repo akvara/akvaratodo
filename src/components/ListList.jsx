@@ -15,7 +15,23 @@ class ListList extends Component {
 
 	/* Display list line */
 	displayList(list, i) {
-		var itemClass = "list-item";
+		var itemClass = "list-item",
+			action = null,
+			glyph = "";
+
+        switch(this.props.action) {
+            case 'open':
+                action = this.goToList.bind(this, list._id, list.name);
+                glyph = "glyphicon-folder-open";
+                break;
+            case 'move':
+                action = this.goToList.bind(this, list._id, list.name);
+                glyph = "glyphicon-forward";
+                break;
+            default:
+                console.log("Error - ListList has no action")
+        }
+
 
 		if (list.immutable) {
 			itemClass += " list-item-immutable"
@@ -30,12 +46,12 @@ class ListList extends Component {
 			list.updatedAt.substr(11, 5) : list.updatedAt.substr(0, 10);
 		return (
 			<tr key={'tr'+i}>
-				<td className={itemClass} onClick={this.goToList.bind(this, list._id, list.name)} >
-					<span className="glyphicon glyphicon-folder-open list-item list-item-glyph" aria-hidden="true"></span>
+				<td className={itemClass} onClick={action} >
+					<span className={"glyphicon list-item list-item-glyph " + glyph} aria-hidden="true"></span>
 				{ list.name }
 				</td>
 				<td className="actions">
-				{deletable &&
+				{deletable && action === 'open' &&
 					<span className="glyphicon glyphicon-trash action-button" aria-hidden="true" onClick={this.removeList.bind(this, list._id)}></span>
 				}
 				</td>
@@ -48,6 +64,7 @@ class ListList extends Component {
 		);
 	}
 
+    /* The Renderer */
 	render() {
 		return (
 			<table className="table table-hover">

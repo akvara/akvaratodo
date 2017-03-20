@@ -52,6 +52,7 @@ class LoadingDecorator extends Component {
 		this.setState({loadingString});
 	}
 
+  	/* The Renderer */
 	render() {
 		return <div>{this.state.message} {this.state.loadingString}</div>
 	}

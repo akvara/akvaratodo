@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import CONFIG from '../config.js';
 
 class User extends Component {
+	/* Inherited */
 	renderSettings(lists) {
 		this.props.renderSettings(lists);
 	}
 
+  	/* The Renderer */
 	render() {
 		return <div>
 			<span className="list-item">{CONFIG.version} <small><b>{process.env.NODE_ENV}</b></small></span>

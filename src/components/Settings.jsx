@@ -89,6 +89,7 @@ class Settings extends Component {
 		}
 	}
 
+  	/* The Renderer */
 	render() {
 		return <div>
 			<h1>Settings</h1>

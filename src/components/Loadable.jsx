@@ -214,6 +214,7 @@ class Loadable extends Component {
         .fail((err) => { reject(err) });
     }
 
+    /* The Renderer */
     render() {
         return null;
 	}

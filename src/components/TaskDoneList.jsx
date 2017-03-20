@@ -19,6 +19,7 @@ class TaskDoneList extends Component {
 		</tr>;
 	}
 
+  	/* The Renderer */
 	render() {
 		return (
 			<div>

@@ -44,7 +44,7 @@ class TaskApp extends Loadable {
 
     /* Render list of TaskLists */
     goToLists() {
-        ReactDOM.render(<ListApp />, this.appNode);
+        ReactDOM.render(<ListApp action='open'/>, this.appNode);
     }
 
     /* Render a ListChanger */
@@ -206,6 +206,7 @@ class TaskApp extends Loadable {
   		</button>
   	}
 
+    /* Reload this list*/
     reload() {
         this.loadData();
     }

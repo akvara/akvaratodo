@@ -61,7 +61,7 @@ class App extends Loadable {
                 immutables={lists.filter((item) => item.immutable)}
             />, this.appNode);
         } else {
-            ReactDOM.render(<ListApp lists={lists}/>, this.appNode);
+            ReactDOM.render(<ListApp lists={lists} action='open'/>, this.appNode);
         }
     }
 
@@ -93,6 +93,7 @@ class App extends Loadable {
         );
     }
 
+    /* The Renderer */
     render() {
         return null;
     }

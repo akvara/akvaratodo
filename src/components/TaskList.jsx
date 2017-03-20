@@ -78,6 +78,7 @@ class TaskList extends Component {
 		}
 	}
 
+  	/* The Renderer */
 	render() {
 		var taskListDisplayed,
 		    shouldOmit;

@@ -14,7 +14,6 @@ class ListApp extends Loadable {
 			listName: '',
 			notYetLoaded: !this.props.lists
 	    };
-        console.log('context', context);
 	}
 
     loadData() {
@@ -57,6 +56,7 @@ class ListApp extends Loadable {
         />, this.appNode);
     }
 
+    /* The Renderer */
 	render() {
 		if (this.state.notYetLoaded) return this.notYetLoadedReturn;
 
@@ -66,14 +66,17 @@ class ListApp extends Loadable {
                 <ListList
                     lists={this.state.lists.filter(list => !list.immutable)}
                     goToList={this.goToList.bind(this, this.state.lists)}
+                    moveToList={this.goToList.bind(this, this.state.lists)}
                     removeList={this.removeList.bind(this)}
+                    action={this.props.action}
                 />
                 <h3>Protected</h3>
-
                 <ListList
                     lists={this.state.lists.filter(list => list.immutable)}
                     goToList={this.goToList.bind(this, this.state.lists)}
+                    moveToList={this.goToList.bind(this, this.state.lists)}
                     removeList={this.removeList.bind(this)}
+                    action={this.props.action}
                 />
 				<form onSubmit={this.handleSubmit.bind(this)}>
 					<input className="list-input" value={this.state.listName} onChange={this.onNameChange.bind(this)} />
@@ -82,7 +85,6 @@ class ListApp extends Loadable {
 			</div>
 		);
 	}
-
 }
 
 export default ListApp;

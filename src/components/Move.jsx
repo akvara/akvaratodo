@@ -53,7 +53,10 @@ class Move extends Loadable {
   	displayToButton(list) {
   		var btnMsg = "To";
   		if (list._id === this.props.fromList.id) btnMsg = "Back to";
-  		return <button key={'btn'+list._id} onClick={this.toAnoter.bind(this, list._id, list.name)} >{btnMsg} <strong>{ list.name }</strong></button>
+  		return <div key={'btn' + list._id}>
+            <button onClick={this.toAnoter.bind(this, list._id, list.name)} >{btnMsg} <strong>{ list.name }</strong></button>
+            <br />
+        </div>
   	}
 
   	/* The Renderer */
@@ -62,7 +65,8 @@ class Move extends Loadable {
 
 		return (
 			<div>
-				<h2>{this.movingItem}</h2>
+                <hr />
+                <h2>{this.movingItem}</h2>
 				<hr />
 				{ this.state.lists.filter((list) => !list.immutable).map((list) => this.displayToButton(list)) }
 			</div>
