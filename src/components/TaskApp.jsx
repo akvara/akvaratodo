@@ -168,6 +168,15 @@ class TaskApp extends Loadable {
         this.saveTaskList(this.props.list.id, dataToSave, callback);
     }
 
+    /* Guess */
+    clearDone() {
+        var dataToSave = this.prepareClone();
+        dataToSave.itemsDone = [];
+
+        let callback = this.callbackForSettingState.bind(this, null, dataToSave);
+        this.saveTaskList(this.props.list.id, dataToSave, callback);
+    }
+
 	loadAnotherList(listId) {
         ReactDOM.render(
             <LoadingDecorator
@@ -217,7 +226,11 @@ class TaskApp extends Loadable {
         return (
 			<div>
 				<h1>{this.props.list.name}</h1>
-				<h3>Finished ({this.state.itemsDone.length})</h3>
+				<h3>Finished ({this.state.itemsDone.length}) {this.state.itemsDone.length > 0 &&
+                    <span className="glyphicon glyphicon-trash action-button small" aria-hidden="true" onClick={this.clearDone.bind(this)}></span>
+                }
+                </h3>
+
 				<TaskDoneList items={this.state.itemsDone} undone={this.unDoneTask.bind(this)} />
 				<hr />
 				<h3>Remaining ({this.state.itemsToDo.length})</h3>
