@@ -73,7 +73,6 @@ class Loadable extends Component {
     }
 
     addAListCallback(lists, data) {
-console.log('Im a Callback');
         this.setState({
             lists: lists.concat(data),
             notYetLoaded: false

@@ -39,7 +39,7 @@ class App extends Loadable {
     setUserSettings(settings) {
         var saving = this.user;
 
-        saving.settings = settings ? this.extractSettings(settings) : this.getDefaultSettings();
+        saving.settings = this.extractSettings(settings);// : this.getDefaultSettings();
 
         this.loadMainView(CONFIG.user);
     }
@@ -67,13 +67,7 @@ class App extends Loadable {
 
     extractSettings(fromObj) {
         var obj = {};
-        Object.keys(CONFIG.settingsConfig).map((property) => obj[property] = fromObj[property]);
-        return obj;
-    }
-
-    getDefaultSettings() {
-        var obj = {};
-        Object.keys(CONFIG.settingsConfig).map((property) => obj[property] = CONFIG.settingsConfig[property].default);
+        Object.keys(CONFIG.settingsConfig).map((property) => obj[property] = fromObj[property] ? fromObj[property] : CONFIG.settingsConfig[property].default);
         return obj;
     }
 
