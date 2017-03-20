@@ -65,9 +65,18 @@ class App extends Loadable {
         }
     }
 
+    /* Get settings from db or set default */
     extractSettings(fromObj) {
         var obj = {};
-        Object.keys(CONFIG.settingsConfig).map((property) => obj[property] = fromObj[property] ? fromObj[property] : CONFIG.settingsConfig[property].default);
+        Object.keys(CONFIG.settingsConfig).map(
+            (property) => {
+                obj[property] = fromObj[property] ? fromObj[property] : CONFIG.settingsConfig[property].default
+// console.log('property', property);
+// console.log('obj[property]', obj[property]);
+// console.log('fromObj[property]', fromObj[property]);
+// console.log(' CONFIG.settingsConfig[property].default', CONFIG.settingsConfig[property].default);
+            }
+        );
         return obj;
     }
 

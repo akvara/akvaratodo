@@ -25,7 +25,8 @@ class TaskApp extends Loadable {
 			immutable: false,
 			task: '',
             notYetLoaded: true,
-			reloadNeeded: false
+			reloadNeeded: false,
+            expand: false
 	    };
 	}
 
@@ -89,7 +90,14 @@ class TaskApp extends Loadable {
 
     /* Move task to another list */
     moveOutside(i) {
-		ReactDOM.render(<Move fromList={this.props.list} itemIndex={i} state={this.state} />, this.appNode);
+        ReactDOM.render(<Move fromList={this.props.list} itemIndex={i} state={this.state} />, this.appNode);
+    }
+
+    /* Show full/contracted ist */
+    expand() {
+		this.setState({
+            expand: !this.state.expand
+        });
 	}
 
     /* Calculations */
@@ -217,11 +225,18 @@ class TaskApp extends Loadable {
             return this.notYetLoadedReturn;
         }
 
-		var markTitle = 'Protect';
-		var markGlyphicon = 'exclamation-sign';
-		if (this.state.immutable)  {
-			markTitle = 'Unprotect';
-			markGlyphicon = 'screen-shot';
+        var markTitle = 'Protect';
+        var markGlyphicon = 'exclamation-sign';
+        if (this.state.immutable)  {
+            markTitle = 'Unprotect';
+            markGlyphicon = 'screen-shot';
+        }
+
+        var expandTitle = "Expand";
+		var expandGlyphicon = "glyphicon-resize-full";
+		if (this.state.expand)  {
+			expandTitle = "Contract";
+			expandGlyphicon = "glyphicon-resize-small";
 		}
 
         return (
@@ -246,6 +261,7 @@ class TaskApp extends Loadable {
 					procrastinate={this.procrastinateTask.bind(this)}
                     reloadNeeded={this.state.reloadNeeded}
 					done={this.doneTask.bind(this)}
+                    expand={this.state.expand}
 				/>
 				{!this.state.immutable &&
 					<div>
@@ -263,8 +279,13 @@ class TaskApp extends Loadable {
                     <span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true"></span> {markTitle}
                 </button>
                 <button onClick={this.reload.bind(this)}>
-					<span className={'glyphicon glyphicon-refresh'} aria-hidden="true"></span> Reload
-				</button>
+                    <span className={'glyphicon glyphicon-refresh'} aria-hidden="true"></span> Reload
+                </button>
+                {this.state.itemsToDo.length > CONFIG.user.settings.displayListLength &&
+                    <button onClick={this.expand.bind(this)}>
+                        <span className={"glyphicon " + expandGlyphicon} aria-hidden="true"></span> {expandTitle}
+                    </button>
+                }
                 {this.props.previousList &&
                     <button disabled={this.state.task.trim()} onClick={this.listChanger.bind(this)}>
     					<span className="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> {this.props.previousList.name}

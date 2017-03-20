@@ -13,7 +13,7 @@ var CONFIG = {
         settings: {
             loadListIfExists: "Current",
             addNewAt: 3,
-            displayListLength: 17,
+            displayListLength: 15,
             displayDoneLength: 3,
             displayLast: 2
         }
@@ -25,7 +25,7 @@ var CONFIG = {
         displayDoneLength: {explain: 'Display numer of done tasks', default: 3, handler: 'numeric', min: 1, max: 50},
         loadListIfExists: {explain: 'Load this list on start', handler: 'selector', field: ''},
     },
-    version: '0320-15'
+    version: '0320-17'
 };
 
 export default Object.freeze(CONFIG);

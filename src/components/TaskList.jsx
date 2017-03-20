@@ -83,7 +83,7 @@ class TaskList extends Component {
 		var taskListDisplayed,
 		    shouldOmit;
 
-		if (this.props.items.length > CONFIG.user.settings.displayListLength ) {
+		if (!this.props.expand && this.props.items.length > CONFIG.user.settings.displayListLength) {
 			shouldOmit = this.props.items.length - CONFIG.user.settings.displayListLength;
 			taskListDisplayed =
 				this.props.items.slice(0, CONFIG.user.settings.displayListLength - CONFIG.user.settings.displayLast - 1)
