@@ -20,12 +20,12 @@ var CONFIG = {
     },
     settingsConfig: {
         addNewAt: {explain: 'Add new item at position', handler: 'numeric', default: 5, min: 1, max: 10},
-        displayListLength: {explain: 'Display numer of tasks at once', default: 17, handler: 'numeric', min: 1, max: 50},
+        displayListLength: {explain: 'Display numebr of tasks at once', default: 17, handler: 'numeric', min: 1, max: 50},
         displayLast: {explain: 'Display number of tasks at bottom',  default: 3, handler: 'numeric', min: 1, max: 50},
-        displayDoneLength: {explain: 'Display numer of done tasks', default: 3, handler: 'numeric', min: 1, max: 50},
+        displayDoneLength: {explain: 'Display numebr of done tasks', default: 3, handler: 'numeric', min: 1, max: 50},
         loadListIfExists: {explain: 'Load this list on start', handler: 'selector', field: ''},
     },
-    version: '0320-17'
+    version: '0320-23'
 };
 
 export default Object.freeze(CONFIG);

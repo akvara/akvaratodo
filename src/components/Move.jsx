@@ -19,23 +19,27 @@ class Move extends Loadable {
         this.loadLists(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading lists', 'Lists loaded');
     }
 
-	/* Moves item back to the same list (actually, changes nothing) or to another list */
-	toAnoter(toListId, listName) {
+    /* Returns back to the same list */
+    back() {
+        ReactDOM.render(<TaskApp
+            list={this.props.fromList}
+            immutables={this.state.lists.filter((list) => list.immutable)}
+            itemsDone={this.state.itemsDone}
+        />, this.appNode);
+    }
+
+	/* Moves item to another list */
+	move(toListId, listName, copy) {
   		var list = {id: toListId, name: listName};
-		if (toListId === this.props.fromList.id) {
-			ReactDOM.render(<TaskApp
-				list={list}
-				immutables={this.state.lists.filter((list) => list.immutable)}
-				itemsDone={this.state.itemsDone}
-			/>, this.appNode);
-		} else {
+        if (copy) {
+            this.saveTaskListCallback(list)
+        } else {
             var dataToSave = this.prepareClone();
             dataToSave.list = {id: toListId, name: listName};;
             dataToSave.itemsToDo = Utils.removeItem(this.state.itemsToDo, this.props.itemIndex);
-
             // saving donor list. Need Check here !!!
-       		this.saveTaskList(this.props.fromList.id, dataToSave, this.saveTaskListCallback.bind(this, list));
-		}
+            this.saveTaskList(this.props.fromList.id, dataToSave, this.saveTaskListCallback.bind(this, list));
+        }
 	}
 
 	/* Callback for save task request */
@@ -51,12 +55,17 @@ class Move extends Loadable {
 
 	/* To List */
   	displayToButton(list) {
-  		var btnMsg = "To";
-  		if (list._id === this.props.fromList.id) btnMsg = "Back to";
-  		return <div key={'btn' + list._id}>
-            <button onClick={this.toAnoter.bind(this, list._id, list.name)} >{btnMsg} <strong>{ list.name }</strong></button>
-            <br />
-        </div>
+  		if (list._id === this.props.fromList.id) return null;
+  		return <tr key={'tr' + list._id}>
+            <td>
+                To: <strong>{ list.name }</strong>
+            </td>
+            <td>
+                <button onClick={this.move.bind(this, list._id, list.name, false)} >Move</button>
+                &nbsp;
+                <button onClick={this.move.bind(this, list._id, list.name, true)} >Copy</button>
+            </td>
+        </tr>
   	}
 
   	/* The Renderer */
@@ -67,8 +76,13 @@ class Move extends Loadable {
 			<div>
                 <hr />
                 <h2>{this.movingItem}</h2>
+                <table className="table table-hover">
+                    <tbody>
+                        { this.state.lists.filter((list) => !list.immutable).map((list) => this.displayToButton(list)) }
+                    </tbody>
+                </table>
 				<hr />
-				{ this.state.lists.filter((list) => !list.immutable).map((list) => this.displayToButton(list)) }
+                <button onClick={this.back.bind(this)} >Back</button>
 			</div>
 		);
 	}

@@ -68,7 +68,6 @@ class ListList extends Component {
 		return (
 			<table className="table table-hover">
 				<tbody>
-				<tr></tr>
 					{this.props.lists.map(this.displayList.bind(this))}
 				</tbody>
 			</table>
