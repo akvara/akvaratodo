@@ -9,8 +9,8 @@ class ListList extends Component {
 	}
 
 	/* Inherited */
-	goToList(...params) {
-		this.props.goToList(...params);
+	openList(...params) {
+		this.props.openList(...params);
 	}
 
 	/* Display list line */
@@ -21,27 +21,26 @@ class ListList extends Component {
 
         switch(this.props.action) {
             case 'open':
-                action = this.goToList.bind(this, list._id, list.name);
+                action = this.openList.bind(this, list._id, list.name);
                 glyph = "glyphicon-folder-open";
                 break;
             case 'move':
-                action = this.goToList.bind(this, list._id, list.name);
+                action = this.openList.bind(this, list._id, list.name);
                 glyph = "glyphicon-forward";
                 break;
             default:
                 console.log("Error - ListList has no action")
         }
 
-
 		if (list.immutable) {
 			itemClass += " list-item-immutable"
 		}
 
-		if (list.name === CONFIG.user.settings.goToListIfExists) {
+		if (list.name === CONFIG.user.settings.openListIfExists) {
 			itemClass += " list-item-current"
 		}
 
-		let deletable = list.tasks ? (list.tasks === '[]' && !list.immutable) : true;
+		let deletable = list.tasks ? (list.tasks === '[]' && !list.immutable && action === 'open') : true;
 		var updatedDateOrTime = new Date().toISOString().substr(0, 10) === list.updatedAt.substr(0, 10) ?
 			list.updatedAt.substr(11, 5) : list.updatedAt.substr(0, 10);
 		return (
@@ -51,7 +50,7 @@ class ListList extends Component {
 				{ list.name }
 				</td>
 				<td className="actions">
-				{deletable && action === 'open' &&
+				{deletable  &&
 					<span className="glyphicon glyphicon-trash action-button" aria-hidden="true" onClick={this.removeList.bind(this, list._id)}></span>
 				}
 				</td>

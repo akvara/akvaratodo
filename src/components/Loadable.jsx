@@ -77,7 +77,7 @@ class Loadable extends Component {
             lists: lists.concat(data),
             notYetLoaded: false
         });
-        return this.goToList(lists, data._id, data.name);
+        return this.openList(lists, data._id, data.name);
     }
 
     removeListRequest(listId, resolve, reject) {
@@ -103,11 +103,12 @@ class Loadable extends Component {
                 request={this.removeListRequest.bind(this, listId)}
                 callback={this.removeListCallback.bind(this, listId)}
                 action='Removing'
+                finishedMessage='Removed.'
+
             />, this.loaderNode);
     }
 
     // ----- TaskApp part -----
-
     loadAListRequest(listId, resolve, reject) {
         return $.get(UrlUtils.getAListUrl(listId))
             .done((data) => { resolve(data) })

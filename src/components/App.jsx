@@ -52,7 +52,7 @@ class App extends Loadable {
         var lists = Utils.sortArrOfObjectsByParam(data, 'updatedAt', true);
 
         ReactDOM.render(<User lists={lists} renderSettings={this.renderSettings.bind(this)} />, this.userNode);
-        var current = lists.find((item) => item.name === CONFIG.user.settings.goToListIfExists);
+        var current = lists.find((item) => item.name === CONFIG.user.settings.openListIfExists);
 
         if (current) {
             var list = { id: current._id, name: current.name }
@@ -69,13 +69,13 @@ class App extends Loadable {
     extractSettings(fromObj) {
         var obj = {};
         Object.keys(CONFIG.settingsConfig).map(
-            (property) => {
+            (property) =>
                 obj[property] = fromObj[property] ? fromObj[property] : CONFIG.settingsConfig[property].default
 // console.log('property', property);
 // console.log('obj[property]', obj[property]);
 // console.log('fromObj[property]', fromObj[property]);
 // console.log(' CONFIG.settingsConfig[property].default', CONFIG.settingsConfig[property].default);
-            }
+
         );
         return obj;
     }

@@ -44,7 +44,7 @@ class TaskApp extends Loadable {
     }
 
     /* Render list of TaskLists */
-    goToLists() {
+    openLists() {
         ReactDOM.render(<ListApp action='open'/>, this.appNode);
     }
 
@@ -291,7 +291,7 @@ class TaskApp extends Loadable {
     					<span className="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> {this.props.previousList.name}
     				</button>
                 }
-                <button disabled={this.state.task.trim()} onClick={this.goToLists.bind(this)}>
+                <button disabled={this.state.task.trim()} onClick={this.openLists.bind(this)}>
                     <span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> Lists
                 </button>
 				<hr />
