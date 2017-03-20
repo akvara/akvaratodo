@@ -26,7 +26,8 @@ class TaskApp extends Loadable {
 			task: '',
             notYetLoaded: true,
 			reloadNeeded: false,
-            expand: false
+            expandToDo: false,
+            expandDone: false
 	    };
 	}
 
@@ -94,9 +95,9 @@ class TaskApp extends Loadable {
     }
 
     /* Show full/contracted ist */
-    expand() {
+    expand(which) {
 		this.setState({
-            expand: !this.state.expand
+            [which]: !this.state[which]
         });
 	}
 
@@ -232,24 +233,37 @@ class TaskApp extends Loadable {
             markGlyphicon = 'screen-shot';
         }
 
-        var expandTitle = "Expand";
-		var expandGlyphicon = "glyphicon-resize-full";
-		if (this.state.expand)  {
-			expandTitle = "Contract";
-			expandGlyphicon = "glyphicon-resize-small";
-		}
+        var expandToDoGlyphicon = "glyphicon-resize-full";
+        if (this.state.expandToDo) expandToDoGlyphicon = "glyphicon-resize-small";
+
+        var expandDoneGlyphicon = "glyphicon-resize-full";
+		if (this.state.expandDone) expandDoneGlyphicon = "glyphicon-resize-small";
 
         return (
 			<div>
 				<h1>{this.props.list.name}</h1>
-				<h3>Finished ({this.state.itemsDone.length}) {this.state.itemsDone.length > 0 &&
-                    <span className="glyphicon glyphicon-trash action-button small" aria-hidden="true" onClick={this.clearDone.bind(this)}></span>
-                }
+				<h3>
+                    Finished ({this.state.itemsDone.length})
+                    {Utils.overLength("displayDoneLength", this.state.itemsDone) &&
+                        <span className={"small action-button glyphicon " + expandDoneGlyphicon} aria-hidden="true" onClick={this.expand.bind(this, 'expandDone')}></span>
+                    }
+                    &nbsp; &nbsp;
+                    {this.state.itemsDone.length > 0 &&
+                        <span className="small action-button glyphicon glyphicon-trash" aria-hidden="true" onClick={this.clearDone.bind(this)}></span>
+                    }
                 </h3>
-
-				<TaskDoneList items={this.state.itemsDone} undone={this.unDoneTask.bind(this)} />
+				<TaskDoneList
+                    items={this.state.itemsDone}
+                    undone={this.unDoneTask.bind(this)}
+                    expand={this.state.expandDone}
+                />
 				<hr />
-				<h3>Remaining ({this.state.itemsToDo.length})</h3>
+				<h3>
+                    Remaining ({this.state.itemsToDo.length})
+                    {Utils.overLength("displayListLength", this.state.itemsToDo) &&
+                        <span className={"small list-item action-button glyphicon " + expandToDoGlyphicon} aria-hidden="true" onClick={this.expand.bind(this, 'expandToDo')}></span>
+                    }
+                </h3>
 				<TaskList
 					items={this.state.itemsToDo}
 					hightlightIndex={this.state.hightlightIndex}
@@ -261,7 +275,7 @@ class TaskApp extends Loadable {
 					procrastinate={this.procrastinateTask.bind(this)}
                     reloadNeeded={this.state.reloadNeeded}
 					done={this.doneTask.bind(this)}
-                    expand={this.state.expand}
+                    expand={this.state.expandToDo}
 				/>
 				{!this.state.immutable &&
 					<div>
@@ -281,11 +295,6 @@ class TaskApp extends Loadable {
                 <button onClick={this.reload.bind(this)}>
                     <span className={'glyphicon glyphicon-refresh'} aria-hidden="true"></span> Reload
                 </button>
-                {this.state.itemsToDo.length > CONFIG.user.settings.displayListLength &&
-                    <button onClick={this.expand.bind(this)}>
-                        <span className={"glyphicon " + expandGlyphicon} aria-hidden="true"></span> {expandTitle}
-                    </button>
-                }
                 {this.props.previousList &&
                     <button disabled={this.state.task.trim()} onClick={this.listChanger.bind(this)}>
     					<span className="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> {this.props.previousList.name}
