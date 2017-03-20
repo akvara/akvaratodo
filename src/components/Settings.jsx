@@ -35,7 +35,7 @@ class Settings extends Component {
 	}
 
 	handleSelectChange(e) {
-    	this.setState({loadListIfExists: e.target.value })
+    	this.setState({goToListIfExists: e.target.value })
 	}
 
 	saveSettings() {

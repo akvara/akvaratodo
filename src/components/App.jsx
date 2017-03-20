@@ -52,7 +52,7 @@ class App extends Loadable {
         var lists = Utils.sortArrOfObjectsByParam(data, 'updatedAt', true);
 
         ReactDOM.render(<User lists={lists} renderSettings={this.renderSettings.bind(this)} />, this.userNode);
-        var current = lists.find((item) => item.name === CONFIG.user.settings.loadListIfExists);
+        var current = lists.find((item) => item.name === CONFIG.user.settings.goToListIfExists);
 
         if (current) {
             var list = { id: current._id, name: current.name }

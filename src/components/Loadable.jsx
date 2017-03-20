@@ -77,7 +77,7 @@ class Loadable extends Component {
             lists: lists.concat(data),
             notYetLoaded: false
         });
-        return this.loadList(lists, data._id, data.name);
+        return this.goToList(lists, data._id, data.name);
     }
 
     removeListRequest(listId, resolve, reject) {

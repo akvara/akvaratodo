@@ -14,6 +14,7 @@ class ListApp extends Loadable {
 			listName: '',
 			notYetLoaded: !this.props.lists
 	    };
+        console.log('context', context);
 	}
 
     loadData() {
@@ -27,7 +28,7 @@ class ListApp extends Loadable {
 		var list = this.state.lists.find(list => list.name === this.state.listName)
 
 		if (list) {
-			return this.loadList(this.state.lists, list._id, list.name)
+			return this.goToList(this.state.lists, list._id, list.name)
 		}
 
         this.setState({
@@ -47,7 +48,8 @@ class ListApp extends Loadable {
 		this.setState({ listName: e.target.value });
 	}
 
-	loadList(lists, listId, listName) {
+    /* Go to selected list */
+	goToList(lists, listId, listName) {
         var list = {id: listId, name: listName};
         ReactDOM.render(<TaskApp
             list={list}
@@ -63,14 +65,14 @@ class ListApp extends Loadable {
 				<h1>Lists</h1>
                 <ListList
                     lists={this.state.lists.filter(list => !list.immutable)}
-                    loadList={this.loadList.bind(this, this.state.lists)}
+                    goToList={this.goToList.bind(this, this.state.lists)}
                     removeList={this.removeList.bind(this)}
                 />
                 <h3>Protected</h3>
 
                 <ListList
                     lists={this.state.lists.filter(list => list.immutable)}
-                    loadList={this.loadList.bind(this, this.state.lists)}
+                    goToList={this.goToList.bind(this, this.state.lists)}
                     removeList={this.removeList.bind(this)}
                 />
 				<form onSubmit={this.handleSubmit.bind(this)}>

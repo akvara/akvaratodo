@@ -3,23 +3,25 @@ import CONFIG from '../config.js';
 
 class ListList extends Component {
 
+	/* Inherited */
 	removeList(id) {
 		this.props.removeList(id);
 	}
 
-	loadList(...params) {
-		this.props.loadList(...params);
+	/* Inherited */
+	goToList(...params) {
+		this.props.goToList(...params);
 	}
 
+	/* Display list line */
 	displayList(list, i) {
-
 		var itemClass = "list-item";
 
 		if (list.immutable) {
 			itemClass += " list-item-immutable"
 		}
 
-		if (list.name === CONFIG.user.settings.loadListIfExists) {
+		if (list.name === CONFIG.user.settings.goToListIfExists) {
 			itemClass += " list-item-current"
 		}
 
@@ -28,7 +30,7 @@ class ListList extends Component {
 			list.updatedAt.substr(11, 5) : list.updatedAt.substr(0, 10);
 		return (
 			<tr key={'tr'+i}>
-				<td className={itemClass} onClick={this.loadList.bind(this, list._id, list.name)} >
+				<td className={itemClass} onClick={this.goToList.bind(this, list._id, list.name)} >
 					<span className="glyphicon glyphicon-folder-open list-item list-item-glyph" aria-hidden="true"></span>
 				{ list.name }
 				</td>
