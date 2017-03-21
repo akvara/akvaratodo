@@ -3,37 +3,54 @@ import CONFIG from '../config.js';
 
 class ListList extends Component {
 
+	/* Inherited */
 	removeList(id) {
 		this.props.removeList(id);
 	}
 
-	loadList(...params) {
-		this.props.loadList(...params);
+	/* Inherited */
+	openList(...params) {
+		this.props.openList(...params);
 	}
 
+	/* Display list line */
 	displayList(list, i) {
+		var itemClass = "list-item",
+			action = null,
+			glyph = "";
 
-		var itemClass = "list-item";
+        switch(this.props.action) {
+            case 'open':
+                action = this.openList.bind(this, list._id, list.name);
+                glyph = "glyphicon-folder-open";
+                break;
+            case 'move':
+                action = this.openList.bind(this, list._id, list.name);
+                glyph = "glyphicon-forward";
+                break;
+            default:
+                console.log("Error - ListList has no action")
+        }
 
 		if (list.immutable) {
 			itemClass += " list-item-immutable"
 		}
 
-		if (list.name === CONFIG.user.settings.loadListIfExists) {
+		if (list.name === CONFIG.user.settings.openListIfExists) {
 			itemClass += " list-item-current"
 		}
 
-		let deletable = list.tasks ? (list.tasks === '[]' && !list.immutable) : true;
+		let deletable = list.tasks ? (list.tasks === '[]' && !list.immutable && action === 'open') : true;
 		var updatedDateOrTime = new Date().toISOString().substr(0, 10) === list.updatedAt.substr(0, 10) ?
 			list.updatedAt.substr(11, 5) : list.updatedAt.substr(0, 10);
 		return (
 			<tr key={'tr'+i}>
-				<td className={itemClass} onClick={this.loadList.bind(this, list._id, list.name)} >
-					<span className="glyphicon glyphicon-folder-open list-item list-item-glyph" aria-hidden="true"></span>
+				<td className={itemClass} onClick={action} >
+					<span className={"glyphicon list-item list-item-glyph " + glyph} aria-hidden="true"></span>
 				{ list.name }
 				</td>
 				<td className="actions">
-				{deletable &&
+				{deletable  &&
 					<span className="glyphicon glyphicon-trash action-button" aria-hidden="true" onClick={this.removeList.bind(this, list._id)}></span>
 				}
 				</td>
@@ -46,11 +63,11 @@ class ListList extends Component {
 		);
 	}
 
+    /* The Renderer */
 	render() {
 		return (
 			<table className="table table-hover">
 				<tbody>
-				<tr></tr>
 					{this.props.lists.map(this.displayList.bind(this))}
 				</tbody>
 			</table>

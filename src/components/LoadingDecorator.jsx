@@ -40,7 +40,7 @@ class LoadingDecorator extends Component {
 					clearInterval(this.interval);
 					this.interval = 0;
 					this.setState({
-						loadingString: ' error'
+						loadingString: ' error: ' + err
 					})
 				console.log("rejected:", err);
 				});
@@ -52,6 +52,7 @@ class LoadingDecorator extends Component {
 		this.setState({loadingString});
 	}
 
+  	/* The Renderer */
 	render() {
 		return <div>{this.state.message} {this.state.loadingString}</div>
 	}

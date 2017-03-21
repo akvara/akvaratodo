@@ -1,22 +1,19 @@
 # akvaratodo
 ToDo App - React.js
 
-Working:
-LoadingDecorator => ListApp =>!TaskApp
+Migrations:
+* create:  ./node_modules/.bin/mm create {migration-name} --config=migrations/config/mm-config-{local}.json
+* migrate: ./node_modules/.bin/mm --config=migrations/config/mm-config-{local}.json
 
-Test functionality:
+
+Tests:
+* Should load Lists if OpenIfExists is not set
+* Should open OpenIfExists
 * Load lists
 * Add a list
 * Delete a list
 * Load a list
 * Add item, save
-
-Migrations:
-* create:  ./node_modules/.bin/mm create {migration-name} --config=migrations/config/mm-config-{local}.json
-* migrate: ./node_modules/.bin/mm --config=migrations/config/mm-config-{local}.json
-
-index.js -> App:loadData ->App:loadUserSettings ->App:setUserSettings -> -> -> ->
-
 
 
 

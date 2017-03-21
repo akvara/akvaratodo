@@ -27,7 +27,7 @@ class ListApp extends Loadable {
 		var list = this.state.lists.find(list => list.name === this.state.listName)
 
 		if (list) {
-			return this.loadList(this.state.lists, list._id, list.name)
+			return this.openList(this.state.lists, list._id, list.name)
 		}
 
         this.setState({
@@ -47,7 +47,8 @@ class ListApp extends Loadable {
 		this.setState({ listName: e.target.value });
 	}
 
-	loadList(lists, listId, listName) {
+    /* Go to selected list */
+	openList(lists, listId, listName) {
         var list = {id: listId, name: listName};
         ReactDOM.render(<TaskApp
             list={list}
@@ -55,23 +56,27 @@ class ListApp extends Loadable {
         />, this.appNode);
     }
 
+    /* The Renderer */
 	render() {
 		if (this.state.notYetLoaded) return this.notYetLoadedReturn;
 
-		return (
+    		return (
 			<div>
 				<h1>Lists</h1>
                 <ListList
                     lists={this.state.lists.filter(list => !list.immutable)}
-                    loadList={this.loadList.bind(this, this.state.lists)}
+                    openList={this.openList.bind(this, this.state.lists)}
+                    moveToList={this.openList.bind(this, this.state.lists)}
                     removeList={this.removeList.bind(this)}
+                    action={this.props.action}
                 />
                 <h3>Protected</h3>
-
                 <ListList
                     lists={this.state.lists.filter(list => list.immutable)}
-                    loadList={this.loadList.bind(this, this.state.lists)}
+                    openList={this.openList.bind(this, this.state.lists)}
+                    moveToList={this.openList.bind(this, this.state.lists)}
                     removeList={this.removeList.bind(this)}
+                    action={this.props.action}
                 />
 				<form onSubmit={this.handleSubmit.bind(this)}>
 					<input className="list-input" value={this.state.listName} onChange={this.onNameChange.bind(this)} />
@@ -80,7 +85,6 @@ class ListApp extends Loadable {
 			</div>
 		);
 	}
-
 }
 
 export default ListApp;

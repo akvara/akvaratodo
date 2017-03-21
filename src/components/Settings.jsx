@@ -35,7 +35,7 @@ class Settings extends Component {
 	}
 
 	handleSelectChange(e) {
-    	this.setState({loadListIfExists: e.target.value })
+    	this.setState({openListIfExists: e.target.value })
 	}
 
 	saveSettings() {
@@ -52,7 +52,10 @@ class Settings extends Component {
 			{
 				value: this.state[property], onChange: this.handleSelectChange.bind(this)
 			},
-			this.props.lists.map((item) => React.createElement("option", { value: item.name, key: "o" + item.name }, item.name ))
+			[
+				React.createElement("option", { value: '', key: "o "}, "<no list>"),
+				this.props.lists.map((item) => React.createElement("option", { value: item.name, key: "o" + item.name }, item.name ))
+			]
          )
 	}
 
@@ -89,6 +92,7 @@ class Settings extends Component {
 		}
 	}
 
+  	/* The Renderer */
 	render() {
 		return <div>
 			<h1>Settings</h1>

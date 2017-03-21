@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import CONFIG from '../config.js';
+import * as Utils from '../utils/utils.js';
 
 class TaskList extends Component {
-
 	done(i) {
 		this.props.done(i);
 	}
@@ -78,11 +78,14 @@ class TaskList extends Component {
 		}
 	}
 
+
+
+  	/* The Renderer */
 	render() {
 		var taskListDisplayed,
 		    shouldOmit;
 
-		if (this.props.items.length > CONFIG.user.settings.displayListLength ) {
+		if (!this.props.expand && Utils.overLength("displayListLength", this.props.items)) {
 			shouldOmit = this.props.items.length - CONFIG.user.settings.displayListLength;
 			taskListDisplayed =
 				this.props.items.slice(0, CONFIG.user.settings.displayListLength - CONFIG.user.settings.displayLast - 1)

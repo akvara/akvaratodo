@@ -25,7 +25,9 @@ class TaskApp extends Loadable {
 			immutable: false,
 			task: '',
             notYetLoaded: true,
-			reloadNeeded: false
+			reloadNeeded: false,
+            expandToDo: false,
+            expandDone: false
 	    };
 	}
 
@@ -43,8 +45,8 @@ class TaskApp extends Loadable {
     }
 
     /* Render list of TaskLists */
-    goToLists() {
-        ReactDOM.render(<ListApp />, this.appNode);
+    openLists() {
+        ReactDOM.render(<ListApp action='open'/>, this.appNode);
     }
 
     /* Render a ListChanger */
@@ -89,7 +91,14 @@ class TaskApp extends Loadable {
 
     /* Move task to another list */
     moveOutside(i) {
-		ReactDOM.render(<Move fromList={this.props.list} itemIndex={i} state={this.state} />, this.appNode);
+        ReactDOM.render(<Move fromList={this.props.list} itemIndex={i} state={this.state} />, this.appNode);
+    }
+
+    /* Show full/contracted ist */
+    expand(which) {
+		this.setState({
+            [which]: !this.state[which]
+        });
 	}
 
     /* Calculations */
@@ -168,6 +177,15 @@ class TaskApp extends Loadable {
         this.saveTaskList(this.props.list.id, dataToSave, callback);
     }
 
+    /* Guess */
+    clearDone() {
+        var dataToSave = this.prepareClone();
+        dataToSave.itemsDone = [];
+
+        let callback = this.callbackForSettingState.bind(this, null, dataToSave);
+        this.saveTaskList(this.props.list.id, dataToSave, callback);
+    }
+
 	loadAnotherList(listId) {
         ReactDOM.render(
             <LoadingDecorator
@@ -192,13 +210,18 @@ class TaskApp extends Loadable {
   	displayLoadFromButton(item) {
   		if (this.state.immutable) return null;
 
-  		return <button key={'btn'+item._id} disabled={this.state.reloadNeeded} onClick={this.loadAnotherList.bind(this, item._id)} >
+  		return <button key={'btn'+item._id} disabled={this.state.reloadNeeded || this.state.task.trim()} onClick={this.loadAnotherList.bind(this, item._id)} >
   			Load from <span className={'glyphicon glyphicon-upload'} aria-hidden="true"></span> <i>{ item.name }</i>
   		</button>
   	}
 
+    /* Reload this list*/
     reload() {
+        // var preserveInput =  this.state.task;
+// console.log('preserveInput:', preserveInput);
         this.loadData();
+        // this.setState({task: preserveInput})
+// console.log('this.state:', this.state);
     }
 
     /* The Renderer */
@@ -207,20 +230,44 @@ class TaskApp extends Loadable {
             return this.notYetLoadedReturn;
         }
 
-		var markTitle = 'Protect';
-		var markGlyphicon = 'exclamation-sign';
-		if (this.state.immutable)  {
-			markTitle = 'Unprotect';
-			markGlyphicon = 'screen-shot';
-		}
+        var markTitle = 'Protect';
+        var markGlyphicon = 'exclamation-sign';
+        if (this.state.immutable)  {
+            markTitle = 'Unprotect';
+            markGlyphicon = 'screen-shot';
+        }
+
+        var expandToDoGlyphicon = "glyphicon-resize-full";
+        if (this.state.expandToDo) expandToDoGlyphicon = "glyphicon-resize-small";
+
+        var expandDoneGlyphicon = "glyphicon-resize-full";
+		if (this.state.expandDone) expandDoneGlyphicon = "glyphicon-resize-small";
 
         return (
 			<div>
 				<h1>{this.props.list.name}</h1>
-				<h3>Finished ({this.state.itemsDone.length})</h3>
-				<TaskDoneList items={this.state.itemsDone} undone={this.unDoneTask.bind(this)} />
+				<h3>
+                    Finished ({this.state.itemsDone.length})
+                    {Utils.overLength("displayDoneLength", this.state.itemsDone) &&
+                        <span className={"small action-button glyphicon " + expandDoneGlyphicon} aria-hidden="true" onClick={this.expand.bind(this, 'expandDone')}></span>
+                    }
+                    &nbsp; &nbsp;
+                    {this.state.itemsDone.length > 0 &&
+                        <span className="small action-button glyphicon glyphicon-trash" aria-hidden="true" onClick={this.clearDone.bind(this)}></span>
+                    }
+                </h3>
+				<TaskDoneList
+                    items={this.state.itemsDone}
+                    undone={this.unDoneTask.bind(this)}
+                    expand={this.state.expandDone}
+                />
 				<hr />
-				<h3>Remaining ({this.state.itemsToDo.length})</h3>
+				<h3>
+                    Remaining ({this.state.itemsToDo.length})
+                    {Utils.overLength("displayListLength", this.state.itemsToDo) &&
+                        <span className={"small list-item action-button glyphicon " + expandToDoGlyphicon} aria-hidden="true" onClick={this.expand.bind(this, 'expandToDo')}></span>
+                    }
+                </h3>
 				<TaskList
 					items={this.state.itemsToDo}
 					hightlightIndex={this.state.hightlightIndex}
@@ -232,6 +279,7 @@ class TaskApp extends Loadable {
 					procrastinate={this.procrastinateTask.bind(this)}
                     reloadNeeded={this.state.reloadNeeded}
 					done={this.doneTask.bind(this)}
+                    expand={this.state.expandToDo}
 				/>
 				{!this.state.immutable &&
 					<div>
@@ -249,14 +297,14 @@ class TaskApp extends Loadable {
                     <span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true"></span> {markTitle}
                 </button>
                 <button onClick={this.reload.bind(this)}>
-					<span className={'glyphicon glyphicon-refresh'} aria-hidden="true"></span> Reload
-				</button>
+                    <span className={'glyphicon glyphicon-refresh'} aria-hidden="true"></span> Reload
+                </button>
                 {this.props.previousList &&
                     <button disabled={this.state.task.trim()} onClick={this.listChanger.bind(this)}>
     					<span className="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> {this.props.previousList.name}
     				</button>
                 }
-                <button disabled={this.state.task.trim()} onClick={this.goToLists.bind(this)}>
+                <button disabled={this.state.task.trim()} onClick={this.openLists.bind(this)}>
                     <span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> Lists
                 </button>
 				<hr />

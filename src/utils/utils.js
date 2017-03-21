@@ -1,3 +1,7 @@
+import _ from 'underscore';
+import CONFIG from '../config.js';
+
+
 exports.sortArrOfObjectsByParam = function(arrToSort, sortBy, sortDesc) {
     if(!sortDesc) {
         return arrToSort.sort(function (a, b) {
@@ -15,9 +19,9 @@ exports.moveToAnother = function(fromA, toB, i, toTop) {
     let trans = fromA[i];
     fromA.splice(i, 1);
     if (toTop) {
-        toB = [trans].concat(toB);
+        toB = _.unique([trans].concat(toB));
     } else {
-        toB = toB.concat([trans]);
+        toB = _.unique(toB.concat([trans]));
     }
 
     return {A: fromA, B: toB};
@@ -53,4 +57,8 @@ exports.removeItem = function(items, i) {
 
 exports.textToArray = function(text) {
     return text.split(/\r?\n/).filter(entry => entry.trim() !== '');
+}
+
+exports.overLength = function(which, items) {
+    return items.length > CONFIG.user.settings[which];
 }

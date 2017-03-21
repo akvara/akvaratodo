@@ -20,6 +20,7 @@ class Loadable extends Component {
         this.appNode = document.getElementById('app');
 	}
 
+    /* Entry point for children classes */
     componentWillMount() {
         this.loadData();
     }
@@ -73,12 +74,11 @@ class Loadable extends Component {
     }
 
     addAListCallback(lists, data) {
-console.log('Im a Callback');
         this.setState({
             lists: lists.concat(data),
             notYetLoaded: false
         });
-        return this.loadList(lists, data._id, data.name);
+        return this.openList(lists, data._id, data.name);
     }
 
     removeListRequest(listId, resolve, reject) {
@@ -104,11 +104,12 @@ console.log('Im a Callback');
                 request={this.removeListRequest.bind(this, listId)}
                 callback={this.removeListCallback.bind(this, listId)}
                 action='Removing'
+                finishedMessage='Removed.'
+
             />, this.loaderNode);
     }
 
     // ----- TaskApp part -----
-
     loadAListRequest(listId, resolve, reject) {
         return $.get(UrlUtils.getAListUrl(listId))
             .done((data) => { resolve(data) })
@@ -215,6 +216,7 @@ console.log('Im a Callback');
         .fail((err) => { reject(err) });
     }
 
+    /* The Renderer */
     render() {
         return null;
 	}
