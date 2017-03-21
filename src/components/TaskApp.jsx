@@ -210,14 +210,18 @@ class TaskApp extends Loadable {
   	displayLoadFromButton(item) {
   		if (this.state.immutable) return null;
 
-  		return <button key={'btn'+item._id} disabled={this.state.reloadNeeded} onClick={this.loadAnotherList.bind(this, item._id)} >
+  		return <button key={'btn'+item._id} disabled={this.state.reloadNeeded || this.state.task.trim()} onClick={this.loadAnotherList.bind(this, item._id)} >
   			Load from <span className={'glyphicon glyphicon-upload'} aria-hidden="true"></span> <i>{ item.name }</i>
   		</button>
   	}
 
     /* Reload this list*/
     reload() {
+        // var preserveInput =  this.state.task;
+// console.log('preserveInput:', preserveInput);
         this.loadData();
+        // this.setState({task: preserveInput})
+// console.log('this.state:', this.state);
     }
 
     /* The Renderer */

@@ -52,7 +52,10 @@ class Settings extends Component {
 			{
 				value: this.state[property], onChange: this.handleSelectChange.bind(this)
 			},
-			this.props.lists.map((item) => React.createElement("option", { value: item.name, key: "o" + item.name }, item.name ))
+			[
+				React.createElement("option", { value: '', key: "o "}, "<no list>"),
+				this.props.lists.map((item) => React.createElement("option", { value: item.name, key: "o" + item.name }, item.name ))
+			]
          )
 	}
 

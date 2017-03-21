@@ -20,6 +20,7 @@ class Loadable extends Component {
         this.appNode = document.getElementById('app');
 	}
 
+    /* Entry point for children classes */
     componentWillMount() {
         this.loadData();
     }

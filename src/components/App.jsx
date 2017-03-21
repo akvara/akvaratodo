@@ -23,10 +23,12 @@ class App extends Loadable {
         this.userNode = document.getElementById('user');
     }
 
+    /* Entry point */
     loadData() {
         this.loadUserSettings(this.user.id)
     }
 
+    /* Getting user preferences from DB */
     loadUserSettings(userId) {
         return $.get(UrlUtils.getUserSettingsUrl(userId))
             .done((data) => { this.setUserSettings(data) })
@@ -36,21 +38,38 @@ class App extends Loadable {
             });
     }
 
+    /* Getting user preferences or default */
     setUserSettings(settings) {
         var saving = this.user;
 
-        saving.settings = this.extractSettings(settings);// : this.getDefaultSettings();
+        saving.settings = this.extractSettings(settings);
 
         this.loadMainView(CONFIG.user);
     }
 
+    /* Get settings from received or set default */
+    extractSettings(fromDb) {
+        var obj = {};
+        Object.keys(CONFIG.settingsConfig).map(
+            (property) => {
+// console.log('property', property);
+// console.log('fromDb[property]', fromDb[property]);
+// console.log(' CONFIG.settingsConfig[property].default', CONFIG.settingsConfig[property].default);
+                return obj[property] = fromDb[property] ? fromDb[property] : CONFIG.settingsConfig[property].default
+            }
+
+        );
+        return obj;
+    }
+
+    /* Passing contron to ListApp */
     loadMainView(user) {
         this.loadLists(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists', 'Lists loaded.')
     }
 
+    /* Overriding parent's */
     loadListsCallback(data) {
         var lists = Utils.sortArrOfObjectsByParam(data, 'updatedAt', true);
-
         ReactDOM.render(<User lists={lists} renderSettings={this.renderSettings.bind(this)} />, this.userNode);
         var current = lists.find((item) => item.name === CONFIG.user.settings.openListIfExists);
 
@@ -65,21 +84,7 @@ class App extends Loadable {
         }
     }
 
-    /* Get settings from db or set default */
-    extractSettings(fromObj) {
-        var obj = {};
-        Object.keys(CONFIG.settingsConfig).map(
-            (property) =>
-                obj[property] = fromObj[property] ? fromObj[property] : CONFIG.settingsConfig[property].default
-// console.log('property', property);
-// console.log('obj[property]', obj[property]);
-// console.log('fromObj[property]', fromObj[property]);
-// console.log(' CONFIG.settingsConfig[property].default', CONFIG.settingsConfig[property].default);
-
-        );
-        return obj;
-    }
-
+    /* Save settings to DB */
     saveSettings(settings) {
         console.log("App saveSettings:", settings);
         this.setUserSettings(settings);

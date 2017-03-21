@@ -11,7 +11,7 @@ var CONFIG = {
         id: 1,
         name: 'akvara',
         settings: {
-            loadListIfExists: "Current",
+            openListIfExists: "Current",
             addNewAt: 3,
             displayListLength: 15,
             displayDoneLength: 3,
@@ -23,9 +23,9 @@ var CONFIG = {
         displayListLength: {explain: 'Display numebr of tasks at once', default: 17, handler: 'numeric', min: 1, max: 50},
         displayLast: {explain: 'Display number of tasks at bottom',  default: 3, handler: 'numeric', min: 1, max: 50},
         displayDoneLength: {explain: 'Display numebr of done tasks', default: 3, handler: 'numeric', min: 1, max: 50},
-        loadListIfExists: {explain: 'Load this list on start', handler: 'selector', field: ''},
+        openListIfExists: {explain: 'Load this list on start', handler: 'selector', field: ''},
     },
-    version: '0320-23'
+    version: '0321-10'
 };
 
 export default Object.freeze(CONFIG);
