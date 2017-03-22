@@ -16,10 +16,6 @@ class App extends Loadable {
 
         this.user = {id: CONFIG.user.id};
 
-        // this.state = {
-            // lists: [],
-        // };
-
         this.userNode = document.getElementById('user');
     }
 
@@ -30,12 +26,14 @@ class App extends Loadable {
 
     /* Getting user preferences from DB */
     loadUserSettings(userId) {
-        return $.get(UrlUtils.getUserSettingsUrl(userId))
-            .done((data) => { this.setUserSettings(data) })
-            .fail((err) => {
-                console.log(err);
-                this.setUserSettings([])
-            });
+        return $.get(
+            UrlUtils.getUserSettingsUrl(userId)
+        )
+        .done((data) => { this.setUserSettings(data) })
+        .fail((err) => {
+            console.log(err);
+            this.setUserSettings([])
+        });
     }
 
     /* Getting user preferences or default */
@@ -70,6 +68,8 @@ class App extends Loadable {
     /* Overriding parent's */
     loadListsCallback(data) {
         var lists = Utils.sortArrOfObjectsByParam(data, 'updatedAt', true);
+        // console.log('data:', data);
+        // console.log('lists:', lists);
         ReactDOM.render(<User lists={lists} renderSettings={this.renderSettings.bind(this)} />, this.userNode);
         var current = lists.find((item) => item.name === CONFIG.user.settings.openListIfExists);
 
