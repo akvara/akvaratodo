@@ -18,6 +18,7 @@ class TaskApp extends Loadable {
         this.immutables = props.immutables || [];
 
 	    this.state = {
+            listName: this.props.list.name,
 			itemsToDo: [],
 			itemsDone: [],
 			prepend: props.prepend,
@@ -27,6 +28,7 @@ class TaskApp extends Loadable {
             notYetLoaded: true,
 			reloadNeeded: false,
             expandToDo: false,
+            listNameOnEdit: false,
             expandDone: false
 	    };
 	}
@@ -65,9 +67,9 @@ class TaskApp extends Loadable {
 		this.setState({ task: e.target.value });
 	}
 
-    /* User submit */
-	handleSubmit(e) {
- 		e.preventDefault();
+    /* New task submit */
+    handleSubmit(e) {
+        e.preventDefault();
 
         var dataToSave = this.prepareClone();
         dataToSave.itemsToDo.splice(CONFIG.user.settings.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
@@ -77,6 +79,11 @@ class TaskApp extends Loadable {
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
 
         this.checkWrapper(dataToSave, callback);
+    }
+
+    /* Edit header submit */
+	handleNameSubmit(e) {
+ 		e.preventDefault();
 	}
 
     /* Remove task at i */
@@ -215,6 +222,33 @@ class TaskApp extends Loadable {
   		</button>
   	}
 
+    editListName() {
+        console.log('this.editListName:', this.state.listNameOnEdit);
+        this.setState({
+            listNameOnEdit: true
+        });
+    }
+
+    saveEditedHeader(e) {
+        var dataToSave = this.prepareClone();
+        let callback = this.callbackForSettingState.bind(this, null, dataToSave);
+        dataToSave.list.name = e.target.value;
+        this.checkWrapper(dataToSave, callback);
+        // this.setState({
+            // listName: e.target.value,
+            // listNameOnEdit: false
+        // });
+    }
+
+    manageHeader() {
+        if (!this.state.listNameOnEdit) return <h1 onClick={this.editListName.bind(this)}>{this.state.listName}</h1>
+        return <h1>
+            <form onSubmit={this.handleNameSubmit.bind(this)}>
+                <input className="task-input" defaultValue={this.state.listName} onBlur={this.saveEditedHeader.bind(this)} />
+            </form>
+        </h1>
+    }
+
     /* Reload this list*/
     reload() {
         // var preserveInput =  this.state.task;
@@ -245,7 +279,7 @@ class TaskApp extends Loadable {
 
         return (
 			<div>
-				<h1>{this.props.list.name}</h1>
+				{ this.manageHeader() }
 				<h3>
                     Finished ({this.state.itemsDone.length})
                     {Utils.overLength("displayDoneLength", this.state.itemsDone) &&

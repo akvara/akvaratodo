@@ -40,7 +40,7 @@ class ListList extends Component {
 			itemClass += " list-item-current"
 		}
 
-		let deletable = list.tasks ? (list.tasks === '[]' && !list.immutable && action === 'open') : true;
+		let deletable = list.tasks ? (list.tasks === '[]' && !list.immutable && this.props.action === 'open') : true;
 		var updatedDateOrTime = new Date().toISOString().substr(0, 10) === list.updatedAt.substr(0, 10) ?
 			list.updatedAt.substr(11, 5) : list.updatedAt.substr(0, 10);
 		return (
