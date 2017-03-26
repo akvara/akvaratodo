@@ -82,9 +82,9 @@ class TaskApp extends Loadable {
     }
 
     /* Edit header submit */
-	handleNameSubmit(e) {
- 		e.preventDefault();
-	}
+    handleNameSubmit(e) {
+        e.preventDefault();
+    }
 
     /* Remove task at i */
     removeTask(i) {
@@ -222,11 +222,27 @@ class TaskApp extends Loadable {
   		</button>
   	}
 
+    /* Mode: List name is on edit */
     editListName() {
-        console.log('this.editListName:', this.state.listNameOnEdit);
         this.setState({
             listNameOnEdit: true
         });
+    }
+
+    /* Edit header keypress */
+    onKeyDown(e) {
+        // e.preventDefault();
+        console.log('e.target.value', e.target.value);
+        console.log('e.key', e.key);
+        switch(e.key) {
+            case 'Enter':
+            case 'Tab':
+                this.saveEditedHeader(e);
+                break;
+            case 'Escape':
+                this.setState({ listNameOnEdit: false });
+            break;
+        }
     }
 
     saveEditedHeader(e) {
@@ -244,7 +260,12 @@ class TaskApp extends Loadable {
         if (!this.state.listNameOnEdit) return <h1 onClick={this.editListName.bind(this)}>{this.state.listName}</h1>
         return <h1>
             <form onSubmit={this.handleNameSubmit.bind(this)}>
-                <input className="task-input" defaultValue={this.state.listName} onBlur={this.saveEditedHeader.bind(this)} />
+                <input
+                    className="task-input"
+                    defaultValue={this.state.listName}
+                    onKeyDown={this.onKeyDown.bind(this)}
+                    onBlur={this.saveEditedHeader.bind(this)}
+                />
             </form>
         </h1>
     }

@@ -68,7 +68,7 @@ class TaskList extends Component {
 					</span>
 				</td>
 				<td className="actions">
-					<span className="glyphicon glyphicon-trash action-button" aria-hidden="true" onClick={this.delete.bind(this, itemIndex)}></span>
+					<span className="glyphicon glyphicon-trash delete-button" aria-hidden="true" onClick={this.delete.bind(this, itemIndex)}></span>
 					<span className="list-item">&nbsp;</span>
 					<span className="glyphicon glyphicon-arrow-down action-button" aria-hidden="true" onClick={this.procrastinate.bind(this, itemIndex)}></span>
 					<span className="glyphicon glyphicon-arrow-up action-button" aria-hidden="true"onClick={this.toTop.bind(this, itemIndex)}></span>

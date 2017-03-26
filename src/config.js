@@ -12,7 +12,7 @@ var CONFIG = {
         name: 'akvara',
         settings: {
             openListIfExists: "Current",
-            addNewAt: 3,
+            addNewAt: 4,
             displayListLength: 15,
             displayDoneLength: 3,
             displayLast: 2
@@ -25,7 +25,7 @@ var CONFIG = {
         displayDoneLength: {explain: 'Display numebr of done tasks', default: 3, handler: 'numeric', min: 1, max: 50},
         openListIfExists: {explain: 'Load this list on start', handler: 'selector', field: ''},
     },
-    version: '0321-20'
+    version: '0326-15'
 };
 
 export default Object.freeze(CONFIG);
