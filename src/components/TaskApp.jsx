@@ -362,7 +362,6 @@ class TaskApp extends Loadable {
                 <button disabled={this.state.task.trim()} onClick={this.openLists.bind(this)}>
                     <span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> Lists
                 </button>
-				<hr />
 			</div>
 		);
 	}

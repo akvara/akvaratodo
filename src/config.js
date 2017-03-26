@@ -1,7 +1,7 @@
 var CONFIG = {
-    apiHost: 'http://akvaratododb.herokuapp.com/',
     // devHost: 'http://akvaratododb.herokuapp.com/',
     devHost: 'http://localhost:5000/',
+    apiHost: 'http://akvaratododb.herokuapp.com/',
     separatorString: "..................",
     listsAddon: "lists",
     settingsAddon: "settings",
@@ -25,7 +25,7 @@ var CONFIG = {
         displayDoneLength: {explain: 'Display numebr of done tasks', default: 3, handler: 'numeric', min: 1, max: 50},
         openListIfExists: {explain: 'Load this list on start', handler: 'selector', field: ''},
     },
-    version: '0326-15'
+    version: '0326-22'
 };
 
 export default Object.freeze(CONFIG);
