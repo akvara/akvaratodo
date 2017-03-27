@@ -231,9 +231,6 @@ class TaskApp extends Loadable {
 
     /* Edit header keypress */
     onKeyDown(e) {
-        // e.preventDefault();
-        console.log('e.target.value', e.target.value);
-        console.log('e.key', e.key);
         switch(e.key) {
             case 'Enter':
             case 'Tab':
@@ -241,19 +238,18 @@ class TaskApp extends Loadable {
                 break;
             case 'Escape':
                 this.setState({ listNameOnEdit: false });
-            break;
+                break;
+            default:
+                break;
         }
     }
 
+    /* Save new header to DB */
     saveEditedHeader(e) {
         var dataToSave = this.prepareClone();
         let callback = this.callbackForSettingState.bind(this, null, dataToSave);
         dataToSave.list.name = e.target.value;
         this.checkWrapper(dataToSave, callback);
-        // this.setState({
-            // listName: e.target.value,
-            // listNameOnEdit: false
-        // });
     }
 
     manageHeader() {
