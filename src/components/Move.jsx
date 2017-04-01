@@ -35,7 +35,7 @@ class Move extends Loadable {
             this.saveTaskListCallback(list)
         } else {
             var dataToSave = this.prepareClone();
-            dataToSave.list = {id: toListId, name: listName};;
+            dataToSave.list = {id: this.props.fromList.id, name: this.props.fromList.name};;
             dataToSave.itemsToDo = Utils.removeItem(this.state.itemsToDo, this.props.itemIndex);
             // saving donor list. Need Check here !!!
             this.saveTaskList(this.props.fromList.id, dataToSave, this.saveTaskListCallback.bind(this, list));

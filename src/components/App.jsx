@@ -50,9 +50,6 @@ class App extends Loadable {
         var obj = {};
         Object.keys(CONFIG.settingsConfig).map(
             (property) => {
-// console.log('property', property);
-// console.log('fromDb[property]', fromDb[property]);
-// console.log(' CONFIG.settingsConfig[property].default', CONFIG.settingsConfig[property].default);
                 return obj[property] = fromDb[property] ? fromDb[property] : CONFIG.settingsConfig[property].default
             }
 
@@ -68,8 +65,6 @@ class App extends Loadable {
     /* Overriding parent's */
     loadListsCallback(data) {
         var lists = Utils.sortArrOfObjectsByParam(data, 'updatedAt', true);
-        // console.log('data:', data);
-        // console.log('lists:', lists);
         ReactDOM.render(<User lists={lists} renderSettings={this.renderSettings.bind(this)} />, this.userNode);
         var current = lists.find((item) => item.name === CONFIG.user.settings.openListIfExists);
 

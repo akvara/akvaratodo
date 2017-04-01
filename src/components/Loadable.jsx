@@ -145,6 +145,7 @@ class Loadable extends Component {
             notYetLoaded: false,
             task: ''
         });
+        return null;
     };
 
     /* Request putting task data and call callback on success */
