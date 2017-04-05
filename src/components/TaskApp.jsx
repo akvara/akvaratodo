@@ -57,7 +57,6 @@ class TaskApp extends Loadable {
             toList={this.props.previousList}
             previousList={this.props.list}
             immutables={this.immutables}
-            appNode={this.appNode}
             />, this.appNode
         );
   	}
@@ -218,7 +217,7 @@ class TaskApp extends Loadable {
   		if (this.state.immutable) return null;
 
   		return <button key={'btn'+item._id} disabled={this.state.reloadNeeded || this.state.task.trim()} onClick={this.loadAnotherList.bind(this, item._id)} >
-  			Load from <span className={'glyphicon glyphicon-upload'} aria-hidden="true"></span> <i>{ item.name }</i>
+  			<span className={'glyphicon glyphicon-upload'} aria-hidden="true"></span> <i>{ item.name }</i>
   		</button>
   	}
 

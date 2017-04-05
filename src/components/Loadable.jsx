@@ -14,6 +14,7 @@ class Loadable extends Component {
         this.notYetLoadedReturn = <div><h1>...</h1></div>;
         this.loaderNode = document.getElementById('loading');
         this.appNode = document.getElementById('app');
+        this.tmpNode = document.getElementById('tmp');
 	}
 
     /* Entry point for children classes */
@@ -46,7 +47,7 @@ class Loadable extends Component {
             });
     }
 
-    /* callback for Loading lists */
+    /* Callback for Loading lists */
     loadListsCallback(data) {
         this.setState({
             lists: Utils.sortArrOfObjectsByParam(data, 'updatedAt', true),
@@ -54,6 +55,7 @@ class Loadable extends Component {
         });
     }
 
+    /* Request for Loading lists */
     addAListRequest(resolve, reject) {
         return $.post(
             UrlUtils.getListsUrl(),
@@ -69,6 +71,7 @@ class Loadable extends Component {
             });
     }
 
+    /* Callback for Loading lists */
     addAListCallback(lists, data) {
         this.setState({
             lists: lists.concat(data),

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import * as Utils from '../utils/utils.js';
 import CONFIG from '../config.js';
 
 class ListList extends Component {
@@ -41,8 +42,8 @@ class ListList extends Component {
 		}
 
 		let deletable = list.tasks ? (list.tasks === '[]' && !list.immutable && this.props.action === 'open') : true;
-		var updatedDateOrTime = new Date().toISOString().substr(0, 10) === list.updatedAt.substr(0, 10) ?
-			list.updatedAt.substr(11, 5) : list.updatedAt.substr(0, 10);
+		var updatedDateOrTime = Utils.grabDate(new Date().toISOString()) === Utils.grabDate(list.updatedAt) ?
+			Utils.grabTime(list.updatedAt) : Utils.grabDate(list.updatedAt);
 		return (
 			<tr key={'tr'+i}>
 				<td className={itemClass} onClick={action} >
@@ -62,6 +63,7 @@ class ListList extends Component {
 			</tr>
 		);
 	}
+
 
     /* The Renderer */
 	render() {
