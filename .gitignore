@@ -5,8 +5,7 @@
 /coverage
 
 # production
-#/build
-/build_git_backup
+/build
 
 # misc
 .DS_Store
