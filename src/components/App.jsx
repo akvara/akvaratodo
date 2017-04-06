@@ -65,6 +65,7 @@ class App extends Loadable {
     /* Overriding parent's */
     loadListsCallback(data) {
         var lists = Utils.sortArrOfObjectsByParam(data, 'updatedAt', true);
+
         ReactDOM.render(<User lists={lists} renderSettings={this.renderSettings.bind(this)} />, this.userNode);
         var current = lists.find((item) => item.name === CONFIG.user.settings.openListIfExists);
 

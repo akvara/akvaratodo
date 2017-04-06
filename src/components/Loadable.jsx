@@ -39,7 +39,7 @@ class Loadable extends Component {
     /* Request for Loading lists */
     loadListsRequest(resolve, reject) {
         return $.get(UrlUtils.getListsUrl())
-            .done((data) => {
+          .done((data) => {
                 resolve(data);
             })
             .fail((err) => {

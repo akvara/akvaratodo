@@ -31,9 +31,6 @@ class LoadingDecorator extends Component {
 		new Promise((resolve, reject) => request(resolve, reject))
 	    	.then((val) => {
 	    		clearInterval(this.interval);
-				return val;
-			})
-	    	.then((val) => {
 	    		this.setState({
 	    			message: finishedMessage,
 	    			loadingString: ''

@@ -46,6 +46,10 @@ class TaskApp extends Loadable {
         );
     }
 
+    // componentWillUpdate(nextProps, nextState) {
+    //     nextState.invalidData = !(nextState.email && nextState.password);
+    // },
+
     /* Render list of TaskLists */
     openLists() {
         ReactDOM.render(<ListApp action='open'/>, this.appNode);
@@ -337,7 +341,7 @@ class TaskApp extends Loadable {
 					<h3>Add new:</h3>
 					<form onSubmit={this.handleSubmit.bind(this)}>
 						<input className="task-input" value={this.state.task} onChange={this.onChange.bind(this)} />
-						<button disabled={!this.state.task.trim()}>Add task</button>
+						<button disabled={!this.state.task.trim() || this.state.notYetLoaded }>Add task</button>
 					</form>
 					</div>
 				}
