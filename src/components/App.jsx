@@ -70,6 +70,7 @@ class App extends Loadable {
         var current = lists.find((item) => item.name === CONFIG.user.settings.openListIfExists);
 
         if (current) {
+            console.log("Loading default list " + current.name);
             var list = { id: current._id, name: current.name }
             ReactDOM.render(<TaskApp
                 list={list}
@@ -105,9 +106,8 @@ class App extends Loadable {
 
     /* The Renderer */
     render() {
-        return null;
+        return this.notYetLoadedReturn;
     }
 }
 
 export default App;
-

@@ -6,12 +6,13 @@ import * as Utils from '../utils/utils.js';
 import * as UrlUtils from '../utils/urlUtils.js';
 import $ from 'jquery';
 import _ from 'underscore';
+import { Spinner } from './Spinner';
 
 class Loadable extends Component {
 	constructor(props, context) {
 	    super(props, context);
 
-        this.notYetLoadedReturn = <div><h1>...</h1></div>;
+        this.notYetLoadedReturn = Spinner();
         this.loaderNode = document.getElementById('loading');
         this.appNode = document.getElementById('app');
         this.tmpNode = document.getElementById('tmp');
@@ -39,7 +40,7 @@ class Loadable extends Component {
     /* Request for Loading lists */
     loadListsRequest(resolve, reject) {
         return $.get(UrlUtils.getListsUrl())
-          .done((data) => {
+            .done((data) => {
                 resolve(data);
             })
             .fail((err) => {

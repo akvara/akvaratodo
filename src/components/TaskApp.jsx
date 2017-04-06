@@ -80,7 +80,7 @@ class TaskApp extends Loadable {
 
         let highlightPosition = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
-
+        this.setState({ notYetLoaded: true });
         this.checkWrapper(dataToSave, callback);
     }
 
@@ -280,9 +280,7 @@ class TaskApp extends Loadable {
 
     /* The Renderer */
 	render() {
-		if (this.state.notYetLoaded) {
-            return this.notYetLoadedReturn;
-        }
+		if (this.state.notYetLoaded) return this.notYetLoadedReturn;
 
         var markTitle = 'Protect';
         var markGlyphicon = 'exclamation-sign';
