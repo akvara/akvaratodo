@@ -5,12 +5,12 @@ import CONFIG from '../config.js';
 exports.sortArrOfObjectsByParam = function(arrToSort, sortBy, sortDesc) {
     if(!sortDesc) {
         return arrToSort.sort(function (a, b) {
-            return a[sortBy] > b[sortBy];
+            return a[sortBy] < b[sortBy] ? -1 : 1;
         });
     }
     else {
         return arrToSort.sort(function (a, b) {
-            return a[sortBy] < b[sortBy];
+            return a[sortBy] > b[sortBy] ? -1 : 1;
         });
     }
 }
@@ -62,3 +62,17 @@ exports.textToArray = function(text) {
 exports.overLength = function(which, items) {
     return items.length > CONFIG.user.settings[which];
 }
+
+exports.grabDate = function(someDateStr) {
+    return toLocalTime(someDateStr).substr(0, 10);
+}
+
+exports.grabTime = function(someDateStr) {
+    return toLocalTime(someDateStr).substr(11, 5);
+}
+
+function toLocalTime(utcDateStr) {
+    return new Date(new Date(utcDateStr).toString() + " UTC").toISOString();
+}
+
+exports.toLocalTime = toLocalTime;

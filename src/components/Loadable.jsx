@@ -6,18 +6,16 @@ import * as Utils from '../utils/utils.js';
 import * as UrlUtils from '../utils/urlUtils.js';
 import $ from 'jquery';
 import _ from 'underscore';
+import { Spinner } from './Spinner';
 
 class Loadable extends Component {
 	constructor(props, context) {
 	    super(props, context);
 
-//	    this.state = {
-//          Must be set in inherited classes
-//	    };
-
-        this.notYetLoadedReturn = <div><h1>...</h1></div>;
+        this.notYetLoadedReturn = Spinner();
         this.loaderNode = document.getElementById('loading');
         this.appNode = document.getElementById('app');
+        this.tmpNode = document.getElementById('tmp');
 	}
 
     /* Entry point for children classes */
@@ -50,7 +48,7 @@ class Loadable extends Component {
             });
     }
 
-    /* callback for Loading lists */
+    /* Callback for Loading lists */
     loadListsCallback(data) {
         this.setState({
             lists: Utils.sortArrOfObjectsByParam(data, 'updatedAt', true),
@@ -58,6 +56,7 @@ class Loadable extends Component {
         });
     }
 
+    /* Request for Loading lists */
     addAListRequest(resolve, reject) {
         return $.post(
             UrlUtils.getListsUrl(),
@@ -73,6 +72,7 @@ class Loadable extends Component {
             });
     }
 
+    /* Callback for Loading lists */
     addAListCallback(lists, data) {
         this.setState({
             lists: lists.concat(data),
@@ -122,7 +122,8 @@ class Loadable extends Component {
         dataToSave.itemsToDo = data.tasks ? JSON.parse(data.tasks) : [];
         dataToSave.itemsDone = data.done ? JSON.parse(data.done) : [];
         dataToSave.immutable = data.immutable;
-        dataToSave.lastAction = data.lastAction; // data.updatedAt; //      new Date();
+        dataToSave.list = { id: data._id, name: data.name };
+        dataToSave.lastAction = data.lastAction;
 
         if (this.props.prepend) {
             dataToSave.itemsToDo = _.unique([this.state.prepend].concat(dataToSave.itemsToDo));
@@ -136,16 +137,19 @@ class Loadable extends Component {
     /* Data for setState */
     callbackForSettingState(highlightPosition, dataToSave, responseData) {
         this.setState({
+            listName:  dataToSave.list.name,
             itemsToDo: dataToSave.itemsToDo,
-            itemsDone: dataToSave.itemsDone, // ? dataToSave.itemsDone : [],
+            itemsDone: dataToSave.itemsDone,
             immutable: dataToSave.immutable,
             updatedAt: dataToSave.lastAction,
             hightlightIndex: highlightPosition,
 
             prepend: null,
+            listNameOnEdit: false,
             notYetLoaded: false,
             task: ''
         });
+        return null;
     };
 
     /* Request putting task data and call callback on success */
@@ -203,6 +207,7 @@ class Loadable extends Component {
             type: 'PUT',
             data: {
                 // Saving tasks as string
+                name: dataToSave.list.name.trim(),
                 tasks: JSON.stringify(dataToSave.itemsToDo),
                 done: JSON.stringify(dataToSave.itemsDone),
                 immutable: dataToSave.immutable,

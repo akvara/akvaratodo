@@ -18,6 +18,7 @@ class TaskApp extends Loadable {
         this.immutables = props.immutables || [];
 
 	    this.state = {
+            listName: this.props.list.name,
 			itemsToDo: [],
 			itemsDone: [],
 			prepend: props.prepend,
@@ -27,6 +28,7 @@ class TaskApp extends Loadable {
             notYetLoaded: true,
 			reloadNeeded: false,
             expandToDo: false,
+            listNameOnEdit: false,
             expandDone: false
 	    };
 	}
@@ -44,6 +46,10 @@ class TaskApp extends Loadable {
         );
     }
 
+    // componentWillUpdate(nextProps, nextState) {
+    //     nextState.invalidData = !(nextState.email && nextState.password);
+    // },
+
     /* Render list of TaskLists */
     openLists() {
         ReactDOM.render(<ListApp action='open'/>, this.appNode);
@@ -55,7 +61,6 @@ class TaskApp extends Loadable {
             toList={this.props.previousList}
             previousList={this.props.list}
             immutables={this.immutables}
-            appNode={this.appNode}
             />, this.appNode
         );
   	}
@@ -65,9 +70,9 @@ class TaskApp extends Loadable {
 		this.setState({ task: e.target.value });
 	}
 
-    /* User submit */
-	handleSubmit(e) {
- 		e.preventDefault();
+    /* New task submit */
+    handleSubmit(e) {
+        e.preventDefault();
 
         var dataToSave = this.prepareClone();
         dataToSave.itemsToDo.splice(CONFIG.user.settings.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
@@ -75,9 +80,14 @@ class TaskApp extends Loadable {
 
         let highlightPosition = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
-
+        this.setState({ notYetLoaded: true });
         this.checkWrapper(dataToSave, callback);
-	}
+    }
+
+    /* Edit header submit */
+    handleNameSubmit(e) {
+        e.preventDefault();
+    }
 
     /* Remove task at i */
     removeTask(i) {
@@ -211,9 +221,53 @@ class TaskApp extends Loadable {
   		if (this.state.immutable) return null;
 
   		return <button key={'btn'+item._id} disabled={this.state.reloadNeeded || this.state.task.trim()} onClick={this.loadAnotherList.bind(this, item._id)} >
-  			Load from <span className={'glyphicon glyphicon-upload'} aria-hidden="true"></span> <i>{ item.name }</i>
+  			<span className={'glyphicon glyphicon-upload'} aria-hidden="true"></span> <i>{ item.name }</i>
   		</button>
   	}
+
+    /* Mode: List name is on edit */
+    editListName() {
+        this.setState({
+            listNameOnEdit: true
+        });
+    }
+
+    /* Edit header keypress */
+    onKeyDown(e) {
+        switch(e.key) {
+            case 'Enter':
+            case 'Tab':
+                this.saveEditedHeader(e);
+                break;
+            case 'Escape':
+                this.setState({ listNameOnEdit: false });
+                break;
+            default:
+                break;
+        }
+    }
+
+    /* Save new header to DB */
+    saveEditedHeader(e) {
+        var dataToSave = this.prepareClone();
+        let callback = this.callbackForSettingState.bind(this, null, dataToSave);
+        dataToSave.list.name = e.target.value;
+        this.checkWrapper(dataToSave, callback);
+    }
+
+    manageHeader() {
+        if (!this.state.listNameOnEdit) return <h1 onClick={this.editListName.bind(this)}>{this.state.listName}</h1>
+        return <h1>
+            <form onSubmit={this.handleNameSubmit.bind(this)}>
+                <input
+                    className="task-input"
+                    defaultValue={this.state.listName}
+                    onKeyDown={this.onKeyDown.bind(this)}
+                    onBlur={this.saveEditedHeader.bind(this)}
+                />
+            </form>
+        </h1>
+    }
 
     /* Reload this list*/
     reload() {
@@ -226,9 +280,7 @@ class TaskApp extends Loadable {
 
     /* The Renderer */
 	render() {
-		if (this.state.notYetLoaded) {
-            return this.notYetLoadedReturn;
-        }
+		if (this.state.notYetLoaded) return this.notYetLoadedReturn;
 
         var markTitle = 'Protect';
         var markGlyphicon = 'exclamation-sign';
@@ -245,7 +297,7 @@ class TaskApp extends Loadable {
 
         return (
 			<div>
-				<h1>{this.props.list.name}</h1>
+				{ this.manageHeader() }
 				<h3>
                     Finished ({this.state.itemsDone.length})
                     {Utils.overLength("displayDoneLength", this.state.itemsDone) &&
@@ -287,7 +339,7 @@ class TaskApp extends Loadable {
 					<h3>Add new:</h3>
 					<form onSubmit={this.handleSubmit.bind(this)}>
 						<input className="task-input" value={this.state.task} onChange={this.onChange.bind(this)} />
-						<button disabled={!this.state.task.trim()}>Add task</button>
+						<button disabled={!this.state.task.trim() || this.state.notYetLoaded }>Add task</button>
 					</form>
 					</div>
 				}
@@ -307,7 +359,6 @@ class TaskApp extends Loadable {
                 <button disabled={this.state.task.trim()} onClick={this.openLists.bind(this)}>
                     <span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> Lists
                 </button>
-				<hr />
 			</div>
 		);
 	}

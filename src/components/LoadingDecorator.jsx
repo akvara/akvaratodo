@@ -5,6 +5,8 @@ class LoadingDecorator extends Component {
 	constructor(props, context) {
 	    super(props, context);
 
+		this.interval = null;
+
 	    this.state = {
 	    	message: '',
 			loadingString: ''
@@ -20,16 +22,15 @@ class LoadingDecorator extends Component {
 	}
 
 	doAction(request, callback, actionMessage, finishedMessage) {
+		clearInterval(this.interval);
 		this.interval = setInterval(this.tick.bind(this), 100);
 		this.setState({
 			message: actionMessage,
 			loadingString: '',
-			// finished: false,put
 		});
 		new Promise((resolve, reject) => request(resolve, reject))
 	    	.then((val) => {
 	    		clearInterval(this.interval);
-	    		this.interval = 0;
 	    		this.setState({
 	    			message: finishedMessage,
 	    			loadingString: ''
@@ -38,7 +39,6 @@ class LoadingDecorator extends Component {
 	    	})
 				.catch((err) => {
 					clearInterval(this.interval);
-					this.interval = 0;
 					this.setState({
 						loadingString: ' error: ' + err
 					})
