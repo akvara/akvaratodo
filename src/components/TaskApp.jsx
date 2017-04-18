@@ -10,6 +10,7 @@ import ListApp from './ListApp';
 import TaskList from './TaskList';
 import TaskDoneList from './TaskDoneList';
 import * as Utils from '../utils/utils.js';
+import $ from 'jquery';
 
 class TaskApp extends Loadable {
 	constructor(props, context) {
@@ -32,6 +33,35 @@ class TaskApp extends Loadable {
             expandDone: false
 	    };
 	}
+
+    checkKeyPressed(e) {
+       switch(String.fromCharCode(e.which))
+       {
+            case 'A':
+                e.preventDefault();
+                $(document).off("keydown");
+                this.nameInput.focus();
+                break;
+            case 'L':
+                e.preventDefault();
+                this.openLists.call(this);
+                break;
+            case 'R':
+                e.preventDefault();
+                this.reload.call(this);
+                break;
+            default:
+                break;
+       }
+    }
+
+    componentWillUnmount() {
+        $(document).off("keydown");
+    }
+
+    componentDidMount() {
+        this.registerHotKeys();
+    }
 
     /* Load A List */
     loadData() {
@@ -83,6 +113,10 @@ class TaskApp extends Loadable {
     /* Edit header submit */
     handleNameSubmit(e) {
         e.preventDefault();
+    }
+
+    registerHotKeys() {
+        $(document).on("keydown", (e) => this.checkKeyPressed(e) );
     }
 
     /* Remove task at i */
@@ -336,7 +370,13 @@ class TaskApp extends Loadable {
 					<hr />
 					<h3>Add new:</h3>
 					<form onSubmit={this.handleSubmit.bind(this)}>
-						<input className="task-input" value={this.state.task} onChange={this.onChange.bind(this)} />
+						<input
+                            ref={(input) => { this.nameInput = input; }}
+                            onBlur={this.registerHotKeys.bind(this)}
+                            className="task-input"
+                            value={this.state.task}
+                            onChange={this.onChange.bind(this)}
+                        />
 						<button disabled={!this.state.task.trim()}>Add task</button>
 					</form>
 					</div>
