@@ -25,7 +25,7 @@ var CONFIG = {
         displayDoneLength: {explain: 'Display numebr of done tasks', default: 3, handler: 'numeric', min: 1, max: 50},
         openListIfExists: {explain: 'Load this list on start', handler: 'selector', field: ''},
     },
-    version: '0405-07'
+    version: '0419-12'
 };
 
 export default Object.freeze(CONFIG);
