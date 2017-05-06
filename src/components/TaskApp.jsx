@@ -76,6 +76,10 @@ class TaskApp extends Loadable {
         );
     }
 
+    // componentWillUpdate(nextProps, nextState) {
+    //     nextState.invalidData = !(nextState.email && nextState.password);
+    // },
+
     /* Render list of TaskLists */
     openLists() {
         ReactDOM.render(<ListApp action='open'/>, this.appNode);
@@ -106,7 +110,7 @@ class TaskApp extends Loadable {
 
         let highlightPosition = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
-
+        this.setState({ notYetLoaded: true });
         this.checkWrapper(dataToSave, callback);
     }
 
@@ -314,9 +318,7 @@ class TaskApp extends Loadable {
 
     /* The Renderer */
 	render() {
-		if (this.state.notYetLoaded) {
-            return this.notYetLoadedReturn;
-        }
+		if (this.state.notYetLoaded) return this.notYetLoadedReturn;
 
         var markTitle = 'Protect';
         var markGlyphicon = 'exclamation-sign';
@@ -382,7 +384,7 @@ class TaskApp extends Loadable {
                             value={this.state.task}
                             onChange={this.onChange.bind(this)}
                         />
-						<button disabled={!this.state.task.trim()}>Add task</button>
+						<button disabled={!this.state.task.trim() || this.state.notYetLoaded }>Add task</button>
 					</form>
 					</div>
 				}
