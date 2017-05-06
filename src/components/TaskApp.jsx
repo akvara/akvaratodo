@@ -119,14 +119,10 @@ class TaskApp extends Loadable {
         $(document).on("keydown", (e) => this.checkKeyPressed(e) );
     }
 
-<<<<<<< HEAD
-=======
     onFocus() {
         $(document).off("keydown");
     }
 
-
->>>>>>> Hotkeys A, R, L added
     /* Remove task at i */
     removeTask(i) {
         var dataToSave = this.prepareClone();
@@ -380,10 +376,7 @@ class TaskApp extends Loadable {
 					<form onSubmit={this.handleSubmit.bind(this)}>
 						<input
                             ref={(input) => { this.nameInput = input; }}
-<<<<<<< HEAD
-=======
                             onFocus={this.onFocus.bind(this)}
->>>>>>> Hotkeys A, R, L added
                             onBlur={this.registerHotKeys.bind(this)}
                             className="task-input"
                             value={this.state.task}
