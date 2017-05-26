@@ -56,7 +56,7 @@ class TaskApp extends Loadable {
     }
 
     componentWillUnmount() {
-        $(document).off("keydown");
+        this.disableHotKeys();
     }
 
     componentDidMount() {
@@ -123,7 +123,7 @@ class TaskApp extends Loadable {
         $(document).on("keydown", (e) => this.checkKeyPressed(e) );
     }
 
-    onFocus() {
+    disableHotKeys() {
         $(document).off("keydown");
     }
 
@@ -291,15 +291,18 @@ class TaskApp extends Loadable {
         let callback = this.callbackForSettingState.bind(this, null, dataToSave);
         dataToSave.list.name = e.target.value;
         this.checkWrapper(dataToSave, callback);
+        this.registerHotKeys();
     }
 
     manageHeader() {
         if (!this.state.listNameOnEdit) return <h1 onClick={this.editListName.bind(this)}>{this.state.listName}</h1>
+
         return <h1>
             <form onSubmit={this.handleNameSubmit.bind(this)}>
                 <input
                     className="task-input"
                     defaultValue={this.state.listName}
+                    onFocus={this.disableHotKeys.bind(this)}
                     onKeyDown={this.onKeyDown.bind(this)}
                     onBlur={this.saveEditedHeader.bind(this)}
                 />
@@ -378,7 +381,7 @@ class TaskApp extends Loadable {
 					<form onSubmit={this.handleSubmit.bind(this)}>
 						<input
                             ref={(input) => { this.nameInput = input; }}
-                            onFocus={this.onFocus.bind(this)}
+                            onFocus={this.disableHotKeys.bind(this)}
                             onBlur={this.registerHotKeys.bind(this)}
                             className="task-input"
                             value={this.state.task}
