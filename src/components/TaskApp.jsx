@@ -76,10 +76,6 @@ class TaskApp extends Loadable {
         );
     }
 
-    // componentWillUpdate(nextProps, nextState) {
-    //     nextState.invalidData = !(nextState.email && nextState.password);
-    // },
-
     /* Render list of TaskLists */
     openLists() {
         ReactDOM.render(<ListApp action='open'/>, this.appNode);
@@ -112,6 +108,7 @@ class TaskApp extends Loadable {
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
         this.setState({ notYetLoaded: true });
         this.checkWrapper(dataToSave, callback);
+        this.registerHotKeys();
     }
 
     /* Edit header submit */
