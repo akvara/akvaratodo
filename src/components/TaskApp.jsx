@@ -50,6 +50,10 @@ class TaskApp extends Loadable {
                 e.preventDefault();
                 this.reload.call(this);
                 break;
+            case 'P':
+                e.preventDefault();
+                this.mark.call(this);
+                break;
             default:
                 break;
        }
@@ -320,10 +324,10 @@ class TaskApp extends Loadable {
 	render() {
 		if (this.state.notYetLoaded) return this.notYetLoadedReturn;
 
-        var markTitle = 'Protect';
+        var markTitle = <span><strong>P</strong>rotect</span>;
         var markGlyphicon = 'exclamation-sign';
         if (this.state.immutable)  {
-            markTitle = 'Unprotect';
+            markTitle = <span>Un<strong>p</strong>rotect</span>;
             markGlyphicon = 'screen-shot';
         }
 
@@ -394,7 +398,7 @@ class TaskApp extends Loadable {
                     <span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true"></span> {markTitle}
                 </button>
                 <button onClick={this.reload.bind(this)}>
-                    <span className={'glyphicon glyphicon-refresh'} aria-hidden="true"></span> Reload
+                    <span className={'glyphicon glyphicon-refresh'} aria-hidden="true"></span> <strong>R</strong>eload
                 </button>
                 {this.props.previousList &&
                     <button disabled={this.state.task.trim()} onClick={this.listChanger.bind(this)}>
@@ -402,7 +406,7 @@ class TaskApp extends Loadable {
     				</button>
                 }
                 <button disabled={this.state.task.trim()} onClick={this.openLists.bind(this)}>
-                    <span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> Lists
+                    <span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> <strong>L</strong>ists
                 </button>
 			</div>
 		);
