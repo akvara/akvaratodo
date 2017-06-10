@@ -10,7 +10,7 @@ import ListApp from './ListApp';
 import TaskList from './TaskList';
 import TaskDoneList from './TaskDoneList';
 import * as Utils from '../utils/utils.js';
-import $ from 'jquery';
+// import $ from 'jquery';
 
 class TaskApp extends Loadable {
 	constructor(props, context) {
@@ -118,14 +118,6 @@ class TaskApp extends Loadable {
     /* Edit header submit */
     handleNameSubmit(e) {
         e.preventDefault();
-    }
-
-    registerHotKeys() {
-        $(document).on("keydown", (e) => this.checkKeyPressed(e) );
-    }
-
-    disableHotKeys() {
-        $(document).off("keydown");
     }
 
     /* Remove task at i */
@@ -313,11 +305,7 @@ class TaskApp extends Loadable {
 
     /* Reload this list*/
     reload() {
-        // var preserveInput =  this.state.task;
-// console.log('preserveInput:', preserveInput);
         this.loadData();
-        // this.setState({task: preserveInput})
-// console.log('this.state:', this.state);
     }
 
     /* The Renderer */

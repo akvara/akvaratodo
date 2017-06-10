@@ -23,6 +23,14 @@ class Loadable extends Component {
         this.loadData();
     }
 
+    registerHotKeys() {
+        $(document).on("keydown", (e) => this.checkKeyPressed(e) );
+    }
+
+    disableHotKeys() {
+        $(document).off("keydown");
+    }
+
     // ----- ListApp part -----
 
     /* Loading lists */
@@ -215,7 +223,6 @@ class Loadable extends Component {
             }
         })
         .done((data) => {
-// console.log('Resolving with ', data);
             resolve(data)
         })
         .fail((err) => { reject(err) });

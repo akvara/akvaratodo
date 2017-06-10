@@ -14,24 +14,29 @@ class ListList extends Component {
 		this.props.openList(...params);
 	}
 
+    hotKeyedListName(listName) {
+        if (!this.props.hotKeys) return listName;
+    	var corresponding = this.props.hotKeys.filter((elem) => elem.listName === listName);
+        if (!corresponding.length) return listName;
+		return this.strongify(listName, corresponding[0].key)
+    }
+
+    /* underline first of given letters */
+    strongify(str, letter) {
+    	var n = str.toUpperCase().indexOf(letter);
+  		if (n === -1) return str;
+
+  		return <span>{str.substring(0, n)}<u>{str.substring(n, n + 1)}</u>{str.substring(n + 1, str.length)}</span>;
+	}
+
 	/* Display list line */
 	displayList(list, i) {
 		var itemClass = "list-item",
 			action = null,
 			glyph = "";
 
-        switch(this.props.action) {
-            case 'open':
-                action = this.openList.bind(this, list._id, list.name);
-                glyph = "glyphicon-folder-open";
-                break;
-            case 'move':
-                action = this.openList.bind(this, list._id, list.name);
-                glyph = "glyphicon-forward";
-                break;
-            default:
-                console.log("Error - ListList has no action")
-        }
+        action = this.openList.bind(this, list._id, list.name);
+        glyph = "glyphicon-folder-open";
 
 		if (list.immutable) {
 			itemClass += " list-item-immutable"
@@ -41,14 +46,14 @@ class ListList extends Component {
 			itemClass += " list-item-current"
 		}
 
-		let deletable = list.tasks ? (list.tasks === '[]' && !list.immutable && this.props.action === 'open') : true;
+		let deletable = list.tasks ? (list.tasks === '[]' && !list.immutable) : true;
 		var updatedDateOrTime = Utils.grabDate(new Date().toISOString()) === Utils.grabDate(list.updatedAt) ?
 			Utils.grabTime(list.updatedAt) : Utils.grabDate(list.updatedAt);
 		return (
 			<tr key={'tr'+i}>
 				<td className={itemClass} onClick={action} >
 					<span className={"glyphicon list-item list-item-glyph " + glyph} aria-hidden="true"></span>
-				{ list.name }
+				{ this.hotKeyedListName(list.name) }
 				</td>
 				<td className="actions">
 				{deletable  &&
