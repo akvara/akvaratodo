@@ -4,4 +4,10 @@ import App from './components/App';
 
 console.log('Starting App ...');
 
+window.onbeforeunload = function() {
+   return "Do you really want to leave ToDo app?";
+   //if we return nothing here (just calling return;) then there will be no pop-up question at all
+   //return;
+};
+
 ReactDOM.render(<App />, document.getElementById('app'));
