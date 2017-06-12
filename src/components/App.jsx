@@ -57,7 +57,7 @@ class App extends Loadable {
         return obj;
     }
 
-    /* Passing contron to ListApp */
+    /* Passing control to ListApp */
     loadMainView(user) {
         this.loadLists(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists', 'Lists loaded.')
     }
@@ -77,7 +77,7 @@ class App extends Loadable {
                 immutables={lists.filter((item) => item.immutable)}
             />, this.appNode);
         } else {
-            ReactDOM.render(<ListApp lists={lists} action='open'/>, this.appNode);
+            ReactDOM.render(<ListApp lists={lists}/>, this.appNode);
         }
     }
 

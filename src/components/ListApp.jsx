@@ -14,11 +14,52 @@ class ListApp extends Loadable {
 			listName: '',
 			notYetLoaded: !this.props.lists
 	    };
+
+        this.hotKeys = [{ key: 'A', listId: null, listName: null }]; // reserved hotkey
 	}
+
+    componentWillUnmount() {
+        this.disableHotKeys();
+    }
+
 
     loadData() {
         document.title = "ToDo lists";
         if (!this.state.lists) this.loadLists(this.loadListsRequest, this.loadListsCallback.bind(this), 'Loading ToDo lists', 'Lists loaded.');
+    }
+
+    addHotKeys() {
+        this.state.lists.forEach((list) => {
+            var newKey = this.findFreeKey(list.name);
+            if (newKey) this.hotKeys.push({key: newKey, listId: list._id, listName: list.name})
+        });
+
+        this.registerHotKeys();
+    }
+
+    keyIsNotOccupied(key) {
+        return !this.hotKeys.filter((elem) => elem.key === key).length;
+    }
+
+    findFreeKey(str) {
+        for (var i = 0, len = str.length; i < len; i++) {
+            var pretender = str[i].toUpperCase();
+            if ('ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(pretender) !== -1 && this.keyIsNotOccupied(pretender)) return pretender;
+        }
+        return null;
+    }
+
+    checkKeyPressed(e) {
+        var pressed = String.fromCharCode(e.which);
+        if (pressed === 'A') {
+            e.preventDefault();
+            this.nameInput.focus();
+            return;
+        }
+        this.hotKeys.forEach(function (k) {
+                if (k.key === pressed) this.openList(this.state.lists, k.listId, k.listName);
+            }.bind(this)
+        );
     }
 
 	handleSubmit(e) {
@@ -41,6 +82,9 @@ class ListApp extends Loadable {
                 action='Adding'
             />, this.loaderNode
         );
+
+        this.registerHotKeys();
+
 	}
 
 	onNameChange(e) {
@@ -59,6 +103,7 @@ class ListApp extends Loadable {
     /* The Renderer */
 	render() {
 		if (this.state.notYetLoaded) return this.notYetLoadedReturn;
+        this.addHotKeys();
 
     		return (
 			<div>
@@ -66,9 +111,9 @@ class ListApp extends Loadable {
                 <ListList
                     lists={this.state.lists.filter(list => !list.immutable)}
                     openList={this.openList.bind(this, this.state.lists)}
+                    hotKeys={this.hotKeys}
                     moveToList={this.openList.bind(this, this.state.lists)}
                     removeList={this.removeList.bind(this)}
-                    action={this.props.action}
                 />
                 <h3>Protected</h3>
                 <ListList
@@ -76,10 +121,16 @@ class ListApp extends Loadable {
                     openList={this.openList.bind(this, this.state.lists)}
                     moveToList={this.openList.bind(this, this.state.lists)}
                     removeList={this.removeList.bind(this)}
-                    action={this.props.action}
                 />
 				<form onSubmit={this.handleSubmit.bind(this)}>
-					<input className="list-input" value={this.state.listName} onChange={this.onNameChange.bind(this)} />
+					<input
+                        ref={(input) => { this.nameInput = input; }}
+                        onFocus={this.disableHotKeys.bind(this)}
+                        onBlur={this.registerHotKeys.bind(this)}
+                        className="list-input"
+                        value={this.state.listName}
+                        onChange={this.onNameChange.bind(this)}
+                    />
 					<button disabled={!this.state.listName.trim()}>Create new list</button>
 				</form>
 			</div>
@@ -88,3 +139,4 @@ class ListApp extends Loadable {
 }
 
 export default ListApp;
+

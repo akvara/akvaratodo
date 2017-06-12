@@ -10,6 +10,7 @@ import ListApp from './ListApp';
 import TaskList from './TaskList';
 import TaskDoneList from './TaskDoneList';
 import * as Utils from '../utils/utils.js';
+// import $ from 'jquery';
 
 class TaskApp extends Loadable {
 	constructor(props, context) {
@@ -33,6 +34,39 @@ class TaskApp extends Loadable {
 	    };
 	}
 
+    checkKeyPressed(e) {
+       switch(String.fromCharCode(e.which))
+       {
+            case 'A':
+            case 'I':
+                e.preventDefault();
+                this.nameInput.focus();
+                break;
+            case 'L':
+                e.preventDefault();
+                this.openLists.call(this);
+                break;
+            case 'R':
+                e.preventDefault();
+                this.reload.call(this);
+                break;
+            case 'P':
+                e.preventDefault();
+                this.mark.call(this);
+                break;
+            default:
+                break;
+       }
+    }
+
+    componentWillUnmount() {
+        this.disableHotKeys();
+    }
+
+    componentDidMount() {
+        this.registerHotKeys();
+    }
+
     /* Load A List */
     loadData() {
         document.title = this.props.list.name;
@@ -45,10 +79,6 @@ class TaskApp extends Loadable {
             />, this.loaderNode
         );
     }
-
-    // componentWillUpdate(nextProps, nextState) {
-    //     nextState.invalidData = !(nextState.email && nextState.password);
-    // },
 
     /* Render list of TaskLists */
     openLists() {
@@ -82,6 +112,7 @@ class TaskApp extends Loadable {
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
         this.setState({ notYetLoaded: true });
         this.checkWrapper(dataToSave, callback);
+        this.registerHotKeys();
     }
 
     /* Edit header submit */
@@ -253,15 +284,18 @@ class TaskApp extends Loadable {
         let callback = this.callbackForSettingState.bind(this, null, dataToSave);
         dataToSave.list.name = e.target.value;
         this.checkWrapper(dataToSave, callback);
+        this.registerHotKeys();
     }
 
     manageHeader() {
         if (!this.state.listNameOnEdit) return <h1 onClick={this.editListName.bind(this)}>{this.state.listName}</h1>
+
         return <h1>
             <form onSubmit={this.handleNameSubmit.bind(this)}>
                 <input
                     className="task-input"
                     defaultValue={this.state.listName}
+                    onFocus={this.disableHotKeys.bind(this)}
                     onKeyDown={this.onKeyDown.bind(this)}
                     onBlur={this.saveEditedHeader.bind(this)}
                 />
@@ -271,21 +305,17 @@ class TaskApp extends Loadable {
 
     /* Reload this list*/
     reload() {
-        // var preserveInput =  this.state.task;
-// console.log('preserveInput:', preserveInput);
         this.loadData();
-        // this.setState({task: preserveInput})
-// console.log('this.state:', this.state);
     }
 
     /* The Renderer */
 	render() {
 		if (this.state.notYetLoaded) return this.notYetLoadedReturn;
 
-        var markTitle = 'Protect';
+        var markTitle = <span><strong>P</strong>rotect</span>;
         var markGlyphicon = 'exclamation-sign';
         if (this.state.immutable)  {
-            markTitle = 'Unprotect';
+            markTitle = <span>Un<strong>p</strong>rotect</span>;
             markGlyphicon = 'screen-shot';
         }
 
@@ -338,7 +368,14 @@ class TaskApp extends Loadable {
 					<hr />
 					<h3>Add new:</h3>
 					<form onSubmit={this.handleSubmit.bind(this)}>
-						<input className="task-input" value={this.state.task} onChange={this.onChange.bind(this)} />
+						<input
+                            ref={(input) => { this.nameInput = input; }}
+                            onFocus={this.disableHotKeys.bind(this)}
+                            onBlur={this.registerHotKeys.bind(this)}
+                            className="task-input"
+                            value={this.state.task}
+                            onChange={this.onChange.bind(this)}
+                        />
 						<button disabled={!this.state.task.trim() || this.state.notYetLoaded }>Add task</button>
 					</form>
 					</div>
@@ -349,7 +386,7 @@ class TaskApp extends Loadable {
                     <span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true"></span> {markTitle}
                 </button>
                 <button onClick={this.reload.bind(this)}>
-                    <span className={'glyphicon glyphicon-refresh'} aria-hidden="true"></span> Reload
+                    <span className={'glyphicon glyphicon-refresh'} aria-hidden="true"></span> <strong>R</strong>eload
                 </button>
                 {this.props.previousList &&
                     <button disabled={this.state.task.trim()} onClick={this.listChanger.bind(this)}>
@@ -357,7 +394,7 @@ class TaskApp extends Loadable {
     				</button>
                 }
                 <button disabled={this.state.task.trim()} onClick={this.openLists.bind(this)}>
-                    <span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> Lists
+                    <span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> <strong>L</strong>ists
                 </button>
 			</div>
 		);
