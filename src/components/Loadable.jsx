@@ -24,10 +24,14 @@ class Loadable extends Component {
     }
 
     registerHotKeys() {
+        // console.log("hotkeys EN");
+
         $(document).on("keydown", (e) => this.checkKeyPressed(e) );
     }
 
     disableHotKeys() {
+        // console.log("hotkeys disabled");
+
         $(document).off("keydown");
     }
 

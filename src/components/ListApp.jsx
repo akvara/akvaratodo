@@ -22,6 +22,9 @@ class ListApp extends Loadable {
         this.disableHotKeys();
     }
 
+    componentDidMount() {
+        this.registerHotKeys();
+    }
 
     loadData() {
         document.title = "ToDo lists";
@@ -34,7 +37,7 @@ class ListApp extends Loadable {
             if (newKey) this.hotKeys.push({key: newKey, listId: list._id, listName: list.name})
         });
 
-        this.registerHotKeys();
+        // this.registerHotKeys();
     }
 
     keyIsNotOccupied(key) {

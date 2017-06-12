@@ -1,0 +1,2 @@
+timestamp="$(date +"%m%d-%H")"
+sed -i "s/version: '[0-9]\+-[0-9]\+/version: '$timestamp/" src/config.js
