@@ -10,7 +10,6 @@ import ListApp from './ListApp';
 import TaskList from './TaskList';
 import TaskDoneList from './TaskDoneList';
 import * as Utils from '../utils/utils.js';
-// import $ from 'jquery';
 
 class TaskApp extends Loadable {
 	constructor(props, context) {
@@ -312,10 +311,10 @@ class TaskApp extends Loadable {
 	render() {
 		if (this.state.notYetLoaded) return this.notYetLoadedReturn;
 
-        var markTitle = <span><strong>P</strong>rotect</span>;
+        var markTitle = <span><u>P</u>rotect</span>;
         var markGlyphicon = 'exclamation-sign';
         if (this.state.immutable)  {
-            markTitle = <span>Un<strong>p</strong>rotect</span>;
+            markTitle = <span>Un<u>p</u>rotect</span>;
             markGlyphicon = 'screen-shot';
         }
 
@@ -386,7 +385,7 @@ class TaskApp extends Loadable {
                     <span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true"></span> {markTitle}
                 </button>
                 <button onClick={this.reload.bind(this)}>
-                    <span className={'glyphicon glyphicon-refresh'} aria-hidden="true"></span> <strong>R</strong>eload
+                    <span className={'glyphicon glyphicon-refresh'} aria-hidden="true"></span> <u>R</u>eload
                 </button>
                 {this.props.previousList &&
                     <button disabled={this.state.task.trim()} onClick={this.listChanger.bind(this)}>
@@ -394,7 +393,7 @@ class TaskApp extends Loadable {
     				</button>
                 }
                 <button disabled={this.state.task.trim()} onClick={this.openLists.bind(this)}>
-                    <span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> <strong>L</strong>ists
+                    <span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> <u>L</u>ists
                 </button>
 			</div>
 		);
