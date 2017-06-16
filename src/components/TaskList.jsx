@@ -31,7 +31,20 @@ class TaskList extends Component {
 		if (this.props.hightlightIndex === index)
 			return <strong>{element}</strong>;
 		else
-			return element;
+			return <span>{element}</span>;
+	}
+
+	processTaskText(task) {
+		let taskTruncated = task.substring(0, CONFIG.maxTaskLength);
+		let taskAsDisplayed = taskTruncated;
+		if (task.substring(0, 4) === "http") {
+			taskTruncated = taskTruncated.substr(taskTruncated.indexOf('://')+3);
+			if (taskTruncated[taskTruncated.length-1] === "/") {
+				taskTruncated = taskTruncated.substr(0, taskTruncated.length-1);
+			}
+			taskAsDisplayed = <a href={ task } target="_blank">{ taskTruncated }</a>;
+		}
+		return taskAsDisplayed;
 	}
 
 	displayTask(task, i, omitted) {
@@ -42,20 +55,12 @@ class TaskList extends Component {
 			</tr>
 		}
 
-		let taskTruncated = task.substring(0, CONFIG.maxTaskLength);
-		let taskAsDisplayed = taskTruncated;
-		if (task.substring(0, 4) === "http") {
-			taskTruncated = taskTruncated.substr(taskTruncated.indexOf('://')+3);
-			if (taskTruncated[taskTruncated.length-1] === "/") {
-				taskTruncated = taskTruncated.substr(0, taskTruncated.length-1);
-			}
-			taskAsDisplayed = <a href={ task } target="_blank">{ taskTruncated }</a>;
-		}
-
 		let itemIndex = i;
 		if (itemIndex >= CONFIG.user.settings.displayListLength - CONFIG.user.settings.displayLast ) {
 			itemIndex = i + omitted;
 		}
+
+		let taskAsDisplayed = this.processTaskText(task);
 
 		if (this.props.immutable) {
 			return <tr key={'tr'+i}><td>{ taskAsDisplayed }</td></tr>

@@ -102,6 +102,7 @@ class TaskApp extends Loadable {
     /* New task submit */
     handleSubmit(e) {
         e.preventDefault();
+        this.setState({ notYetLoaded: true });
 
         var dataToSave = this.prepareClone();
         dataToSave.itemsToDo.splice(CONFIG.user.settings.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
@@ -109,7 +110,6 @@ class TaskApp extends Loadable {
 
         let highlightPosition = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
         let callback = this.callbackForSettingState.bind(this, highlightPosition, dataToSave);
-        this.setState({ notYetLoaded: true });
         this.checkWrapper(dataToSave, callback);
         this.registerHotKeys();
     }
@@ -121,6 +121,7 @@ class TaskApp extends Loadable {
 
     /* Remove task at i */
     removeTask(i) {
+        this.setState({ notYetLoaded: true });
         var dataToSave = this.prepareClone();
         dataToSave.itemsToDo = Utils.removeItem(this.state.itemsToDo, i);
 
@@ -148,6 +149,7 @@ class TaskApp extends Loadable {
 
 	/* Move task down by 1/2 length */
     postponeTask(i) {
+        this.setState({ notYetLoaded: true });
         var dataToSave = this.prepareClone();
         dataToSave.itemsToDo = Utils.moveFromTo(this.state.itemsToDo, i, i + this.postponeBy())
 
@@ -159,6 +161,7 @@ class TaskApp extends Loadable {
 
     /* Move task to Done tasks array */
 	doneTask(i) {
+        this.setState({ notYetLoaded: true });
         var dataToSave = this.prepareClone();
         var moved = Utils.moveToAnother(this.state.itemsToDo, this.state.itemsDone, i, false)
 
@@ -172,6 +175,7 @@ class TaskApp extends Loadable {
 
     /* Move task back from Done tasks array */
 	unDoneTask(i) {
+        this.setState({ notYetLoaded: true });
         var dataToSave = this.prepareClone();
         var moved = Utils.moveToAnother(this.state.itemsDone, this.state.itemsToDo, i, true)
 
@@ -187,6 +191,7 @@ class TaskApp extends Loadable {
     /* Move task to bottom */
 	procrastinateTask(i) {
         var dataToSave = this.prepareClone();
+        this.setState({ notYetLoaded: true });
 
         dataToSave.itemsToDo = Utils.moveToEnd(this.state.itemsToDo, i);
 
@@ -210,6 +215,7 @@ class TaskApp extends Loadable {
 
     /* Toggle immutable. No checking if changed */
     mark() {
+        this.setState({ notYetLoaded: true });
         var dataToSave = this.prepareClone();
         dataToSave.immutable = !this.state.immutable;
 
@@ -304,6 +310,7 @@ class TaskApp extends Loadable {
 
     /* Reload this list*/
     reload() {
+        this.setState({ notYetLoaded: true });
         this.loadData();
     }
 
