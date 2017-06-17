@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
+import CONFIG from './config.js';
 
 console.log('Starting App ...');
 
@@ -10,4 +11,4 @@ window.onbeforeunload = function() {
    //return;
 };
 
-ReactDOM.render(<App />, document.getElementById('app'));
+ReactDOM.render(<App openAtStartup={CONFIG.user.settings.openListIfExists}/>, document.getElementById('app'));

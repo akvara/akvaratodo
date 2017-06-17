@@ -67,7 +67,7 @@ class App extends Loadable {
         var lists = Utils.sortArrOfObjectsByParam(data, 'updatedAt', true);
 
         ReactDOM.render(<User lists={lists} renderSettings={this.renderSettings.bind(this)} />, this.userNode);
-        var current = lists.find((item) => item.name === CONFIG.user.settings.openListIfExists);
+        var current = lists.find((item) => item.name === this.props.openAtStartup);
 
         if (current) {
             console.log("Loading default list " + current.name);

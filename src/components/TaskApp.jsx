@@ -6,6 +6,7 @@ import Loadable from './Loadable';
 import LoadingDecorator from './LoadingDecorator';
 import ListChanger from './ListChanger';
 import Move from './Move';
+import App from './App';
 import ListApp from './ListApp';
 import TaskList from './TaskList';
 import TaskDoneList from './TaskDoneList';
@@ -232,6 +233,14 @@ class TaskApp extends Loadable {
         this.saveTaskList(this.props.list.id, dataToSave, callback);
     }
 
+    openListByName(name) {
+        ReactDOM.render(
+            <App
+                openAtStartup={name}
+            />, this.appNode
+        );
+    }
+
 	loadAnotherList(listId) {
         ReactDOM.render(
             <LoadingDecorator
@@ -364,7 +373,8 @@ class TaskApp extends Loadable {
 					move={this.moveOutside.bind(this)}
 					toTop={this.toTop.bind(this)}
 					postpone={this.postponeTask.bind(this)}
-					procrastinate={this.procrastinateTask.bind(this)}
+                    procrastinate={this.procrastinateTask.bind(this)}
+					openListByName={this.openListByName.bind(this)}
                     reloadNeeded={this.state.reloadNeeded}
 					done={this.doneTask.bind(this)}
                     expand={this.state.expandToDo}

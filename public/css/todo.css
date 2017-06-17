@@ -48,6 +48,10 @@ body {
     padding-left: 15px;
 }
 
+.list-first-item{
+    padding-right: 15px;
+}
+
 .list-item-immutable{
     font-style: italic;
 }

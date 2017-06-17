@@ -34,6 +34,10 @@ class TaskList extends Component {
 			return <span>{element}</span>;
 	}
 
+	openListByName(name) {
+		this.props.openListByName(name);
+	}
+
 	processTaskText(task) {
 		let taskTruncated = task.substring(0, CONFIG.maxTaskLength);
 		let taskAsDisplayed = taskTruncated;
@@ -43,6 +47,10 @@ class TaskList extends Component {
 				taskTruncated = taskTruncated.substr(0, taskTruncated.length-1);
 			}
 			taskAsDisplayed = <a href={ task } target="_blank">{ taskTruncated }</a>;
+			return taskAsDisplayed;
+		}
+		if (task.substring(0, 1) === "[") {
+			taskAsDisplayed = <span><span className={"glyphicon glyphicon-folder-open list-first-item"} aria-hidden="true" onClick={this.openListByName.bind(this, task.substring(1))}></span> { taskTruncated.substring(1) }</span> ;
 		}
 		return taskAsDisplayed;
 	}
