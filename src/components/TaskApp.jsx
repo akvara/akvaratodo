@@ -38,7 +38,6 @@ class TaskApp extends Loadable {
        switch(String.fromCharCode(e.which))
        {
             case 'A':
-            case 'I':
                 e.preventDefault();
                 this.nameInput.focus();
                 break;

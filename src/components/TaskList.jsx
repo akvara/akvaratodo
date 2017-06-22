@@ -39,6 +39,7 @@ class TaskList extends Component {
 	}
 
 	processTaskText(task) {
+		if (task === null) task = 'null';
 		let taskTruncated = task.substring(0, CONFIG.maxTaskLength);
 		let taskAsDisplayed = taskTruncated;
 		if (task.substring(0, 4) === "http") {
