@@ -35,23 +35,28 @@ class TaskApp extends Loadable {
 	}
 
     checkKeyPressed(e) {
+// console.log('e.which:', e.which, String.fromCharCode(e.which));
        switch(String.fromCharCode(e.which))
        {
-            case 'A':
+            case 'a':
                 e.preventDefault();
                 this.nameInput.focus();
                 break;
-            case 'L':
+            case 'l':
                 e.preventDefault();
                 this.openLists.call(this);
                 break;
-            case 'R':
+            case 'r':
                 e.preventDefault();
                 this.reload.call(this);
                 break;
-            case 'P':
+            case 'p':
                 e.preventDefault();
                 this.mark.call(this);
+                break;
+            case '<':
+                e.preventDefault();
+                if (this.props.previousList) this.listChanger.call(this);
                 break;
             default:
                 break;
@@ -396,7 +401,7 @@ class TaskApp extends Loadable {
 					</div>
 				}
 				<hr />
-				{ this.props.immutables.map((list) => this.displayLoadFromButton(list)) }
+				{this.props.immutables.map((list) => this.displayLoadFromButton(list)) }
                 <button disabled={this.state.task.trim() || this.state.reloadNeeded} onClick={this.mark.bind(this)}>
                     <span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true"></span> {markTitle}
                 </button>

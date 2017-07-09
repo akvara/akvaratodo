@@ -24,15 +24,13 @@ class Loadable extends Component {
     }
 
     registerHotKeys() {
-        // console.log("hotkeys EN");
-
-        $(document).on("keydown", (e) => this.checkKeyPressed(e) );
+        // console.log("hotkeys ENabled");
+        $(document).on("keypress", (e) => this.checkKeyPressed(e) );
     }
 
     disableHotKeys() {
         // console.log("hotkeys disabled");
-
-        $(document).off("keydown");
+        $(document).off("keypress");
     }
 
     // ----- ListApp part -----
