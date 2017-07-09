@@ -15,7 +15,7 @@ class ListApp extends Loadable {
 			notYetLoaded: !this.props.lists
 	    };
 
-        this.hotKeys = [{ key: 'A', listId: null, listName: null }]; // reserved hotkey
+        this.hotKeys = [{ key: 'a', listId: null, listName: null }]; // reserved hotkey
 	}
 
     componentWillUnmount() {
@@ -46,15 +46,15 @@ class ListApp extends Loadable {
 
     findFreeKey(str) {
         for (var i = 0, len = str.length; i < len; i++) {
-            var pretender = str[i].toUpperCase();
-            if ('ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(pretender) !== -1 && this.keyIsNotOccupied(pretender)) return pretender;
+            var pretender = str[i].toLowerCase();
+            if ('abcdefghijklmnopqrstuvwxyz'.indexOf(pretender) !== -1 && this.keyIsNotOccupied(pretender)) return pretender;
         }
         return null;
     }
 
     checkKeyPressed(e) {
         var pressed = String.fromCharCode(e.which);
-        if (pressed === 'A') {
+        if (pressed === 'a') {
             e.preventDefault();
             this.nameInput.focus();
             return;

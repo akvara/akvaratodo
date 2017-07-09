@@ -23,7 +23,7 @@ class ListList extends Component {
 
     /* underline first of given letters */
     strongify(str, letter) {
-    	var n = str.toUpperCase().indexOf(letter);
+    	var n = str.toLowerCase().indexOf(letter);
   		if (n === -1) return str;
 
   		return <span>{str.substring(0, n)}<u>{str.substring(n, n + 1)}</u>{str.substring(n + 1, str.length)}</span>;
