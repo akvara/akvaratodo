@@ -306,7 +306,12 @@ class TaskApp extends Loadable {
     }
 
     manageHeader() {
-        if (!this.state.listNameOnEdit) return <h1 onClick={this.editListName.bind(this)}>{this.state.listName}</h1>
+        if (!this.state.listNameOnEdit)
+            return <div>
+                <h1>{this.state.listName}</h1>
+            &nbsp;&nbsp;
+            <span className={"small action-button glyphicon glyphicon glyphicon-pencil"} aria-hidden="true"  onClick={this.editListName.bind(this)}></span>
+        </div>
 
         return <h1>
             <form onSubmit={this.handleNameSubmit.bind(this)}>

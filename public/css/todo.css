@@ -7,6 +7,10 @@ body {
     background-color: #f5f8fa;
 }
 
+h1, h2{
+    display: inline;
+}
+
 .done{
 	text-decoration: line-through;
 }
