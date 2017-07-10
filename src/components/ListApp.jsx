@@ -55,12 +55,16 @@ class ListApp extends Loadable {
     checkKeyPressed(e) {
         var pressed = String.fromCharCode(e.which);
         if (pressed === 'a') {
+            this.playSound()
             e.preventDefault();
             this.nameInput.focus();
             return;
         }
         this.hotKeys.forEach(function (k) {
-                if (k.key === pressed) this.openList(this.state.lists, k.listId, k.listName);
+                if (k.key === pressed) {
+                    this.playSound()
+                    this.openList(this.state.lists, k.listId, k.listName);
+                }
             }.bind(this)
         );
     }
@@ -108,7 +112,7 @@ class ListApp extends Loadable {
 		if (this.state.notYetLoaded) return this.notYetLoadedReturn;
         this.addHotKeys();
 
-    		return (
+    	return (
 			<div>
 				<h1>Lists</h1>
                 <ListList

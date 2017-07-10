@@ -36,8 +36,11 @@ class TaskApp extends Loadable {
 
     checkKeyPressed(e) {
 // console.log('e.which:', e.which, String.fromCharCode(e.which));
-       switch(String.fromCharCode(e.which))
-       {
+        var key = String.fromCharCode(e.which)
+        if ('alrp<'.indexOf(key) !== -1) this.playSound()
+
+        switch(String.fromCharCode(e.which))
+        {
             case 'a':
                 e.preventDefault();
                 this.nameInput.focus();
@@ -60,7 +63,7 @@ class TaskApp extends Loadable {
                 break;
             default:
                 break;
-       }
+        }
     }
 
     componentWillUnmount() {

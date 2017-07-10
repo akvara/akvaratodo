@@ -230,6 +230,11 @@ class Loadable extends Component {
         .fail((err) => { reject(err) });
     }
 
+    playSound() {
+        var sound = document.getElementById('clickSound');
+        sound.play()
+    }
+
     /* The Renderer */
     render() {
         return null;
