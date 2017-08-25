@@ -1,6 +1,6 @@
 {
   "name": "akvaratodo-frontend",
-  "version": "1.07.11",
+  "version": "1.08.25",
   "private": true,
   "dependencies": {
     "jquery": "^3.1.1",
@@ -14,6 +14,7 @@
     "redux-form": "^7.0.3",
     "redux-saga": "^0.15.6",
     "redux-thunk": "^2.2.0",
+    "simple-redux-utils": "^1.0.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {

@@ -1,10 +1,8 @@
 import {combineReducers} from 'redux';
-import {reducer as formReducer} from 'redux-form';
-
 import ListReducer from './list-reducer';
-
+import TestReducer from './test-reducer';
 
 export default combineReducers({
-    list: ListReducer
-//     user: userReducer,
+    list: ListReducer,
+    test: TestReducer
 });

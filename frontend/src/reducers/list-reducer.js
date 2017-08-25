@@ -7,8 +7,8 @@ class ListReducer extends BaseReducer {
         super();
         this.initialState = {};
         this.ACTION_HANDLERS = {
-            [types.GET_CURRENT_USER.SUCCESS]: this.userFetched,
-            [types.LOGOUT]: this.logout,
+            // [types.GET_CURRENT_USER.SUCCESS]: this.userFetched,
+            // [types.LOGOUT]: this.logout,
         };
     }
 

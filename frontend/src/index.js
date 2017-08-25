@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-import CONFIG from './config.js';
+// import {createLogger} from 'redux-logger';
 import {Provider} from 'react-redux';
 import {buildStore} from './store/store';
+import CONFIG from './config.js';
 
 console.log('Starting App ...');
 
@@ -13,16 +14,24 @@ window.onbeforeunload = function() {
    //return;
 };
 
-const store = buildStore([]);
+let middleware = [];
 
-// const renderRoot = Component => ReactDOM.render(
-//     <Provider store={store}>
-//         <AppContainer>
-//             <Component store={store}/>
-//         </AppContainer>
-//     </Provider>, document.getElementById('app')
-// );
+if (window.devToolsExtension) {
+    console.log('window.devToolsExtension is used: no Redux spam in console.');
+} else {
+    // middleware.push(createLogger());
+}
 
-// renderRoot(App);
+const store = buildStore(middleware);
 
-ReactDOM.render(<App openAtStartup={CONFIG.user.settings.openListIfExists}/>, document.getElementById('app'));
+const renderRoot = Component => ReactDOM.render(
+    <Provider store={store}>
+        <App
+            store={store}
+            openAtStartup={CONFIG.user.settings.openListIfExists}
+        />
+    </Provider>, document.getElementById('footer')
+);
+renderRoot(App);
+
+// ReactDOM.render(<App openAtStartup={CONFIG.user.settings.openListIfExists}/>, document.getElementById('app'));

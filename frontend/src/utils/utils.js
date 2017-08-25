@@ -1,7 +1,6 @@
 import _ from 'underscore';
 import CONFIG from '../config.js';
 
-
 export function sortArrOfObjectsByParam(arrToSort, sortBy, sortDesc) {
     if(!sortDesc) {
         return arrToSort.sort(function (a, b) {

@@ -25,8 +25,11 @@ var CONFIG = {
         displayDoneLength: {explain: 'Display numebr of done tasks', default: 3, handler: 'numeric', min: 1, max: 50},
         openListIfExists: {explain: 'Load this list on start', handler: 'selector', field: ''},
     },
+    userNode: document.getElementById('user'),
+    appNode: document.getElementById('app'),
+
     clickSound: "https://www.soundjay.com/button/button-20.mp3",
-    version: '0711-01'
+    version: '0825-23'
 };
 
 export default Object.freeze(CONFIG);
