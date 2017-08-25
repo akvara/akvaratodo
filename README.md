@@ -1,10 +1,18 @@
 # akvaratodo
-ToDo App - React.js
+ToDo App - React + Redux
 
 Migrations:
 * create:  ./node_modules/.bin/mm create {migration-name} --config=migrations/config/mm-config-{local}.json
 * migrate: ./node_modules/.bin/mm --config=migrations/config/mm-config-{local}.json
 
+```sh
+cd .git/hooks/ && ln -s ../../.githooks/pre-push . && cd ../..
+```
+
+## Developer
+```sh
+bin/both
+```
 
 Tests:
 * Should load Lists if OpenIfExists is not set
@@ -17,7 +25,7 @@ Tests:
 
 
 
-
+# Old version
 * TaskApp workfow:
 ** after each user action on list:
 ** 1) checkWrapper(dataToSave, callback) // dataToSave == this.state analogas/kopija

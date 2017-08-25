@@ -2,7 +2,7 @@ import _ from 'underscore';
 import CONFIG from '../config.js';
 
 
-exports.sortArrOfObjectsByParam = function(arrToSort, sortBy, sortDesc) {
+export function sortArrOfObjectsByParam(arrToSort, sortBy, sortDesc) {
     if(!sortDesc) {
         return arrToSort.sort(function (a, b) {
             return a[sortBy] < b[sortBy] ? -1 : 1;
@@ -15,7 +15,7 @@ exports.sortArrOfObjectsByParam = function(arrToSort, sortBy, sortDesc) {
     }
 }
 
-exports.moveToAnother = function(fromA, toB, i, toTop) {
+export function moveToAnother(fromA, toB, i, toTop) {
     let trans = fromA[i];
     fromA.splice(i, 1);
     if (toTop) {
@@ -27,21 +27,21 @@ exports.moveToAnother = function(fromA, toB, i, toTop) {
     return {A: fromA, B: toB};
 }
 
-exports.moveToEnd = function(items, i) {
+export function moveToEnd(items, i) {
     let trans = items[i];
     items.splice(i, 1);
 
     return items.concat([trans]);
 }
 
-exports.moveToTop = function(items, i) {
+export function moveToTop(items, i) {
     let trans = items[i];
     items.splice(i, 1);
 
     return [trans].concat(items);
 }
 
-exports.moveFromTo = function(items, fromPos, toPos) {
+export function moveFromTo(items, fromPos, toPos) {
     let trans = items[fromPos];
     items.splice(fromPos, 1);
     items.splice(toPos, 0, trans);
@@ -49,30 +49,28 @@ exports.moveFromTo = function(items, fromPos, toPos) {
     return items;
 }
 
-exports.removeItem = function(items, i) {
+export function removeItem(items, i) {
     items.splice(i, 1);
 
     return items;
 }
 
-exports.textToArray = function(text) {
+export function textToArray(text) {
     return text.split(/\r?\n/).filter(entry => entry.trim() !== '');
 }
 
-exports.overLength = function(which, items) {
+export function overLength(which, items) {
     return items.length > CONFIG.user.settings[which];
 }
 
-exports.grabDate = function(someDateStr) {
+export function grabDate(someDateStr) {
     return toLocalTime(someDateStr).substr(0, 10);
 }
 
-exports.grabTime = function(someDateStr) {
+export function grabTime(someDateStr) {
     return toLocalTime(someDateStr).substr(11, 5);
 }
 
-function toLocalTime(utcDateStr) {
+export function toLocalTime(utcDateStr) {
     return new Date(new Date(utcDateStr).toString() + " UTC").toISOString();
 }
-
-exports.toLocalTime = toLocalTime;

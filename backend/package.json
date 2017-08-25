@@ -1,0 +1,32 @@
+{
+  "name": "todoapi",
+  "version": "1.0.0",
+  "description": "API for akvaratodo",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "RESTful",
+    "API"
+  ],
+  "author": "akvara",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  },
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.17.1",
+    "crypto": "0.0.3",
+    "express": "^4.15.2",
+    "jsonwebtoken": "^7.3.0",
+    "mongodb-migrations": "^0.8.5",
+    "mongoose": "^4.8.7",
+    "morgan": "^1.8.1",
+    "passport": "^0.3.2",
+    "passport-jwt": "^2.2.1",
+    "passport-local": "^1.0.0"
+  }
+}

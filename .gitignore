@@ -6,16 +6,12 @@ yarn-debug.log*
 yarn-error.log*
 
 # dependencies
-/node_modules
+node_modules/
+build/
 
-# testing
-/coverage
+build/
+.idea/
 
-# production
-/build
-/build_git_backup
-
-# misc
 .DS_Store
 .env
 *.txt
