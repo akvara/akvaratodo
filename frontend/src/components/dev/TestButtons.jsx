@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {bindActionToPromise} from 'simple-redux-utils'
 import * as testActions from '../actions/test-actions';
 import * as listActions from '../actions/list-actions';
-
 import { bindActionCreators } from 'redux';
 
 class TestButtons extends Component {

@@ -1,6 +1,6 @@
-var CONFIG = {
-    devHost: 'http://akvaratododb.herokuapp.com/',
-    // devHost: 'http://localhost:5000/',
+const CONFIG = {
+    // devHost: 'http://akvaratododb.herokuapp.com/',
+    devHost: 'http://localhost:5000/',
     apiHost: 'http://akvaratododb.herokuapp.com/',
     separatorString: "..................",
     listsAddon: "lists",
@@ -34,4 +34,4 @@ var CONFIG = {
     version: '0825-23'
 };
 
-export default Object.freeze(CONFIG);
+export default CONFIG;

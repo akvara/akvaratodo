@@ -1,4 +1,4 @@
-import {takeEvery, takeLatest, put} from 'redux-saga/effects';
+import {takeEvery, takeLatest} from 'redux-saga/effects';
 import {renderComponent} from '../components/Renderer'
 import * as UrlUtils from '../utils/urlUtils.js';
 import Loading from '../components/Loading';
@@ -6,6 +6,7 @@ import Success from '../components/Success';
 import Failure from '../components/Failure';
 import {fetchItemSaga} from './common-sagas';
 import types from '../actions/types';
+import { all } from 'redux-saga/effects'
 
 export function* testSync() {
     yield console.log('testSync saga');
@@ -28,10 +29,10 @@ function* testAsyncFailure(e) {
 }
 
 export default function* testSagas() {
-    yield [
+    yield all([
         takeEvery(types.TEST_SYNC, testSync),
         takeEvery(types.TEST_ASYNC.REQUEST, testAsyncRequest),
         takeEvery(types.TEST_ASYNC.SUCCESS, testAsyncSuccess),
         takeLatest(types.TEST_ASYNC.FAILURE, testAsyncFailure)
-    ];
+    ]);
 }

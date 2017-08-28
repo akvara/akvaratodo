@@ -1,5 +1,6 @@
 import types from '../actions/types';
 import BaseReducer from './base-reducer';
+import CONST from '../utils/constants.js';
 
 class AppReducer extends BaseReducer {
 
@@ -9,6 +10,9 @@ class AppReducer extends BaseReducer {
         this.ACTION_HANDLERS = {
             [types.LIST_OF_LISTS.REQUEST]: this.listOfListsRequest,
             [types.LIST_OF_LISTS.SUCCESS]: this.listOfListsFetched,
+
+            [types.ADD_A_LIST.REQUEST]: this.addAListRequest,
+
             [types.A_LIST.SUCCESS]: this.aListFetched,
         };
     }
@@ -16,8 +20,16 @@ class AppReducer extends BaseReducer {
     listOfListsRequest(state, action) {
         return {
             ...state,
-            status_msg: 'loading lists...',
-            loading: true
+            status_msg: 'Loading lists ...',
+            mode: CONST.mode.LOADING
+        };
+    }
+
+    addAListRequest(state, action) {
+        return {
+            ...state,
+            status_msg: 'Creating list ...',
+            mode: CONST.mode.LOADING
         };
     }
 
@@ -26,7 +38,7 @@ class AppReducer extends BaseReducer {
             ...state,
             lists: action.payload,
             status_msg: 'Lists loaded.',
-            loading: false
+            mode: CONST.mode.LIST_OF_LISTS
         };
     }
 
@@ -34,7 +46,7 @@ class AppReducer extends BaseReducer {
         return {
             ...state,
             a_list: action.payload,
-            loading: false
+            mode: CONST.mode.A_LIST
         };
     }
 }

@@ -1,50 +1,54 @@
 import types from '../actions/types';
 import {fetchItemSaga} from './common-sagas';
-import {takeEvery, takeLatest, put} from 'redux-saga/effects';
+import {takeEvery, takeLatest} from 'redux-saga/effects';
 import {renderComponent} from '../components/Renderer'
 import * as UrlUtils from '../utils/urlUtils.js';
-import Success from '../components/Success';
 import Failure from '../components/Failure';
+import { all } from 'redux-saga/effects'
 
 export function* listOfListsRequest(action) {
-    // yield console.log('listOfLists saga, action:', action);
-    // yield renderComponent(Loading);
     yield fetchItemSaga(UrlUtils.getListsUrl(), types.LIST_OF_LISTS);
 }
 
 function* listOfListsSuccess(data) {
     yield console.log('listOfLists SUCCESS', data);
-    // yield renderComponent(Success);
 }
 
-function* listOfListsFailure(e) {
-    // yield console.log('listOfLists FAILURE', e);
-    yield renderComponent(Failure);
+export function* addAListRequest(action) {
+    yield fetchItemSaga(UrlUtils.getListsUrl(), types.LIST_OF_LISTS);
+}
+
+function* addAListSuccess(data) {
+    yield console.log('addAList SUCCESS', data);
 }
 
 export function* aListRequest(action) {
-    // yield console.log('listOfLists saga, action:', action);
-    // yield renderComponent(Loading);
-    yield fetchItemSaga(UrlUtils.getAListUrl(), types.A_LIST);
+    yield console.log('action:', action);
+    yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data), types.A_LIST);
 }
 
 function* aListSuccess(data) {
     yield console.log('listOfLists SUCCESS', data);
-    // yield renderComponent(Success);
 }
 
-function* aListFailure(e) {
-    // yield console.log('listOfLists FAILURE', e);
+function* generalFailure(e) {
     yield renderComponent(Failure);
 }
 
 export default function* listSagas() {
-    yield [
+    yield all([
+        takeEvery(types.INIT, listOfListsRequest),
+
         takeEvery(types.LIST_OF_LISTS.REQUEST, listOfListsRequest),
         takeEvery(types.LIST_OF_LISTS.SUCCESS, listOfListsSuccess),
-        takeLatest(types.LIST_OF_LISTS.FAILURE, listOfListsFailure),
+        takeLatest(types.LIST_OF_LISTS.FAILURE, generalFailure),
+
+        takeEvery(types.ADD_A_LIST.REQUEST, addAListRequest),
+        takeEvery(types.ADD_A_LIST.SUCCESS, addAListSuccess),
+        takeLatest(types.ADD_A_LIST.FAILURE, generalFailure),
+
         takeEvery(types.A_LIST.REQUEST, aListRequest),
         takeEvery(types.A_LIST.SUCCESS, aListSuccess),
-        takeLatest(types.A_LIST.FAILURE, aListFailure),
-    ];
+        takeLatest(types.A_LIST.FAILURE, generalFailure),
+    ]);
 }

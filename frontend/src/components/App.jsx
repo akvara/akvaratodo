@@ -1,25 +1,65 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {Spinner} from './Spinner.jsx'
+import CONST from '../utils/constants.js';
+import * as appActions from '../actions/app-actions';
+import ListsApp from './ListsApp.jsx'
+// import { bindActionCreators } from 'redux';
 
 class App extends Component {
-    isLoading = () => {
-        if (this.props.store.loading) return "Loading...";
-        return 'NOT loading';
+    componentDidMount() {
+        console.log('this.props:', this.props);
+        if (this.props.mode === undefined) {
+            if (this.props.openAtStartup) {
+
+            }
+            this.props.dispatch(appActions.init());
+         }
+    }
+
+    swithcer = () => {
+        if (this.props.mode === undefined) {
+            return <div className="error">mode undefined!</div>
+        }
+        if (this.props.mode === CONST.mode.LOADING) {
+            return Spinner();
+        }
+        if (this.props.mode === CONST.mode.LIST_OF_LISTS) {
+            console.log('this.props.lists:', this.props.lists);
+            return (
+                <ListsApp lists={this.props.lists} />
+            );
+        }
+
+        return (
+            <div className="error">Mode {this.props.mode} not impelemented</div>
+        )
     }
 
     /* The Renderer */
     render() {
-        console.log('this.props.loading:', this.props.loading);
-        if (this.props.loading) return Spinner();
-        return (
-            <div>'NOT loading'</div>
-        )
+        return this.swithcer();
     }
 }
 
-export default connect((state) => {
+App.propTypes = {
+    mode: PropTypes.string
+};
+
+const mapStateToProps = (state) => {
     return {
-        loading: state.app.loading
+        mode: state.app.mode,
+        lists: state.app.lists
     };
-})(App);
+};
+
+// const mapDispatchToProps = (dispatch) => {
+//     return {
+//       formActions:  bindActionCreators(formActions, dispatch),
+//     };
+// };
+
+export default connect(
+    mapStateToProps
+)(App);
