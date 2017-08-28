@@ -24,7 +24,7 @@ function* addAListSuccess(data) {
 
 export function* getAListRequest(action) {
     yield console.log('saga fires fetchItemSaga with', action);
-      yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.listId), types.A_LIST);
+      yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data), types.A_LIST);
 }
 
 function* aListSuccess(data) {
@@ -37,10 +37,7 @@ function* generalFailure(e) {
 
 export default function* listSagas() {
     yield all([
-        takeEvery(types.INIT, listOfListsRequest),
-        takeEvery(types.APP_GET_A_LIST, getAListRequest),
-
-        // takeEvery(types.LIST_OF_LISTS.REQUEST, listOfListsRequest),
+        takeEvery(types.LIST_OF_LISTS.REQUEST, listOfListsRequest),
         takeEvery(types.LIST_OF_LISTS.SUCCESS, listOfListsSuccess),
         takeLatest(types.LIST_OF_LISTS.FAILURE, generalFailure),
 
@@ -48,7 +45,7 @@ export default function* listSagas() {
         // takeEvery(types.ADD_A_LIST.SUCCESS, addAListSuccess),
         // takeLatest(types.ADD_A_LIST.FAILURE, generalFailure),
 
-        // takeEvery(types.A_LIST.REQUEST, getAListRequest),
+        takeEvery(types.A_LIST.REQUEST, getAListRequest),
         takeEvery(types.A_LIST.SUCCESS, aListSuccess),
         takeLatest(types.A_LIST.FAILURE, generalFailure),
     ]);

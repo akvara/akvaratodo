@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {Spinner} from './Spinner.jsx'
 import CONST from '../utils/constants.js';
-import * as appActions from '../actions/app-actions';
+import * as listActions from '../actions/list-actions';
 import ListsApp from './ListsApp.jsx'
 import TasksApp from './TasksApp.jsx'
 
@@ -14,7 +14,8 @@ class App extends Component {
             if (this.props.openAtStartup) {
 
             }
-            this.props.dispatch(appActions.init());
+            // this.props.dispatch(appActions.init());
+            this.props.dispatch(listActions.getListOfLists());
          }
     }
 

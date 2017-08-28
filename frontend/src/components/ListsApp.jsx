@@ -3,7 +3,7 @@ import ListOfLists from './ListOfLists';
 import PropTypes from 'prop-types';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import * as appActions from '../actions/app-actions';
+import * as listActions from '../actions/list-actions';
 import {playSound} from '../utils/hotkeys';
 import $ from 'jquery';
 
@@ -114,7 +114,7 @@ class ListsApp extends Component {
     }
 
     openThisList = (listId, listName) => {
-        this.props.dispatch(this.props.actions.openAList(listId));
+        this.props.dispatch(this.props.actions.getAList(listId));
     }
 
     render = () => {
@@ -164,7 +164,7 @@ class ListsApp extends Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        actions: appActions,
+        actions: listActions,
         dispatch
     };
 };

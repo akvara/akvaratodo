@@ -1,6 +1,4 @@
 const types = {
-    INIT: null,
-    APP_GET_A_LIST: null,
     LIST_OF_LISTS: 'async',
     ADD_A_LIST: 'async',
     A_LIST: 'async',
