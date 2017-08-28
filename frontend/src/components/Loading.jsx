@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './../style/loader.css'
+import './../style/spinner.css'
 
 class Loading extends Component {
 

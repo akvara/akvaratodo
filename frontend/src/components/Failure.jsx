@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class Loading extends Component {
+class Failure extends Component {
 
     /* The Renderer */
     render() {
@@ -13,4 +13,4 @@ class Loading extends Component {
     }
 }
 
-export default Loading;
+export default Failure;

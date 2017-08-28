@@ -4,5 +4,5 @@ import CONFIG from '../config.js';
 
 export function renderComponent(componentName, store) {
     console.log('will render componentName', componentName);
-    ReactDOM.render(React.createElement(componentName),  CONFIG.footerNode)
+    ReactDOM.render(React.createElement(componentName),  CONFIG.appNode)
 }

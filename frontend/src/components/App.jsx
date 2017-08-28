@@ -1,21 +1,25 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-import ReactDOM from 'react-dom';
-import Loading from './Loading';
-import TestButtons from './TestButtons';
-
-import CONFIG from '../config.js';
+import {Spinner} from './Spinner.jsx'
 
 class App extends Component {
+    isLoading = () => {
+        if (this.props.store.loading) return "Loading...";
+        return 'NOT loading';
+    }
 
     /* The Renderer */
     render() {
-        const {store} = this.props;
-        console.log('****APPS store:', store);
+        console.log('this.props.loading:', this.props.loading);
+        if (this.props.loading) return Spinner();
         return (
-            <TestButtons store={store}/>
+            <div>'NOT loading'</div>
         )
     }
 }
 
-export default connect()(App);
+export default connect((state) => {
+    return {
+        loading: state.app.loading
+    };
+})(App);

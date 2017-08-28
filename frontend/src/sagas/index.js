@@ -1,9 +1,9 @@
-import listSagas from './list-sagas';
+import appSagas from './app-sagas';
 import testSagas from './test-sagas';
 
 export default function* RootSaga() {
     yield [
-        listSagas(),
+        appSagas(),
         testSagas()
     ];
 }

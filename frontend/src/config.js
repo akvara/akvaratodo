@@ -1,6 +1,6 @@
 var CONFIG = {
-    // devHost: 'http://akvaratododb.herokuapp.com/',
-    devHost: 'http://localhost:5000/',
+    devHost: 'http://akvaratododb.herokuapp.com/',
+    // devHost: 'http://localhost:5000/',
     apiHost: 'http://akvaratododb.herokuapp.com/',
     separatorString: "..................",
     listsAddon: "lists",
@@ -25,6 +25,7 @@ var CONFIG = {
         displayDoneLength: {explain: 'Display numebr of done tasks', default: 3, handler: 'numeric', min: 1, max: 50},
         openListIfExists: {explain: 'Load this list on start', handler: 'selector', field: ''},
     },
+    statusNode: document.getElementById('status'),
     userNode: document.getElementById('user'),
     appNode: document.getElementById('app'),
     footerNode: document.getElementById('footer'),
