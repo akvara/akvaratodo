@@ -5,7 +5,7 @@ import {Spinner} from './Spinner.jsx'
 import CONST from '../utils/constants.js';
 import * as appActions from '../actions/app-actions';
 import ListsApp from './ListsApp.jsx'
-// import { bindActionCreators } from 'redux';
+import TasksApp from './TasksApp.jsx'
 
 class App extends Component {
     componentDidMount() {
@@ -22,14 +22,17 @@ class App extends Component {
         if (this.props.mode === undefined) {
             return <div className="error">mode undefined!</div>
         }
+
         if (this.props.mode === CONST.mode.LOADING) {
             return Spinner();
         }
+
         if (this.props.mode === CONST.mode.LIST_OF_LISTS) {
-            console.log('this.props.lists:', this.props.lists);
-            return (
-                <ListsApp lists={this.props.lists} />
-            );
+            return <ListsApp lists={this.props.lists} />
+        }
+
+        if (this.props.mode === CONST.mode.A_LIST) {
+            return <TasksApp lists={this.props.lists} />
         }
 
         return (
