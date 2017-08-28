@@ -27,6 +27,7 @@ var CONFIG = {
     },
     userNode: document.getElementById('user'),
     appNode: document.getElementById('app'),
+    footerNode: document.getElementById('footer'),
 
     clickSound: "https://www.soundjay.com/button/button-20.mp3",
     version: '0825-23'

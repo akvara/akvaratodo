@@ -7,22 +7,22 @@ class ListReducer extends BaseReducer {
         super();
         this.initialState = {};
         this.ACTION_HANDLERS = {
-            // [types.GET_CURRENT_USER.SUCCESS]: this.userFetched,
-            // [types.LOGOUT]: this.logout,
+            [types.LIST_OF_LISTS.SUCCESS]: this.listOfListsFetched,
+            [types.A_LIST.SUCCESS]: this.aListFetched,
         };
     }
 
-    userFetched(state, action) {
+    listOfListsFetched(state, action) {
         return {
             ...state,
-            currentUser: action.payload,
+            lists: action.payload,
         };
     }
 
-    logout(state) {
+    aListFetched(state, action) {
         return {
             ...state,
-            currentUser: null,
+            list: action.payload,
         };
     }
 }

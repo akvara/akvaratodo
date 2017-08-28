@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {connect} from 'react-redux';
 import ReactDOM from 'react-dom';
 import Loading from './Loading';
 import TestButtons from './TestButtons';
@@ -7,16 +8,14 @@ import CONFIG from '../config.js';
 
 class App extends Component {
 
-    componentWillMount() {
-        const {store} = this.props
-        console.log('CONFIG.appNode:', CONFIG.appNode);
-        ReactDOM.render(<TestButtons store={store}/>,  CONFIG.appNode)
-    }
-
     /* The Renderer */
     render() {
-        return null;
+        const {store} = this.props;
+        console.log('****APPS store:', store);
+        return (
+            <TestButtons store={store}/>
+        )
     }
 }
 
-export default App;
+export default connect()(App);

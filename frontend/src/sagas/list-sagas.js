@@ -1,32 +1,51 @@
-import {takeEvery, put} from 'redux-saga/effects';
-import {renderComponent} from '../components/Renderer'
-// import {push} from 'react-router-redux';
-// import {getCurrentUser} from '../actions/user-actions';
-// import {handleFormSubmit, fetchItemSaga} from './common-sagas';
 import types from '../actions/types';
+import {fetchItemSaga} from './common-sagas';
+import {takeEvery, takeLatest, put} from 'redux-saga/effects';
+import {renderComponent} from '../components/Renderer'
+import * as UrlUtils from '../utils/urlUtils.js';
+import Loading from '../components/Loading';
+import Success from '../components/Success';
+import Failure from '../components/Failure';
 
-export function* loading(action) {
-    yield renderComponent('loading');
+export function* listOfListsRequest(action) {
+    yield console.log('listOfLists saga, action:', action);
+    yield renderComponent(Loading);
+    yield fetchItemSaga(UrlUtils.getListsUrl(), types.LIST_OF_LISTS);
 }
 
-// function* getCurrentUserSaga() {
-//     yield fetchItemSaga('/api/user/', types.GET_CURRENT_USER);
-// }
+function* listOfListsSuccess(data) {
+    yield console.log('listOfLists SUCCESS', data);
+    yield renderComponent(Success);
+}
 
-// function* loginSuccess() {
-//     yield put(getCurrentUser());
-//     yield put(push('/app/'));
-// }
+function* listOfListsFailure(e) {
+    yield console.log('listOfLists FAILURE', e);
+    yield renderComponent(Failure);
+}
 
-// function* logoutSaga() {
-//     yield put(push('/login/'));
-// }
+export function* aListRequest(action) {
+    yield console.log('listOfLists saga, action:', action);
+    yield renderComponent(Loading);
+    yield fetchItemSaga(UrlUtils.getAListUrl(), types.A_LIST);
+}
 
-export default function* userSagas() {
+function* aListSuccess(data) {
+    yield console.log('listOfLists SUCCESS', data);
+    yield renderComponent(Success);
+}
+
+function* aListFailure(e) {
+    yield console.log('listOfLists FAILURE', e);
+    yield renderComponent(Failure);
+}
+
+export default function* listSagas() {
     yield [
-        takeEvery(types.LOADING, loading),
-        // takeEvery(types.LOGIN.SUCCESS, loginSuccess),
-        // takeEvery(types.GET_CURRENT_USER.REQUEST, getCurrentUserSaga),
-        // takeLatest(types.LOGOUT, logoutSaga),
+        takeEvery(types.LIST_OF_LISTS.REQUEST, listOfListsRequest),
+        takeEvery(types.LIST_OF_LISTS.SUCCESS, listOfListsSuccess),
+        takeLatest(types.LIST_OF_LISTS.FAILURE, listOfListsFailure),
+        takeEvery(types.A_LIST.REQUEST, aListRequest),
+        takeEvery(types.A_LIST.SUCCESS, aListSuccess),
+        takeLatest(types.A_LIST.FAILURE, aListFailure),
     ];
 }

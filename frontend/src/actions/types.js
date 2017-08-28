@@ -1,9 +1,9 @@
 const types = {
-    LOGIN: 'async',
-    LOGOUT: null,
-
     TEST_ASYNC: 'async',
     TEST_SYNC: null,
+
+    LIST_OF_LISTS: 'async',
+    A_LIST: 'async',
 };
 
 Object.keys(types).forEach(key => {

@@ -30,7 +30,7 @@ const renderRoot = Component => ReactDOM.render(
             store={store}
             openAtStartup={CONFIG.user.settings.openListIfExists}
         />
-    </Provider>, document.getElementById('footer')
+    </Provider>, document.getElementById('app')
 );
 renderRoot(App);
 
