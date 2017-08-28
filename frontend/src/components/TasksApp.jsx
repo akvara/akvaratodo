@@ -28,13 +28,20 @@ class TasksApp extends Component {
             expandDone: false
         };
     }
-        /* The Renderer */
+
+    /* Move task back from Done tasks array */
+    unDoneTask = (i) => {
+
+    }
+
+    /* The Renderer */
     render() {
         return (
             <div>
+            {this.state.listName}
                 <TasksDoneList
                     items={this.state.itemsDone}
-                    undone={this.unDoneTask.bind(this)}
+                    undone={this.unDoneTask}
                     expand={this.state.expandDone}
                 />
                 <hr />

@@ -32,7 +32,9 @@ class App extends Component {
         }
 
         if (this.props.mode === CONST.mode.A_LIST) {
-            return <TasksApp lists={this.props.lists} />
+            console.log('APP this.props:', this.props);
+            console.log('APP .a_list:', this.props.a_list);
+            return <TasksApp list={this.props.a_list} />
         }
 
         return (
@@ -53,15 +55,10 @@ App.propTypes = {
 const mapStateToProps = (state) => {
     return {
         mode: state.app.mode,
-        lists: state.app.lists
+        lists: state.app.lists,
+        a_list: state.app.a_list
     };
 };
-
-// const mapDispatchToProps = (dispatch) => {
-//     return {
-//       formActions:  bindActionCreators(formActions, dispatch),
-//     };
-// };
 
 export default connect(
     mapStateToProps

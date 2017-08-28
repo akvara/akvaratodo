@@ -6,7 +6,7 @@ import CONFIG from './config.js';
 import App from './components/App';
 import Status from './components/Status';
 import User from './components/User';
-// import {createLogger} from 'redux-logger';
+import {createLogger} from 'redux-logger';
 
 console.log('Starting App ...');
 
@@ -21,8 +21,9 @@ let middleware = [];
 if (window.devToolsExtension) {
     console.log('window.devToolsExtension is used: no Redux spam in console.');
 } else {
-    // middleware.push(createLogger());
+    middleware.push(createLogger());
 }
+// middleware.push(createLogger());
 
 const store = buildStore(middleware);
 

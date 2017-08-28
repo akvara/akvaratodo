@@ -19,7 +19,7 @@ class TaskApp extends Loadable {
         this.immutables = props.immutables || [];
 
 	    this.state = {
-            listName: this.props.list.name,
+            listName: this.props.a_list.name,
 			itemsToDo: [],
 			itemsDone: [],
 			prepend: props.prepend,

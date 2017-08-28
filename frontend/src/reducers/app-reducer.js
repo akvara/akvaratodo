@@ -43,9 +43,11 @@ class AppReducer extends BaseReducer {
     }
 
     aListFetched(state, action) {
+        console.log('aListFetched action:',  action);
         return {
             ...state,
             a_list: action.payload,
+            status_msg: action.payload.name + ' loaded.',
             mode: CONST.mode.A_LIST
         };
     }
