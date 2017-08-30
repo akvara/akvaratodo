@@ -12,6 +12,7 @@ class AppReducer extends BaseReducer {
             [types.LIST_OF_LISTS.SUCCESS]: this.listOfListsFetched,
 
             [types.ADD_A_LIST.REQUEST]: this.addAListRequest,
+            [types.ADD_A_LIST.SUCCESS]: this.aListFetched,
 
             [types.A_LIST.SUCCESS]: this.aListFetched,
         };
@@ -21,7 +22,7 @@ class AppReducer extends BaseReducer {
         return {
             ...state,
             status_msg: 'Loading lists ...',
-            mode: CONST.mode.LOADING
+            mode: CONST.mode.MODE_LOADING
         };
     }
 
@@ -29,7 +30,7 @@ class AppReducer extends BaseReducer {
         return {
             ...state,
             status_msg: 'Creating list ...',
-            mode: CONST.mode.LOADING
+            mode: CONST.mode.MODE_LOADING
         };
     }
 
@@ -38,7 +39,7 @@ class AppReducer extends BaseReducer {
             ...state,
             lists: action.payload,
             status_msg: 'Lists loaded.',
-            mode: CONST.mode.LIST_OF_LISTS
+            mode: CONST.mode.MODE_LIST_OF_LISTS
         };
     }
 
@@ -48,9 +49,19 @@ class AppReducer extends BaseReducer {
             ...state,
             a_list: action.payload,
             status_msg: action.payload.name + ' loaded.',
-            mode: CONST.mode.A_LIST
+            mode: CONST.mode.MODE_A_LIST
         };
     }
+
+    // addAListSuccess(state, action) {
+    //     console.log('addAListSuccess action:',  action);
+    //     return {
+    //         ...state,
+    //         a_list: action.payload,
+    //         status_msg: action.payload.name + ' loaded.',
+    //         mode: CONST.mode.MODE_A_LIST
+    //     };
+    // }
 }
 
 export default new AppReducer().handleActions;

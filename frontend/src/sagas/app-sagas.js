@@ -15,16 +15,25 @@ function* listOfListsSuccess(data) {
 }
 
 export function* addAListRequest(action) {
-    yield fetchItemSaga(UrlUtils.getListsUrl(), types.LIST_OF_LISTS);
+    console.log('addAListRequest:', action);
+    yield fetchItemSaga(UrlUtils.getListsUrl(), types.ADD_A_LIST, action.payload.data);
 }
 
 function* addAListSuccess(data) {
     yield console.log('addAList SUCCESS', data);
+    let compareWith = data.extra,
+        lists = data.payload,
+        filtered = lists.filter((e) => e.name === compareWith);
+
+    if (filtered.length) {
+        console.log('exists!:', filtered[0].name, filtered[0]._id);
+        yield fetchItemSaga(UrlUtils.getAListUrl(filtered[0]._id), types.A_LIST);
+    }
 }
 
 export function* getAListRequest(action) {
     yield console.log('saga fires fetchItemSaga with', action);
-      yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data), types.A_LIST);
+    yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data), types.A_LIST);
 }
 
 function* aListSuccess(data) {
@@ -41,9 +50,9 @@ export default function* listSagas() {
         takeEvery(types.LIST_OF_LISTS.SUCCESS, listOfListsSuccess),
         takeLatest(types.LIST_OF_LISTS.FAILURE, generalFailure),
 
-        // takeEvery(types.ADD_A_LIST.REQUEST, addAListRequest),
-        // takeEvery(types.ADD_A_LIST.SUCCESS, addAListSuccess),
-        // takeLatest(types.ADD_A_LIST.FAILURE, generalFailure),
+        takeEvery(types.ADD_A_LIST.REQUEST, addAListRequest),
+        takeEvery(types.ADD_A_LIST.SUCCESS, addAListSuccess),
+        takeLatest(types.ADD_A_LIST.FAILURE, generalFailure),
 
         takeEvery(types.A_LIST.REQUEST, getAListRequest),
         takeEvery(types.A_LIST.SUCCESS, aListSuccess),

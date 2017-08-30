@@ -92,15 +92,18 @@ class ListsApp extends Component {
     handleSubmit = (e) => {
         e.preventDefault();
 
+        this.props.dispatch(this.props.actions.addAList(this.state.listName));
+
+
         // var list = this.state.lists.find(list => list.name === this.state.listName)
 
         // if (list) {
         //     return this.openList(this.state.lists, list._id, list.name)
         // }
 
-        this.setState({
-            listName: ''
-        });
+        // this.setState({
+            // listName: ''
+        // });
 
         // ReactDOM.render(
         //     <LoadingDecorator
@@ -110,7 +113,7 @@ class ListsApp extends Component {
         //     />, this.loaderNode
         // );
 
-        this.registerHotKeys();
+        // this.registerHotKeys();
     }
 
     openThisList = (listId, listName) => {

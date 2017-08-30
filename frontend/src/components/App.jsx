@@ -24,17 +24,15 @@ class App extends Component {
             return <div className="error">mode undefined!</div>
         }
 
-        if (this.props.mode === CONST.mode.LOADING) {
+        if (this.props.mode === CONST.mode.MODE_LOADING) {
             return Spinner();
         }
 
-        if (this.props.mode === CONST.mode.LIST_OF_LISTS) {
+        if (this.props.mode === CONST.mode.MODE_LIST_OF_LISTS) {
             return <ListsApp lists={this.props.lists} />
         }
 
-        if (this.props.mode === CONST.mode.A_LIST) {
-            console.log('APP this.props:', this.props);
-            console.log('APP .a_list:', this.props.a_list);
+        if (this.props.mode === CONST.mode.MODE_A_LIST) {
             return <TasksApp list={this.props.a_list} />
         }
 

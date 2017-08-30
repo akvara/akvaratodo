@@ -11,3 +11,9 @@ export function getAList(data, resolve, reject) {
         type: types.A_LIST.REQUEST, payload: {data, resolve, reject}
     };
 }
+
+export function addAList(data, resolve, reject) {
+    return {
+        type: types.ADD_A_LIST.REQUEST, payload: {data, resolve, reject}
+    };
+}

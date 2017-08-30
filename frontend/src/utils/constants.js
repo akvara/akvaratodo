@@ -1,9 +1,9 @@
 const CONST = {
     mode : {
-        LOADING: 'LOADING',
-        ERROR: 'ERROR',
-        LIST_OF_LISTS: 'LIST_OF_LISTS',
-        A_LIST: 'A_LIST'
+        MODE_LOADING: 'LOADING',
+        MODE_ERROR: 'ERROR',
+        MODE_LIST_OF_LISTS: 'LIST_OF_LISTS',
+        MODE_A_LIST: 'A_LIST'
     }
 }
 
