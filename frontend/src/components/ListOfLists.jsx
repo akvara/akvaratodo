@@ -63,7 +63,7 @@ class ListOfLists extends Component {
 				</td>
 				<td className="right-align">
 					(<strong>{ list.tasks ? JSON.parse(list.tasks).length : 0 }</strong>)
-					&nbsp;
+					{' '}
 					{ updatedDateOrTime }
 				</td>
 			</tr>

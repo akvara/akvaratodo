@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import TasksDoneList from './TasksDoneList';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {playSound} from '../utils/hotkeys';
 import * as listActions from '../actions/list-actions';
-import $ from 'jquery';
 import * as Utils from '../utils/utils.js';
+import $ from 'jquery';
 
 class TasksApp extends Component {
     static propTypes = {
-        list: PropTypes.object.isRequired
+        list: PropTypes.object.isRequired,
+        previousList: PropTypes.object
     };
 
     constructor(props, context) {
@@ -37,7 +39,6 @@ console.log('TasksApp constructed. this.props.list:', this.props.list);
         this.props.dispatch(listActions.getListOfLists());
     }
 
-
     /* Move task back from Done tasks array */
     unDoneTask = (i) => {
 
@@ -56,6 +57,12 @@ console.log('TasksApp constructed. this.props.list:', this.props.list);
         // dataToSave.immutable = !this.state.immutable;
         // let callback = this.callbackForSettingState.bind(this, null, dataToSave);
         // this.saveTaskList(this.props.list.id, dataToSave, callback);
+    }
+
+    /* Reload this list*/
+    reload = () => {
+        // console.log('this.props.list:', this.props.list);
+        this.props.dispatch(this.props.actions.getAList(this.props.list._id));
     }
 
     /* Mode: List name is on edit */
@@ -79,6 +86,39 @@ console.log('TasksApp constructed. this.props.list:', this.props.list);
                 break;
         }
     }
+
+    checkKeyPressed = (e) => {
+        console.log('checkKeyPressed in TasksApp');
+        var key = String.fromCharCode(e.which)
+        if ('alrp<'.indexOf(key) !== -1) playSound()
+
+        switch(String.fromCharCode(e.which))
+        {
+            case 'a':
+                e.preventDefault();
+                this.nameInput.focus();
+                break;
+            case 'l':
+                e.preventDefault();
+                this.openLists();
+                break;
+            case 'r':
+                e.preventDefault();
+                this.reload();
+                break;
+            case 'p':
+                e.preventDefault();
+                this.mark();
+                break;
+            case '<':
+                e.preventDefault();
+                if (this.props.previousList) this.listChanger();
+                break;
+            default:
+                break;
+        }
+    }
+
 
     /* Edit header submit */
     handleNameSubmit = (e) => {
@@ -147,8 +187,17 @@ console.log('TasksApp constructed. this.props.list:', this.props.list);
 
 
 
-
-
+                <button disabled={this.state.task.trim()} onClick={this.mark}>
+                    <span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true"></span> {markTitle}
+                </button>
+                <button onClick={this.reload}>
+                    <span className={'glyphicon glyphicon-refresh'} aria-hidden="true"></span> <u>R</u>eload
+                </button>
+                {this.props.previousList &&
+                    <button disabled={this.state.task.trim()} onClick={this.listChanger}>
+                        <span className="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> {this.props.previousList.name}
+                    </button>
+                }
                 <button disabled={this.state.task.trim()} onClick={this.openLists}>
                     <span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> <u>L</u>ists
                 </button>

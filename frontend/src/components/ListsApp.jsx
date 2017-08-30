@@ -40,34 +40,20 @@ class ListsApp extends Component {
     }
 
     checkKeyPressed = (e) => {
-        var key = String.fromCharCode(e.which)
-        if ('alrp<'.indexOf(key) !== -1) playSound()
-
-        switch(String.fromCharCode(e.which))
-        {
-            case 'a':
-                e.preventDefault();
-                this.nameInput.focus();
-                break;
-            case 'l':
-                e.preventDefault();
-                this.openLists.call(this);
-                break;
-            case 'r':
-                e.preventDefault();
-                this.reload.call(this);
-                break;
-            case 'p':
-                e.preventDefault();
-                this.mark.call(this);
-                break;
-            case '<':
-                e.preventDefault();
-                if (this.props.previousList) this.listChanger.call(this);
-                break;
-            default:
-                break;
+        var pressed = String.fromCharCode(e.which);
+        if (pressed === 'a') {
+            this.playSound()
+            e.preventDefault();
+            this.nameInput.focus();
+            return;
         }
+        this.hotKeys.forEach(function (k) {
+                if (k.key === pressed) {
+                    // this.playSound();
+                    this.openAList(k.listId);
+                }
+            }.bind(this)
+        );
     }
 
     addHotKeys = () => {
@@ -75,6 +61,7 @@ class ListsApp extends Component {
             var newKey = this.findFreeKey(list.name);
             if (newKey) this.hotKeys.push({key: newKey, listId: list._id, listName: list.name})
         });
+        console.log('this.hotKeys:', this.hotKeys);
     }
 
     keyIsNotOccupied = (key) => !this.hotKeys.filter((elem) => elem.key === key).length;
@@ -87,6 +74,11 @@ class ListsApp extends Component {
         return null;
     }
 
+    /* Go to list of lists */
+    openLists = () => {
+        this.props.dispatch(listActions.getListOfLists());
+    }
+
     onNameChange = (e) => {
         this.setState({ listName: e.target.value });
     }
@@ -96,8 +88,12 @@ class ListsApp extends Component {
         this.props.dispatch(this.props.actions.addOrOpenAList(this.state.listName));
     }
 
-    openThisList = (listId, listName) => {
+    openAList = (listId) => {
         this.props.dispatch(this.props.actions.getAList(listId));
+    }
+
+    listChanger = (listName) => {
+        this.props.dispatch(this.props.actions.addOrOpenAList(listName));
     }
 
     render = () => {
@@ -107,13 +103,13 @@ class ListsApp extends Component {
                 <h1>Lists</h1>
                 <ListOfLists
                     lists={this.state.lists.filter(list => !list.immutable)}
-                    openList={this.openThisList}
+                    openList={this.openAList}
                     hotKeys={this.hotKeys}
                 />
                 <h3>Protected</h3>
                 <ListOfLists
                     lists={this.state.lists.filter(list => list.immutable)}
-                    openList={this.openThisList}
+                    openList={this.openAList}
                 />
                 <form onSubmit={this.handleSubmit}>
                     <input

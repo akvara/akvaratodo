@@ -7,6 +7,7 @@ export function getListOfLists(data, resolve, reject) {
 }
 
 export function getAList(data, resolve, reject) {
+    console.log('list-actions: getAList');
     return {
         type: types.A_LIST.REQUEST, payload: {data, resolve, reject}
     };
