@@ -44,7 +44,6 @@ class AppReducer extends BaseReducer {
     }
 
     aListFetched(state, action) {
-        console.log('aListFetched action:',  action);
         return {
             ...state,
             a_list: action.payload,

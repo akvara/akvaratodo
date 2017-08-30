@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import ListOfLists from './ListOfLists';
 import PropTypes from 'prop-types';
-import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as listActions from '../actions/list-actions';
 import {playSound} from '../utils/hotkeys';
 import $ from 'jquery';
 
 class ListsApp extends Component {
+    static propTypes = {
+        actions: PropTypes.object.isRequired
+    };
+
     constructor(props, context) {
         super(props, context);
 
@@ -25,7 +28,6 @@ class ListsApp extends Component {
 
     componentDidMount() {
         document.title = "ToDo lists";
-        console.log('this.props:', this.props);
         this.registerHotKeys();
     }
 
@@ -37,7 +39,7 @@ class ListsApp extends Component {
         $(document).off("keypress");
     }
 
-    checkKeyPressed(e) {
+    checkKeyPressed = (e) => {
         var key = String.fromCharCode(e.which)
         if ('alrp<'.indexOf(key) !== -1) playSound()
 
@@ -68,7 +70,7 @@ class ListsApp extends Component {
         }
     }
 
-    addHotKeys =() => {
+    addHotKeys = () => {
         this.state.lists.forEach((list) => {
             var newKey = this.findFreeKey(list.name);
             if (newKey) this.hotKeys.push({key: newKey, listId: list._id, listName: list.name})
@@ -91,29 +93,7 @@ class ListsApp extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
-
-        this.props.dispatch(this.props.actions.addAList(this.state.listName));
-
-
-        // var list = this.state.lists.find(list => list.name === this.state.listName)
-
-        // if (list) {
-        //     return this.openList(this.state.lists, list._id, list.name)
-        // }
-
-        // this.setState({
-            // listName: ''
-        // });
-
-        // ReactDOM.render(
-        //     <LoadingDecorator
-        //         request={this.addAListRequest.bind(this)}
-        //         callback={this.addAListCallback.bind(this, this.state.lists)}
-        //         action='Adding'
-        //     />, this.loaderNode
-        // );
-
-        // this.registerHotKeys();
+        this.props.dispatch(this.props.actions.addOrOpenAList(this.state.listName));
     }
 
     openThisList = (listId, listName) => {
@@ -151,19 +131,6 @@ class ListsApp extends Component {
         );
     }
 }
-
-// export default ListsApp;
-
-// ListsApp.propTypes = {
-//     actions: PropTypes.func
-// };
-
-// const mapStateToProps = (state) => {
-//     // return {
-//         // mode: state.app.mode,
-//         // lists: state.app.lists
-//     // };
-// };
 
 const mapDispatchToProps = (dispatch) => {
     return {

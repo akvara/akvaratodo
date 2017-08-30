@@ -1,15 +1,19 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import * as Utils from '../utils/utils.js';
 import CONFIG from '../config.js';
 
 class ListOfLists extends Component {
+    static propTypes = {
+        hotKeys: PropTypes.array,
+        lists: PropTypes.array,
+    };
 
-	removeList(id) {
+	removeList = (id) => {
 		this.props.removeList(id);
 	}
 
-	// ToDo: refactor to =>
-	openList(...params) {
+	openList = (...params) => {
 		this.props.openList(...params);
 	}
 
@@ -54,7 +58,7 @@ class ListOfLists extends Component {
 				</td>
 				<td className="actions">
 				{deletable  &&
-					<span className="glyphicon glyphicon-trash action-button" aria-hidden="true" onClick={this.removeList.bind(this, list._id)}></span>
+					<span className="glyphicon glyphicon-trash action-button" aria-hidden="true" onClick={this.removeList(list._id)}></span>
 				}
 				</td>
 				<td className="right-align">

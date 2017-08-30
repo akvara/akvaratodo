@@ -10,9 +10,9 @@ export function* listOfListsRequest(action) {
     yield fetchItemSaga(UrlUtils.getListsUrl(), types.LIST_OF_LISTS);
 }
 
-function* listOfListsSuccess(data) {
-    yield console.log('listOfLists SUCCESS', data);
-}
+// function* listOfListsSuccess(data) {
+    // yield console.log('listOfLists SUCCESS', data);
+// }
 
 export function* addAListRequest(action) {
     console.log('addAListRequest:', action);
@@ -20,8 +20,7 @@ export function* addAListRequest(action) {
 }
 
 function* addAListSuccess(data) {
-    yield console.log('addAList SUCCESS', data);
-    let compareWith = data.extra,
+    let compareWith = data.transit,
         lists = data.payload,
         filtered = lists.filter((e) => e.name === compareWith);
 
@@ -32,13 +31,12 @@ function* addAListSuccess(data) {
 }
 
 export function* getAListRequest(action) {
-    yield console.log('saga fires fetchItemSaga with', action);
     yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data), types.A_LIST);
 }
 
-function* aListSuccess(data) {
-    yield console.log('aListSuccess SUCCESS', data);
-}
+// function* aListSuccess(data) {
+    // yield console.log('aListSuccess SUCCESS', data);
+// }
 
 function* generalFailure(e) {
     yield renderComponent(Failure);
@@ -47,7 +45,7 @@ function* generalFailure(e) {
 export default function* listSagas() {
     yield all([
         takeEvery(types.LIST_OF_LISTS.REQUEST, listOfListsRequest),
-        takeEvery(types.LIST_OF_LISTS.SUCCESS, listOfListsSuccess),
+        // takeEvery(types.LIST_OF_LISTS.SUCCESS, listOfListsSuccess),
         takeLatest(types.LIST_OF_LISTS.FAILURE, generalFailure),
 
         takeEvery(types.ADD_A_LIST.REQUEST, addAListRequest),
@@ -55,7 +53,7 @@ export default function* listSagas() {
         takeLatest(types.ADD_A_LIST.FAILURE, generalFailure),
 
         takeEvery(types.A_LIST.REQUEST, getAListRequest),
-        takeEvery(types.A_LIST.SUCCESS, aListSuccess),
+        // takeEvery(types.A_LIST.SUCCESS, aListSuccess),
         takeLatest(types.A_LIST.FAILURE, generalFailure),
     ]);
 }

@@ -8,11 +8,16 @@ import ListsApp from './ListsApp.jsx'
 import TasksApp from './TasksApp.jsx'
 
 class App extends Component {
+    static propTypes = {
+        mode: PropTypes.string,
+        openAtStartup: PropTypes.string,
+    };
+
     componentDidMount() {
-        console.log('this.props:', this.props);
         if (this.props.mode === undefined) {
             if (this.props.openAtStartup) {
-
+                console.log('this.props.openAtStartup:', this.props.openAtStartup);
+                // this.props.dispatch(listActions.addOrOpenAList(this.props.openAtStartup));
             }
             // this.props.dispatch(appActions.init());
             this.props.dispatch(listActions.getListOfLists());
@@ -46,10 +51,6 @@ class App extends Component {
         return this.swithcer();
     }
 }
-
-App.propTypes = {
-    mode: PropTypes.string
-};
 
 const mapStateToProps = (state) => {
     return {
