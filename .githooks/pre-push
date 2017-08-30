@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+# Set colors
+ESC_SEQ="\x1b["
+COL_OFF=$ESC_SEQ"39;49;00m"
+COL_INFO=$ESC_SEQ"32;01m"
+COL_WARN=$ESC_SEQ"31;01m"
+
+INFO="${COL_INFO}=>${COL_OFF}"
+WARN="${COL_WARN}!!${COL_OFF}"
+FAIL="${COL_WARN}EE${COL_OFF}"
+
+EMPTY=0000000000000000000000000000000000000000
+
+#Read push parameters
+read local_ref local_sha remote_ref remote_sha
+if [ $? -ne 0 ]; then
+    #No changes exist, no pushing.
+    exit 0
+fi
+
+if [ "$local_sha" = $EMPTY ]; then
+    #User is deleting a branch. No checks required.
+    exit 0
+fi
+
+echo -e "$COL_INFO=== PRE-PUSH HOOK ===$COL_OFF"
+
+#Check if working tree has local modifications to prevent
+#false positives from remaining tests.
+git diff-index --quiet HEAD
+if [ $? -ne 0 ]; then
+    echo -e "$WARN Untracked changes exist, please commit or stash them."
+    exit 1
+fi
+
+if [ "$remote_sha" = $EMPTY ]; then
+    #User is creating a new branch. I can not determine
+    # which checks are required...
+    echo -e "$INFO creating new remote branch. All tests will be run."
+    JS=true
+else
+    CHANGESET=`git diff --name-only $remote_sha..$local_sha`
+
+    #Determine if there are any changed files for JS:
+    echo $CHANGESET | grep -E '.*\.jsx?$' > /dev/null
+    if [ $? -eq 0 ]; then
+        echo -e "$INFO js changes detected."
+        JS=true
+    fi
+fi
+
+if [ $JS ]; then
+
+    echo -e "$INFO JS tests [not yet implemented]"
+    # bin/jstests || exit 1
+
+fi
+
+exit 0

@@ -1,0 +1,30 @@
+{
+  "name": "akvaratodo-frontend",
+  "version": "1.08.25",
+  "private": true,
+  "dependencies": {
+    "jquery": "^3.1.1",
+    "mongodb-migrations": "^0.8.5",
+    "path": "^0.12.7",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-hot-loader": "^1.3.1",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2",
+    "redux-form": "^7.0.3",
+    "redux-logger": "^3.0.6",
+    "redux-saga": "^0.15.6",
+    "redux-thunk": "^2.2.0",
+    "simple-redux-utils": "^1.0.0",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "react-scripts": "^1.0.11"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}

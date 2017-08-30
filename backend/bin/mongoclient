@@ -1,0 +1,2 @@
+cd ~/mongoclient-master
+meteor --port 4000
