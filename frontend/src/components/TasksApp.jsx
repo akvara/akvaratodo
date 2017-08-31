@@ -8,6 +8,7 @@ import * as Utils from '../utils/utils.js';
 import $ from 'jquery';
 
 class TasksApp extends Component {
+
     static propTypes = {
         list: PropTypes.object.isRequired,
         previousList: PropTypes.object
@@ -15,13 +16,14 @@ class TasksApp extends Component {
 
     constructor(props, context) {
         super(props, context);
-console.log('TasksApp constructed. this.props.list:', this.props.list);
+console.log('TasksApp constructed. this.props.list:', props.list);
+
         this.immutables = props.immutables || [];
 
         this.state = {
-            listName: this.props.list.name,
-            itemsToDo: [],
-            itemsDone: [],
+            listName: props.list.name,
+            itemsToDo: Utils.textToArray(this.props.list.tasks),
+            itemsDone: Utils.textToArray(this.props.list.done),
             prepend: props.prepend,
             hightlightIndex: props.prepend ? 0 : null,
             immutable: false,
@@ -46,12 +48,30 @@ console.log('TasksApp constructed. this.props.list:', this.props.list);
     /* Go to list of lists */
     openLists = () => {
         this.props.dispatch(listActions.getListOfLists());
+    };
+
+    /* Show full/contracted ist */
+    expand(which) {
+        this.setState({
+            [which]: !this.state[which]
+        });
     }
+
+    /* Delete done tasks */
+    clearDone() {
+        // ToDo : this is data saving
+
+        // var dataToSave = this.prepareClone();
+        // dataToSave.itemsDone = [];
+        // let callback = this.callbackForSettingState.bind(this, null, dataToSave);
+        // this.saveTaskList(this.props.list.id, dataToSave, callback);
+    }
+
 
     /* Move task back from Done tasks array */
     unDoneTask = (i) => {
 
-    }
+    };
 
     /* Toggle immutable. No checking if changed */
     mark = () => {
@@ -61,20 +81,20 @@ console.log('TasksApp constructed. this.props.list:', this.props.list);
         // dataToSave.immutable = !this.state.immutable;
         // let callback = this.callbackForSettingState.bind(this, null, dataToSave);
         // this.saveTaskList(this.props.list.id, dataToSave, callback);
-    }
+    };
 
     /* Reload this list*/
     reload = () => {
         // console.log('this.props.list:', this.props.list);
         this.props.dispatch(this.props.actions.getAList(this.props.list._id));
-    }
+    };
 
     /* Mode: List name is on edit */
     editListName = () => {
         this.setState({
             listNameOnEdit: true
         });
-    }
+    };
 
     /* Edit header keypress */
     onKeyDown(e) {
@@ -92,8 +112,8 @@ console.log('TasksApp constructed. this.props.list:', this.props.list);
     }
 
     checkKeyPressed = (e) => {
-        var key = String.fromCharCode(e.which)
-        if ('alrp<'.indexOf(key) !== -1) playSound()
+        let key = String.fromCharCode(e.which);
+        if ('alrp<'.indexOf(key) !== -1) playSound();
 
         switch(String.fromCharCode(e.which))
         {
@@ -120,22 +140,26 @@ console.log('TasksApp constructed. this.props.list:', this.props.list);
             default:
                 break;
         }
-    }
-
+    };
 
     /* Edit header submit */
     handleNameSubmit = (e) => {
         e.preventDefault();
-    }
+    };
 
     /* Header - edit mode or not */
-    manageHeader() {
+    manageHeader = () => {
         if (!this.state.listNameOnEdit)
-            return <div>
-                <h1>{this.state.listName}</h1>
-            {' '}{' '}
-            <span className={"small action-button glyphicon glyphicon glyphicon-pencil"} aria-hidden="true"  onClick={this.editListName}></span>
-        </div>
+            return (
+                <div>
+                    <h1>{this.state.listName}</h1>
+                    {' '}{' '}
+                    <span className={"small action-button glyphicon glyphicon glyphicon-pencil"}
+                          aria-hidden="true"
+                          onClick={this.editListName}>
+                    </span>
+                </div>
+            );
 
         return <h1>
             <form onSubmit={this.handleNameSubmit}>
@@ -148,7 +172,7 @@ console.log('TasksApp constructed. this.props.list:', this.props.list);
                 />
             </form>
         </h1>
-    }
+    };
 
     /* Save new header to DB */
     saveEditedHeader = (e) => {
@@ -158,14 +182,14 @@ console.log('TasksApp constructed. this.props.list:', this.props.list);
         // dataToSave.list.name = e.target.value;
         // this.checkWrapper(dataToSave, callback);
         Utils.registerHotKeys(this.checkKeyPressed);
-    }
+    };
 
     /* The Renderer */
     render() {
 
         let markTitle = this.state.immutable ? <span>Un<u>p</u>rotect</span> : <span><u>P</u>rotect</span>,
             markGlyphicon = this.state.immutable ? 'screen-shot' : 'exclamation-sign',
-
+            expandToDoGlyphicon = this.state.expandToDo ? "glyphicon-resize-small" : "glyphicon-resize-full",
             expandDoneGlyphicon = this.state.expandDone ? "glyphicon-resize-small" : "glyphicon-resize-full";
 
         return (
@@ -174,11 +198,17 @@ console.log('TasksApp constructed. this.props.list:', this.props.list);
                 <h3>
                     Finished ({this.state.itemsDone.length})
                     {Utils.overLength("displayDoneLength", this.state.itemsDone) &&
-                        <span className={"small action-button glyphicon " + expandDoneGlyphicon} aria-hidden="true" onClick={this.expand.bind(this, 'expandDone')}></span>
+                        <span className={"small action-button glyphicon " + expandDoneGlyphicon}
+                              aria-hidden="true"
+                              onClick={this.expand.bind(this, 'expandDone')}>
+                        </span>
                     }
                     {'  '}
                     {this.state.itemsDone.length > 0 &&
-                        <span className="small action-button glyphicon glyphicon-trash" aria-hidden="true" onClick={this.clearDone.bind(this)}></span>
+                        <span className="small action-button glyphicon glyphicon-trash"
+                              aria-hidden="true"
+                              onClick={this.clearDone.bind(this)}>
+                        </span>
                     }
                 </h3>
                 <TasksDoneList
@@ -187,7 +217,36 @@ console.log('TasksApp constructed. this.props.list:', this.props.list);
                     expand={this.state.expandDone}
                 />
                 <hr />
+                <h3>
+                    Remaining ({this.state.itemsToDo.length})
+                    {Utils.overLength("displayListLength", this.state.itemsToDo) &&
+                        <span className={"small list-item action-button glyphicon " + expandToDoGlyphicon}
+                              aria-hidden="true"
+                              onClick={this.expand.bind(this, 'expandToDo')}>
+                        </span>
+                    }
+                </h3>
 
+
+                {!this.state.immutable &&
+                    <div>
+                    <hr />
+                    <h3>Add new:</h3>
+                    <form onSubmit={this.handleSubmit}>
+                        <input
+                            className="task-input"
+                            ref={(input) => { this.nameInput = input; }}
+                            onFocus={Utils.disableHotKeys}
+                            onBlur={Utils.registerHotKeys(this.checkKeyPressed)}
+                            value={this.state.task}
+                            onChange={this.onChange}
+                        />
+                        <button disabled={!this.state.task.trim()}>Add task</button>
+                    </form>
+                    </div>
+                }
+                <hr />
+                [Load From Select Button]
 
 
                 <button disabled={this.state.task.trim()} onClick={this.mark}>

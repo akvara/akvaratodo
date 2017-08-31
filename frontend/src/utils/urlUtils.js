@@ -1,22 +1,22 @@
-var CONFIG = require('../config.js');
+let CONFIG = require('../config.js');
 
-var getHostUrl = function() {
+let getHostUrl = function() {
     return process.env.NODE_ENV === 'development' ? CONFIG.default.devHost : CONFIG.default.apiHost;
 };
 
-var getBaseUrl = function() {
+let getBaseUrl = function() {
     return getHostUrl() + CONFIG.default.user.id + "/";
 };
 
-var getListsUrl = function() {
+let getListsUrl = function() {
     return getBaseUrl() + CONFIG.default.listsAddon;
 };
 
-var getAListUrl = function(listId) {
+let getAListUrl = function(listId) {
     return getListsUrl() + "/" + listId;
 };
 
-var getUserSettingsUrl = function() {
+let getUserSettingsUrl = function() {
     return getBaseUrl() + CONFIG.default.settingsAddon;
 };
 

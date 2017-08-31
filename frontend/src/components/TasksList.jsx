@@ -3,6 +3,11 @@ import CONFIG from '../config.js';
 import * as Utils from '../utils/utils.js';
 
 class TaskList extends Component {
+
+    static propTypes = {
+        items: PropTypes.array.isRequired,
+    };
+
     done(i) {
         this.props.done(i);
     }
@@ -51,7 +56,13 @@ class TaskList extends Component {
             return taskAsDisplayed;
         }
         if (task.substring(0, 1) === "[") {
-            taskAsDisplayed = <span><span className={"glyphicon glyphicon-folder-open list-first-item"} aria-hidden="true" onClick={this.openListByName.bind(this, task.substring(1))}></span> { taskTruncated.substring(1) }</span> ;
+            taskAsDisplayed = <span>
+                <span className={"glyphicon glyphicon-folder-open list-first-item"}
+                      aria-hidden="true"
+                      onClick={this.openListByName.bind(this, task.substring(1))}>
+                </span>
+                { taskTruncated.substring(1) }
+            </span> ;
         }
         return taskAsDisplayed;
     }
@@ -76,7 +87,10 @@ class TaskList extends Component {
         } else {
             return <tr key={'tr'+i}>
                 <td>
-                    <span className="glyphicon glyphicon-unchecked action-button" aria-hidden="true" onClick={this.done.bind(this, itemIndex)}></span>
+                    <span className="glyphicon glyphicon-unchecked action-button"
+                          aria-hidden="true"
+                          onClick={this.done.bind(this, itemIndex)}>
+                    </span>
                     <span className="list-item task">
                         { this.hightlightOnDemand(taskAsDisplayed, itemIndex) }
                     </span>
@@ -95,7 +109,7 @@ class TaskList extends Component {
 
     /* The Renderer */
     render() {
-        var taskListDisplayed,
+        let taskListDisplayed,
             shouldOmit;
 
         if (!this.props.expand && Utils.overLength("displayListLength", this.props.items)) {

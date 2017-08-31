@@ -11,6 +11,6 @@ export function disableHotKeys() {
 }
 
 export function playSound() {
-    var sound = document.getElementById('clickSound');
+    let sound = document.getElementById('clickSound');
     sound.play()
 }

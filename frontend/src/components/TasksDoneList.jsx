@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import CONFIG from '../config.js';
 import * as Utils from '../utils/utils.js';
+import PropTypes from 'prop-types';
 
 class TasksDoneList extends Component {
+
+    static propTypes = {
+        items: PropTypes.array.isRequired,
+    };
 
     undone(i) {
         this.props.undone(i);
@@ -13,7 +18,10 @@ class TasksDoneList extends Component {
         return (
             <tr key={'tr'+i}>
                 <td>
-                    <span className="glyphicon glyphicon-ok action-button" aria-hidden="true" onClick={this.undone.bind(this, i)}></span>
+                    <span className="glyphicon glyphicon-ok action-button"
+                          aria-hidden="true"
+                          onClick={this.undone.bind(this, i)}>
+                    </span>
                     <span className="list-item task done">
                         {task}
                     </span>
@@ -23,7 +31,7 @@ class TasksDoneList extends Component {
     }
 
     /* The Renderer */
-    render() {
+    render = () => {
         return (
             <div>
             {!this.props.expand && Utils.overLength("displayDoneLength", this.props.items) &&

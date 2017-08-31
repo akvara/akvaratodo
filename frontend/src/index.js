@@ -23,8 +23,6 @@ if (window.devToolsExtension) {
 } else {
     middleware.push(createLogger());
 }
-// middleware.push(createLogger());
-
 const store = buildStore(middleware);
 
 ReactDOM.render(
@@ -35,11 +33,13 @@ ReactDOM.render(
       />
   </Provider>, CONFIG.appNode
 );
+
 ReactDOM.render(
   <Provider store={store}>
       <Status store={store}/>
   </Provider>, CONFIG.statusNode
 );
+
 ReactDOM.render(
   <Provider store={store}>
       <User store={store}/>

@@ -16,10 +16,8 @@ class App extends Component {
     componentDidMount() {
         if (this.props.mode === undefined) {
             if (this.props.openAtStartup) {
-                console.log('this.props.openAtStartup:', this.props.openAtStartup);
                 // this.props.dispatch(listActions.addOrOpenAList(this.props.openAtStartup));
             }
-            // this.props.dispatch(appActions.init());
             this.props.dispatch(listActions.getListOfLists());
          }
     }
@@ -44,7 +42,7 @@ class App extends Component {
         return (
             <div className="error">Mode {this.props.mode} not impelemented</div>
         )
-    }
+    };
 
     /* The Renderer */
     render() {

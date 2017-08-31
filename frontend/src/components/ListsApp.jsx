@@ -32,7 +32,7 @@ class ListsApp extends Component {
     }
 
     checkKeyPressed = (e) => {
-        var pressed = String.fromCharCode(e.which);
+        let pressed = String.fromCharCode(e.which);
         if (pressed === 'a') {
             playSound();
             e.preventDefault();
@@ -46,47 +46,46 @@ class ListsApp extends Component {
                 }
             }.bind(this)
         );
-    }
+    };
 
     addHotKeys = () => {
         this.state.lists.forEach((list) => {
-            var newKey = this.findFreeKey(list.name);
+            let newKey = this.findFreeKey(list.name);
             if (newKey) this.hotKeys.push({key: newKey, listId: list._id, listName: list.name})
         });
-        console.log('this.hotKeys:', this.hotKeys);
-    }
+    };
 
     keyIsNotOccupied = (key) => !this.hotKeys.filter((elem) => elem.key === key).length;
 
     findFreeKey = (str) => {
-        for (var i = 0, len = str.length; i < len; i++) {
-            var pretender = str[i].toLowerCase();
+        for (let i = 0, len = str.length; i < len; i++) {
+            let pretender = str[i].toLowerCase();
             if ('abcdefghijklmnopqrstuvwxyz'.indexOf(pretender) !== -1 && this.keyIsNotOccupied(pretender)) return pretender;
         }
         return null;
-    }
+    };
 
     /* Go to list of lists */
     openLists = () => {
         this.props.dispatch(listActions.getListOfLists());
-    }
+    };
 
     onNameChange = (e) => {
         this.setState({ listName: e.target.value });
-    }
+    };
 
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.dispatch(this.props.actions.addOrOpenAList(this.state.listName));
-    }
+    };
 
     openAList = (listId) => {
         this.props.dispatch(this.props.actions.getAList(listId));
-    }
+    };
 
     listChanger = (listName) => {
         this.props.dispatch(this.props.actions.addOrOpenAList(listName));
-    }
+    };
 
     render = () => {
         this.addHotKeys();

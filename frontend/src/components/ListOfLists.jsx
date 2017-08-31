@@ -11,11 +11,11 @@ class ListOfLists extends Component {
 
 	removeList = (id) => {
 		this.props.removeList(id);
-	}
+	};
 
 	openList = (...params) => {
 		this.props.openList(...params);
-	}
+	};
 
     hotKeyedListName = (listName) => {
         if (!this.props.hotKeys) return listName;
@@ -23,15 +23,15 @@ class ListOfLists extends Component {
         if (!corresponding.length) return listName;
 
 		return this.strongify(listName, corresponding[0].key)
-    }
+    };
 
     /* underline first of given letters */
     strongify = (str, letter) => {
-    	var n = str.toLowerCase().indexOf(letter);
+    	let n = str.toLowerCase().indexOf(letter);
   		if (n === -1) return str;
 
   		return <span>{str.substring(0, n)}<u>{str.substring(n, n + 1)}</u>{str.substring(n + 1, str.length)}</span>;
-	}
+	};
 
 	displayList = (list, i) => {
 		let itemClass = "list-item",
@@ -68,7 +68,7 @@ class ListOfLists extends Component {
 				</td>
 			</tr>
 		);
-	}
+	};
 
     /* The Renderer */
 	render() {
