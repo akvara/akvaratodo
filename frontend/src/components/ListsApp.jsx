@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import * as listActions from '../actions/list-actions';
 import {playSound} from '../utils/hotkeys';
-import $ from 'jquery';
+import * as Utils from '../utils/utils.js';
 
 class ListsApp extends Component {
     static propTypes = {
@@ -23,33 +23,25 @@ class ListsApp extends Component {
     }
 
     componentWillUnmount() {
-        this.disableHotKeys();
+        Utils.disableHotKeys();
     }
 
     componentDidMount() {
         document.title = "ToDo lists";
-        this.registerHotKeys();
-    }
-
-    registerHotKeys = () => {
-        $(document).on("keypress", (e) => this.checkKeyPressed(e));
-    }
-
-    disableHotKeys = () => {
-        $(document).off("keypress");
+        Utils.registerHotKeys(this.checkKeyPressed);
     }
 
     checkKeyPressed = (e) => {
         var pressed = String.fromCharCode(e.which);
         if (pressed === 'a') {
-            this.playSound()
+            playSound();
             e.preventDefault();
             this.nameInput.focus();
             return;
         }
         this.hotKeys.forEach(function (k) {
                 if (k.key === pressed) {
-                    // this.playSound();
+                    playSound();
                     this.openAList(k.listId);
                 }
             }.bind(this)
@@ -116,8 +108,8 @@ class ListsApp extends Component {
                         className="list-input"
                         ref={(input) => { this.nameInput = input; }}
                         value={this.state.listName}
-                        onBlur={this.registerHotKeys}
-                        onFocus={this.disableHotKeys}
+                        onBlur={Utils.registerHotKeys}
+                        onFocus={Utils.disableHotKeys}
                         onChange={this.onNameChange}
                     />
                     <button disabled={!this.state.listName.trim()}>Create new list</button>

@@ -34,6 +34,15 @@ console.log('TasksApp constructed. this.props.list:', this.props.list);
         };
     }
 
+    componentWillUnmount() {
+        Utils.disableHotKeys();
+    }
+
+    componentDidMount() {
+        document.title = "ToDo lists";
+        Utils.registerHotKeys(this.checkKeyPressed);
+    }
+
     /* Go to list of lists */
     openLists = () => {
         this.props.dispatch(listActions.getListOfLists());
@@ -42,11 +51,6 @@ console.log('TasksApp constructed. this.props.list:', this.props.list);
     /* Move task back from Done tasks array */
     unDoneTask = (i) => {
 
-    }
-
-    /* Disable hot keys */
-    disableHotKeys = () => {
-        $(document).off("keypress");
     }
 
     /* Toggle immutable. No checking if changed */
@@ -88,7 +92,6 @@ console.log('TasksApp constructed. this.props.list:', this.props.list);
     }
 
     checkKeyPressed = (e) => {
-        console.log('checkKeyPressed in TasksApp');
         var key = String.fromCharCode(e.which)
         if ('alrp<'.indexOf(key) !== -1) playSound()
 
@@ -139,7 +142,7 @@ console.log('TasksApp constructed. this.props.list:', this.props.list);
                 <input
                     className="task-input"
                     defaultValue={this.state.listName}
-                    onFocus={this.disableHotKeys}
+                    onFocus={Utils.disableHotKeys}
                     onKeyDown={this.onKeyDown}
                     onBlur={this.saveEditedHeader}
                 />
@@ -154,7 +157,7 @@ console.log('TasksApp constructed. this.props.list:', this.props.list);
         // let callback = this.callbackForSettingState.bind(this, null, dataToSave);
         // dataToSave.list.name = e.target.value;
         // this.checkWrapper(dataToSave, callback);
-        this.registerHotKeys();
+        Utils.registerHotKeys(this.checkKeyPressed);
     }
 
     /* The Renderer */

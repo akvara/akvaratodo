@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import $ from 'jquery';
 import CONFIG from '../config.js';
 
 export function sortArrOfObjectsByParam(arrToSort, sortBy, sortDesc) {
@@ -72,4 +73,12 @@ export function grabTime(someDateStr) {
 
 export function toLocalTime(utcDateStr) {
     return new Date(new Date(utcDateStr).toString() + " UTC").toISOString();
+}
+
+export function registerHotKeys(checkKeyPressed) {
+    $(document).on("keypress", (e) => checkKeyPressed(e));
+}
+
+export function disableHotKeys() {
+    $(document).off("keypress");
 }
