@@ -7,20 +7,21 @@ class TasksDoneList extends Component {
 
     static propTypes = {
         items: PropTypes.array.isRequired,
+        expand: PropTypes.bool
     };
 
-    undone(i) {
+    undone = (i) => {
         this.props.undone(i);
-    }
+    };
 
-    displayTask(task, i) {
+    displayTask = (task, i) => {
         if (!this.props.expand && i < this.props.items.length - CONFIG.user.settings.displayDoneLength) return null;
         return (
             <tr key={'tr'+i}>
                 <td>
                     <span className="glyphicon glyphicon-ok action-button"
                           aria-hidden="true"
-                          onClick={this.undone.bind(this, i)}>
+                          onClick={this.undone}>
                     </span>
                     <span className="list-item task done">
                         {task}
@@ -28,7 +29,7 @@ class TasksDoneList extends Component {
                 </td>
             </tr>
         );
-    }
+    };
 
     /* The Renderer */
     render = () => {
@@ -39,12 +40,12 @@ class TasksDoneList extends Component {
             }
             <table className="table table-sm table-condensed table-hover">
                 <tbody>
-                    { this.props.items.map(this.displayTask.bind(this)) }
+                    { this.props.items.map(this.displayTask) }
                 </tbody>
             </table>
             </div>
         );
-    }
-}
+    };
+};
 
 export default TasksDoneList;

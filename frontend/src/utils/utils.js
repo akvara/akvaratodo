@@ -56,7 +56,7 @@ export function removeItem(items, i) {
 }
 
 export function textToArray(text) {
-    return text.split(/\r?\n/).filter(entry => entry.trim() !== '');
+    // return text.split(/\r?\n/).filter(entry => entry.trim() !== '');
 }
 
 export function overLength(which, items) {

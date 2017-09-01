@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import TasksDoneList from './TasksDoneList';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {playSound} from '../utils/hotkeys';
+import TasksList from './TasksList';
+import TasksDoneList from './TasksDoneList';
 import * as listActions from '../actions/list-actions';
 import * as Utils from '../utils/utils.js';
-import $ from 'jquery';
 
 class TasksApp extends Component {
 
@@ -22,8 +22,8 @@ console.log('TasksApp constructed. this.props.list:', props.list);
 
         this.state = {
             listName: props.list.name,
-            itemsToDo: Utils.textToArray(this.props.list.tasks),
-            itemsDone: Utils.textToArray(this.props.list.done),
+            itemsToDo: JSON.parse(this.props.list.tasks),
+            itemsDone: JSON.parse(this.props.list.done),
             prepend: props.prepend,
             hightlightIndex: props.prepend ? 0 : null,
             immutable: false,
@@ -51,21 +51,21 @@ console.log('TasksApp constructed. this.props.list:', props.list);
     };
 
     /* Show full/contracted ist */
-    expand(which) {
+    expand = (which) => {
         this.setState({
             [which]: !this.state[which]
         });
-    }
+    };
 
     /* Delete done tasks */
-    clearDone() {
+    clearDone =() => {
         // ToDo : this is data saving
 
         // var dataToSave = this.prepareClone();
         // dataToSave.itemsDone = [];
         // let callback = this.callbackForSettingState.bind(this, null, dataToSave);
         // this.saveTaskList(this.props.list.id, dataToSave, callback);
-    }
+    };
 
 
     /* Move task back from Done tasks array */
@@ -149,29 +149,30 @@ console.log('TasksApp constructed. this.props.list:', props.list);
 
     /* Header - edit mode or not */
     manageHeader = () => {
-        if (!this.state.listNameOnEdit)
-            return (
-                <div>
-                    <h1>{this.state.listName}</h1>
-                    {' '}{' '}
-                    <span className={"small action-button glyphicon glyphicon glyphicon-pencil"}
-                          aria-hidden="true"
-                          onClick={this.editListName}>
-                    </span>
-                </div>
-            );
+        if (!this.state.listNameOnEdit) return (
+            <div>
+                <h1>{this.state.listName}</h1>
+                {' '}{' '}
+                <span className={"small action-button glyphicon glyphicon glyphicon-pencil"}
+                      aria-hidden="true"
+                      onClick={this.editListName}>
+                </span>
+            </div>
+        );
 
-        return <h1>
-            <form onSubmit={this.handleNameSubmit}>
-                <input
-                    className="task-input"
-                    defaultValue={this.state.listName}
-                    onFocus={Utils.disableHotKeys}
-                    onKeyDown={this.onKeyDown}
-                    onBlur={this.saveEditedHeader}
-                />
-            </form>
-        </h1>
+        return (
+            <h1>
+                <form onSubmit={this.handleNameSubmit}>
+                    <input
+                        className="task-input"
+                        defaultValue={this.state.listName}
+                        onFocus={Utils.disableHotKeys}
+                        onKeyDown={this.onKeyDown}
+                        onBlur={this.saveEditedHeader}
+                    />
+                </form>
+            </h1>
+        );
     };
 
     /* Save new header to DB */
@@ -200,7 +201,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
                     {Utils.overLength("displayDoneLength", this.state.itemsDone) &&
                         <span className={"small action-button glyphicon " + expandDoneGlyphicon}
                               aria-hidden="true"
-                              onClick={this.expand.bind(this, 'expandDone')}>
+                              onClick={this.expand.bind('expandDone')}>
                         </span>
                     }
                     {'  '}
@@ -222,11 +223,24 @@ console.log('TasksApp constructed. this.props.list:', props.list);
                     {Utils.overLength("displayListLength", this.state.itemsToDo) &&
                         <span className={"small list-item action-button glyphicon " + expandToDoGlyphicon}
                               aria-hidden="true"
-                              onClick={this.expand.bind(this, 'expandToDo')}>
+                              onClick={this.expand.bind('expandToDo')}>
                         </span>
                     }
                 </h3>
-
+                <TasksList
+                    items={this.state.itemsToDo}
+                    hightlightIndex={this.state.hightlightIndex}
+                    immutable={this.state.immutable}
+                    delete={this.removeTask}
+                    move={this.moveOutside}
+                    toTop={this.toTop}
+                    postpone={this.postponeTask}
+                    procrastinate={this.procrastinateTask}
+                    openListByName={this.openListByName}
+                    reloadNeeded={this.state.reloadNeeded}
+                    done={this.doneTask}
+                    expand={this.state.expandToDo}
+                />
 
                 {!this.state.immutable &&
                     <div>
@@ -247,8 +261,6 @@ console.log('TasksApp constructed. this.props.list:', props.list);
                 }
                 <hr />
                 [Load From Select Button]
-
-
                 <button disabled={this.state.task.trim()} onClick={this.mark}>
                     <span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true"></span> {markTitle}
                 </button>

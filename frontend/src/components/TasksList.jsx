@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import CONFIG from '../config.js';
 import * as Utils from '../utils/utils.js';
+import PropTypes from 'prop-types';
 
 class TaskList extends Component {
 
