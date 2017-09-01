@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {playSound} from '../utils/hotkeys';
 import TasksList from './TasksList';
 import TasksDoneList from './TasksDoneList';
-import * as listActions from '../actions/list-actions';
+import {getAList, getListOfLists} from '../actions/list-actions';
 import * as Utils from '../utils/utils.js';
+import {playSound} from '../utils/hotkeys';
+import {bindActionToPromise} from '../utils/redux-form';
 
 class TasksApp extends Component {
 
@@ -23,7 +24,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         this.state = {
             listName: props.list.name,
             itemsToDo: JSON.parse(this.props.list.tasks),
-            itemsDone: JSON.parse(this.props.list.done),
+            itemsDone: this.props.list.done ? JSON.parse(this.props.list.done) : [],
             prepend: props.prepend,
             hightlightIndex: props.prepend ? 0 : null,
             immutable: false,
@@ -44,12 +45,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         document.title = "ToDo lists";
         Utils.registerHotKeys(this.checkKeyPressed);
     }
-
-    /* Go to list of lists */
-    openLists = () => {
-        this.props.dispatch(listActions.getListOfLists());
-    };
-
+    
     /* Show full/contracted ist */
     expand = (which) => {
         this.setState({
@@ -86,7 +82,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
     /* Reload this list*/
     reload = () => {
         // console.log('this.props.list:', this.props.list);
-        this.props.dispatch(this.props.actions.getAList(this.props.list._id));
+        this.props.actions.getAList(this.props.list._id);
     };
 
     /* Mode: List name is on edit */
@@ -123,7 +119,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
                 break;
             case 'l':
                 e.preventDefault();
-                this.openLists();
+                this.props.actions.getListOfLists();
                 break;
             case 'r':
                 e.preventDefault();
@@ -272,7 +268,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
                         <span className="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> {this.props.previousList.name}
                     </button>
                 }
-                <button disabled={this.state.task.trim()} onClick={this.openLists}>
+                <button disabled={this.state.task.trim()} onClick={this.props.actions.getListOfLists}>
                     <span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> <u>L</u>ists
                 </button>
             </div>
@@ -282,9 +278,11 @@ console.log('TasksApp constructed. this.props.list:', props.list);
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        actions: listActions,
-        dispatch
-    };
+        actions: {
+            getAList: bindActionToPromise(dispatch, getAList),
+            getListOfLists: bindActionToPromise(dispatch, getListOfLists),
+        }
+    }
 };
 
 export default connect(

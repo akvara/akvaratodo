@@ -11,8 +11,8 @@ class AppReducer extends BaseReducer {
             [types.LIST_OF_LISTS.REQUEST]: this.listOfListsRequest,
             [types.LIST_OF_LISTS.SUCCESS]: this.listOfListsFetched,
 
-            [types.ADD_A_LIST.REQUEST]: this.addAListRequest,
-            [types.ADD_A_LIST.SUCCESS]: this.aListFetched,
+            [types.ADD_OR_OPEN_LIST.REQUEST]: this.addAListRequest,
+            [types.ADD_OR_OPEN_LIST.SUCCESS]: this.aListFetched,
 
             [types.A_LIST.SUCCESS]: this.aListFetched,
         };

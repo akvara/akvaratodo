@@ -37,6 +37,7 @@ function callApi(url, options) {
         if (response.status >= 200 && response.status < 300) {
             return isJson ? Promise.resolve(response.json()) : Promise.resolve(response.text());
         }
+
         const error = new Error(response.statusText || response.status);
         if (isJson) {
             return response.json().then((json) => {

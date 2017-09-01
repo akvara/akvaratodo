@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import ListOfLists from './ListOfLists';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import * as listActions from '../actions/list-actions';
+import {addOrOpenAList, getAList, getListOfLists} from '../actions/list-actions';
 import {playSound} from '../utils/hotkeys';
 import * as Utils from '../utils/utils.js';
+import {bindActionToPromise} from '../utils/redux-form';
 
 class ListsApp extends Component {
     static propTypes = {
@@ -67,7 +68,7 @@ class ListsApp extends Component {
 
     /* Go to list of lists */
     openLists = () => {
-        this.props.dispatch(listActions.getListOfLists());
+        this.props.actions.getListOfLists();
     };
 
     onNameChange = (e) => {
@@ -76,15 +77,15 @@ class ListsApp extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
-        this.props.dispatch(this.props.actions.addOrOpenAList(this.state.listName));
+        this.props.actions.addOrOpenAList(this.state.listName);
     };
 
     openAList = (listId) => {
-        this.props.dispatch(this.props.actions.getAList(listId));
+        this.props.actions.getAList(listId);
     };
 
     listChanger = (listName) => {
-        this.props.dispatch(this.props.actions.addOrOpenAList(listName));
+        this.props.actions.addOrOpenAList(listName);
     };
 
     render = () => {
@@ -97,6 +98,7 @@ class ListsApp extends Component {
                     openList={this.openAList}
                     hotKeys={this.hotKeys}
                 />
+                <hr />
                 <h3>Protected</h3>
                 <ListOfLists
                     lists={this.state.lists.filter(list => list.immutable)}
@@ -121,8 +123,11 @@ class ListsApp extends Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        actions: listActions,
-        dispatch
+        actions: {
+            addOrOpenAList: bindActionToPromise(dispatch, addOrOpenAList),
+            getAList: bindActionToPromise(dispatch, getAList),
+            getListOfLists: bindActionToPromise(dispatch, getListOfLists),
+        }
     };
 };
 
