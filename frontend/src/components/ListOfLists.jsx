@@ -58,7 +58,9 @@ class ListOfLists extends Component {
 				</td>
 				<td className="actions">
 				{deletable  &&
-					<span className="glyphicon glyphicon-trash action-button" aria-hidden="true" onClick={this.removeList(list._id)}></span>
+					<span className="glyphicon glyphicon-trash action-button"
+						  aria-hidden="true"
+						  onClick={this.removeList.bind(list._id)}></span>
 				}
 				</td>
 				<td className="right-align">

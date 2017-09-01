@@ -2,6 +2,7 @@ const types = {
     LIST_OF_LISTS: 'async',
     ADD_OR_OPEN_LIST: null,
     LOOKING_FOR_A_LIST: 'async',
+    NEW_LIST: 'async',
     A_LIST: 'async',
 };
 

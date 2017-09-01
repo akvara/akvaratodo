@@ -1,5 +1,5 @@
 import {put, call} from 'redux-saga/effects';
-import {callGet, callUpdate, callDelete} from '../utils/api';
+import {callGet, callPost, callUpdate, callDelete} from '../utils/api';
 
 export function* fetchItemSaga(url, actionType, transit) {
     try {
@@ -23,6 +23,18 @@ export function* updateItemSaga(url, data, actionType) {
     try {
         yield call(callUpdate, url);
         yield put({type: actionType.SUCCESS, payload: data});
+    } catch (e) {
+        yield put({type: actionType.FAILURE, payload: e});
+    }
+}
+
+export function* createItemSaga(url, data, actionType) {
+    try {
+        const result = yield call(callPost, url, data);
+        console.log("createItemSaga, result:", result);
+        let payload = {data: result._id};
+        console.log("wiil be payload:", payload);
+        yield put({type: actionType.SUCCESS, payload: payload});
     } catch (e) {
         yield put({type: actionType.FAILURE, payload: e});
     }
