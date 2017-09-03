@@ -1,2 +1,1 @@
-cd ~/mongoclient-master
-meteor --port 4000
+cd ~/mongoclient-master && meteor --port 4400

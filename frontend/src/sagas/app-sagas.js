@@ -38,7 +38,6 @@ function* generalFailure(e) {
 export default function* listSagas() {
     yield all([
         takeEvery(types.LIST_OF_LISTS.REQUEST, listOfListsRequest),
-        // takeEvery(types.LIST_OF_LISTS.SUCCESS, listOfListsSuccess),
         takeLatest(types.LIST_OF_LISTS.FAILURE, generalFailure),
 
         takeEvery(types.ADD_OR_OPEN_LIST, lookForAList),

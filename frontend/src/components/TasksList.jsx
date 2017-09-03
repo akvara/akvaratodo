@@ -7,6 +7,15 @@ class TaskList extends Component {
 
     static propTypes = {
         items: PropTypes.array.isRequired,
+        done: PropTypes.func.isRequired,
+        delete: PropTypes.func.isRequired,
+        toTop: PropTypes.func.isRequired,
+        move: PropTypes.func.isRequired,
+        procrastinate: PropTypes.func.isRequired,
+        postpone: PropTypes.func.isRequired,
+        openListByName: PropTypes.func.isRequired,
+        hightlightIndex: PropTypes.int,
+
     };
 
     done(i) {
@@ -33,6 +42,10 @@ class TaskList extends Component {
         this.props.postpone(i);
     }
 
+    openListByName(name) {
+        this.props.openListByName(name);
+    }
+
     hightlightOnDemand(element, index) {
         if (this.props.hightlightIndex === index)
             return <strong>{element}</strong>;
@@ -40,14 +53,12 @@ class TaskList extends Component {
             return <span>{element}</span>;
     }
 
-    openListByName(name) {
-        this.props.openListByName(name);
-    }
-
     processTaskText(task) {
         if (task === null) task = 'null';
-        let taskTruncated = task.substring(0, CONFIG.maxTaskLength);
-        let taskAsDisplayed = taskTruncated;
+        let taskTruncated = task.substring(0, CONFIG.maxTaskLength),
+            taskAsDisplayed = taskTruncated;
+
+        /* If task is a link: */
         if (task.substring(0, 4) === "http") {
             taskTruncated = taskTruncated.substr(taskTruncated.indexOf('://')+3);
             if (taskTruncated[taskTruncated.length-1] === "/") {
@@ -56,6 +67,8 @@ class TaskList extends Component {
             taskAsDisplayed = <a href={ task } target="_blank">{ taskTruncated }</a>;
             return taskAsDisplayed;
         }
+
+        /* if task is a folder: */
         if (task.substring(0, 1) === "[") {
             taskAsDisplayed = <span>
                 <span className={"glyphicon glyphicon-folder-open list-first-item"}
@@ -65,9 +78,11 @@ class TaskList extends Component {
                 { taskTruncated.substring(1) }
             </span> ;
         }
+
         return taskAsDisplayed;
     }
 
+    /* Display one line */
     displayTask(task, i, omitted) {
         if (task === CONFIG.separatorString) {
             return <tr key={'tr'+i}>
@@ -110,8 +125,8 @@ class TaskList extends Component {
 
     /* The Renderer */
     render() {
-        let taskListDisplayed,
-            shouldOmit;
+        let taskListDisplayed = this.props.items,
+            shouldOmit = 0;
 
         if (!this.props.expand && Utils.overLength("displayListLength", this.props.items)) {
             shouldOmit = this.props.items.length - CONFIG.user.settings.displayListLength;
@@ -119,9 +134,6 @@ class TaskList extends Component {
                 this.props.items.slice(0, CONFIG.user.settings.displayListLength - CONFIG.user.settings.displayLast - 1)
                     .concat([CONFIG.separatorString])
                     .concat(this.props.items.slice(-CONFIG.user.settings.displayLast));
-        } else {
-            shouldOmit = 0;
-            taskListDisplayed = this.props.items;
         }
 
         return (

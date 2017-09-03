@@ -11,8 +11,8 @@ class AppReducer extends BaseReducer {
             [types.LIST_OF_LISTS.REQUEST]: this.listOfListsRequest,
             [types.LIST_OF_LISTS.SUCCESS]: this.listOfListsFetched,
 
-            [types.ADD_OR_OPEN_LIST.REQUEST]: this.addAListRequest,
-            [types.ADD_OR_OPEN_LIST.SUCCESS]: this.aListFetched,
+            [types.LOOKING_FOR_A_LIST.REQUEST]: this.addAListRequest,
+            [types.LOOKING_FOR_A_LIST.SUCCESS]: this.listsRefreshed,
 
             [types.A_LIST.SUCCESS]: this.aListFetched,
         };
@@ -26,10 +26,18 @@ class AppReducer extends BaseReducer {
         };
     }
 
+    listsRefreshed(state, action) {
+        return {
+            ...state,
+            status_msg: 'Lists refreshed',
+            mode: CONST.mode.MODE_LOADING
+        };
+    }
+
     addAListRequest(state, action) {
         return {
             ...state,
-            status_msg: 'Creating list ...',
+            status_msg: 'Checking lists ...',
             mode: CONST.mode.MODE_LOADING
         };
     }
@@ -38,7 +46,7 @@ class AppReducer extends BaseReducer {
         return {
             ...state,
             lists: action.payload,
-            status_msg: 'Lists loaded.',
+            status_msg: 'Lists loaded',
             mode: CONST.mode.MODE_LIST_OF_LISTS
         };
     }
@@ -47,7 +55,7 @@ class AppReducer extends BaseReducer {
         return {
             ...state,
             a_list: action.payload,
-            status_msg: action.payload.name + ' loaded.',
+            status_msg: action.payload.name + ' loaded',
             mode: CONST.mode.MODE_A_LIST
         };
     }
