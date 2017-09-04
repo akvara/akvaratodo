@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import TasksList from './TasksList';
 import TasksDoneList from './TasksDoneList';
-import {getAList, getListOfLists, checkAndSave} from '../actions/list-actions';
+import {getAList, getListOfLists, addOrOpenAList, checkAndSave} from '../actions/list-actions';
 import * as Utils from '../utils/utils.js';
 import {playSound} from '../utils/hotkeys';
 import {bindActionToPromise} from '../utils/redux-form';
@@ -17,6 +17,7 @@ class TasksApp extends Component {
 
     constructor(props, context) {
         super(props, context);
+
 console.log('TasksApp constructed. this.props.list:', props.list);
 
         this.immutables = props.immutables || [];
@@ -60,6 +61,9 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         return clone;
     }
     
+    /* Calculations */
+    calculatePostponePosition = (number) => (Math.floor(number / 2));
+    
     /* Show full/contracted ist */
     expand = (which) => {
         this.setState({
@@ -77,8 +81,8 @@ console.log('TasksApp constructed. this.props.list:', props.list);
 
         this.setState({
             lastAction: dataToSave.lastAction,
-            itemsToDo: moved.A,
-            itemsDone: moved.B
+            itemsToDo: dataToSave.itemsToDo,
+            itemsDone: dataToSave.itemsDone
         });
 
         console.log("doneTask", i);
@@ -90,62 +94,144 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         let dataToSave = this.prepareClone(),
             moved = Utils.moveToAnother(this.state.itemsDone, this.state.itemsToDo, i, true);
 
-        console.log("Done", this.state.itemsDone);
-        console.log("todo", this.state.itemsToDo);
-        console.log("moved", moved);
         dataToSave.itemsToDo = moved.B;
-
         dataToSave.itemsDone = moved.A;
+
         this.setState({
             lastAction: dataToSave.lastAction,
-            itemsToDo: moved.B,
-            itemsDone: moved.A
+            itemsToDo: dataToSave.itemsToDo,
+            itemsDone: dataToSave.itemsDone
         });
 
         console.log("unDoneTask", i);
-        // this.props.actions.checkAndSave(dataToSave);
+        this.props.actions.checkAndSave(dataToSave);
     };
 
     /* Delete done tasks */
-    clearDone =() => {
-        // ToDo : this is data saving
-        console.log("clearDone");
+    clearDone = () => {
+        let dataToSave = this.prepareClone();
 
-        // var dataToSave = this.prepareClone();
-        // dataToSave.itemsDone = [];
-        // let callback = this.callbackForSettingState.bind(this, null, dataToSave);
-        // this.saveTaskList(this.props.list.id, dataToSave, callback);
+        dataToSave.itemsDone = [];
+
+        this.setState({
+            lastAction: dataToSave.lastAction,
+            itemsDone: dataToSave.itemsDone
+        });
+
+        console.log("clearDone");
+        this.props.actions.checkAndSave(dataToSave);
     };
 
-    removeTask(i) {
+    /* Remove task from list */
+    removeTask = (i) => {
+        let dataToSave = this.prepareClone();
+
+        dataToSave.itemsToDo = Utils.removeItem(this.state.itemsToDo, i);
+
+        this.setState({
+            lastAction: dataToSave.lastAction,
+            itemsToDo: dataToSave.itemsToDo,
+        });
+
         console.log("removeTask", i);
+        this.props.actions.checkAndSave(dataToSave);
+    };
 
-    }
+    /* Move task to top position */
+    toTop = (i) => {
+        let dataToSave = this.prepareClone();
 
-    toTop(i) {
+        dataToSave.itemsToDo = Utils.moveToTop(this.state.itemsToDo, i);
+
+        this.setState({
+            lastAction: dataToSave.lastAction,
+            itemsToDo: dataToSave.itemsToDo,
+            highlightPosition: 0
+        });
+
         console.log("toTop", i);
-    }
+        this.props.actions.checkAndSave(dataToSave);
+    };
 
     /* Toggle immutable. No checking if changed */
     mark = () => {
-        console.log("mark");
+        let dataToSave = this.prepareClone();
+
+        dataToSave.immutable = !this.state.immutable;
+
+        this.setState({
+            lastAction: dataToSave.lastAction,
+            immutable: dataToSave.immutable,
+        });
+
+        console.log("mark", i);
+        this.props.actions.checkAndSave(dataToSave);
     };
 
     moveOutside(i) {
         console.log("moveOutside", i);
     }
 
-    procrastinateTask(i) {
+
+    procrastinateTask = (i) => {
+        let dataToSave = this.prepareClone();
+
+        dataToSave.itemsToDo = Utils.moveToEnd(this.state.itemsToDo, i);
+
+        this.setState({
+            lastAction: dataToSave.lastAction,
+            itemsToDo: dataToSave.itemsToDo,
+            highlightPosition: this.state.itemsToDo.length
+        });
+
         console.log("procrastinateTask", i);
-    }
+        this.props.actions.checkAndSave(dataToSave);
+    };
 
-    postponeTask(i) {
+    /* Move task to the middle of the list */
+    postponeTask = (i) => {
+        let dataToSave = this.prepareClone();
+
+        dataToSave.itemsToDo = Utils.moveFromTo(
+            this.state.itemsToDo, 
+            i, 
+            i + this.calculatePostponePosition(this.state.itemsToDo.length)
+        );
+
+        let highlightPosition = Math.min(
+            this.state.itemsToDo.length - 1, 
+            i + this.calculatePostponePosition(this.state.itemsToDo.length)
+        );
+
+        this.setState({
+            lastAction: dataToSave.lastAction,
+            itemsToDo: dataToSave.itemsToDo,
+            highlightPosition: highlightPosition
+        });
+
         console.log("postponeTask", i);
-    }
+        this.props.actions.checkAndSave(dataToSave);
+    };
 
-    openListByName(i) {
-        console.log("openListByName", i);
-    }
+    /* Change list name */
+    changeListName = (e) => {
+        let dataToSave = this.prepareClone();
+
+        dataToSave.listName = e.target.value;
+
+        this.setState({
+            lastAction: dataToSave.lastAction,
+            listName: dataToSave.listName
+        });
+
+        console.log("changeListName", i);
+        this.props.actions.checkAndSave(dataToSave);
+    };
+
+    /* Go to another list */
+    listChanger = (listName) => {
+        this.props.actions.addOrOpenAList(listName);
+    };
 
     /* Reload this list*/
     reload = () => {
@@ -164,7 +250,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         switch(e.key) {
             case 'Enter':
             case 'Tab':
-                this.saveEditedHeader(e);
+                this.changeListName(e);
                 break;
             case 'Escape':
                 this.setState({listNameOnEdit: false});
@@ -231,24 +317,13 @@ console.log('TasksApp constructed. this.props.list:', props.list);
                         defaultValue={this.state.listName}
                         onFocus={Utils.disableHotKeys}
                         onKeyDown={this.onKeyDown}
-                        onBlur={this.saveEditedHeader}
+                        onBlur={this.changeListName}
                     />
                 </form>
             </h1>
         );
     };
-
-    /* Save new header to DB */
-    saveEditedHeader = (e) => {
-        // ToDo : this is data saving
-        console.log("saveEditedHeader");
-
-        // var dataToSave = this.prepareClone();
-        // let callback = this.callbackForSettingState.bind(this, null, dataToSave);
-        // dataToSave.list.name = e.target.value;
-        // this.checkWrapper(dataToSave, callback);
-        Utils.registerHotKeys(this.checkKeyPressed);
-    };
+    
 
     /* The Renderer */
     render() {
@@ -301,7 +376,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
                     toTop={this.toTop}
                     postpone={this.postponeTask}
                     procrastinate={this.procrastinateTask}
-                    openListByName={this.openListByName}
+                    openListByName={this.listChanger}
                     reloadNeeded={this.state.reloadNeeded}
                     done={this.doneTask}
                     expand={this.state.expandToDo}
@@ -351,6 +426,7 @@ const mapDispatchToProps = (dispatch) => {
             getAList: bindActionToPromise(dispatch, getAList),
             getListOfLists: bindActionToPromise(dispatch, getListOfLists),
             checkAndSave: bindActionToPromise(dispatch, checkAndSave),
+            addOrOpenAList: bindActionToPromise(dispatch, addOrOpenAList),
         }
     }
 };
