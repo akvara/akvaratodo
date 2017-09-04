@@ -14,7 +14,7 @@ class TaskList extends Component {
         procrastinate: PropTypes.func.isRequired,
         postpone: PropTypes.func.isRequired,
         openListByName: PropTypes.func.isRequired,
-        hightlightIndex: PropTypes.int,
+        hightlightIndex: PropTypes.number,
 
     };
 

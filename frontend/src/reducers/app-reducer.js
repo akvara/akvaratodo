@@ -15,6 +15,7 @@ class AppReducer extends BaseReducer {
             [types.LOOKING_FOR_A_LIST.SUCCESS]: this.listsRefreshed,
 
             [types.A_LIST.SUCCESS]: this.aListFetched,
+            [types.CHECK_AND_SAVE]: this.checkAList,
         };
     }
 
@@ -39,6 +40,14 @@ class AppReducer extends BaseReducer {
             ...state,
             status_msg: 'Checking lists ...',
             mode: CONST.mode.MODE_LOADING
+        };
+    }
+
+    checkAList(state, action) {
+        return {
+            ...state,
+            status_msg: 'Checking a list ...',
+            // mode: CONST.mode.MODE_LOADING
         };
     }
 

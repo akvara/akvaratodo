@@ -15,6 +15,12 @@ function* lookForAList(action) {
     yield fetchItemSaga(UrlUtils.getListsUrl(), types.LOOKING_FOR_A_LIST, action.payload.data);
 }
 
+/* Trying to find list by this name */
+function* checkAndSave(action) {
+    yield console.log('checkAndSave - ', action)
+    // yield fetchItemSaga(UrlUtils.getListsUrl(), types.LOOKING_FOR_A_LIST, action.payload.data);
+}
+
 function* checkIfExists(data) {
     let listName = data.transit,
         lists = data.payload,
@@ -41,6 +47,7 @@ export default function* listSagas() {
         takeLatest(types.LIST_OF_LISTS.FAILURE, generalFailure),
 
         takeEvery(types.ADD_OR_OPEN_LIST, lookForAList),
+        takeEvery(types.CHECK_AND_SAVE, checkAndSave),
 
         takeEvery(types.LOOKING_FOR_A_LIST.SUCCESS, checkIfExists),
         takeLatest(types.LOOKING_FOR_A_LIST.FAILURE, generalFailure),

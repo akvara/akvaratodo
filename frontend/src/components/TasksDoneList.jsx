@@ -10,10 +10,6 @@ class TasksDoneList extends Component {
         expand: PropTypes.bool
     };
 
-    undone = (i) => {
-        this.props.undone(i);
-    };
-
     displayTask = (task, i) => {
         if (!this.props.expand && i < this.props.items.length - CONFIG.user.settings.displayDoneLength) return null;
         return (
@@ -21,7 +17,7 @@ class TasksDoneList extends Component {
                 <td>
                     <span className="glyphicon glyphicon-ok action-button"
                           aria-hidden="true"
-                          onClick={this.undone}>
+                          onClick={this.props.undone.bind(this, i)}>
                     </span>
                     <span className="list-item task done">
                         {task}
@@ -46,6 +42,6 @@ class TasksDoneList extends Component {
             </div>
         );
     };
-};
+}
 
 export default TasksDoneList;
