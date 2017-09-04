@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ListOfLists from './ListOfLists';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {addOrOpenAList, getAList, getListOfLists} from '../actions/list-actions';
+import {addOrOpenAList, getAList, removeList, getListOfLists} from '../actions/list-actions';
 import {playSound} from '../utils/hotkeys';
 import * as Utils from '../utils/utils.js';
 import {bindActionToPromise} from '../utils/redux-form';
@@ -88,6 +88,11 @@ class ListsApp extends Component {
         this.props.actions.addOrOpenAList(listName);
     };
 
+    removeList = (listId) => {
+        console.log("removeList in ListsApp, listId:", listId);
+        this.props.actions.removeList(listId);
+    };
+
     render = () => {
         this.addHotKeys();
         return (
@@ -96,6 +101,7 @@ class ListsApp extends Component {
                 <ListOfLists
                     lists={this.state.lists.filter(list => !list.immutable)}
                     openList={this.openAList}
+                    removeList={this.removeList}
                     hotKeys={this.hotKeys}
                 />
                 <hr />
@@ -125,6 +131,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         actions: {
             addOrOpenAList: bindActionToPromise(dispatch, addOrOpenAList),
+            removeList: bindActionToPromise(dispatch, removeList),
             getAList: bindActionToPromise(dispatch, getAList),
             getListOfLists: bindActionToPromise(dispatch, getListOfLists),
         }

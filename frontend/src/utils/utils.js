@@ -16,13 +16,8 @@ export function sortArrOfObjectsByParam(arrToSort, sortBy, sortDesc) {
 }
 
 export function moveToAnother(fromA, toB, i, toTop) {
-    console.log("i", i);
-    console.log("fromA", fromA);
-    console.log("toB", toB);
     let trans = fromA[i];
     fromA.splice(i, 1);
-    console.log("trans", trans);
-    console.log("po splice", fromA);
     if (toTop) {
         toB = _.unique([trans].concat(toB));
     } else {

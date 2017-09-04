@@ -4,7 +4,8 @@ const types = {
     CHECK_AND_SAVE: null,
     LOOKING_FOR_A_LIST: 'async',
     NEW_LIST: 'async',
-    A_LIST: 'async',
+    REMOVE_LIST: 'async',
+    GET_A_LIST: 'async',
 };
 
 Object.keys(types).forEach(key => {

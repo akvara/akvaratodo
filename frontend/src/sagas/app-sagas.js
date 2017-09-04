@@ -1,12 +1,12 @@
 import types from '../actions/types';
-import {fetchItemSaga, createItemSaga} from './common-sagas';
+import {fetchItemSaga, createItemSaga, removeItemSaga} from './common-sagas';
 import {takeEvery, takeLatest, all} from 'redux-saga/effects';
 import {renderComponent} from '../components/Renderer'
 import * as UrlUtils from '../utils/urlUtils';
 import {TaskEntity} from "../utils/entity";
 import Failure from '../components/Failure';
 
-export function* listOfListsRequest(action) {
+function* listOfListsRequest(action) {
     yield fetchItemSaga(UrlUtils.getListsUrl(), types.LIST_OF_LISTS);
 }
 
@@ -27,15 +27,24 @@ function* checkIfExists(data) {
         filtered = lists.filter((e) => e.name === listName);
 
     if (filtered.length) {
-        return yield fetchItemSaga(UrlUtils.getAListUrl(filtered[0]._id), types.A_LIST);
+        return yield fetchItemSaga(UrlUtils.getAListUrl(filtered[0]._id), types.GET_A_LIST);
     }
 
     yield createItemSaga(UrlUtils.getListsUrl(), TaskEntity(listName), types.NEW_LIST);
 }
 
-export function* getAListRequest(action) {
-    yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data), types.A_LIST);
+function* getAListRequest(action) {
+    yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data), types.GET_A_LIST);
 }
+
+function* removeListRequest(action) {
+    yield console.log("removeItemSaga", action);
+    yield removeItemSaga(UrlUtils.getAListUrl(action.payload.data), action.payload.data, types.REMOVE_LIST);
+}
+
+// function* removeListSuccess(e) {
+//     yield console.log("removeListSuccess****", e);
+// }
 
 function* generalFailure(e) {
     yield renderComponent(Failure);
@@ -52,8 +61,12 @@ export default function* listSagas() {
         takeEvery(types.LOOKING_FOR_A_LIST.SUCCESS, checkIfExists),
         takeLatest(types.LOOKING_FOR_A_LIST.FAILURE, generalFailure),
 
-        takeEvery(types.A_LIST.REQUEST, getAListRequest),
-        takeLatest(types.A_LIST.FAILURE, generalFailure),
+        takeEvery(types.GET_A_LIST.REQUEST, getAListRequest),
+        takeLatest(types.GET_A_LIST.FAILURE, generalFailure),
+
+        takeEvery(types.REMOVE_LIST.REQUEST, removeListRequest),
+        takeEvery(types.REMOVE_LIST.SUCCESS, listOfListsRequest),
+        takeLatest(types.REMOVE_LIST.FAILURE, generalFailure),
 
         takeEvery(types.NEW_LIST.SUCCESS, getAListRequest),
         takeEvery(types.NEW_LIST.FAILURE, generalFailure),

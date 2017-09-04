@@ -18,34 +18,6 @@ class TaskList extends Component {
 
     };
 
-    done(i) {
-        this.props.done(i);
-    }
-
-    delete(i) {
-        this.props.delete(i);
-    }
-
-    toTop(i) {
-        this.props.toTop(i);
-    }
-
-    move(i) {
-        this.props.move(i);
-    }
-
-    procrastinate(i) {
-        this.props.procrastinate(i);
-    }
-
-    postpone(i) {
-        this.props.postpone(i);
-    }
-
-    openListByName(name) {
-        this.props.openListByName(name);
-    }
-
     hightlightOnDemand(element, index) {
         if (this.props.hightlightIndex === index)
             return <strong>{element}</strong>;
@@ -73,7 +45,7 @@ class TaskList extends Component {
             taskAsDisplayed = <span>
                 <span className={"glyphicon glyphicon-folder-open list-first-item"}
                       aria-hidden="true"
-                      onClick={this.openListByName.bind(this, task.substring(1))}>
+                      onClick={this.props.openListByName.bind(this, task.substring(1))}>
                 </span>
                 { taskTruncated.substring(1) }
             </span> ;
@@ -105,19 +77,40 @@ class TaskList extends Component {
                 <td>
                     <span className="glyphicon glyphicon-unchecked action-button"
                           aria-hidden="true"
-                          onClick={this.done.bind(this, itemIndex)}>
+                          onClick={this.props.done.bind(this, itemIndex)}>
                     </span>
                     <span className="list-item task">
                         { this.hightlightOnDemand(taskAsDisplayed, itemIndex) }
                     </span>
                 </td>
                 <td className="actions">
-                    <span className="glyphicon glyphicon-trash delete-button" aria-hidden="true" onClick={this.delete.bind(this, itemIndex)}></span>
-                    <span className="list-item">{' '}</span>
-                    <span className="glyphicon glyphicon-arrow-down action-button" aria-hidden="true" onClick={this.procrastinate.bind(this, itemIndex)}></span>
-                    <span className="glyphicon glyphicon-arrow-up action-button" aria-hidden="true"onClick={this.toTop.bind(this, itemIndex)}></span>
-                    <span className="glyphicon glyphicon-random action-button" aria-hidden="true" onClick={this.move.bind(this, itemIndex)}></span>
-                    <span className="glyphicon glyphicon-thumbs-down action-button" aria-hidden="true" onClick={this.postpone.bind(this, itemIndex)}></span>
+                    <span className="glyphicon glyphicon-trash delete-button" 
+                          aria-hidden="true" 
+                          onClick={this.props.delete.bind(this, itemIndex)}>
+                        
+                    </span>
+                    <span 
+                        className="list-item">{' '}
+                    </span>
+                    <span className="glyphicon glyphicon-arrow-down action-button" 
+                          aria-hidden="true" 
+                          onClick={this.props.procrastinate.bind(this, itemIndex)}>
+                        
+                    </span>
+                    <span className="glyphicon glyphicon-arrow-up action-button" 
+                          aria-hidden="true"
+                          onClick={this.props.toTop.bind(this, itemIndex)}>
+                        
+                    </span>
+                    <span className="glyphicon glyphicon-random action-button" 
+                          aria-hidden="true" 
+                          onClick={this.props.move.bind(this, itemIndex)}>
+                        
+                    </span>
+                    <span className="glyphicon glyphicon-thumbs-down action-button" 
+                          aria-hidden="true" 
+                          onClick={this.props.postpone.bind(this, itemIndex)}>
+                    </span>
                 </td>
             </tr>
         }

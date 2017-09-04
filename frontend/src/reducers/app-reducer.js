@@ -11,10 +11,13 @@ class AppReducer extends BaseReducer {
             [types.LIST_OF_LISTS.REQUEST]: this.listOfListsRequest,
             [types.LIST_OF_LISTS.SUCCESS]: this.listOfListsFetched,
 
+            [types.REMOVE_LIST.REQUEST]: this.removeListRequest,
+            // [types.REMOVE_LIST.SUCCESS]: this.listOfListsFetched,
+
             [types.LOOKING_FOR_A_LIST.REQUEST]: this.addAListRequest,
             [types.LOOKING_FOR_A_LIST.SUCCESS]: this.listsRefreshed,
 
-            [types.A_LIST.SUCCESS]: this.aListFetched,
+            [types.GET_A_LIST.SUCCESS]: this.aListFetched,
             [types.CHECK_AND_SAVE]: this.checkAList,
         };
     }
@@ -34,6 +37,22 @@ class AppReducer extends BaseReducer {
             mode: CONST.mode.MODE_LOADING
         };
     }
+
+    removeListRequest(state, action) {
+        return {
+            ...state,
+            status_msg: 'Removing list ...',
+            mode: CONST.mode.MODE_LOADING
+        };
+    }
+
+    // listsRefreshed(state, action) {
+    //     return {
+    //         ...state,
+    //         status_msg: 'Lists refreshed',
+    //         mode: CONST.mode.MODE_LOADING
+    //     };
+    // }
 
     addAListRequest(state, action) {
         return {

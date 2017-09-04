@@ -7,15 +7,9 @@ class ListOfLists extends Component {
     static propTypes = {
         hotKeys: PropTypes.array,
         lists: PropTypes.array,
+        openList: PropTypes.func.isRequired,
+        removeList: PropTypes.func,
     };
-
-	removeList = (id) => {
-		this.props.removeList(id);
-	};
-
-	openList = (...params) => {
-		this.props.openList(...params);
-	};
 
     hotKeyedListName = (listName) => {
         if (!this.props.hotKeys) return listName;
@@ -35,7 +29,7 @@ class ListOfLists extends Component {
 
 	displayList = (list, i) => {
 		let itemClass = "list-item",
-	        action = this.openList.bind(this, list._id, list.name),
+	        action = this.props.openList.bind(this, list._id, list.name),
     	    glyph = "glyphicon-folder-open",
 			deletable = list.tasks ? (list.tasks === '[]' && !list.immutable) : true,
 			updatedDateOrTime =
@@ -53,14 +47,17 @@ class ListOfLists extends Component {
 		return (
 			<tr key={'tr'+i}>
 				<td className={itemClass} onClick={action} >
-					<span className={"glyphicon list-item list-item-glyph " + glyph} aria-hidden="true"></span>
+					<span className={"glyphicon list-item list-item-glyph " + glyph}
+						  aria-hidden="true">
+					</span>
 				{ this.hotKeyedListName(list.name) }
 				</td>
 				<td className="actions">
 				{deletable  &&
 					<span className="glyphicon glyphicon-trash action-button"
 						  aria-hidden="true"
-						  onClick={this.removeList.bind(list._id)}></span>
+						  onClick={this.props.removeList.bind(this, list._id)}>
+					</span>
 				}
 				</td>
 				<td className="right-align">

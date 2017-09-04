@@ -164,7 +164,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
             immutable: dataToSave.immutable,
         });
 
-        console.log("mark", i);
+        console.log("mark");
         this.props.actions.checkAndSave(dataToSave);
     };
 
@@ -224,7 +224,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
             listName: dataToSave.listName
         });
 
-        console.log("changeListName", i);
+        console.log("changeListName", e);
         this.props.actions.checkAndSave(dataToSave);
     };
 
@@ -323,7 +323,6 @@ console.log('TasksApp constructed. this.props.list:', props.list);
             </h1>
         );
     };
-    
 
     /* The Renderer */
     render() {
@@ -402,18 +401,28 @@ console.log('TasksApp constructed. this.props.list:', props.list);
                 <hr />
                 [Load From Select Button]
                 <button disabled={this.state.task.trim()} onClick={this.mark}>
-                    <span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true"></span> {markTitle}
+                    <span className={'glyphicon glyphicon-' + markGlyphicon}
+                          aria-hidden="true">
+                    </span>
+                    {markTitle}
                 </button>
                 <button onClick={this.reload}>
-                    <span className={'glyphicon glyphicon-refresh'} aria-hidden="true"></span> <u>R</u>eload
+                    <span className={'glyphicon glyphicon-refresh'}
+                          aria-hidden="true">
+                    </span>
+                    <u>R</u>eload
                 </button>
                 {this.props.previousList &&
                     <button disabled={this.state.task.trim()} onClick={this.listChanger}>
-                        <span className="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> {this.props.previousList.name}
+                        <span className="glyphicon glyphicon-chevron-left" aria-hidden="true">
+                        </span>
+                        {this.props.previousList.name}
                     </button>
                 }
                 <button disabled={this.state.task.trim()} onClick={this.props.actions.getListOfLists}>
-                    <span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> <u>L</u>ists
+                    <span className="glyphicon glyphicon-tasks" aria-hidden="true">
+                    </span>
+                    <u>L</u>ists
                 </button>
             </div>
         );
