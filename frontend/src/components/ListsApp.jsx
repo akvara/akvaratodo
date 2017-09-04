@@ -20,7 +20,10 @@ class ListsApp extends Component {
             listName: '',
         };
 
-        this.hotKeys = [{ key: 'a', listId: null, listName: null }]; // reserved hotkey
+        this.hotKeys = [ // reserved hotkeys
+            { key: 'a'},
+            { key: 'r'},
+        ];
     }
 
     componentWillUnmount() {
@@ -38,6 +41,12 @@ class ListsApp extends Component {
             playSound();
             e.preventDefault();
             this.nameInput.focus();
+            return;
+        }
+        if (pressed === 'r') {
+            playSound();
+            e.preventDefault();
+            this.openLists();
             return;
         }
         this.hotKeys.forEach(function (k) {
@@ -89,7 +98,6 @@ class ListsApp extends Component {
     };
 
     removeList = (listId) => {
-        console.log("removeList in ListsApp, listId:", listId);
         this.props.actions.removeList(listId);
     };
 
@@ -115,7 +123,7 @@ class ListsApp extends Component {
                         className="list-input"
                         ref={(input) => { this.nameInput = input; }}
                         value={this.state.listName}
-                        onBlur={Utils.registerHotKeys}
+                        onBlur={Utils.registerHotKeys.bind(this, this.checkKeyPressed)}
                         onFocus={Utils.disableHotKeys}
                         onChange={this.onNameChange}
                     />
