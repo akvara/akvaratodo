@@ -4,8 +4,11 @@ class Failure extends Component {
 
     /* The Renderer */
     render() {
+        let msg = this.props.msg ? this.props.msg : "Ooops, something went wrong...";
         return (
-            <div>Ooops, something went wrong..
+            <div>
+            <br />
+                {msg}
             <br />
             Please <button onClick={()=> window.location.reload()}>reload</button>
             </div>

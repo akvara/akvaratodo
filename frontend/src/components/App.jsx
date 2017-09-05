@@ -40,13 +40,15 @@ class App extends Component {
             return <TasksApp list={this.props.a_list} />
         }
 
+        if (this.props.mode === CONST.mode.DATA_CONFLICT) {
+            return <Failure msg="Data conflict" />
+        }
+
         if (this.props.mode === CONST.mode.MODE_ERROR) {
             return <Failure  />
         }
 
-        return (
-            <div className="error">Mode {this.props.mode} not impelemented</div>
-        )
+        return <div className="error">Mode {this.props.mode} not impelemented</div>
     };
 
     /* The Renderer */

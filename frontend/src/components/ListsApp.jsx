@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import ListOfLists from './ListOfLists';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {bindActionToPromise} from '../utils/redux-form';
 import {addOrOpenAList, getAList, removeList, getListOfLists} from '../actions/list-actions';
 import {playSound} from '../utils/hotkeys';
 import * as Utils from '../utils/utils.js';
-import {bindActionToPromise} from '../utils/redux-form';
 
 class ListsApp extends Component {
     static propTypes = {
@@ -112,7 +112,6 @@ class ListsApp extends Component {
                     removeList={this.removeList}
                     hotKeys={this.hotKeys}
                 />
-                <hr />
                 <h3>Protected</h3>
                 <ListOfLists
                     lists={this.state.lists.filter(list => list.immutable)}
@@ -129,7 +128,6 @@ class ListsApp extends Component {
                     />
                     <button disabled={!this.state.listName.trim()}>Create new list</button>
                 </form>
-
             </div>
         );
     }

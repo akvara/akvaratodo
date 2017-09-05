@@ -1,10 +1,8 @@
 import types from '../actions/types';
 import {fetchItemSaga, createItemSaga, removeItemSaga, updateItemSaga} from './common-sagas';
 import {takeEvery, put, all} from 'redux-saga/effects';
-// import {renderComponent} from '../components/Renderer'
 import * as UrlUtils from '../utils/urlUtils';
 import {TaskEntity} from "../utils/entity";
-// import Failure from '../components/Failure';
 
 function* listOfListsRequest(action) {
     yield fetchItemSaga(UrlUtils.getListsUrl(), types.LIST_OF_LISTS);
@@ -23,12 +21,17 @@ function* checkLastActionDate(action) {
 function* checkAndSave(action) {
     yield console.log('checkAndSave - ', action);
     yield console.log('comparing - ', action.payload.lastAction, "with", action.transit.previousAction);
+    if (action.payload.lastAction !== action.transit.previousAction) {
+    // if (true) {
+        return yield put({type: types.DATA_CONFLICT, payload: action.payload.lastAction});
+    }
 
-    // yield updateItemSaga(
-    //     UrlUtils.getAListUrl(action.payload.data.listId),
-    //     action.payload.data.listData,
-    //     types.UPDATE_LIST
-    // );
+    console.log("action.transit", action.transit);
+    yield updateItemSaga(
+        UrlUtils.getAListUrl(action.transit.listId),
+        action.transit.listData,
+        types.UPDATE_LIST
+    );
 }
 
 function* checkIfExists(data) {

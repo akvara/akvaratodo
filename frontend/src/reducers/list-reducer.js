@@ -20,6 +20,7 @@ class AppReducer extends BaseReducer {
             [types.CHECK_AND_SAVE]: this.checkAList,
 
             [types.ERROR]: this.error,
+            [types.DATA_CONFLICT]: this.dataConflict,
         };
     }
 
@@ -84,6 +85,15 @@ class AppReducer extends BaseReducer {
         return {
             ...state,
             mode: CONST.mode.ERROR
+        };
+    }
+
+    dataConflict(state, action) {
+        let date = (new Date(action.payload)).toLocaleTimeString("lt-LT");
+        return {
+            ...state,
+            status_msg: date,
+            mode: CONST.mode.DATA_CONFLICT
         };
     }
 

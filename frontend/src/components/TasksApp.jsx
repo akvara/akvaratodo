@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import TasksList from './TasksList';
 import TasksDoneList from './TasksDoneList';
+import CONFIG from '../config.js';
 import {getAList, getListOfLists, addOrOpenAList, checkAndSave} from '../actions/list-actions';
-import * as Utils from '../utils/utils.js';
 import {playSound} from '../utils/hotkeys';
 import {bindActionToPromise} from '../utils/redux-form';
+import * as Utils from '../utils/utils.js';
+import _ from 'underscore';
 
 class TasksApp extends Component {
 
@@ -95,7 +97,8 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         this.setState({
             lastAction: dataToSave.lastAction,
             itemsToDo: dataToSave.itemsToDo,
-            itemsDone: dataToSave.itemsDone
+            itemsDone: dataToSave.itemsDone,
+            hightlightIndex: null
         });
 
         this.props.actions.checkAndSave(this.serialize(dataToSave));
@@ -112,7 +115,8 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         this.setState({
             lastAction: dataToSave.lastAction,
             itemsToDo: dataToSave.itemsToDo,
-            itemsDone: dataToSave.itemsDone
+            itemsDone: dataToSave.itemsDone,
+            hightlightIndex: 0
         });
 
         this.props.actions.checkAndSave(this.serialize(dataToSave));
@@ -126,7 +130,8 @@ console.log('TasksApp constructed. this.props.list:', props.list);
 
         this.setState({
             lastAction: dataToSave.lastAction,
-            itemsDone: dataToSave.itemsDone
+            itemsDone: dataToSave.itemsDone,
+            hightlightIndex: null
         });
 
         this.props.actions.checkAndSave(this.serialize(dataToSave));
@@ -141,6 +146,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         this.setState({
             lastAction: dataToSave.lastAction,
             itemsToDo: dataToSave.itemsToDo,
+            hightlightIndex: null
         });
 
         this.props.actions.checkAndSave(this.serialize(dataToSave));
@@ -155,7 +161,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         this.setState({
             lastAction: dataToSave.lastAction,
             itemsToDo: dataToSave.itemsToDo,
-            highlightPosition: 0
+            hightlightIndex: 0
         });
 
         this.props.actions.checkAndSave(this.serialize(dataToSave));
@@ -170,6 +176,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         this.setState({
             lastAction: dataToSave.lastAction,
             immutable: dataToSave.immutable,
+            hightlightIndex: null
         });
 
         this.props.actions.checkAndSave(this.serialize(dataToSave));
@@ -188,7 +195,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         this.setState({
             lastAction: dataToSave.lastAction,
             itemsToDo: dataToSave.itemsToDo,
-            highlightPosition: this.state.itemsToDo.length
+            hightlightIndex: this.state.itemsToDo.length
         });
 
         this.props.actions.checkAndSave(this.serialize(dataToSave));
@@ -204,7 +211,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
             i + this.calculatePostponePosition(this.state.itemsToDo.length)
         );
 
-        let highlightPosition = Math.min(
+        let hightlightIndex = Math.min(
             this.state.itemsToDo.length - 1, 
             i + this.calculatePostponePosition(this.state.itemsToDo.length)
         );
@@ -212,7 +219,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         this.setState({
             lastAction: dataToSave.lastAction,
             itemsToDo: dataToSave.itemsToDo,
-            highlightPosition: highlightPosition
+            hightlightIndex: hightlightIndex
         });
 
         this.props.actions.checkAndSave(this.serialize(dataToSave));
@@ -226,7 +233,8 @@ console.log('TasksApp constructed. this.props.list:', props.list);
 
         this.setState({
             lastAction: dataToSave.lastAction,
-            listName: dataToSave.listName
+            listName: dataToSave.listName,
+            hightlightIndex: null
         });
 
         console.log("changeListName", e);
@@ -251,7 +259,8 @@ console.log('TasksApp constructed. this.props.list:', props.list);
     };
 
     /* Edit header keypress */
-    onKeyDown(e) {
+    onKeyDown =(e) => {
+        console.log("onKeyDown(e):", e);
         switch(e.key) {
             case 'Enter':
             case 'Tab':
@@ -301,6 +310,34 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         e.preventDefault();
     };
 
+    /* New task submit */
+    handleSubmit = (e) => {
+        e.preventDefault();
+
+        let dataToSave = this.prepareClone(),
+            hightlightIndex = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
+
+        dataToSave.itemsToDo = this.state.itemsToDo;
+        dataToSave.itemsToDo.splice(CONFIG.user.settings.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
+        dataToSave.itemsToDo = _.unique(dataToSave.itemsToDo);
+
+        this.setState({
+            lastAction: dataToSave.lastAction,
+            itemsToDo: dataToSave.itemsToDo,
+            hightlightIndex: hightlightIndex,
+            task: ''
+        });
+console.log(hightlightIndex);
+        Utils.registerHotKeys();
+
+        this.props.actions.checkAndSave(this.serialize(dataToSave));
+    };
+
+    /* User input */
+    onChange = (e) => {
+        this.setState({ task: e.target.value });
+    };
+
     /* Header - edit mode or not */
     manageHeader = () => {
         if (!this.state.listNameOnEdit) return (
@@ -331,7 +368,6 @@ console.log('TasksApp constructed. this.props.list:', props.list);
 
     /* The Renderer */
     render() {
-
         let markTitle = this.state.immutable ? <span>Un<u>p</u>rotect</span> : <span><u>P</u>rotect</span>,
             markGlyphicon = this.state.immutable ? 'screen-shot' : 'exclamation-sign',
             expandToDoGlyphicon = this.state.expandToDo ? "glyphicon-resize-small" : "glyphicon-resize-full",
@@ -394,8 +430,8 @@ console.log('TasksApp constructed. this.props.list:', props.list);
                         <input
                             className="task-input"
                             ref={(input) => { this.nameInput = input; }}
-                            onFocus={Utils.disableHotKeys}
-                            onBlur={Utils.registerHotKeys(this.checkKeyPressed)}
+                            onFocus={Utils.disableHotKeys.bind(this)}
+                            onBlur={Utils.registerHotKeys.bind(this, this.checkKeyPressed)}
                             value={this.state.task}
                             onChange={this.onChange}
                         />
