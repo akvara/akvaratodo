@@ -24,9 +24,16 @@ export function addOrOpenAList(data, resolve, reject) {
         type: types.ADD_OR_OPEN_LIST, payload: {data, resolve, reject}
     };
 }
+
 export function checkAndSave(data, resolve, reject) {
     return {
         type: types.CHECK_AND_SAVE, payload: {data, resolve, reject}
+    };
+}
+
+export function prependToAList(data, resolve, reject) {
+    return {
+        type: types.PREPEND.REQUEST, payload: {data, resolve, reject}
     };
 }
 

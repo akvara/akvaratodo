@@ -17,6 +17,23 @@ function* checkLastActionDate(action) {
     yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data.listId), types.CHECK_DATE, action.payload.data);
 }
 
+function* prependToAList(action) {
+    console.log("prependToAList(action)" , action);
+    yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data.listId), types.PREPEND, action.payload.data);
+}
+
+function* prependSuccess(action) {
+    console.log("action prepend", action);
+    let new_todo = action.transit.prepend.concat(JSON.parse(action.payload.tasks)),
+        new_data = {tasks: JSON.stringify(new_todo)};
+
+    yield updateItemSaga(
+        UrlUtils.getAListUrl(action.transit.listId),
+        new_data,
+        types.GET_A_LIST
+    );
+}
+
 /* Trying to find list by this name */
 function* checkAndSave(action) {
     yield console.log('checkAndSave - ', action);
@@ -88,5 +105,9 @@ export default function* listSagas() {
 
         takeEvery(types.UPDATE_LIST.SUCCESS, updateListSuccess),
         takeEvery(types.UPDATE_LIST.FAILURE, generalFailure),
+
+        takeEvery(types.PREPEND.REQUEST, prependToAList),
+        takeEvery(types.PREPEND.SUCCESS, prependSuccess),
+        takeEvery(types.PREPEND.FAILURE, generalFailure),
     ]);
 }

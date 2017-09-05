@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import TasksList from './TasksList';
 import TasksDoneList from './TasksDoneList';
 import CONFIG from '../config.js';
-import {getAList, getListOfLists, addOrOpenAList, checkAndSave} from '../actions/list-actions';
+import {getAList, getListOfLists, addOrOpenAList, checkAndSave, prependToAList} from '../actions/list-actions';
 import {playSound} from '../utils/hotkeys';
 import {bindActionToPromise} from '../utils/redux-form';
 import * as Utils from '../utils/utils.js';
@@ -272,7 +272,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
             default:
                 break;
         }
-    }
+    };
 
     checkKeyPressed = (e) => {
         let key = String.fromCharCode(e.which);
@@ -327,7 +327,6 @@ console.log('TasksApp constructed. this.props.list:', props.list);
             hightlightIndex: hightlightIndex,
             task: ''
         });
-console.log(hightlightIndex);
         Utils.registerHotKeys();
 
         this.props.actions.checkAndSave(this.serialize(dataToSave));
@@ -338,8 +337,14 @@ console.log(hightlightIndex);
         this.setState({ task: e.target.value });
     };
 
-    loadAnotherList = (listId) => {
+    prependAnotherList = (listId) => {
         console.log("Load " + listId);
+        let data = {
+            listId: this.props.list._id,
+            prepend: ["aha, šitą"]
+        };
+        this.props.actions.prependToAList(data);
+
     };
 
     /* Button for loading tasks from another list */
@@ -349,7 +354,7 @@ console.log(hightlightIndex);
         return (
             <button key={'btn'+item._id}
                     disabled={this.state.reloadNeeded || this.state.task.trim()}
-                    onClick={this.loadAnotherList.bind(this, item._id)} >
+                    onClick={this.prependAnotherList.bind(this, item._id)} >
                 <span className={'glyphicon glyphicon-upload'} aria-hidden="true">
                 </span> <i>{ item.name }</i>
             </button>
@@ -492,6 +497,7 @@ const mapDispatchToProps = (dispatch) => {
             getListOfLists: bindActionToPromise(dispatch, getListOfLists),
             checkAndSave: bindActionToPromise(dispatch, checkAndSave),
             addOrOpenAList: bindActionToPromise(dispatch, addOrOpenAList),
+            prependToAList: bindActionToPromise(dispatch, prependToAList),
         }
     }
 };

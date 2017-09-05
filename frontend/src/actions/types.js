@@ -4,6 +4,7 @@ const types = {
     DATA_CONFLICT: null,
     LIST_OF_LISTS: 'async',
     LOOKING_FOR_A_LIST: 'async',
+    PREPEND: 'async',
     NEW_LIST: 'async',
     REMOVE_LIST: 'async',
     UPDATE_LIST: 'async',
