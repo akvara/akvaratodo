@@ -1,6 +1,7 @@
 import types from '../actions/types';
 import BaseReducer from './base-reducer';
 import CONST from '../utils/constants.js';
+import * as Utils from '../utils/utils';
 
 class AppReducer extends BaseReducer {
 
@@ -15,6 +16,8 @@ class AppReducer extends BaseReducer {
 
             [types.LOOKING_FOR_A_LIST.REQUEST]: this.addAListRequest,
             [types.LOOKING_FOR_A_LIST.SUCCESS]: this.listsRefreshed,
+
+            [types.UPDATE_LIST.SUCCESS]: this.listSaved,
 
             [types.GET_A_LIST.SUCCESS]: this.aListFetched,
             [types.CHECK_AND_SAVE]: this.checkAList,
@@ -63,10 +66,17 @@ class AppReducer extends BaseReducer {
         };
     }
 
+    listSaved(state, action) {
+        return {
+            ...state,
+            status_msg: 'List saved',
+        };
+    }
+
     listOfListsFetched(state, action) {
         return {
             ...state,
-            lists: action.payload,
+            lists: Utils.sortArrOfObjectsByParam(action.payload, 'updatedAt', true),
             status_msg: 'Lists loaded',
             mode: CONST.mode.MODE_LIST_OF_LISTS
         };
