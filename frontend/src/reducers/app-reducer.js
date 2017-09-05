@@ -12,13 +12,14 @@ class AppReducer extends BaseReducer {
             [types.LIST_OF_LISTS.SUCCESS]: this.listOfListsFetched,
 
             [types.REMOVE_LIST.REQUEST]: this.removeListRequest,
-            // [types.REMOVE_LIST.SUCCESS]: this.listOfListsFetched,
 
             [types.LOOKING_FOR_A_LIST.REQUEST]: this.addAListRequest,
             [types.LOOKING_FOR_A_LIST.SUCCESS]: this.listsRefreshed,
 
             [types.GET_A_LIST.SUCCESS]: this.aListFetched,
             [types.CHECK_AND_SAVE]: this.checkAList,
+
+            [types.ERROR]: this.error,
         };
     }
 
@@ -46,14 +47,6 @@ class AppReducer extends BaseReducer {
         };
     }
 
-    // listsRefreshed(state, action) {
-    //     return {
-    //         ...state,
-    //         status_msg: 'Lists refreshed',
-    //         mode: CONST.mode.MODE_LOADING
-    //     };
-    // }
-
     addAListRequest(state, action) {
         return {
             ...state,
@@ -66,7 +59,6 @@ class AppReducer extends BaseReducer {
         return {
             ...state,
             status_msg: 'Checking a list ...',
-            // mode: CONST.mode.MODE_LOADING
         };
     }
 
@@ -88,15 +80,13 @@ class AppReducer extends BaseReducer {
         };
     }
 
-    // addAListSuccess(state, action) {
-    //     console.log('addAListSuccess action:',  action);
-    //     return {
-    //         ...state,
-    //         a_list: action.payload,
-    //         status_msg: action.payload.name + ' loaded.',
-    //         mode: CONST.mode.MODE_A_LIST
-    //     };
-    // }
+    error(state, action) {
+        return {
+            ...state,
+            mode: CONST.mode.ERROR
+        };
+    }
+
 }
 
 export default new AppReducer().handleActions;

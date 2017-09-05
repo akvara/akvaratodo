@@ -29,9 +29,8 @@ console.log('TasksApp constructed. this.props.list:', props.list);
             prepend: props.prepend,
             highLightIndex: props.prepend ? 0 : null,
             lastAction: props.list.lastAction,
-            immutable: false,
+            immutable: props.list.immutable,
             task: '',
-            // notYetLoaded: true,
             reloadNeeded: false,
             expandToDo: false,
             listNameOnEdit: false,
@@ -51,14 +50,26 @@ console.log('TasksApp constructed. this.props.list:', props.list);
     /* cloning State */
     prepareClone() {
         let clone = {};
-        // clone.list = this.props.list;
         clone.lastAction = new Date().toISOString();
         clone.listId = this.props.list._id;
-        // clone.itemsToDo = this.state.itemsToDo.slice();
-        // clone.itemsDone = this.state.itemsDone.slice();
-        // clone.immutable = this.state.immutable;
 
         return clone;
+    }
+
+    /* */
+    serialize(object) {
+        let res = {
+                listId: object.listId,
+                listData: {
+                    lastAction: object.lastAction,
+                    immutable: object.immutable
+                }
+            };
+        if (object.name) res.listData.name = object.name;
+        if (object.itemsToDo) res.listData.tasks = JSON.stringify(object.itemsToDo);
+        if (object.itemsDone) res.listData.done = JSON.stringify(object.itemsDone);
+        console.log(" ___________ ", res);
+        return res;
     }
     
     /* Calculations */
@@ -85,8 +96,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
             itemsDone: dataToSave.itemsDone
         });
 
-        console.log("doneTask", i);
-        this.props.actions.checkAndSave(dataToSave);
+        this.props.actions.checkAndSave(this.serialize(dataToSave));
     };
 
     /* Move task back from Done tasks array */
@@ -103,8 +113,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
             itemsDone: dataToSave.itemsDone
         });
 
-        console.log("unDoneTask", i);
-        this.props.actions.checkAndSave(dataToSave);
+        this.props.actions.checkAndSave(this.serialize(dataToSave));
     };
 
     /* Delete done tasks */
@@ -118,8 +127,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
             itemsDone: dataToSave.itemsDone
         });
 
-        console.log("clearDone");
-        this.props.actions.checkAndSave(dataToSave);
+        this.props.actions.checkAndSave(this.serialize(dataToSave));
     };
 
     /* Remove task from list */
@@ -133,8 +141,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
             itemsToDo: dataToSave.itemsToDo,
         });
 
-        console.log("removeTask", i);
-        this.props.actions.checkAndSave(dataToSave);
+        this.props.actions.checkAndSave(this.serialize(dataToSave));
     };
 
     /* Move task to top position */
@@ -149,8 +156,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
             highlightPosition: 0
         });
 
-        console.log("toTop", i);
-        this.props.actions.checkAndSave(dataToSave);
+        this.props.actions.checkAndSave(this.serialize(dataToSave));
     };
 
     /* Toggle immutable. No checking if changed */
@@ -164,8 +170,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
             immutable: dataToSave.immutable,
         });
 
-        console.log("mark");
-        this.props.actions.checkAndSave(dataToSave);
+        this.props.actions.checkAndSave(this.serialize(dataToSave));
     };
 
     moveOutside(i) {
@@ -184,8 +189,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
             highlightPosition: this.state.itemsToDo.length
         });
 
-        console.log("procrastinateTask", i);
-        this.props.actions.checkAndSave(dataToSave);
+        this.props.actions.checkAndSave(this.serialize(dataToSave));
     };
 
     /* Move task to the middle of the list */
@@ -209,8 +213,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
             highlightPosition: highlightPosition
         });
 
-        console.log("postponeTask", i);
-        this.props.actions.checkAndSave(dataToSave);
+        this.props.actions.checkAndSave(this.serialize(dataToSave));
     };
 
     /* Change list name */
@@ -225,7 +228,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         });
 
         console.log("changeListName", e);
-        this.props.actions.checkAndSave(dataToSave);
+        this.props.actions.checkAndSave(this.serialize(dataToSave));
     };
 
     /* Go to another list */

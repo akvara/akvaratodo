@@ -5,6 +5,7 @@ const types = {
     LOOKING_FOR_A_LIST: 'async',
     NEW_LIST: 'async',
     REMOVE_LIST: 'async',
+    UPDATE_LIST: 'async',
     GET_A_LIST: 'async',
 };
 

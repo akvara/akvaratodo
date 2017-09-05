@@ -21,7 +21,7 @@ export function* removeItemSaga(url, data, actionType) {
 
 export function* updateItemSaga(url, data, actionType) {
     try {
-        yield call(callUpdate, url);
+        yield call(callUpdate, url, data);
         yield put({type: actionType.SUCCESS, payload: data});
     } catch (e) {
         yield put({type: actionType.FAILURE, payload: e});

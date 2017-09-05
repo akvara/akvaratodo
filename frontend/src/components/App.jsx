@@ -6,6 +6,7 @@ import CONST from '../utils/constants.js';
 import * as listActions from '../actions/list-actions';
 import ListsApp from './ListsApp.jsx'
 import TasksApp from './TasksApp.jsx'
+import Failure from './Failure.jsx'
 
 class App extends Component {
     static propTypes = {
@@ -37,6 +38,10 @@ class App extends Component {
 
         if (this.props.mode === CONST.mode.MODE_A_LIST) {
             return <TasksApp list={this.props.a_list} />
+        }
+
+        if (this.props.mode === CONST.mode.MODE_ERROR) {
+            return <Failure  />
         }
 
         return (
