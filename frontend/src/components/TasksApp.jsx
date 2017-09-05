@@ -52,6 +52,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         let clone = {};
         clone.lastAction = new Date().toISOString();
         clone.listId = this.props.list._id;
+        clone.previousAction = this.state.lastAction;
 
         return clone;
     }
@@ -60,6 +61,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
     serialize(object) {
         let res = {
                 listId: object.listId,
+                previousAction: object.previousAction,
                 listData: {
                     lastAction: object.lastAction,
                     immutable: object.immutable

@@ -15,16 +15,20 @@ function* lookForAList(action) {
     yield fetchItemSaga(UrlUtils.getListsUrl(), types.LOOKING_FOR_A_LIST, action.payload.data);
 }
 
+function* checkLastActionDate(action) {
+    yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data.listId), types.CHECK_DATE, action.payload.data);
+}
+
 /* Trying to find list by this name */
 function* checkAndSave(action) {
     yield console.log('checkAndSave - ', action);
-    yield console.log('****** - ', action.payload.data.listId);
-    yield console.log('++++++ ', UrlUtils.getAListUrl(action.payload.data.listId),);
-    yield updateItemSaga(
-        UrlUtils.getAListUrl(action.payload.data.listId),
-        action.payload.data.listData,
-        types.UPDATE_LIST
-    );
+    yield console.log('comparing - ', action.payload.lastAction, "with", action.transit.previousAction);
+
+    // yield updateItemSaga(
+    //     UrlUtils.getAListUrl(action.payload.data.listId),
+    //     action.payload.data.listData,
+    //     types.UPDATE_LIST
+    // );
 }
 
 function* checkIfExists(data) {
@@ -61,10 +65,13 @@ export default function* listSagas() {
         takeEvery(types.LIST_OF_LISTS.FAILURE, generalFailure),
 
         takeEvery(types.ADD_OR_OPEN_LIST, lookForAList),
-        takeEvery(types.CHECK_AND_SAVE, checkAndSave),
+        takeEvery(types.CHECK_AND_SAVE, checkLastActionDate),
 
         takeEvery(types.LOOKING_FOR_A_LIST.SUCCESS, checkIfExists),
         takeEvery(types.LOOKING_FOR_A_LIST.FAILURE, generalFailure),
+        
+        takeEvery(types.CHECK_DATE.SUCCESS, checkAndSave),
+        takeEvery(types.CHECK_DATE.FAILURE, generalFailure),
 
         takeEvery(types.GET_A_LIST.REQUEST, getAListRequest),
         takeEvery(types.GET_A_LIST.FAILURE, generalFailure),

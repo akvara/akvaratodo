@@ -7,6 +7,7 @@ const types = {
     REMOVE_LIST: 'async',
     UPDATE_LIST: 'async',
     GET_A_LIST: 'async',
+    CHECK_DATE: 'async',
 };
 
 Object.keys(types).forEach(key => {
