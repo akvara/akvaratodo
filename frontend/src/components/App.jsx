@@ -23,7 +23,7 @@ class App extends Component {
          }
     }
 
-    swithcer = () => {
+    switcher = () => {
         if (this.props.mode === undefined) {
             return <div className="error">mode undefined!</div>
         }
@@ -37,7 +37,12 @@ class App extends Component {
         }
 
         if (this.props.mode === CONST.mode.MODE_A_LIST) {
-            return <TasksApp list={this.props.a_list} />
+            return (
+                <TasksApp
+                    list={this.props.a_list}
+                    immutables={this.props.lists.filter((item) => item.immutable)}
+                />
+            );
         }
 
         if (this.props.mode === CONST.mode.DATA_CONFLICT) {
@@ -48,13 +53,15 @@ class App extends Component {
             return <Failure  />
         }
 
-        return <div className="error">Mode {this.props.mode} not impelemented</div>
+        return (
+            <div className="error">Mode {this.props.mode} not impelemented</div>
+        );
     };
 
     /* The Renderer */
     render() {
         console.log("APP rendering, mode:", this.props);
-        return this.swithcer();
+        return this.switcher();
     }
 }
 
