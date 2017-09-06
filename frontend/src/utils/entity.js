@@ -1,10 +1,15 @@
 let CONFIG = require('../config.js');
 
-export function TaskEntity(name) {
+export function BaseTaskEntity() {
     return {
         userId: CONFIG.default.user.id,
-        name: name,
-        tasks: "[]",
-        done: "[]",
+        lastAction: new Date().toISOString()
     }
+}
+
+export function NewTaskEntity(name) {
+    let task = BaseTaskEntity();
+    task.name = name;
+    task.tasks = "[]";
+    task.done = "[]";
 }

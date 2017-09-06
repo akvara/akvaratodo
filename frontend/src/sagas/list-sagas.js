@@ -1,10 +1,10 @@
 import types from '../actions/types';
-import {fetchItemSaga, createItemSaga, removeItemSaga, updateItemSaga} from './common-sagas';
+import {fetchItemSaga, createItemSaga, removeItemSaga, updateItemSaga, concatListsSaga} from './common-sagas';
 import {takeEvery, put, all} from 'redux-saga/effects';
 import * as UrlUtils from '../utils/urlUtils';
-import {TaskEntity} from "../utils/entity";
+import {NewTaskEntity} from "../utils/entity";
 
-function* listOfListsRequest(action) {
+function* listOfListsRequest() {
     yield fetchItemSaga(UrlUtils.getListsUrl(), types.LIST_OF_LISTS);
 }
 
@@ -34,7 +34,6 @@ function* prependSuccess(action) {
     );
 }
 
-/* Trying to find list by this name */
 function* checkAndSave(action) {
     yield console.log('checkAndSave - ', action);
     yield console.log('comparing - ', action.payload.lastAction, "with", action.transit.previousAction);
@@ -60,10 +59,16 @@ function* checkIfExists(data) {
         return yield fetchItemSaga(UrlUtils.getAListUrl(filtered[0]._id), types.GET_A_LIST);
     }
 
-    yield createItemSaga(UrlUtils.getListsUrl(), TaskEntity(listName), types.NEW_LIST);
+    yield createItemSaga(UrlUtils.getListsUrl(), NewTaskEntity(listName), types.NEW_LIST);
+}
+
+function* concatListsSuccess(action) {
+    yield console.log("concatListsSuccess action", action);
+    yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data), types.GET_A_LIST);
 }
 
 function* getAListRequest(action) {
+    console.log("getAListRequest action", action);
     yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data), types.GET_A_LIST);
 }
 
@@ -75,8 +80,13 @@ function* generalFailure(e) {
     yield put({type: types.ERROR, payload: e});
 }
 
-function* updateListSuccess(e) {
-    yield console.log("updateListSuccess");
+function* concatListsRequest(action) {
+    yield concatListsSaga(
+        UrlUtils.getAListUrl(action.payload.data.firstListId),
+        UrlUtils.getAListUrl(action.payload.data.secondListId),
+        types.CONCAT_LISTS
+    );
+    // yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data.secondListId, types.GET_A_LIST));
 }
 
 export default function* listSagas() {
@@ -103,11 +113,15 @@ export default function* listSagas() {
         takeEvery(types.NEW_LIST.SUCCESS, getAListRequest),
         takeEvery(types.NEW_LIST.FAILURE, generalFailure),
 
-        takeEvery(types.UPDATE_LIST.SUCCESS, updateListSuccess),
+        // takeEvery(types.UPDATE_LIST.SUCCESS, updateListSuccess),
         takeEvery(types.UPDATE_LIST.FAILURE, generalFailure),
 
         takeEvery(types.PREPEND.REQUEST, prependToAList),
         takeEvery(types.PREPEND.SUCCESS, prependSuccess),
         takeEvery(types.PREPEND.FAILURE, generalFailure),
+
+        takeEvery(types.CONCAT_LISTS.REQUEST, concatListsRequest),
+        takeEvery(types.CONCAT_LISTS.SUCCESS, concatListsSuccess),
+        takeEvery(types.CONCAT_LISTS.FAILURE, generalFailure),
     ]);
 }

@@ -1,5 +1,6 @@
 import {put, call} from 'redux-saga/effects';
 import {callGet, callPost, callUpdate, callDelete} from '../utils/api';
+import * as Utils from '../utils/utils.js';
 
 export function* fetchItemSaga(url, actionType, transit) {
     try {
@@ -31,11 +32,28 @@ export function* updateItemSaga(url, data, actionType) {
 export function* createItemSaga(url, data, actionType) {
     try {
         const result = yield call(callPost, url, data);
-        console.log("createItemSaga, result:", result);
         let payload = {data: result._id};
-        console.log("wiil be payload:", payload);
         yield put({type: actionType.SUCCESS, payload: payload});
     } catch (e) {
         yield put({type: actionType.FAILURE, payload: e});
     }
 }
+
+export function* concatListsSaga(urlFirst, urlSecond, actionType) {
+    try {
+        const first = yield call(callGet, urlFirst);
+        const second = yield call(callGet, urlSecond);
+        let data = {
+            lastAction: new Date().toISOString(),
+            tasks: Utils.concatTwoJSONs(first.tasks, second.tasks)
+        };
+        let result = yield call(callUpdate, urlSecond, data);
+        console.log("concatListsSaga - result", result)
+        // yield fetchItemSaga(urlSecond, actionType);
+        yield put({type: actionType.SUCCESS, payload: {data: result._id}});
+    } catch (e) {
+        yield put({type: actionType.FAILURE, payload: e});
+    }
+}
+
+
