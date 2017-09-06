@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import TasksList from './TasksList';
 import TasksDoneList from './TasksDoneList';
 import CONFIG from '../config.js';
-import {getAList, getListOfLists, addOrOpenAList, checkAndSave, prependToAList} from '../actions/list-actions';
+import {getAList, getListOfLists, addOrOpenAList, checkAndSave, concatLists} from '../actions/list-actions';
 import {playSound} from '../utils/hotkeys';
 import {bindActionToPromise} from '../utils/redux-form';
 import * as Utils from '../utils/utils.js';
@@ -338,13 +338,12 @@ console.log('TasksApp constructed. this.props.list:', props.list);
     };
 
     prependAnotherList = (listId) => {
-        console.log("Load " + listId);
+        console.log("prepend  " + listId);
         let data = {
-            listId: this.props.list._id,
-            prepend: ["aha, šitą"]
+            firstListId: listId,
+            secondListId: this.props.list._id,
         };
-        this.props.actions.prependToAList(data);
-
+        this.props.actions.concatLists(data);
     };
 
     /* Button for loading tasks from another list */
@@ -463,8 +462,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
                     </div>
                 }
                 <hr />
-                {this.props.immutables.map((list) => this.displayLoadFromButton(list)) }
-                <br />
+
                 <button disabled={this.state.task.trim()} onClick={this.mark}>
                     <span className={'glyphicon glyphicon-' + markGlyphicon}
                           aria-hidden="true">
@@ -485,6 +483,8 @@ console.log('TasksApp constructed. this.props.list:', props.list);
                     <span className="glyphicon glyphicon-tasks" aria-hidden="true">
                     </span> <u>L</u>ists
                 </button>
+                <br />
+                {this.props.immutables.map((list) => this.displayLoadFromButton(list)) }
             </div>
         );
     }
@@ -497,7 +497,7 @@ const mapDispatchToProps = (dispatch) => {
             getListOfLists: bindActionToPromise(dispatch, getListOfLists),
             checkAndSave: bindActionToPromise(dispatch, checkAndSave),
             addOrOpenAList: bindActionToPromise(dispatch, addOrOpenAList),
-            prependToAList: bindActionToPromise(dispatch, prependToAList),
+            concatLists: bindActionToPromise(dispatch, concatLists),
         }
     }
 };

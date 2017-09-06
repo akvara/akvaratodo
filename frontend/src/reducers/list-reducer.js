@@ -13,6 +13,7 @@ class AppReducer extends BaseReducer {
             [types.LIST_OF_LISTS.SUCCESS]: this.listOfListsFetched,
 
             [types.REMOVE_LIST.REQUEST]: this.removeListRequest,
+            [types.CONCAT_LISTS.REQUEST]: this.concatListsRequest,
 
             [types.LOOKING_FOR_A_LIST.REQUEST]: this.addAListRequest,
             [types.LOOKING_FOR_A_LIST.SUCCESS]: this.listsRefreshed,
@@ -47,6 +48,14 @@ class AppReducer extends BaseReducer {
         return {
             ...state,
             status_msg: 'Removing list ...',
+            mode: CONST.mode.MODE_LOADING
+        };
+    }
+
+    concatListsRequest(state, action) {
+        return {
+            ...state,
+            status_msg: 'Adding a list on top ...',
             mode: CONST.mode.MODE_LOADING
         };
     }

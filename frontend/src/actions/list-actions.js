@@ -37,6 +37,12 @@ export function prependToAList(data, resolve, reject) {
     };
 }
 
+export function concatLists(data, resolve, reject) {
+    return {
+        type: types.CONCAT_LISTS.REQUEST, payload: {data, resolve, reject}
+    };
+}
+
 export function error(data, resolve, reject) {
     return {
         type: types.ERROR, payload: {data, resolve, reject}

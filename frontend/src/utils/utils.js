@@ -55,8 +55,16 @@ export function removeItem(items, i) {
     return items;
 }
 
-export function textToArray(text) {
+// export function textToArray(text) {
     // return text.split(/\r?\n/).filter(entry => entry.trim() !== '');
+// }
+
+export function concatTwoJSONs(json1, json2) {
+    return JSON.stringify(
+        _.unique(
+            JSON.parse(json1).concat(JSON.parse(json2))
+        )
+    );
 }
 
 export function overLength(which, items) {
