@@ -1,5 +1,5 @@
 import types from '../actions/types';
-import {fetchItemSaga, createItemSaga, removeItemSaga, updateItemSaga, concatListsSaga} from './common-sagas';
+import {fetchItemSaga, createItemSaga, removeItemSaga, updateItemSaga} from './common-sagas';
 import {callGet, callUpdate} from '../utils/api';
 import {takeEvery, put, call, all} from 'redux-saga/effects';
 import * as UrlUtils from '../utils/urlUtils';
@@ -19,22 +19,7 @@ function* checkLastActionDate(action) {
     yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data.listId), types.CHECK_DATE, action.payload.data);
 }
 
-function* prependToAList(action) {
-    console.log("prependToAList(action)" , action);
-    yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data.listId), types.PREPEND, action.payload.data);
-}
 
-function* prependSuccess(action) {
-    console.log("action prepend", action);
-    let new_todo = action.transit.prepend.concat(JSON.parse(action.payload.tasks)),
-        new_data = {tasks: JSON.stringify(new_todo)};
-
-    yield updateItemSaga(
-        UrlUtils.getAListUrl(action.transit.listId),
-        new_data,
-        types.GET_A_LIST
-    );
-}
 
 function* checkAndSave(action) {
     yield console.log('checkAndSave - ', action);
@@ -76,7 +61,7 @@ function* generalFailure(e) {
     yield put({type: types.ERROR, payload: e});
 }
 
-function* concatLists(action) {
+function* concatListsSaga(action) {
     try {
         const urlFirst = UrlUtils.getAListUrl(action.payload.data.firstListId);
         const urlSecond = UrlUtils.getAListUrl(action.payload.data.secondListId);
@@ -93,13 +78,28 @@ function* concatLists(action) {
     }
 }
 
+function* prependToAListSaga(action) {
+    try {
+        console.log("prependToAList(action)" , action);
+
+        const url = UrlUtils.getAListUrl(action.payload.data.listId);
+        let originalList = yield call(callGet, url);
+        console.log("originalList" , originalList);
+        let data = {
+            lastAction: new Date().toISOString(),
+            tasks: Utils.prependToJSON("abra", originalList.tasks)
+        };
+        yield call(callUpdate, url, data);
+        return yield fetchItemSaga(url, types.GET_A_LIST);
+    } catch (e) {
+        yield generalFailure(e);
+    }
+}
+
 export default function* listSagas() {
     yield all([
         takeEvery(types.LIST_OF_LISTS.REQUEST, listOfListsRequest),
         takeEvery(types.LIST_OF_LISTS.FAILURE, generalFailure),
-
-        takeEvery(types.ADD_OR_OPEN_LIST, lookForAList),
-        takeEvery(types.CHECK_AND_SAVE, checkLastActionDate),
 
         takeEvery(types.LOOKING_FOR_A_LIST.SUCCESS, checkIfExists),
         takeEvery(types.LOOKING_FOR_A_LIST.FAILURE, generalFailure),
@@ -119,10 +119,10 @@ export default function* listSagas() {
 
         takeEvery(types.UPDATE_LIST.FAILURE, generalFailure),
 
-        takeEvery(types.PREPEND.REQUEST, prependToAList),
-        takeEvery(types.PREPEND.SUCCESS, prependSuccess),
-        takeEvery(types.PREPEND.FAILURE, generalFailure),
+        takeEvery(types.ADD_OR_OPEN_LIST, lookForAList),
+        takeEvery(types.CHECK_AND_SAVE, checkLastActionDate),
 
-        takeEvery(types.CONCAT_LISTS, concatLists),
+        takeEvery(types.PREPEND, prependToAListSaga),
+        takeEvery(types.CONCAT_LISTS, concatListsSaga),
     ]);
 }

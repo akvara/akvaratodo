@@ -14,6 +14,7 @@ class AppReducer extends BaseReducer {
 
             [types.REMOVE_LIST.REQUEST]: this.removeListRequest,
             [types.CONCAT_LISTS]: this.concatListsRequest,
+            [types.PREPEND]: this.prependRequest,
 
             [types.LOOKING_FOR_A_LIST.REQUEST]: this.addAListRequest,
             [types.LOOKING_FOR_A_LIST.SUCCESS]: this.listsRefreshed,
@@ -28,7 +29,7 @@ class AppReducer extends BaseReducer {
         };
     }
 
-    listOfListsRequest(state, action) {
+    listOfListsRequest(state) {
         return {
             ...state,
             status_msg: 'Loading lists ...',
@@ -36,7 +37,7 @@ class AppReducer extends BaseReducer {
         };
     }
 
-    listsRefreshed(state, action) {
+    listsRefreshed(state) {
         return {
             ...state,
             status_msg: 'Lists refreshed',
@@ -44,7 +45,7 @@ class AppReducer extends BaseReducer {
         };
     }
 
-    removeListRequest(state, action) {
+    removeListRequest(state) {
         return {
             ...state,
             status_msg: 'Removing list ...',
@@ -52,7 +53,7 @@ class AppReducer extends BaseReducer {
         };
     }
 
-    concatListsRequest(state, action) {
+    concatListsRequest(state) {
         return {
             ...state,
             status_msg: 'Adding a list on top ...',
@@ -60,7 +61,15 @@ class AppReducer extends BaseReducer {
         };
     }
 
-    addAListRequest(state, action) {
+    prependRequest(state) {
+        return {
+            ...state,
+            status_msg: 'Adding on top ...',
+            mode: CONST.mode.MODE_LOADING
+        };
+    }
+
+    addAListRequest(state) {
         return {
             ...state,
             status_msg: 'Checking lists ...',
@@ -68,14 +77,14 @@ class AppReducer extends BaseReducer {
         };
     }
 
-    checkAList(state, action) {
+    checkAList(state) {
         return {
             ...state,
             status_msg: 'Checking a list ...',
         };
     }
 
-    listSaved(state, action) {
+    listSaved(state) {
         return {
             ...state,
             status_msg: 'List saved',

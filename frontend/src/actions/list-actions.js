@@ -32,7 +32,7 @@ export function checkAndSave(data, resolve, reject) {
 
 export function prependToAList(data, resolve, reject) {
     return {
-        type: types.PREPEND.REQUEST, payload: {data, resolve, reject}
+        type: types.PREPEND, payload: {data, resolve, reject}
     };
 }
 

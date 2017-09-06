@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import TasksList from './TasksList';
 import TasksDoneList from './TasksDoneList';
 import CONFIG from '../config.js';
-import {getAList, getListOfLists, addOrOpenAList, checkAndSave, concatLists} from '../actions/list-actions';
+import {getAList, getListOfLists, addOrOpenAList, checkAndSave, concatLists, prependToAList} from '../actions/list-actions';
 import {playSound} from '../utils/hotkeys';
 import {bindActionToPromise} from '../utils/redux-form';
 import * as Utils from '../utils/utils.js';
@@ -97,7 +97,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
             lastAction: dataToSave.lastAction,
             itemsToDo: dataToSave.itemsToDo,
             itemsDone: dataToSave.itemsDone,
-            hightlightIndex: null
+            highlightIndex: null
         });
 
         this.props.actions.checkAndSave(this.serialize(dataToSave));
@@ -115,7 +115,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
             lastAction: dataToSave.lastAction,
             itemsToDo: dataToSave.itemsToDo,
             itemsDone: dataToSave.itemsDone,
-            hightlightIndex: 0
+            highlightIndex: 0
         });
 
         this.props.actions.checkAndSave(this.serialize(dataToSave));
@@ -130,7 +130,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         this.setState({
             lastAction: dataToSave.lastAction,
             itemsDone: dataToSave.itemsDone,
-            hightlightIndex: null
+            highlightIndex: null
         });
 
         this.props.actions.checkAndSave(this.serialize(dataToSave));
@@ -145,7 +145,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         this.setState({
             lastAction: dataToSave.lastAction,
             itemsToDo: dataToSave.itemsToDo,
-            hightlightIndex: null
+            highlightIndex: null
         });
 
         this.props.actions.checkAndSave(this.serialize(dataToSave));
@@ -160,7 +160,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         this.setState({
             lastAction: dataToSave.lastAction,
             itemsToDo: dataToSave.itemsToDo,
-            hightlightIndex: 0
+            highlightIndex: 0
         });
 
         this.props.actions.checkAndSave(this.serialize(dataToSave));
@@ -175,16 +175,20 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         this.setState({
             lastAction: dataToSave.lastAction,
             immutable: dataToSave.immutable,
-            hightlightIndex: null
+            highlightIndex: null
         });
 
         this.props.actions.checkAndSave(this.serialize(dataToSave));
     };
 
-    moveOutside(i) {
+    moveOutside = (i) => {
         console.log("moveOutside", i);
-    }
-
+        let data = {
+            listId: this.props.list._id,
+            new_task: 'this taSK',
+        };
+        this.props.actions.prependToAList(data);
+    };
 
     procrastinateTask = (i) => {
         let dataToSave = this.prepareClone();
@@ -194,7 +198,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         this.setState({
             lastAction: dataToSave.lastAction,
             itemsToDo: dataToSave.itemsToDo,
-            hightlightIndex: this.state.itemsToDo.length
+            highlightIndex: this.state.itemsToDo.length
         });
 
         this.props.actions.checkAndSave(this.serialize(dataToSave));
@@ -210,7 +214,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
             i + this.calculatePostponePosition(this.state.itemsToDo.length)
         );
 
-        let hightlightIndex = Math.min(
+        let highlightIndex = Math.min(
             this.state.itemsToDo.length - 1, 
             i + this.calculatePostponePosition(this.state.itemsToDo.length)
         );
@@ -218,7 +222,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         this.setState({
             lastAction: dataToSave.lastAction,
             itemsToDo: dataToSave.itemsToDo,
-            hightlightIndex: hightlightIndex
+            highlightIndex: highlightIndex
         });
 
         this.props.actions.checkAndSave(this.serialize(dataToSave));
@@ -233,7 +237,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         this.setState({
             lastAction: dataToSave.lastAction,
             listName: dataToSave.listName,
-            hightlightIndex: null
+            highlightIndex: null
         });
 
         console.log("changeListName", e);
@@ -314,7 +318,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         e.preventDefault();
 
         let dataToSave = this.prepareClone(),
-            hightlightIndex = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
+            highlightIndex = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
 
         dataToSave.itemsToDo = this.state.itemsToDo;
         dataToSave.itemsToDo.splice(CONFIG.user.settings.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
@@ -323,7 +327,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         this.setState({
             lastAction: dataToSave.lastAction,
             itemsToDo: dataToSave.itemsToDo,
-            hightlightIndex: hightlightIndex,
+            highlightIndex: highlightIndex,
             task: ''
         });
         Utils.registerHotKeys();
@@ -337,7 +341,6 @@ console.log('TasksApp constructed. this.props.list:', props.list);
     };
 
     prependAnotherList = (listId) => {
-        console.log("prepend  " + listId);
         let data = {
             firstListId: listId,
             secondListId: this.props.list._id,
@@ -430,7 +433,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
                 </h3>
                 <TasksList
                     items={this.state.itemsToDo}
-                    hightlightIndex={this.state.hightlightIndex}
+                    highlightIndex={this.state.highlightIndex}
                     immutable={this.state.immutable}
                     delete={this.removeTask}
                     move={this.moveOutside}
@@ -497,6 +500,7 @@ const mapDispatchToProps = (dispatch) => {
             checkAndSave: bindActionToPromise(dispatch, checkAndSave),
             addOrOpenAList: bindActionToPromise(dispatch, addOrOpenAList),
             concatLists: bindActionToPromise(dispatch, concatLists),
+            prependToAList: bindActionToPromise(dispatch, prependToAList),
         }
     }
 };

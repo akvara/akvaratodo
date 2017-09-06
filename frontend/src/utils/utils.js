@@ -67,6 +67,14 @@ export function concatTwoJSONs(json1, json2) {
     );
 }
 
+export function prependToJSON(strng, jsn) {
+    return JSON.stringify(
+        _.unique(
+            [strng].concat(JSON.parse(jsn))
+        )
+    );
+}
+
 export function overLength(which, items) {
     return items.length > CONFIG.user.settings[which];
 }
