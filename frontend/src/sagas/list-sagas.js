@@ -19,13 +19,15 @@ function* checkLastActionDate(action) {
     yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data.listId), types.CHECK_DATE, action.payload.data);
 }
 
-
-
 function* checkAndSave(action) {
     yield console.log('checkAndSave - ', action);
     yield console.log('comparing - ', action.payload.lastAction, "with", action.transit.previousAction);
     if (action.payload.lastAction !== action.transit.previousAction) {
     // if (true) {
+        console.log("***** taskToAdd", action.transit.taskToAdd);
+        if (action.transit.taskToAdd) {
+            console.log("bandom!");
+        }
         return yield put({type: types.DATA_CONFLICT, payload: action.payload.lastAction});
     }
 

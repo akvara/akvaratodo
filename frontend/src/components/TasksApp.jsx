@@ -72,6 +72,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         if (object.name) res.listData.name = object.name;
         if (object.itemsToDo) res.listData.tasks = JSON.stringify(object.itemsToDo);
         if (object.itemsDone) res.listData.done = JSON.stringify(object.itemsDone);
+        if (object.taskToAdd) res.taskToAdd = object.taskToAdd;
         return res;
     }
     
@@ -318,11 +319,13 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         e.preventDefault();
 
         let dataToSave = this.prepareClone(),
-            highlightIndex = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
+            highlightIndex = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1),
+            taskToAdd = this.state.task.replace(/(^\s+|\s+$)/g, '');
 
         dataToSave.itemsToDo = this.state.itemsToDo;
-        dataToSave.itemsToDo.splice(CONFIG.user.settings.addNewAt - 1, 0, this.state.task.replace(/(^\s+|\s+$)/g, ''));
+        dataToSave.itemsToDo.splice(CONFIG.user.settings.addNewAt - 1, 0, taskToAdd);
         dataToSave.itemsToDo = _.unique(dataToSave.itemsToDo);
+        dataToSave.taskToAdd = taskToAdd;
 
         this.setState({
             lastAction: dataToSave.lastAction,

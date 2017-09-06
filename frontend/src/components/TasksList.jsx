@@ -14,12 +14,12 @@ class TaskList extends Component {
         procrastinate: PropTypes.func.isRequired,
         postpone: PropTypes.func.isRequired,
         openListByName: PropTypes.func.isRequired,
-        hightlightIndex: PropTypes.number,
+        highlightIndex: PropTypes.number,
 
     };
 
     hightlightOnDemand(element, index) {
-        if (this.props.hightlightIndex === index)
+        if (this.props.highlightIndex === index)
             return <strong>{element}</strong>;
         else
             return <span>{element}</span>;

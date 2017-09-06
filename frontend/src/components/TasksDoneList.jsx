@@ -10,6 +10,7 @@ class TasksDoneList extends Component {
         expand: PropTypes.bool
     };
 
+    /* Display one done task */
     displayTask = (task, i) => {
         if (!this.props.expand && i < this.props.items.length - CONFIG.user.settings.displayDoneLength) return null;
         return (
@@ -28,7 +29,7 @@ class TasksDoneList extends Component {
     };
 
     /* The Renderer */
-    render = () => {
+    render() {
         return (
             <div>
             {!this.props.expand && Utils.overLength("displayDoneLength", this.props.items) &&

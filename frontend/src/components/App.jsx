@@ -46,11 +46,13 @@ class App extends Component {
         }
 
         if (this.props.mode === CONST.mode.DATA_CONFLICT) {
+            // let onClick=this.props.dispatch.bind(listActions.addOrOpenAList.bind(this.props.a_list.name));
+            // return <Failure onClick={onClick} msg="Data conflict" />
             return <Failure msg="Data conflict" />
         }
 
         if (this.props.mode === CONST.mode.MODE_ERROR) {
-            return <Failure  />
+            return <Failure onClick={window.location.reload} />
         }
 
         return (

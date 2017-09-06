@@ -101,7 +101,8 @@ class ListsApp extends Component {
         this.props.actions.removeList(listId);
     };
 
-    render = () => {
+    /* The Renderer */
+    render() {
         this.addHotKeys();
         return (
             <div>
