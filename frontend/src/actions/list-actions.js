@@ -12,7 +12,6 @@ export function getAList(data, resolve, reject) {
     };
 }
 
-
 export function removeList(data, resolve, reject) {
     return {
         type: types.REMOVE_LIST.REQUEST, payload: {data, resolve, reject}
@@ -39,7 +38,7 @@ export function prependToAList(data, resolve, reject) {
 
 export function concatLists(data, resolve, reject) {
     return {
-        type: types.CONCAT_LISTS.REQUEST, payload: {data, resolve, reject}
+        type: types.CONCAT_LISTS, payload: {data, resolve, reject}
     };
 }
 

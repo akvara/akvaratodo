@@ -72,7 +72,6 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         if (object.name) res.listData.name = object.name;
         if (object.itemsToDo) res.listData.tasks = JSON.stringify(object.itemsToDo);
         if (object.itemsDone) res.listData.done = JSON.stringify(object.itemsDone);
-        console.log(" ___________ ", res);
         return res;
     }
     

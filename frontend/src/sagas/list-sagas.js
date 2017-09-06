@@ -1,7 +1,9 @@
 import types from '../actions/types';
 import {fetchItemSaga, createItemSaga, removeItemSaga, updateItemSaga, concatListsSaga} from './common-sagas';
-import {takeEvery, put, all} from 'redux-saga/effects';
+import {callGet, callUpdate} from '../utils/api';
+import {takeEvery, put, call, all} from 'redux-saga/effects';
 import * as UrlUtils from '../utils/urlUtils';
+import * as Utils from '../utils/utils.js';
 import {NewTaskEntity} from "../utils/entity";
 
 function* listOfListsRequest() {
@@ -62,13 +64,7 @@ function* checkIfExists(data) {
     yield createItemSaga(UrlUtils.getListsUrl(), NewTaskEntity(listName), types.NEW_LIST);
 }
 
-function* concatListsSuccess(action) {
-    yield console.log("concatListsSuccess action", action);
-    yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data), types.GET_A_LIST);
-}
-
 function* getAListRequest(action) {
-    console.log("getAListRequest action", action);
     yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data), types.GET_A_LIST);
 }
 
@@ -80,13 +76,21 @@ function* generalFailure(e) {
     yield put({type: types.ERROR, payload: e});
 }
 
-function* concatListsRequest(action) {
-    yield concatListsSaga(
-        UrlUtils.getAListUrl(action.payload.data.firstListId),
-        UrlUtils.getAListUrl(action.payload.data.secondListId),
-        types.CONCAT_LISTS
-    );
-    // yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data.secondListId, types.GET_A_LIST));
+function* concatLists(action) {
+    try {
+        const urlFirst = UrlUtils.getAListUrl(action.payload.data.firstListId);
+        const urlSecond = UrlUtils.getAListUrl(action.payload.data.secondListId);
+        const firstList = yield call(callGet, urlFirst);
+        const second = yield call(callGet, urlSecond);
+        let data = {
+            lastAction: new Date().toISOString(),
+            tasks: Utils.concatTwoJSONs(firstList.tasks, second.tasks)
+        };
+        yield call(callUpdate, urlSecond, data);
+        return yield fetchItemSaga(urlSecond, types.GET_A_LIST);
+    } catch (e) {
+        yield generalFailure(e);
+    }
 }
 
 export default function* listSagas() {
@@ -113,15 +117,12 @@ export default function* listSagas() {
         takeEvery(types.NEW_LIST.SUCCESS, getAListRequest),
         takeEvery(types.NEW_LIST.FAILURE, generalFailure),
 
-        // takeEvery(types.UPDATE_LIST.SUCCESS, updateListSuccess),
         takeEvery(types.UPDATE_LIST.FAILURE, generalFailure),
 
         takeEvery(types.PREPEND.REQUEST, prependToAList),
         takeEvery(types.PREPEND.SUCCESS, prependSuccess),
         takeEvery(types.PREPEND.FAILURE, generalFailure),
 
-        takeEvery(types.CONCAT_LISTS.REQUEST, concatListsRequest),
-        takeEvery(types.CONCAT_LISTS.SUCCESS, concatListsSuccess),
-        takeEvery(types.CONCAT_LISTS.FAILURE, generalFailure),
+        takeEvery(types.CONCAT_LISTS, concatLists),
     ]);
 }

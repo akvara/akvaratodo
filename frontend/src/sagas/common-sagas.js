@@ -39,21 +39,19 @@ export function* createItemSaga(url, data, actionType) {
     }
 }
 
-export function* concatListsSaga(urlFirst, urlSecond, actionType) {
-    try {
-        const first = yield call(callGet, urlFirst);
-        const second = yield call(callGet, urlSecond);
-        let data = {
-            lastAction: new Date().toISOString(),
-            tasks: Utils.concatTwoJSONs(first.tasks, second.tasks)
-        };
-        let result = yield call(callUpdate, urlSecond, data);
-        console.log("concatListsSaga - result", result)
-        // yield fetchItemSaga(urlSecond, actionType);
-        yield put({type: actionType.SUCCESS, payload: {data: result._id}});
-    } catch (e) {
-        yield put({type: actionType.FAILURE, payload: e});
-    }
-}
-
+// export function* concatListsSaga(urlFirst, urlSecond, actionType) {
+//     try {
+//         const first = yield call(callGet, urlFirst);
+//         const second = yield call(callGet, urlSecond);
+//         let data = {
+//             lastAction: new Date().toISOString(),
+//             tasks: Utils.concatTwoJSONs(first.tasks, second.tasks)
+//         };
+//         yield call(callUpdate, urlSecond, data);
+//         return yield fetchItemSaga(urlSecond, actionType);
+//     } catch (e) {
+//         yield put({type: actionType.FAILURE, payload: e});
+//     }
+// }
+//
 

@@ -5,7 +5,7 @@ const types = {
     LIST_OF_LISTS: 'async',
     LOOKING_FOR_A_LIST: 'async',
     PREPEND: 'async',
-    CONCAT_LISTS: 'async',
+    CONCAT_LISTS: null,
     NEW_LIST: 'async',
     REMOVE_LIST: 'async',
     UPDATE_LIST: 'async',
