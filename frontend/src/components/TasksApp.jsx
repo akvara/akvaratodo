@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {bindActionCreators} from 'redux';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import TasksList from './TasksList';
@@ -6,7 +7,6 @@ import TasksDoneList from './TasksDoneList';
 import CONFIG from '../config.js';
 import {getAList, getListOfLists, addOrOpenAList, checkAndSave, concatLists, prependToAList} from '../actions/list-actions';
 import {playSound} from '../utils/hotkeys';
-import {bindActionToPromise} from '../utils/redux-form';
 import * as Utils from '../utils/utils.js';
 import _ from 'underscore';
 
@@ -46,7 +46,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
 
     componentDidMount() {
         document.title = "ToDo lists";
-        Utils.registerHotKeys(this.checkKeyPressed);
+        Utils.registerHotKeys(this.checkKeyPressed.bind(this));
     }
 
     /* cloning State */
@@ -351,17 +351,21 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         this.props.actions.concatLists(data);
     };
 
+    makeListOption = (list) => (
+        <option key={"o-" + list._id} value={list._id}>{list.name}</option>
+    );
+
     /* Button for loading tasks from another list */
-    displayLoadFromButton = (item) => {
+    displayImportBlock = () => {
         if (this.state.immutable) return null;
 
         return (
-            <button key={'btn'+item._id}
-                    disabled={this.state.reloadNeeded || this.state.task.trim()}
-                    onClick={this.prependAnotherList.bind(this, item._id)} >
-                <span className={'glyphicon glyphicon-upload'} aria-hidden="true">
-                </span> <i>{ item.name }</i>
-            </button>
+            <select onChange={(e) => {
+                if (e.target.value) this.prependAnotherList(e.target.value)
+            }}>
+                <option value="">Import list</option>
+                {this.props.immutables.map((list) => this.makeListOption(list))}
+            </select>
         );
     };
 
@@ -489,7 +493,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
                     </span> <u>L</u>ists
                 </button>
                 <br />
-                {this.props.immutables.map((list) => this.displayLoadFromButton(list)) }
+                {this.displayImportBlock() }
             </div>
         );
     }
@@ -497,14 +501,14 @@ console.log('TasksApp constructed. this.props.list:', props.list);
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        actions: {
-            getAList: bindActionToPromise(dispatch, getAList),
-            getListOfLists: bindActionToPromise(dispatch, getListOfLists),
-            checkAndSave: bindActionToPromise(dispatch, checkAndSave),
-            addOrOpenAList: bindActionToPromise(dispatch, addOrOpenAList),
-            concatLists: bindActionToPromise(dispatch, concatLists),
-            prependToAList: bindActionToPromise(dispatch, prependToAList),
-        }
+        actions: bindActionCreators({
+            getAList: getAList,
+            getListOfLists: getListOfLists,
+            checkAndSave: checkAndSave,
+            concatLists: concatLists,
+            prependToAList: prependToAList,
+            addOrOpenAList: addOrOpenAList
+        }, dispatch),
     }
 };
 

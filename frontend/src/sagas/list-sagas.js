@@ -10,45 +10,37 @@ function* listOfListsRequest() {
     yield fetchItemSaga(UrlUtils.getListsUrl(), types.LIST_OF_LISTS);
 }
 
-/* Trying to find list by this name */
-function* lookForAList(action) {
-    yield fetchItemSaga(UrlUtils.getListsUrl(), types.LOOKING_FOR_A_LIST, action.payload.data);
-}
-
-function* checkLastActionDate(action) {
-    yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data.listId), types.CHECK_DATE, action.payload.data);
-}
-
 function* checkAndSave(action) {
-    yield console.log('checkAndSave - ', action);
-    yield console.log('comparing - ', action.payload.lastAction, "with", action.transit.previousAction);
-    if (action.payload.lastAction !== action.transit.previousAction) {
+    let originalListId = action.payload.data.listId;
+    const url = UrlUtils.getAListUrl(originalListId);
+    let originalList = yield call(callGet, url);
+    yield console.log(' checkAndSave comparing - ', originalList.lastAction, "with", action.payload.data.previousAction);
+    if (originalList.lastAction !== action.payload.data.previousAction) {
     // if (true) {
-        console.log("***** taskToAdd", action.transit.taskToAdd);
-        if (action.transit.taskToAdd) {
-            console.log("bandom!");
-        }
-        return yield put({type: types.DATA_CONFLICT, payload: action.payload.lastAction});
+        return yield put({type: types.DATA_CONFLICT, payload: originalList.lastAction});
     }
 
-    console.log("action.transit", action.transit);
     yield updateItemSaga(
-        UrlUtils.getAListUrl(action.transit.listId),
-        action.transit.listData,
+        UrlUtils.getAListUrl(originalListId),
+        action.payload.data.listData,
         types.UPDATE_LIST
     );
 }
 
-function* checkIfExists(data) {
-    let listName = data.transit,
-        lists = data.payload,
-        filtered = lists.filter((e) => e.name === listName);
+function* addOrOpenListsSaga(action) {
+    try {
+        let listOfLists = yield call(callGet, UrlUtils.getListsUrl()),
+            listName = action.payload.data,
+            filtered = listOfLists.filter((e) => e.name === listName);
 
-    if (filtered.length) {
-        return yield fetchItemSaga(UrlUtils.getAListUrl(filtered[0]._id), types.GET_A_LIST);
+        if (filtered.length) {
+            return yield fetchItemSaga(UrlUtils.getAListUrl(filtered[0]._id), types.GET_A_LIST);
+        }
+
+        return yield createItemSaga(UrlUtils.getListsUrl(), NewTaskEntity(listName), types.NEW_LIST);
+    } catch (e) {
+        yield generalFailure(e);
     }
-
-    yield createItemSaga(UrlUtils.getListsUrl(), NewTaskEntity(listName), types.NEW_LIST);
 }
 
 function* getAListRequest(action) {
@@ -65,6 +57,7 @@ function* generalFailure(e) {
 
 function* concatListsSaga(action) {
     try {
+        yield         console.log("concat lists saga");
         const urlFirst = UrlUtils.getAListUrl(action.payload.data.firstListId);
         const urlSecond = UrlUtils.getAListUrl(action.payload.data.secondListId);
         const firstList = yield call(callGet, urlFirst);
@@ -73,7 +66,11 @@ function* concatListsSaga(action) {
             lastAction: new Date().toISOString(),
             tasks: Utils.concatTwoJSONs(firstList.tasks, second.tasks)
         };
+        yield         console.log("calling update");
+
         yield call(callUpdate, urlSecond, data);
+        yield         console.log("returning fetch ");
+
         return yield fetchItemSaga(urlSecond, types.GET_A_LIST);
     } catch (e) {
         yield generalFailure(e);
@@ -103,12 +100,6 @@ export default function* listSagas() {
         takeEvery(types.LIST_OF_LISTS.REQUEST, listOfListsRequest),
         takeEvery(types.LIST_OF_LISTS.FAILURE, generalFailure),
 
-        takeEvery(types.LOOKING_FOR_A_LIST.SUCCESS, checkIfExists),
-        takeEvery(types.LOOKING_FOR_A_LIST.FAILURE, generalFailure),
-        
-        takeEvery(types.CHECK_DATE.SUCCESS, checkAndSave),
-        takeEvery(types.CHECK_DATE.FAILURE, generalFailure),
-
         takeEvery(types.GET_A_LIST.REQUEST, getAListRequest),
         takeEvery(types.GET_A_LIST.FAILURE, generalFailure),
 
@@ -121,9 +112,8 @@ export default function* listSagas() {
 
         takeEvery(types.UPDATE_LIST.FAILURE, generalFailure),
 
-        takeEvery(types.ADD_OR_OPEN_LIST, lookForAList),
-        takeEvery(types.CHECK_AND_SAVE, checkLastActionDate),
-
+        takeEvery(types.ADD_OR_OPEN_LIST, addOrOpenListsSaga),
+        takeEvery(types.CHECK_AND_SAVE, checkAndSave),
         takeEvery(types.PREPEND, prependToAListSaga),
         takeEvery(types.CONCAT_LISTS, concatListsSaga),
     ]);

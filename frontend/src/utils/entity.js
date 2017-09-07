@@ -12,4 +12,5 @@ export function NewTaskEntity(name) {
     task.name = name;
     task.tasks = "[]";
     task.done = "[]";
+    return task;
 }

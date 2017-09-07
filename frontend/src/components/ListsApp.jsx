@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
+import {bindActionCreators} from 'redux';
 import ListOfLists from './ListOfLists';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {bindActionToPromise} from '../utils/redux-form';
 import {addOrOpenAList, getAList, removeList, getListOfLists} from '../actions/list-actions';
 import {playSound} from '../utils/hotkeys';
 import * as Utils from '../utils/utils.js';
@@ -136,12 +136,18 @@ class ListsApp extends Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        actions: {
-            addOrOpenAList: bindActionToPromise(dispatch, addOrOpenAList),
-            removeList: bindActionToPromise(dispatch, removeList),
-            getAList: bindActionToPromise(dispatch, getAList),
-            getListOfLists: bindActionToPromise(dispatch, getListOfLists),
-        }
+        actions: bindActionCreators({
+            getAList: getAList,
+            getListOfLists: getListOfLists,
+            addOrOpenAList: addOrOpenAList,
+            removeList: removeList
+        }, dispatch),
+        // actions: {
+        //     addOrOpenAList: bindActionToPromise(dispatch, addOrOpenAList),
+        //     removeList: bindActionToPromise(dispatch, removeList),
+        //     getAList: bindActionToPromise(dispatch, getAList),
+        //     getListOfLists: bindActionToPromise(dispatch, getListOfLists),
+        // }
     };
 };
 
