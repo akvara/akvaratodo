@@ -20,8 +20,6 @@ class TasksApp extends Component {
     constructor(props, context) {
         super(props, context);
 
-console.log('TasksApp constructed. this.props.list:', props.list);
-
         this.immutables = props.immutables || [];
 
         this.state = {
@@ -262,21 +260,6 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         });
     };
 
-    /* Edit header keypress */
-    onKeyDown =(e) => {
-        console.log("onKeyDown(e):", e);
-        switch(e.key) {
-            case 'Enter':
-            case 'Tab':
-                this.changeListName(e);
-                break;
-            case 'Escape':
-                this.setState({listNameOnEdit: false});
-                break;
-            default:
-                break;
-        }
-    };
 
     checkKeyPressed = (e) => {
         let key = String.fromCharCode(e.which);
@@ -310,8 +293,33 @@ console.log('TasksApp constructed. this.props.list:', props.list);
     };
 
     /* Edit header submit */
-    handleNameSubmit = (e) => {
+    handleHeaderSubmit = (e) => {
         e.preventDefault();
+    };
+
+    handleKeyDownAtTask = (e) => {
+        if (e.keyCode === 27) {
+            this.taskInput.blur();
+            this.setState({
+                task: ''
+            });
+        }
+    };
+
+    /* Edit header keypress */
+    handleKeyDownAtHeader = (e) => {
+        console.log("onKeyDown(e):", e);
+        switch(e.key) {
+            case 'Enter':
+            case 'Tab':
+                this.changeListName(e);
+                break;
+            case 'Escape':
+                this.setState({listNameOnEdit: false});
+                break;
+            default:
+                break;
+        }
     };
 
     /* New task submit */
@@ -340,6 +348,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
 
     /* User input */
     onChange = (e) => {
+        console.log(e);
         this.setState({ task: e.target.value });
     };
 
@@ -360,10 +369,13 @@ console.log('TasksApp constructed. this.props.list:', props.list);
         if (this.state.immutable) return null;
 
         return (
-            <select onChange={(e) => {
+            <select className="import-select" onChange={(e) => {
                 if (e.target.value) this.prependAnotherList(e.target.value)
             }}>
-                <option value="">Import list</option>
+                <option value="">
+                    <span className="glyphicon glyphicon-upload" aria-hidden="true">
+                    </span> Import list
+                </option>
                 {this.props.immutables.map((list) => this.makeListOption(list))}
             </select>
         );
@@ -384,12 +396,13 @@ console.log('TasksApp constructed. this.props.list:', props.list);
 
         return (
             <h1>
-                <form onSubmit={this.handleNameSubmit}>
+                <form onSubmit={this.handleHeaderSubmit}>
                     <input
+                        ref={(input) => { this.headerInput = input; }}
                         className="task-input"
                         defaultValue={this.state.listName}
                         onFocus={Utils.disableHotKeys}
-                        onKeyDown={this.onKeyDown}
+                        onKeyDown={this.handleKeyDownAtHeader}
                         onBlur={this.changeListName}
                     />
                 </form>
@@ -460,10 +473,11 @@ console.log('TasksApp constructed. this.props.list:', props.list);
                     <form onSubmit={this.handleSubmit}>
                         <input
                             className="task-input"
-                            ref={(input) => { this.nameInput = input; }}
+                            ref={(input) => { this.taskInput = input; }}
                             onFocus={Utils.disableHotKeys.bind(this)}
                             onBlur={Utils.registerHotKeys.bind(this, this.checkKeyPressed)}
                             value={this.state.task}
+                            onKeyDown={this.handleKeyDownAtTask}
                             onChange={this.onChange}
                         />
                         <button disabled={!this.state.task.trim()}>Add task</button>
@@ -471,7 +485,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
                     </div>
                 }
                 <hr />
-
+                {this.displayImportBlock()}
                 <button disabled={this.state.task.trim()} onClick={this.mark}>
                     <span className={'glyphicon glyphicon-' + markGlyphicon}
                           aria-hidden="true">
@@ -493,7 +507,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
                     </span> <u>L</u>ists
                 </button>
                 <br />
-                {this.displayImportBlock() }
+
             </div>
         );
     }

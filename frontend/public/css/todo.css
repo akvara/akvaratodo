@@ -69,8 +69,8 @@ h1, h2{
     color: red;
 }
 
-.select{
-    padding: 1px 6px;
+.import-select{
+    padding: 4px 0px;
     /*padding-top: 1px;*/
     /*padding-right: 6px;*/
     /*padding-bottom: 1px;*/

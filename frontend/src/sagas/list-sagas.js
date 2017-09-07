@@ -11,18 +11,29 @@ function* listOfListsRequest() {
 }
 
 function* checkAndSave(action) {
-    let originalListId = action.payload.data.listId;
-    const url = UrlUtils.getAListUrl(originalListId);
-    let originalList = yield call(callGet, url);
-    yield console.log(' checkAndSave comparing - ', originalList.lastAction, "with", action.payload.data.previousAction);
-    if (originalList.lastAction !== action.payload.data.previousAction) {
+    let new_data = action.payload.data,
+        listId = new_data.listId;
+    let originalList = yield call(callGet, UrlUtils.getAListUrl(listId));
+    yield console.log(' checkAndSave comparing - ', originalList.lastAction, "with", new_data.previousAction);
+    if (originalList.lastAction !== new_data.previousAction) {
     // if (true) {
+        if (new_data.taskToAdd ) {
+            console.log("Will try to add to top:", new_data);
+            let payload = {
+                data: {
+                    listId: listId,
+                    task: new_data.taskToAdd
+                }
+            };
+            return yield put({type: types.PREPEND, payload});
+        }
+
         return yield put({type: types.DATA_CONFLICT, payload: originalList.lastAction});
     }
 
     yield updateItemSaga(
-        UrlUtils.getAListUrl(originalListId),
-        action.payload.data.listData,
+        UrlUtils.getAListUrl(listId),
+        new_data.listData,
         types.UPDATE_LIST
     );
 }
@@ -57,7 +68,6 @@ function* generalFailure(e) {
 
 function* concatListsSaga(action) {
     try {
-        yield         console.log("concat lists saga");
         const urlFirst = UrlUtils.getAListUrl(action.payload.data.firstListId);
         const urlSecond = UrlUtils.getAListUrl(action.payload.data.secondListId);
         const firstList = yield call(callGet, urlFirst);
@@ -66,11 +76,7 @@ function* concatListsSaga(action) {
             lastAction: new Date().toISOString(),
             tasks: Utils.concatTwoJSONs(firstList.tasks, second.tasks)
         };
-        yield         console.log("calling update");
-
         yield call(callUpdate, urlSecond, data);
-        yield         console.log("returning fetch ");
-
         return yield fetchItemSaga(urlSecond, types.GET_A_LIST);
     } catch (e) {
         yield generalFailure(e);
@@ -81,12 +87,14 @@ function* prependToAListSaga(action) {
     try {
         console.log("prependToAList(action)" , action);
 
-        const url = UrlUtils.getAListUrl(action.payload.data.listId);
+        const new_data = action.payload.data;
+        const url = UrlUtils.getAListUrl(new_data.listId);
+
         let originalList = yield call(callGet, url);
-        console.log("originalList" , originalList);
+
         let data = {
             lastAction: new Date().toISOString(),
-            tasks: Utils.prependToJSON("abra", originalList.tasks)
+            tasks: Utils.prependToJSON(new_data.task, originalList.tasks)
         };
         yield call(callUpdate, url, data);
         return yield fetchItemSaga(url, types.GET_A_LIST);
