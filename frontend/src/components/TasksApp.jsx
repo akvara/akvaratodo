@@ -46,7 +46,7 @@ console.log('TasksApp constructed. this.props.list:', props.list);
 
     componentDidMount() {
         document.title = "ToDo lists";
-        Utils.registerHotKeys(this.checkKeyPressed);
+        Utils.registerHotKeys(this.checkKeyPressed.bind(this));
     }
 
     /* cloning State */
