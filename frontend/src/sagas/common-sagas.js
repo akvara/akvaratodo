@@ -1,10 +1,10 @@
 import {put, call} from 'redux-saga/effects';
 import {callGet, callPost, callUpdate, callDelete} from '../utils/api';
 
-export function* fetchItemSaga(url, actionType, transit) {
+export function* fetchItemSaga(url, actionType) {
     try {
         const result = yield call(callGet, url);
-        yield put({type: actionType.SUCCESS, payload: result, transit: transit});
+        yield put({type: actionType.SUCCESS, payload: result});
     } catch (e) {
         yield put({type: actionType.FAILURE, payload: e});
     }

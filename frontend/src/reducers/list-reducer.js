@@ -13,16 +13,13 @@ class AppReducer extends BaseReducer {
             [types.LIST_OF_LISTS.SUCCESS]: this.listOfListsFetched,
 
             [types.REMOVE_LIST.REQUEST]: this.removeListRequest,
-            [types.CONCAT_LISTS]: this.concatListsRequest,
-            [types.PREPEND]: this.prependRequest,
-
-            [types.LOOKING_FOR_A_LIST.REQUEST]: this.addAListRequest,
-            [types.LOOKING_FOR_A_LIST.SUCCESS]: this.listsRefreshed,
-
             [types.UPDATE_LIST.SUCCESS]: this.listSaved,
-
             [types.GET_A_LIST.SUCCESS]: this.aListFetched,
+
             [types.CHECK_AND_SAVE]: this.checkAList,
+            [types.PREPEND]: this.prependRequest,
+            [types.CONCAT_LISTS]: this.concatListsRequest,
+            [types.ADD_OR_OPEN_LIST]: this.addAListRequest,
 
             [types.ERROR]: this.error,
             [types.DATA_CONFLICT]: this.dataConflict,
