@@ -6,6 +6,7 @@ import CONST from '../utils/constants.js';
 import * as listActions from '../actions/list-actions';
 import ListsApp from './ListsApp.jsx'
 import TasksApp from './TasksApp.jsx'
+import Move from './Move.jsx'
 import Failure from './Failure.jsx'
 
 class App extends Component {
@@ -45,9 +46,17 @@ class App extends Component {
             );
         }
 
+        if (this.props.mode === CONST.mode.MODE_MOVE) {
+            return (
+                <Move
+                    lists={this.props.lists.filter((item) => !item.immutable)}
+                    task={this.props.task}
+                    from_list={this.props.from_list}
+                />
+            );
+        }
+
         if (this.props.mode === CONST.mode.DATA_CONFLICT) {
-            // let onClick=this.props.dispatch.bind(listActions.addOrOpenAList.bind(this.props.a_list.name));
-            // return <Failure onClick={onClick} msg="Data conflict" />
             return <Failure msg="Data conflict" />
         }
 
@@ -71,7 +80,9 @@ const mapStateToProps = (state) => {
     return {
         mode: state.app.mode,
         lists: state.app.lists,
-        a_list: state.app.a_list
+        a_list: state.app.a_list,
+        task: state.app.task,
+        from_list: state.app.from_list,
     };
 };
 

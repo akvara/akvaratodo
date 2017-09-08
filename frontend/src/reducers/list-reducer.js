@@ -17,6 +17,7 @@ class AppReducer extends BaseReducer {
             [types.GET_A_LIST.SUCCESS]: this.aListFetched,
 
             [types.CHECK_AND_SAVE]: this.checkAList,
+            [types.MOVE_CHOOSE]: this.moveTo,
             [types.PREPEND]: this.prependRequest,
             [types.CONCAT_LISTS]: this.concatListsRequest,
             [types.ADD_OR_OPEN_LIST]: this.addAListRequest,
@@ -91,18 +92,29 @@ class AppReducer extends BaseReducer {
     listOfListsFetched(state, action) {
         return {
             ...state,
-            lists: Utils.sortArrOfObjectsByParam(action.payload, 'updatedAt', true),
             status_msg: 'Lists loaded',
-            mode: CONST.mode.MODE_LIST_OF_LISTS
+            mode: CONST.mode.MODE_LIST_OF_LISTS,
+            lists: Utils.sortArrOfObjectsByParam(action.payload, 'updatedAt', true)
         };
     }
 
     aListFetched(state, action) {
         return {
             ...state,
-            a_list: action.payload,
             status_msg: action.payload.name + ' loaded',
-            mode: CONST.mode.MODE_A_LIST
+            mode: CONST.mode.MODE_A_LIST,
+            a_list: action.payload
+        };
+    }
+
+    moveTo(state, action) {
+        console.log("moveTo", action);
+        return {
+            ...state,
+            status_msg: 'Move task to ... ' ,
+            mode: CONST.mode.MODE_MOVE,
+            from_list: action.payload.data.from_list,
+            task: action.payload.data.task
         };
     }
 

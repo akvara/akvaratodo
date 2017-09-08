@@ -5,7 +5,9 @@ import {connect} from 'react-redux';
 import TasksList from './TasksList';
 import TasksDoneList from './TasksDoneList';
 import CONFIG from '../config.js';
-import {getAList, getListOfLists, addOrOpenAList, checkAndSave, concatLists, prependToAList} from '../actions/list-actions';
+import {
+    getAList, getListOfLists, addOrOpenAList, checkAndSave, concatLists, moveOutside
+} from '../actions/list-actions';
 import {playSound} from '../utils/hotkeys';
 import * as Utils from '../utils/utils.js';
 import _ from 'underscore';
@@ -180,13 +182,13 @@ class TasksApp extends Component {
         this.props.actions.checkAndSave(this.serialize(dataToSave));
     };
 
-    moveOutside = (i) => {
-        console.log("moveOutside", i);
+    moveOutside = (task) => {
+        console.log("moveOutside", task);
         let data = {
-            listId: this.props.list._id,
-            new_task: 'this taSK',
+            from_list: this.props.list._id,
+            task: task,
         };
-        this.props.actions.prependToAList(data);
+        this.props.actions.moveOutside(data);
     };
 
     procrastinateTask = (i) => {
@@ -259,7 +261,6 @@ class TasksApp extends Component {
             listNameOnEdit: true
         });
     };
-
 
     checkKeyPressed = (e) => {
         let key = String.fromCharCode(e.which);
@@ -520,8 +521,8 @@ const mapDispatchToProps = (dispatch) => {
             getListOfLists: getListOfLists,
             checkAndSave: checkAndSave,
             concatLists: concatLists,
-            prependToAList: prependToAList,
-            addOrOpenAList: addOrOpenAList
+            addOrOpenAList: addOrOpenAList,
+            moveOutside: moveOutside
         }, dispatch),
     }
 };

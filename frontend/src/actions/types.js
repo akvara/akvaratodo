@@ -4,6 +4,8 @@ const types = {
     DATA_CONFLICT: null,
     PREPEND: null,
     CONCAT_LISTS: null,
+    MOVE_CHOOSE: null,
+    MOVE_TO: null,
     LIST_OF_LISTS: 'async',
     NEW_LIST: 'async',
     REMOVE_LIST: 'async',

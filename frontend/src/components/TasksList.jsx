@@ -104,7 +104,7 @@ class TaskList extends Component {
                     </span>
                     <span className="glyphicon glyphicon-random action-button" 
                           aria-hidden="true" 
-                          onClick={this.props.move.bind(this, itemIndex)}>
+                          onClick={this.props.move.bind(this, task)}>
                         
                     </span>
                     <span className="glyphicon glyphicon-thumbs-down action-button" 

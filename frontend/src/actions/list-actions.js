@@ -42,6 +42,18 @@ export function concatLists(data, resolve, reject) {
     };
 }
 
+export function moveOutside(data, resolve, reject) {
+    return {
+        type: types.MOVE_CHOOSE, payload: {data, resolve, reject}
+    };
+}
+
+export function moveToList(data, resolve, reject) {
+    return {
+        type: types.MOVE_TO, payload: {data, resolve, reject}
+    };
+}
+
 export function error(data, resolve, reject) {
     return {
         type: types.ERROR, payload: {data, resolve, reject}
