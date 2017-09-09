@@ -14,9 +14,9 @@ function* checkAndSave(action) {
     let new_data = action.payload.data,
         listId = new_data.listId;
     let originalList = yield call(callGet, UrlUtils.getAListUrl(listId));
-    yield console.log(' checkAndSave comparing - ', originalList.lastAction, "with", new_data.previousAction);
-    if (originalList.lastAction !== new_data.previousAction) {
+    // yield console.log(' checkAndSave comparing - ', originalList.lastAction, "with", new_data.previousAction);
     // if (true) {
+    if (originalList.lastAction !== new_data.previousAction) {
         if (new_data.taskToAdd ) {
             console.log("Will try to add to top:", new_data);
             let payload = {
@@ -30,7 +30,6 @@ function* checkAndSave(action) {
 
         return yield put({type: types.DATA_CONFLICT, payload: originalList.lastAction});
     }
-
     yield updateItemSaga(
         UrlUtils.getAListUrl(listId),
         new_data.listData,

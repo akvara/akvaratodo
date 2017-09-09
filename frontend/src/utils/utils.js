@@ -98,9 +98,11 @@ export function toLocalTime(utcDateStr) {
 }
 
 export function registerHotKeys(checkKeyPressed) {
+    console.log("Hot keys ON");
     $(document).on("keypress", (e) => checkKeyPressed(e));
 }
 
 export function disableHotKeys() {
+    console.log("Hot keys OFF");
     $(document).off("keypress");
 }

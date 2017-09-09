@@ -59,14 +59,13 @@ class TasksApp extends Component {
         return clone;
     }
 
-    /* */
     serialize(object) {
         let res = {
                 listId: object.listId,
                 previousAction: object.previousAction,
                 listData: {
                     lastAction: object.lastAction,
-                    immutable: object.immutable
+                    immutable: object.immutable ? true : false
                 }
             };
         if (object.name) res.listData.name = object.name;
@@ -233,16 +232,17 @@ class TasksApp extends Component {
     changeListName = (e) => {
         let dataToSave = this.prepareClone();
 
-        dataToSave.listName = e.target.value;
+        dataToSave.name = e.target.value.trim();
 
         this.setState({
             lastAction: dataToSave.lastAction,
-            listName: dataToSave.listName,
+            listName: dataToSave.name,
+            listNameOnEdit: false,
             highlightIndex: null
         });
 
-        console.log("changeListName", e);
         this.props.actions.checkAndSave(this.serialize(dataToSave));
+        Utils.registerHotKeys(this.checkKeyPressed.bind(this));
     };
 
     /* Go to another list */
@@ -270,6 +270,7 @@ class TasksApp extends Component {
         {
             case 'a':
                 e.preventDefault();
+
                 this.taskInput.focus();
                 break;
             case 'l':
@@ -349,7 +350,6 @@ class TasksApp extends Component {
 
     /* User input */
     onChange = (e) => {
-        console.log(e);
         this.setState({ task: e.target.value });
     };
 
