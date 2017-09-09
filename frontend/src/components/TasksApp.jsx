@@ -16,7 +16,7 @@ class TasksApp extends Component {
 
     static propTypes = {
         list: PropTypes.object.isRequired,
-        previousList: PropTypes.object,
+        previous_list: PropTypes.object,
     };
 
     constructor(props, context) {
@@ -185,7 +185,7 @@ class TasksApp extends Component {
     moveOutside = (task) => {
         console.log("moveOutside", task);
         let data = {
-            from_list: this.props.list._id,
+            from_list: {listId: this.props.list._id,name: this.state.listName},
             task: task,
         };
         this.props.actions.moveOutside(data);
@@ -270,7 +270,7 @@ class TasksApp extends Component {
         {
             case 'a':
                 e.preventDefault();
-                this.nameInput.focus();
+                this.taskInput.focus();
                 break;
             case 'l':
                 e.preventDefault();
@@ -286,7 +286,7 @@ class TasksApp extends Component {
                 break;
             case '<':
                 e.preventDefault();
-                if (this.props.previousList) this.listChanger();
+                if (this.props.previous_list) this.listChanger(this.props.previous_list.name);
                 break;
             default:
                 break;
@@ -342,7 +342,7 @@ class TasksApp extends Component {
             highlightIndex: highlightIndex,
             task: ''
         });
-        Utils.registerHotKeys();
+        Utils.registerHotKeys(this.checkKeyPressed.bind(this));
 
         this.props.actions.checkAndSave(this.serialize(dataToSave));
     };
@@ -374,8 +374,7 @@ class TasksApp extends Component {
                 if (e.target.value) this.prependAnotherList(e.target.value)
             }}>
                 <option value="">
-                    <span className="glyphicon glyphicon-upload" aria-hidden="true">
-                    </span> Import list
+                    Import list
                 </option>
                 {this.props.immutables.map((list) => this.makeListOption(list))}
             </select>
@@ -497,10 +496,11 @@ class TasksApp extends Component {
                           aria-hidden="true">
                     </span> <u>R</u>eload
                 </button>
-                {this.props.previousList &&
-                    <button disabled={this.state.task.trim()} onClick={this.listChanger}>
+                {this.props.previous_list &&
+                    <button disabled={this.state.task.trim()}
+                            onClick={this.listChanger.bind(this, this.props.previous_list.name)}>
                         <span className="glyphicon glyphicon-chevron-left" aria-hidden="true">
-                        </span> {this.props.previousList.name}
+                        </span> {this.props.previous_list.name}
                     </button>
                 }
                 <button disabled={this.state.task.trim()} onClick={this.props.actions.getListOfLists}>

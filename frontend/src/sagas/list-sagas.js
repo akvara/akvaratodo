@@ -1,6 +1,6 @@
 import types from '../actions/types';
 import {fetchItemSaga, createItemSaga, removeItemSaga, updateItemSaga} from './common-sagas';
-import {callGet, callUpdate} from '../utils/api';
+import {callGet, callPost, callUpdate} from '../utils/api';
 import {takeEvery, put, call, all} from 'redux-saga/effects';
 import * as UrlUtils from '../utils/urlUtils';
 import * as Utils from '../utils/utils.js';
@@ -38,6 +38,35 @@ function* checkAndSave(action) {
     );
 }
 
+function* getAListRequest(action) {
+    yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data), types.GET_A_LIST);
+}
+
+function* removeListRequest(action) {
+    yield removeItemSaga(UrlUtils.getAListUrl(action.payload.data), action.payload.data, types.REMOVE_LIST);
+}
+
+/*
+* params: list name as action.payload.data
+* returns listId
+*/
+function* findOrCreateListByName(action) {
+    try {
+        let url = UrlUtils.getListsUrl(),
+            listName = action.payload.data,
+            listOfLists = yield call(callGet, url),
+            filtered = listOfLists.filter((e) => e.name === listName);
+
+        if (filtered.length) {
+            return filtered[0]._id;
+        }
+        const result = yield call(callPost, url, NewTaskEntity(listName));
+        return result._id;
+    } catch (e) {
+        yield generalFailure(e);
+    }
+}
+
 function* addOrOpenListsSaga(action) {
     try {
         let listOfLists = yield call(callGet, UrlUtils.getListsUrl()),
@@ -52,14 +81,6 @@ function* addOrOpenListsSaga(action) {
     } catch (e) {
         yield generalFailure(e);
     }
-}
-
-function* getAListRequest(action) {
-    yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data), types.GET_A_LIST);
-}
-
-function* removeListRequest(action) {
-    yield removeItemSaga(UrlUtils.getAListUrl(action.payload.data), action.payload.data, types.REMOVE_LIST);
 }
 
 function* generalFailure(e) {
@@ -83,10 +104,17 @@ function* concatListsSaga(action) {
     }
 }
 
+function* moveTaskToAntoherListSaga(action) {
+    try {
+        yield removeTaskFromListSaga(action);
+        yield prependToAListSaga(action);
+    } catch (e) {
+        yield generalFailure(e);
+    }
+}
+
 function* prependToAListSaga(action) {
     try {
-        console.log("prependToAList(action)" , action);
-
         const new_data = action.payload.data;
         const url = UrlUtils.getAListUrl(new_data.listId);
 
@@ -98,6 +126,23 @@ function* prependToAListSaga(action) {
         };
         yield call(callUpdate, url, data);
         return yield fetchItemSaga(url, types.GET_A_LIST);
+    } catch (e) {
+        yield generalFailure(e);
+    }
+}
+
+function* removeTaskFromListSaga(action) {
+    try {
+        const new_data = action.payload.data;
+        const url = UrlUtils.getAListUrl(new_data.fromListId);
+
+        let originalList = yield call(callGet, url);
+
+        let data = {
+            lastAction: new Date().toISOString(),
+            tasks: Utils.removeTask(new_data.task, originalList.tasks)
+        };
+        yield call(callUpdate, url, data);
     } catch (e) {
         yield generalFailure(e);
     }
@@ -123,6 +168,7 @@ export default function* listSagas() {
         takeEvery(types.ADD_OR_OPEN_LIST, addOrOpenListsSaga),
         takeEvery(types.CHECK_AND_SAVE, checkAndSave),
         takeEvery(types.PREPEND, prependToAListSaga),
+        takeEvery(types.MOVE_TO, moveTaskToAntoherListSaga),
         takeEvery(types.CONCAT_LISTS, concatListsSaga),
     ]);
 }

@@ -15,13 +15,17 @@ class Move extends Component {
 
     /* Returns back to the same list with no changes */
     back = () => {
-        this.props.actions.getAList(this.props.from_list);
+        this.props.actions.getAList(this.props.from_list.listId);
     };
 
 	/* Moves item to another list */
-	move(toListId, newListName, copy) {
-        console.log("Move ")
-	}
+	move = (toListId) => {
+        this.props.actions.moveToList({
+            listId: toListId,
+            fromListId: this.props.from_list.listId,
+            task: this.props.task
+        });
+	};
 
 	/* Copies item to another list byt its id*/
 	copy = (toListId) => {
@@ -30,7 +34,7 @@ class Move extends Component {
 
 	/* To List */
   	displayToButton = (list) => {
-  		if (list._id === this.props.from_list) return null;
+  		if (list._id === this.props.from_list.listId) return null;
   		return (
             <tr key={'tr' + list._id}>
                 <td>
@@ -74,7 +78,7 @@ class Move extends Component {
                     <button disabled={!this.state.newListName.trim()}>Copy to new list</button>
                 </form>
 				<hr />
-                <button onClick={this.back} >Back</button>
+                <button onClick={this.back} >Back to {this.props.from_list.name}</button>
 			</div>
 		);
 	}

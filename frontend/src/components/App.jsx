@@ -42,6 +42,11 @@ class App extends Component {
                 <TasksApp
                     list={this.props.a_list}
                     immutables={this.props.lists.filter((item) => item.immutable)}
+                    previous_list={
+                        this.props.from_list
+                        && this.props.a_list._id === this.props.from_list.listId
+                            ? null : this.props.from_list
+                    }
                 />
             );
         }
@@ -71,7 +76,7 @@ class App extends Component {
 
     /* The Renderer */
     render() {
-        console.log("APP rendering, mode:", this.props);
+        // console.log("APP rendering, mode:", this.props);
         return this.switcher();
     }
 }

@@ -75,6 +75,12 @@ export function prependToJSON(strng, jsn) {
     );
 }
 
+export function removeTask(strng, jsn) {
+    return JSON.stringify(
+        JSON.parse(jsn).filter(item => item !== strng)
+    );
+}
+
 export function overLength(which, items) {
     return items.length > CONFIG.user.settings[which];
 }
