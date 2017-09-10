@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import CONFIG from '../config.js';
-import {getAList, moveToList, prependToAList} from '../actions/list-actions';
+import {getAList, moveToList, copyOrMoveToNew, prependToAList} from '../actions/list-actions';
 
 class Move extends Component {
 	constructor(props, context) {
@@ -17,6 +17,16 @@ class Move extends Component {
     back = () => {
         this.props.actions.getAList(this.props.from_list.listId);
     };
+
+	/* Moves or copies item to new list */
+	copyOrMoveToNew = (toListName, move) => {
+        this.props.actions.moveToList({
+            fromListId: this.props.from_list.listId,
+            task: this.props.task,
+            listName: toListName,
+            move: move
+        });
+	};
 
 	/* Moves item to another list */
 	move = (toListId) => {
@@ -50,12 +60,6 @@ class Move extends Component {
   	};
 
 
-    handleSubmit = (e) => {
-        e.preventDefault();
-        // ToDo: Create or open list
-
-    };
-
     onListInputChange = (e) => {
         this.setState({ newListName: e.target.value });
     };
@@ -72,10 +76,16 @@ class Move extends Component {
                     </tbody>
                 </table>
                 <hr />
-                <form onSubmit={this.handleSubmit.bind(this)}>
+                <form onSubmit={this.copyOrMoveToNew.bind(this, this.state.newListName, true)}>
                     <input className="list-input" value={this.state.newListName} onChange={this.onListInputChange} />
-                    <button disabled={!this.state.newListName.trim()}>Move to new list</button>
-                    <button disabled={!this.state.newListName.trim()}>Copy to new list</button>
+                    <button disabled={!this.state.newListName.trim()} type="submit">
+                        Move to new list
+                    </button>
+                    <button disabled={!this.state.newListName.trim()}
+                        onClick={this.copyOrMoveToNew.bind(this, this.state.newListName, false)}
+                    >
+                        Copy to new list
+                    </button>
                 </form>
 				<hr />
                 <button onClick={this.back} >Back to {this.props.from_list.name}</button>
@@ -89,6 +99,7 @@ const mapDispatchToProps = (dispatch) => {
         actions: bindActionCreators({
             getAList: getAList,
             moveToList: moveToList,
+            copyOrMoveToNew: copyOrMoveToNew,
             prependToAList: prependToAList,
         }, dispatch),
     }

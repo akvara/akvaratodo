@@ -6,6 +6,7 @@ const types = {
     CONCAT_LISTS: null,
     MOVE_CHOOSE: null,
     MOVE_TO: null,
+    COPY_OR_MOVE: null,
     LIST_OF_LISTS: 'async',
     NEW_LIST: 'async',
     REMOVE_LIST: 'async',

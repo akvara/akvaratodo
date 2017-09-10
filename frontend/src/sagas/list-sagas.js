@@ -46,13 +46,13 @@ function* removeListRequest(action) {
 }
 
 /*
-* params: list name as action.payload.data
+* params: list name as action.payload.data.listName
 * returns listId
 */
 function* findOrCreateListByName(action) {
     try {
         let url = UrlUtils.getListsUrl(),
-            listName = action.payload.data,
+            listName = action.payload.data.listName,
             listOfLists = yield call(callGet, url),
             filtered = listOfLists.filter((e) => e.name === listName);
 
@@ -103,10 +103,24 @@ function* concatListsSaga(action) {
     }
 }
 
-function* moveTaskToAntoherListSaga(action) {
+function* moveTaskToAnotherListSaga(action) {
     try {
         yield removeTaskFromListSaga(action);
         yield prependToAListSaga(action);
+    } catch (e) {
+        yield generalFailure(e);
+    }
+}
+
+function* copyOrMoveToNewListSaga(action) {
+    console.log(action);
+    try {
+        let listId = findOrCreateListByName(action);
+        action.listId = listId;
+        console.log(listId);
+
+        // yield removeTaskFromListSaga(action);
+        // yield prependToAListSaga(action);
     } catch (e) {
         yield generalFailure(e);
     }
@@ -167,7 +181,8 @@ export default function* listSagas() {
         takeEvery(types.ADD_OR_OPEN_LIST, addOrOpenListsSaga),
         takeEvery(types.CHECK_AND_SAVE, checkAndSave),
         takeEvery(types.PREPEND, prependToAListSaga),
-        takeEvery(types.MOVE_TO, moveTaskToAntoherListSaga),
+        takeEvery(types.MOVE_TO, moveTaskToAnotherListSaga),
+        takeEvery(types.COPY_OR_MOVE, copyOrMoveToNewListSaga),
         takeEvery(types.CONCAT_LISTS, concatListsSaga),
     ]);
 }
