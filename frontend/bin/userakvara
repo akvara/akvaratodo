@@ -1,0 +1,2 @@
+sed -i "s/id: [0-9]/id: 1/" src/config.js
+sed -i "s/name: '[a-zA-Z]\+/name: 'akvara/" src/config.js
