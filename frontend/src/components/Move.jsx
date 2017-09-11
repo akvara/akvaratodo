@@ -77,7 +77,7 @@ class Move extends Component {
                 </table>
                 <hr />
                 <form onSubmit={this.copyOrMoveToNew.bind(this, this.state.newListName, true)}>
-                    <input className="list-input" value={this.state.newListName} onChange={this.onListInputChange} />
+                    <input disabled="disabled" className="list-input" value={this.state.newListName} onChange={this.onListInputChange} />
                     <button disabled={!this.state.newListName.trim()} type="submit">
                         Move to new list
                     </button>
