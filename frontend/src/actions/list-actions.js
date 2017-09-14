@@ -49,6 +49,7 @@ export function moveOutside(data, resolve, reject) {
 }
 
 export function moveToList(data, resolve, reject) {
+    console.log("moveToList", data, resolve, reject )
     return {
         type: types.MOVE_TO, payload: {data, resolve, reject}
     };

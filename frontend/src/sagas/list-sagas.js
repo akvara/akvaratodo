@@ -113,11 +113,11 @@ function* moveTaskToAnotherListSaga(action) {
 }
 
 function* copyOrMoveToNewListSaga(action) {
-    console.log(action);
+    console.log("copyOrMoveToNewListSaga action", action);
     try {
         let listId = findOrCreateListByName(action);
         action.listId = listId;
-        console.log(listId);
+        console.log("findOrCreateListByName listId", listId);
 
         // yield removeTaskFromListSaga(action);
         // yield prependToAListSaga(action);
