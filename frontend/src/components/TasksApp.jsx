@@ -244,7 +244,7 @@ class TasksApp extends Component {
         });
 
         this.props.actions.checkAndSave(this.serialize(dataToSave));
-        Utils.registerHotKeys(this.checkKeyPressed.bind(this));
+        Utils.registerHotKeys(this.checkKeyPressed);
     };
 
     /* Go to another list */
@@ -254,6 +254,7 @@ class TasksApp extends Component {
 
     /* Reload this list*/
     reload = () => {
+        console.log("reaload called with ", this.props.list._id)
         this.props.actions.getAList(this.props.list._id);
     };
 
@@ -312,7 +313,6 @@ class TasksApp extends Component {
 
     /* Edit header keypress */
     handleKeyDownAtHeader = (e) => {
-        console.log("onKeyDown(e):", e);
         switch(e.key) {
             case 'Enter':
             case 'Tab':
@@ -329,6 +329,7 @@ class TasksApp extends Component {
     /* New task submit */
     handleSubmit = (e) => {
         e.preventDefault();
+        this.taskInput.blur();
 
         let dataToSave = this.prepareClone(),
             highlightIndex = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1),
@@ -345,8 +346,6 @@ class TasksApp extends Component {
             highlightIndex: highlightIndex,
             task: ''
         });
-        Utils.registerHotKeys(this.checkKeyPressed.bind(this));
-
         this.props.actions.checkAndSave(this.serialize(dataToSave));
     };
 
@@ -434,7 +433,7 @@ class TasksApp extends Component {
                     {this.state.itemsDone.length > 0 &&
                         <span className="small action-button glyphicon glyphicon-trash"
                               aria-hidden="true"
-                              onClick={this.clearDone.bind(this)}>
+                              onClick={this.clearDone}>
                         </span>
                     }
                 </h3>
