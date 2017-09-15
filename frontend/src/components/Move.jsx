@@ -72,7 +72,7 @@ class Move extends Component {
                 <h2>{this.state.movingItem.substring(0, CONFIG.maxTaskLength)}</h2>
                 <table className="table table-hover">
                     <tbody>
-                        { this.props.lists.map((list) => this.displayToButton(list)) }
+                        {this.props.lists.map((list) => this.displayToButton(list))}
                     </tbody>
                 </table>
                 <hr />

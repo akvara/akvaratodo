@@ -65,7 +65,7 @@ class TasksApp extends Component {
                 previousAction: object.previousAction,
                 listData: {
                     lastAction: object.lastAction,
-                    immutable: object.immutable ? true : false
+                    immutable: !!object.immutable
                 }
             };
         if (object.name) res.listData.name = object.name;
@@ -181,6 +181,7 @@ class TasksApp extends Component {
         this.props.actions.checkAndSave(this.serialize(dataToSave));
     };
 
+    /* Move task to another list */
     moveOutside = (task) => {
         console.log("moveOutside", task);
         let data = {
@@ -190,6 +191,7 @@ class TasksApp extends Component {
         this.props.actions.moveOutside(data);
     };
 
+    /* Move task to the end of the list */
     procrastinateTask = (i) => {
         let dataToSave = this.prepareClone();
 
@@ -425,7 +427,7 @@ class TasksApp extends Component {
                     {Utils.overLength("displayDoneLength", this.state.itemsDone) &&
                         <span className={"small action-button glyphicon " + expandDoneGlyphicon}
                               aria-hidden="true"
-                              onClick={this.expand.bind('expandDone')}>
+                              onClick={this.expand.bind(this, 'expandDone')}>
                         </span>
                     }
                     {'  '}
@@ -447,7 +449,7 @@ class TasksApp extends Component {
                     {Utils.overLength("displayListLength", this.state.itemsToDo) &&
                         <span className={"small list-item action-button glyphicon " + expandToDoGlyphicon}
                               aria-hidden="true"
-                              onClick={this.expand.bind('expandToDo')}>
+                              onClick={this.expand.bind(this, 'expandToDo')}>
                         </span>
                     }
                 </h3>
