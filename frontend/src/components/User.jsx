@@ -7,10 +7,27 @@ class User extends Component {
 		this.props.renderSettings(lists);
 	}
 
+    normaliser = (val, base) => {
+        return ("00" + Math.floor(val * 256 / base).toString(16)).substr(-2,2);
+    };
+
+	versionColor = () => {
+	    let str = CONFIG.version.replace(/-/g, "");
+	    return '#'
+            + this.normaliser(str.substring(0, 2), 12)
+            + this.normaliser(str.substring(2, 4), 31)
+            + this.normaliser(str.substring(4, 6), 24)
+
+    };
+
   	/* The Renderer */
 	render() {
+	    console.log(this.versionColor());
 		return <div>
-			<span className="list-item">{CONFIG.version} <small><b>{process.env.NODE_ENV}</b></small>
+			<span className="list-item">
+                <span style={{color : this.versionColor()}}> {CONFIG.version}</span>
+                {' '}
+			    <small><b>{process.env.NODE_ENV}</b></small>
 			</span>
 			<span className="glyphicon glyphicon-cog action-button"
 				  aria-hidden="true"
