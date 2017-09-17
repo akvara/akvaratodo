@@ -81,7 +81,6 @@ class Move extends Component {
                     <button disabled={!this.state.newListName.trim()} type="submit">
                         Move to new list
                     </button>
-
                 </form>
 				<hr />
                 <button onClick={this.back} >Back to {this.props.from_list.name}</button>

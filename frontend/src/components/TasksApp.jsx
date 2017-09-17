@@ -473,9 +473,9 @@ class TasksApp extends Component {
                         <input
                             className="task-input"
                             ref={(input) => { this.taskInput = input; }}
+                            value={this.state.task}
                             onFocus={Utils.disableHotKeys.bind(this)}
                             onBlur={Utils.registerHotKeys.bind(this, this.checkKeyPressed)}
-                            value={this.state.task}
                             onKeyDown={this.handleKeyDownAtTask}
                             onChange={this.onChange}
                         />

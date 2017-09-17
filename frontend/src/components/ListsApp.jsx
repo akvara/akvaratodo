@@ -40,7 +40,7 @@ class ListsApp extends Component {
         if (pressed === 'a') {
             playSound();
             e.preventDefault();
-            this.nameInput.focus();
+            this.listNameInput.focus();
             return;
         }
         if (pressed === 'r') {
@@ -101,6 +101,15 @@ class ListsApp extends Component {
         this.props.actions.removeList(listId);
     };
 
+    handleKeyDownAtListInput = (e) => {
+        if (e.keyCode === 27) {
+            this.listNameInput.blur();
+            this.setState({
+                listName: ''
+            });
+        }
+    };
+
     /* The Renderer */
     render() {
         this.addHotKeys();
@@ -121,10 +130,11 @@ class ListsApp extends Component {
                 <form onSubmit={this.handleSubmit}>
                     <input
                         className="list-input"
-                        ref={(input) => { this.nameInput = input; }}
+                        ref={(input) => { this.listNameInput = input; }}
                         value={this.state.listName}
+                        onFocus={Utils.disableHotKeys.bind(this)}
                         onBlur={Utils.registerHotKeys.bind(this, this.checkKeyPressed)}
-                        onFocus={Utils.disableHotKeys}
+                        onKeyDown={this.handleKeyDownAtListInput}
                         onChange={this.onNameChange}
                     />
                     <button disabled={!this.state.listName.trim()}>Create new list</button>
