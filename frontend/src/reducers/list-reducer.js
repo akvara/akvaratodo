@@ -20,7 +20,7 @@ class AppReducer extends BaseReducer {
 
             [types.CHECK_AND_SAVE]: this.checkAList,
             [types.MOVE_CHOOSE]: this.moveTo,
-            [types.PREPEND]: this.prependRequest,
+            // [types.PREPEND]: this.prependRequest,
             [types.MOVE_TO]: this.prependRequest,
             [types.CONCAT_LISTS]: this.concatListsRequest,
             [types.ADD_OR_OPEN_LIST]: this.addAListRequest,

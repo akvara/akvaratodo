@@ -117,19 +117,18 @@ function* moveTaskToAnotherListSaga(action) {
 }
 
 function* copyOrMoveToNewListSaga(action) {
-    console.log("copyOrMoveToNewListSaga action", action);
     try {
-        let listId = findOrCreateListByName(action);
-        action.listId = listId;
-        console.log("findOrCreateListByName listId", listId);
+        let listId = yield findOrCreateListByName(action);
+        action.payload.data.listId = listId;
 
-        // yield removeTaskFromListSaga(action);
-        // yield prependToAListSaga(action);
+        yield removeTaskFromListSaga(action);
+        yield prependToAListSaga(action);
     } catch (e) {
         yield generalFailure(e);
     }
 }
 
+/* Expects: {listId, task} */
 function* prependToAListSaga(action) {
     try {
         const new_data = action.payload.data;
@@ -148,6 +147,7 @@ function* prependToAListSaga(action) {
     }
 }
 
+/* Expects: {fromListId, task} */
 function* removeTaskFromListSaga(action) {
     try {
         const new_data = action.payload.data;

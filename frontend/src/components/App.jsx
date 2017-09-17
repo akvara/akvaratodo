@@ -76,7 +76,6 @@ class App extends Component {
 
     /* The Renderer */
     render() {
-        // console.log("APP rendering, mode:", this.props);
         return this.switcher();
     }
 }

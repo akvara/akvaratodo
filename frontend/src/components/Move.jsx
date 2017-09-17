@@ -20,12 +20,7 @@ class Move extends Component {
 
 	/* Moves or copies item to new list */
 	copyOrMoveToNew = (toListName, move) => {
-        this.props.actions.moveToList({
-            fromListId: this.props.from_list.listId,
-            task: this.props.task,
-            listName: toListName,
-            move: move
-        });
+
 	};
 
 	/* Moves item to another list */
@@ -59,6 +54,16 @@ class Move extends Component {
         )
   	};
 
+  	handleSubmit = (e) => {
+  	    e.preventDefault();
+        this.props.actions.copyOrMoveToNew({
+            fromListId: this.props.from_list.listId,
+            task: this.props.task,
+            listName: this.state.newListName,
+            move: true
+        });
+    };
+
 
     onListInputChange = (e) => {
         this.setState({ newListName: e.target.value });
@@ -76,8 +81,13 @@ class Move extends Component {
                     </tbody>
                 </table>
                 <hr />
-                <form onSubmit={this.copyOrMoveToNew.bind(this, this.state.newListName, true)}>
-                    <input disabled="disabled" className="list-input" value={this.state.newListName} onChange={this.onListInputChange} />
+                <form onSubmit={this.handleSubmit}>
+                    <input
+                        // disabled="disabled"
+                        className="list-input"
+                        value={this.state.newListName}
+                        onChange={this.onListInputChange}
+                    />
                     <button disabled={!this.state.newListName.trim()} type="submit">
                         Move to new list
                     </button>
