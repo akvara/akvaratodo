@@ -110,6 +110,9 @@ class AppReducer extends BaseReducer {
     }
 
     aListFetched(state, action) {
+        if (!action.payload) {
+            return state;
+        }
         return {
             ...state,
             status_msg: action.payload.name + ' loaded',
@@ -119,7 +122,6 @@ class AppReducer extends BaseReducer {
     }
 
     moveTo(state, action) {
-        console.log("moveTo", action);
         return {
             ...state,
             status_msg: 'Move task to ... ' ,

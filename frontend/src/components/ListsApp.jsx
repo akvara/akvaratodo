@@ -142,12 +142,6 @@ const mapDispatchToProps = (dispatch) => {
             addOrOpenAList: addOrOpenAList,
             removeList: removeList
         }, dispatch),
-        // actions: {
-        //     addOrOpenAList: bindActionToPromise(dispatch, addOrOpenAList),
-        //     removeList: bindActionToPromise(dispatch, removeList),
-        //     getAList: bindActionToPromise(dispatch, getAList),
-        //     getListOfLists: bindActionToPromise(dispatch, getListOfLists),
-        // }
     };
 };
 

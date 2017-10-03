@@ -14,11 +14,8 @@ function* checkAndSave(action) {
     let new_data = action.payload.data,
         listId = new_data.listId;
     let originalList = yield call(callGet, UrlUtils.getAListUrl(listId));
-    // yield console.log(' checkAndSave comparing - ', originalList.lastAction, "with", new_data.previousAction);
-    // if (true) {
     if (originalList.lastAction !== new_data.previousAction) {
         if (new_data.taskToAdd ) {
-            console.log("Will try to add to top:", new_data);
             let payload = {
                 data: {
                     listId: listId,
@@ -39,6 +36,13 @@ function* checkAndSave(action) {
 
 function* getAListRequest(action) {
     yield fetchItemSaga(UrlUtils.getAListUrl(action.payload.data), types.GET_A_LIST);
+}
+
+function* getAListSuccess(action) {
+    console.log(action);
+    if (!action.payload) {
+        yield fetchItemSaga(UrlUtils.getListsUrl(), types.LIST_OF_LISTS);
+    }
 }
 
 function* removeListRequest(action) {
@@ -167,6 +171,7 @@ export default function* listSagas() {
         takeEvery(types.LIST_OF_LISTS.FAILURE, generalFailure),
 
         takeEvery(types.GET_A_LIST.REQUEST, getAListRequest),
+        takeEvery(types.GET_A_LIST.SUCCESS, getAListSuccess),
         takeEvery(types.GET_A_LIST.FAILURE, generalFailure),
 
         takeEvery(types.REMOVE_LIST.REQUEST, removeListRequest),

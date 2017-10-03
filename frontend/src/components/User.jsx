@@ -22,7 +22,6 @@ class User extends Component {
 
   	/* The Renderer */
 	render() {
-	    console.log(this.versionColor());
 		return <div>
 			<span className="list-item">
                 <span style={{color : this.versionColor()}}> {CONFIG.version}</span>

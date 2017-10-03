@@ -183,7 +183,6 @@ class TasksApp extends Component {
 
     /* Move task to another list */
     moveOutside = (task) => {
-        console.log("moveOutside", task);
         let data = {
             from_list: {listId: this.props.list._id,name: this.state.listName},
             task: task,
@@ -254,7 +253,6 @@ class TasksApp extends Component {
 
     /* Reload this list*/
     reload = () => {
-        console.log("reaload called with ", this.props.list._id)
         this.props.actions.getAList(this.props.list._id);
     };
 
