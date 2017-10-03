@@ -64,6 +64,15 @@ class Move extends Component {
         });
     };
 
+  	copyToNew = () => {
+        this.props.actions.copyOrMoveToNew({
+            fromListId: this.props.from_list.listId,
+            task: this.props.task,
+            listName: this.state.newListName,
+            move: false
+        });
+    };
+
 
     onListInputChange = (e) => {
         this.setState({ newListName: e.target.value });
@@ -115,9 +124,3 @@ export default connect(
     mapDispatchToProps
 )(Move);
 
-//
-// <button disabled={!this.state.newListName.trim()}
-//         onClick={this.copyOrMoveToNew.bind(this, this.state.newListName, false)}
-// >
-//     Copy to new list
-// </button>

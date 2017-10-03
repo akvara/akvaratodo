@@ -121,7 +121,9 @@ function* copyOrMoveToNewListSaga(action) {
         let listId = yield findOrCreateListByName(action);
         action.payload.data.listId = listId;
 
-        yield removeTaskFromListSaga(action);
+        if (action.payload.data.move) {
+            yield removeTaskFromListSaga(action);
+        }
         yield prependToAListSaga(action);
     } catch (e) {
         yield generalFailure(e);
