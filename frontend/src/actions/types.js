@@ -7,12 +7,13 @@ const types = {
     MOVE_CHOOSE: null,
     MOVE_TO: null,
     COPY_OR_MOVE: null,
+    PLAN_WEEK: null,
+    REFRESH_LIST: 'async',
     LIST_OF_LISTS: 'async',
     NEW_LIST: 'async',
     REMOVE_LIST: 'async',
     UPDATE_LIST: 'async',
     GET_A_LIST: 'async',
-    CHECK_DATE: 'async',
 };
 
 Object.keys(types).forEach(key => {

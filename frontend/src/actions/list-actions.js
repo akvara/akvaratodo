@@ -60,6 +60,12 @@ export function copyOrMoveToNew(data, resolve, reject) {
     };
 }
 
+export function planWeek() {
+    return {
+        type: types.PLAN_WEEK
+    };
+}
+
 export function error(data, resolve, reject) {
     return {
         type: types.ERROR, payload: {data, resolve, reject}

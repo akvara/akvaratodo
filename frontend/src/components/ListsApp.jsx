@@ -3,7 +3,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import ListOfLists from './ListOfLists';
-import {addOrOpenAList, getAList, removeList, getListOfLists} from '../actions/list-actions';
+import {addOrOpenAList, getAList, removeList, getListOfLists, planWeek} from '../actions/list-actions';
 import {playSound} from '../utils/hotkeys';
 import * as Utils from '../utils/utils.js';
 
@@ -93,10 +93,6 @@ class ListsApp extends Component {
         this.props.actions.getAList(listId);
     };
 
-    listChanger = (listName) => {
-        this.props.actions.addOrOpenAList(listName);
-    };
-
     removeList = (listId) => {
         this.props.actions.removeList(listId);
     };
@@ -139,6 +135,8 @@ class ListsApp extends Component {
                     />
                     <button disabled={!this.state.listName.trim()}>Create new list</button>
                 </form>
+                <hr />
+                <button onClick={this.props.actions.planWeek}>Plan week</button>
             </div>
         );
     }
@@ -150,7 +148,8 @@ const mapDispatchToProps = (dispatch) => {
             getAList: getAList,
             getListOfLists: getListOfLists,
             addOrOpenAList: addOrOpenAList,
-            removeList: removeList
+            removeList: removeList,
+            planWeek: planWeek
         }, dispatch),
     };
 };

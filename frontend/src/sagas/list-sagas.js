@@ -39,7 +39,6 @@ function* getAListRequest(action) {
 }
 
 function* getAListSuccess(action) {
-    console.log(action);
     if (!action.payload) {
         yield fetchItemSaga(UrlUtils.getListsUrl(), types.LIST_OF_LISTS);
     }
@@ -64,6 +63,7 @@ function* findOrCreateListByName(action) {
             return filtered[0]._id;
         }
         const result = yield call(callPost, url, NewTaskEntity(listName));
+        yield fetchItemSaga(UrlUtils.getListsUrl(), types.REFRESH_LIST);
         return result._id;
     } catch (e) {
         yield generalFailure(e);
@@ -81,6 +81,30 @@ function* addOrOpenListsSaga(action) {
         }
 
         return yield createItemSaga(UrlUtils.getListsUrl(), NewTaskEntity(listName), types.NEW_LIST);
+    } catch (e) {
+        yield generalFailure(e);
+    }
+}
+
+function* planWeek() {
+    const days = ['Sekmadienį','Pirmadienį','Antradienį','Trečiadienį','Ketvirtadienį','Penktadienį','Šeštadienį'];
+    const months = ['sausio','vasario','kovo','balandžio','gegužės','birželio','liepos','rugpjūčio','rugsėjo','spalio','lapkričio','gruodžio'];
+
+    try {
+        let listOfLists = yield call(callGet, UrlUtils.getListsUrl());
+        let now = new Date();
+        let shift_date = new Date();
+        let shift = 0;
+
+        for (let d = now.getDay(); d < 7; d++) {
+            shift_date.setDate(now.getDate() + shift++);
+            let listName = `${days[d]}, ${months[shift_date.getMonth()]} ${shift_date.getDate()} d.`;
+            let filtered = listOfLists.filter((e) => e.name === listName);
+            if (!filtered.length) {
+                yield call(callPost, UrlUtils.getListsUrl(), NewTaskEntity(listName));
+            }
+        }
+        return yield fetchItemSaga(UrlUtils.getListsUrl(), types.LIST_OF_LISTS);
     } catch (e) {
         yield generalFailure(e);
     }
@@ -191,5 +215,6 @@ export default function* listSagas() {
         takeEvery(types.MOVE_TO, moveTaskToAnotherListSaga),
         takeEvery(types.COPY_OR_MOVE, copyOrMoveToNewListSaga),
         takeEvery(types.CONCAT_LISTS, concatListsSaga),
+        takeEvery(types.PLAN_WEEK, planWeek),
     ]);
 }

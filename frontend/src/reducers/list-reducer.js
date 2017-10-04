@@ -11,6 +11,7 @@ class AppReducer extends BaseReducer {
         this.ACTION_HANDLERS = {
             [types.LIST_OF_LISTS.REQUEST]: this.listOfListsRequest,
             [types.LIST_OF_LISTS.SUCCESS]: this.listOfListsFetched,
+            [types.REFRESH_LIST.SUCCESS]: this.listOfListsRefreshed,
 
             [types.REMOVE_LIST.REQUEST]: this.removeListRequest,
             [types.UPDATE_LIST.SUCCESS]: this.listSaved,
@@ -20,10 +21,11 @@ class AppReducer extends BaseReducer {
 
             [types.CHECK_AND_SAVE]: this.checkAList,
             [types.MOVE_CHOOSE]: this.moveTo,
-            // [types.PREPEND]: this.prependRequest,
             [types.MOVE_TO]: this.prependRequest,
             [types.CONCAT_LISTS]: this.concatListsRequest,
             [types.ADD_OR_OPEN_LIST]: this.addAListRequest,
+
+            [types.PLAN_WEEK]: this.planWeek,
 
             [types.ERROR]: this.error,
             [types.DATA_CONFLICT]: this.dataConflict,
@@ -46,13 +48,13 @@ class AppReducer extends BaseReducer {
         };
     }
 
-    // listsRefreshed(state) {
-    //     return {
-    //         ...state,
-    //         status_msg: 'Lists refreshed',
-    //         mode: CONST.mode.MODE_LOADING
-    //     };
-    // }
+    planWeek(state) {
+        return {
+            ...state,
+            status_msg: 'Planing a week ...',
+            mode: CONST.mode.MODE_LOADING
+        };
+    }
 
     removeListRequest(state) {
         return {
@@ -97,6 +99,13 @@ class AppReducer extends BaseReducer {
         return {
             ...state,
             status_msg: 'List saved',
+        };
+    }
+
+    listOfListsRefreshed(state, action) {
+        return {
+            ...state,
+            lists: Utils.sortArrOfObjectsByParam(action.payload, 'updatedAt', true)
         };
     }
 
