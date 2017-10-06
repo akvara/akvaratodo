@@ -1,6 +1,6 @@
 import types from '../actions/types';
 import {fetchItemSaga, createItemSaga, removeItemSaga, updateItemSaga} from './common-sagas';
-import {callGet, callPost, callUpdate} from '../utils/api';
+import {callGet, callPost, callUpdate, callDelete} from '../utils/api';
 import {takeEvery, put, call, all} from 'redux-saga/effects';
 import * as UrlUtils from '../utils/urlUtils';
 import * as Utils from '../utils/utils.js';
@@ -24,7 +24,6 @@ function* checkAndSave(action) {
             };
             return yield put({type: types.PREPEND, payload});
         }
-
         return yield put({type: types.DATA_CONFLICT, payload: originalList.lastAction});
     }
     yield updateItemSaga(
@@ -114,7 +113,7 @@ function* generalFailure(e) {
     yield put({type: types.ERROR, payload: e});
 }
 
-function* concatListsSaga(action) {
+function* importListSaga(action) {
     try {
         const urlFirst = UrlUtils.getAListUrl(action.payload.data.firstListId);
         const urlSecond = UrlUtils.getAListUrl(action.payload.data.secondListId);
@@ -126,6 +125,24 @@ function* concatListsSaga(action) {
         };
         yield call(callUpdate, urlSecond, data);
         return yield fetchItemSaga(urlSecond, types.GET_A_LIST);
+    } catch (e) {
+        yield generalFailure(e);
+    }
+}
+
+function* exportListSaga(action) {
+    try {
+        const urlThisList = UrlUtils.getAListUrl(action.payload.data.listId);
+        const urlToThatList = UrlUtils.getAListUrl(action.payload.data.toListId);
+        const thisList = yield call(callGet, urlThisList);
+        const toThatList = yield call(callGet, urlToThatList);
+        let data = {
+            lastAction: new Date().toISOString(),
+            tasks: Utils.concatTwoJSONs(thisList.tasks, toThatList.tasks)
+        };
+        yield call(callUpdate, urlToThatList, data);
+        yield call(callDelete, urlThisList);
+        return yield fetchItemSaga(urlToThatList, types.GET_A_LIST);
     } catch (e) {
         yield generalFailure(e);
     }
@@ -214,7 +231,8 @@ export default function* listSagas() {
         takeEvery(types.PREPEND, prependToAListSaga),
         takeEvery(types.MOVE_TO, moveTaskToAnotherListSaga),
         takeEvery(types.COPY_OR_MOVE, copyOrMoveToNewListSaga),
-        takeEvery(types.CONCAT_LISTS, concatListsSaga),
+        takeEvery(types.IMPORT_LIST, importListSaga),
+        takeEvery(types.EXPORT_LIST, exportListSaga),
         takeEvery(types.PLAN_WEEK, planWeek),
     ]);
 }

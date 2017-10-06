@@ -36,9 +36,15 @@ export function prependToAList(data, resolve, reject) {
     };
 }
 
-export function concatLists(data, resolve, reject) {
+export function importList(data, resolve, reject) {
     return {
-        type: types.CONCAT_LISTS, payload: {data, resolve, reject}
+        type: types.IMPORT_LIST, payload: {data, resolve, reject}
+    };
+}
+
+export function exportList(data, resolve, reject) {
+    return {
+        type: types.EXPORT_LIST, payload: {data, resolve, reject}
     };
 }
 

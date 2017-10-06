@@ -22,7 +22,8 @@ class AppReducer extends BaseReducer {
             [types.CHECK_AND_SAVE]: this.checkAList,
             [types.MOVE_CHOOSE]: this.moveTo,
             [types.MOVE_TO]: this.prependRequest,
-            [types.CONCAT_LISTS]: this.concatListsRequest,
+            [types.IMPORT_LIST]: this.importListRequest,
+            [types.EXPORT_LIST]: this.exportListRequest,
             [types.ADD_OR_OPEN_LIST]: this.addAListRequest,
 
             [types.PLAN_WEEK]: this.planWeek,
@@ -64,10 +65,18 @@ class AppReducer extends BaseReducer {
         };
     }
 
-    concatListsRequest(state) {
+    importListRequest(state) {
         return {
             ...state,
             status_msg: 'Adding a list on top ...',
+            mode: CONST.mode.MODE_LOADING
+        };
+    }
+
+    exportListRequest(state) {
+        return {
+            ...state,
+            status_msg: 'Exporting to a list ...',
             mode: CONST.mode.MODE_LOADING
         };
     }

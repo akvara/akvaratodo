@@ -46,7 +46,7 @@ class ListsApp extends Component {
         if (pressed === 'r') {
             playSound();
             e.preventDefault();
-            this.openLists();
+            this.reload();
             return;
         }
         this.hotKeys.forEach(function (k) {
@@ -76,7 +76,7 @@ class ListsApp extends Component {
     };
 
     /* Go to list of lists */
-    openLists = () => {
+    reload = () => {
         this.props.actions.getListOfLists();
     };
 
@@ -137,6 +137,11 @@ class ListsApp extends Component {
                 </form>
                 <hr />
                 <button onClick={this.props.actions.planWeek}>Plan week</button>
+                <button onClick={this.reload}>
+                    <span className={'glyphicon glyphicon-refresh'}
+                          aria-hidden="true">
+                    </span> <u>R</u>eload
+                </button>
             </div>
         );
     }

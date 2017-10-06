@@ -6,7 +6,7 @@ import TasksList from './TasksList';
 import TasksDoneList from './TasksDoneList';
 import CONFIG from '../config.js';
 import {
-    getAList, getListOfLists, addOrOpenAList, checkAndSave, concatLists, moveOutside
+    getAList, getListOfLists, addOrOpenAList, checkAndSave, importList, exportList, moveOutside
 } from '../actions/list-actions';
 import {playSound} from '../utils/hotkeys';
 import * as Utils from '../utils/utils.js';
@@ -21,8 +21,6 @@ class TasksApp extends Component {
 
     constructor(props, context) {
         super(props, context);
-
-        this.immutables = props.immutables || [];
 
         this.state = {
             listName: props.list.name,
@@ -352,30 +350,54 @@ class TasksApp extends Component {
         this.setState({ task: e.target.value });
     };
 
-    prependAnotherList = (listId) => {
+    importList = (listId) => {
         let data = {
             firstListId: listId,
             secondListId: this.props.list._id,
         };
-        this.props.actions.concatLists(data);
+        this.props.actions.importList(data);
+    };
+
+    exportList = (listId) => {
+        let data = {
+            listId: this.props.list._id,
+            toListId: listId,
+        };
+        this.props.actions.exportList(data);
     };
 
     makeListOption = (list) => (
         <option key={"o-" + list._id} value={list._id}>{list.name}</option>
     );
 
-    /* Button for loading tasks from another list */
+    /* Select for loading tasks from another list */
     displayImportBlock = () => {
         if (this.state.immutable) return null;
 
         return (
             <select className="import-select" onChange={(e) => {
-                if (e.target.value) this.prependAnotherList(e.target.value)
+                if (e.target.value) this.importList(e.target.value)
             }}>
                 <option value="">
                     Import list
                 </option>
                 {this.props.immutables.map((list) => this.makeListOption(list))}
+            </select>
+        );
+    };
+
+    /* Select for exporting tasks to another list */
+    displayExportBlock = () => {
+        if (this.state.immutable) return null;
+
+        return (
+            <select className="import-select" onChange={(e) => {
+                if (e.target.value) this.exportList(e.target.value)
+            }}>
+                <option value="">
+                    Export to
+                </option>
+                {this.props.exportables.map((list) => this.makeListOption(list))}
             </select>
         );
     };
@@ -485,6 +507,7 @@ class TasksApp extends Component {
                 }
                 <hr />
                 {this.displayImportBlock()}
+                {this.displayExportBlock()}
                 <button disabled={this.state.task.trim()} onClick={this.mark}>
                     <span className={'glyphicon glyphicon-' + markGlyphicon}
                           aria-hidden="true">
@@ -519,7 +542,8 @@ const mapDispatchToProps = (dispatch) => {
             getAList: getAList,
             getListOfLists: getListOfLists,
             checkAndSave: checkAndSave,
-            concatLists: concatLists,
+            importList: importList,
+            exportList: exportList,
             addOrOpenAList: addOrOpenAList,
             moveOutside: moveOutside
         }, dispatch),
