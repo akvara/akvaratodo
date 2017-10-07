@@ -93,11 +93,10 @@ function* planWeek() {
         let listOfLists = yield call(callGet, UrlUtils.getListsUrl());
         let now = new Date();
         let shift_date = new Date();
-        let shift = 0;
 
-        for (let d = now.getDay(); d < 7; d++) {
-            shift_date.setDate(now.getDate() + shift++);
-            let listName = `${days[d]}, ${months[shift_date.getMonth()]} ${shift_date.getDate()} d.`;
+        for (let shift = 6; shift >= 0; shift--) {
+            shift_date.setDate(now.getDate() + shift);
+            let listName = `${days[shift_date.getDay()]}, ${months[shift_date.getMonth()]} ${shift_date.getDate()} d.`;
             let filtered = listOfLists.filter((e) => e.name === listName);
             if (!filtered.length) {
                 yield call(callPost, UrlUtils.getListsUrl(), NewTaskEntity(listName));
