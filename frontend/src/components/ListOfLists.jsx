@@ -28,6 +28,7 @@ class ListOfLists extends Component {
 	};
 
 	displayList = (list, i) => {
+		if (list.isList) return null; // Todo: HERE
 		let itemClass = "list-item",
 	        action = this.props.openList.bind(this, list._id, list.name),
     	    glyph = "glyphicon-folder-open",

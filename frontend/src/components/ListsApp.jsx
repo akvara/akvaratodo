@@ -9,14 +9,55 @@ import * as Utils from '../utils/utils.js';
 
 class ListsApp extends Component {
     static propTypes = {
-        actions: PropTypes.object.isRequired
+        lists: PropTypes.array.isRequired,
+        actions: PropTypes.shape({
+            getAList: PropTypes.func.isRequired,
+            getListOfLists: PropTypes.func.isRequired,
+            addOrOpenAList: PropTypes.func.isRequired,
+            removeList: PropTypes.func.isRequired,
+            planWeek: PropTypes.func.isRequired,
+        }).isRequired
     };
 
     constructor(props, context) {
         super(props, context);
+        let contractList = [];
+        let workingList = this.props.lists.filter(list => !list.immutable);
+        workingList.map(list => {
+                let dashPos = list.name.indexOf(' - ');
+                if (dashPos > -1) {
+                    let contractTitle = list.name.substring(0, dashPos);
+                    if (!contractList[contractTitle]) {
+                        contractList[contractTitle] = {used: false, list: []}
+                    }
+                    contractList[contractTitle].list.push(list)
+                }
+                return null;
+        });
+        let displayList = [];
+        workingList.map((list) => {
+                let dashPos = list.name.indexOf(' - ');
+                if (dashPos > -1) {
+                    let contractTitle = list.name.substring(0, dashPos);
+                    if (contractList[contractTitle].list.length > 1) {
+                        if (!contractList[contractTitle].used) {
+                            contractList[contractTitle].used = true;
+                            displayList.push({isList: true, list: contractList[contractTitle].list});
+                        }
+                    } else {
+                        displayList.push(list)
+                    }
+                } else {
+                    displayList.push(list)
+                }
+            return null;
+        });
+
+        console.log(displayList);
 
         this.state = {
-            lists: this.props.lists || null,
+            lists: displayList,
+            immutableLists: this.props.lists.filter(list => list.immutable),
             listName: '',
         };
 
@@ -60,8 +101,11 @@ class ListsApp extends Component {
 
     addHotKeys = () => {
         this.state.lists.forEach((list) => {
-            let newKey = this.findFreeKey(list.name);
-            if (newKey) this.hotKeys.push({key: newKey, listId: list._id, listName: list.name})
+            console.log("********", list)
+            if (!list.isList) {
+                let newKey = this.findFreeKey(list.name);
+                if (newKey) this.hotKeys.push({key: newKey, listId: list._id, listName: list.name})
+            }
         });
     };
 
@@ -113,14 +157,14 @@ class ListsApp extends Component {
             <div>
                 <h1>Lists</h1>
                 <ListOfLists
-                    lists={this.state.lists.filter(list => !list.immutable)}
+                    lists={this.state.lists}
                     openList={this.openAList}
                     removeList={this.removeList}
                     hotKeys={this.hotKeys}
                 />
                 <h3>Protected</h3>
                 <ListOfLists
-                    lists={this.state.lists.filter(list => list.immutable)}
+                    lists={this.state.immutableLists}
                     openList={this.openAList}
                 />
                 <form onSubmit={this.handleSubmit}>
