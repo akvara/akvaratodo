@@ -26,9 +26,14 @@ class ListOfLists extends Component {
 
   		return <span>{str.substring(0, n)}<u>{str.substring(n, n + 1)}</u>{str.substring(n + 1, str.length)}</span>;
 	};
+    
+    contractedListItem = (listItem) => {
+        return <div>+ {listItem.contractedTitle}</div>
+    };
 
 	displayList = (list, i) => {
-		if (list.isList) return null; // Todo: HERE
+		if (list.isList) return this.contractedListItem(list);
+
 		let itemClass = "list-item",
 	        action = this.props.openList.bind(this, list._id, list.name),
     	    glyph = "glyphicon-folder-open",

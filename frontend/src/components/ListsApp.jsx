@@ -21,16 +21,16 @@ class ListsApp extends Component {
 
     constructor(props, context) {
         super(props, context);
-        let contractList = [];
+        let contractedList = [];
         let workingList = this.props.lists.filter(list => !list.immutable);
         workingList.map(list => {
                 let dashPos = list.name.indexOf(' - ');
                 if (dashPos > -1) {
-                    let contractTitle = list.name.substring(0, dashPos);
-                    if (!contractList[contractTitle]) {
-                        contractList[contractTitle] = {used: false, list: []}
+                    let contractedTitle = list.name.substring(0, dashPos);
+                    if (!contractedList[contractedTitle]) {
+                        contractedList[contractedTitle] = {used: false, list: []}
                     }
-                    contractList[contractTitle].list.push(list)
+                    contractedList[contractedTitle].list.push(list)
                 }
                 return null;
         });
@@ -38,11 +38,16 @@ class ListsApp extends Component {
         workingList.map((list) => {
                 let dashPos = list.name.indexOf(' - ');
                 if (dashPos > -1) {
-                    let contractTitle = list.name.substring(0, dashPos);
-                    if (contractList[contractTitle].list.length > 1) {
-                        if (!contractList[contractTitle].used) {
-                            contractList[contractTitle].used = true;
-                            displayList.push({isList: true, list: contractList[contractTitle].list});
+                    let contractedTitle = list.name.substring(0, dashPos);
+                    if (contractedList[contractedTitle].list.length > 1) {
+                        if (!contractedList[contractedTitle].used) {
+                            contractedList[contractedTitle].used = true;
+                            displayList.push({
+                                isList: true, 
+                                isContracted: true,
+                                contractedTitle: contractedTitle,
+                                list: contractedList[contractedTitle].list
+                            });
                         }
                     } else {
                         displayList.push(list)
