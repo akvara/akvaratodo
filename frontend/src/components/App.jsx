@@ -42,7 +42,7 @@ class App extends Component {
                 <TasksApp
                     list={this.props.a_list}
                     immutables={this.props.lists.filter((item) => item.immutable)}
-                    exportables={this.props.lists.filter((item) => !item.immutable).slice(0, 8)}
+                    exportables={this.props.lists.filter((item) => item._id !== this.props.a_list._id && !item.immutable).slice(0, 20)}
                     previous_list={
                         this.props.from_list
                         && this.props.a_list._id === this.props.from_list.listId
