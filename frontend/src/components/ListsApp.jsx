@@ -4,8 +4,9 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import ListOfLists from './ListOfLists';
 import {addOrOpenAList, getAList, removeList, getListOfLists, planWeek} from '../actions/list-actions';
+import {makeContractableList} from '../utils/listUtils';
 import {playSound} from '../utils/hotkeys';
-import * as Utils from '../utils/utils.js';
+import * as Utils from '../utils/utils';
 
 class ListsApp extends Component {
     static propTypes = {
@@ -21,47 +22,9 @@ class ListsApp extends Component {
 
     constructor(props, context) {
         super(props, context);
-        let contractedList = [];
-        let workingList = this.props.lists.filter(list => !list.immutable);
-        workingList.map(list => {
-                let dashPos = list.name.indexOf(' - ');
-                if (dashPos > -1) {
-                    let contractedTitle = list.name.substring(0, dashPos);
-                    if (!contractedList[contractedTitle]) {
-                        contractedList[contractedTitle] = {used: false, list: []}
-                    }
-                    contractedList[contractedTitle].list.push(list)
-                }
-                return null;
-        });
-        let displayList = [];
-        workingList.map((list) => {
-                let dashPos = list.name.indexOf(' - ');
-                if (dashPos > -1) {
-                    let contractedTitle = list.name.substring(0, dashPos);
-                    if (contractedList[contractedTitle].list.length > 1) {
-                        if (!contractedList[contractedTitle].used) {
-                            contractedList[contractedTitle].used = true;
-                            displayList.push({
-                                isList: true, 
-                                isContracted: true,
-                                contractedTitle: contractedTitle,
-                                list: contractedList[contractedTitle].list
-                            });
-                        }
-                    } else {
-                        displayList.push(list)
-                    }
-                } else {
-                    displayList.push(list)
-                }
-            return null;
-        });
-
-        console.log(displayList);
 
         this.state = {
-            lists: displayList,
+            lists: makeContractableList(this.props.lists.filter(list => !list.immutable)),
             immutableLists: this.props.lists.filter(list => list.immutable),
             listName: '',
         };
@@ -142,6 +105,20 @@ class ListsApp extends Component {
         this.props.actions.getAList(listId);
     };
 
+    toggleContracted = (listId, isContracted) => {
+        let newList = this.state.lists.map(list => {
+            if (list.isList && list._id === listId) {
+                return {
+                    ...list,
+                    isContracted: isContracted
+                }
+            } else {
+                return list;
+            }
+        });
+        this.setState({ lists: newList });
+    };
+
     removeList = (listId) => {
         this.props.actions.removeList(listId);
     };
@@ -164,6 +141,7 @@ class ListsApp extends Component {
                 <ListOfLists
                     lists={this.state.lists}
                     openList={this.openAList}
+                    toggleContracted={this.toggleContracted}
                     removeList={this.removeList}
                     hotKeys={this.hotKeys}
                 />
