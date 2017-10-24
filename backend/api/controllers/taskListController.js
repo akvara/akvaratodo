@@ -39,6 +39,10 @@ exports.update_a_tasklist = function(req, res) {
 };
 
 exports.delete_a_tasklist = function(req, res) {
+    if (req.params.taskListId === "undefined") {
+        return res.status(422).send({ error: 'missing ID'});
+    }
+
     TaskList.remove({
         _id: req.params.taskListId,
         userId: req.params.userId

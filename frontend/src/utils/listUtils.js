@@ -38,6 +38,5 @@ export function makeContractableList(listOfLists) {
         }
         return null;
     });
-    console.log(displayList);
     return displayList;
 }

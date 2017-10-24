@@ -28,10 +28,12 @@ class ListOfLists extends Component {
 	};
     
     contractedListItemHeader = (list, i) => {
+        let sign = "glyphicon-minus";
+        if (list.isContracted) sign = "glyphicon-plus";
         return (
             <tr key={'tr'+i}>
-                <td colSpan={3} onClick={list.action} >
-					<span className={"glyphicon list-item list-item-glyph glyphicon glyphicon-plus"}
+                <td colSpan={3} onClick={this.props.toggleContracted.bind(this, list.contractedTitle, !list.isContracted)} >
+					<span className={"glyphicon list-item list-item-glyph glyphicon " + sign}
                           aria-hidden="true">
 					</span>
                     {list.contractedTitle}
@@ -41,7 +43,7 @@ class ListOfLists extends Component {
     };
 
     contractedListItems = (list, i) => {
-        // if (list.isContracted) return null;
+        if (list.isContracted) return null;
         return list.list.map(this.displayIndentedListRow);
     };
 
@@ -90,7 +92,7 @@ class ListOfLists extends Component {
 
 	prepareListForDisplaying = (list) => {
         let item = {
-            id: list._id,
+            _id: list._id,
             tasks: list.tasks,
             noOfTasks: list.tasks ? JSON.parse(list.tasks).length : 0,
             name: this.hotKeyedListName(list.name),

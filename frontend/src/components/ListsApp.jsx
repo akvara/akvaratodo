@@ -69,7 +69,6 @@ class ListsApp extends Component {
 
     addHotKeys = () => {
         this.state.lists.forEach((list) => {
-            console.log("********", list)
             if (!list.isList) {
                 let newKey = this.findFreeKey(list.name);
                 if (newKey) this.hotKeys.push({key: newKey, listId: list._id, listName: list.name})
@@ -105,12 +104,12 @@ class ListsApp extends Component {
         this.props.actions.getAList(listId);
     };
 
-    toggleContracted = (listId, isContracted) => {
+    toggleContracted = (listTitle, beContracted) => {
         let newList = this.state.lists.map(list => {
-            if (list.isList && list._id === listId) {
+            if (list.isList && list.contractedTitle === listTitle) {
                 return {
                     ...list,
-                    isContracted: isContracted
+                    isContracted: beContracted
                 }
             } else {
                 return list;
