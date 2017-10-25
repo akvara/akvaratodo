@@ -14,10 +14,9 @@ class User extends Component {
 	versionColor = () => {
 	    let str = CONFIG.version.replace(/-/g, "");
 	    return '#'
-            + this.normaliser(str.substring(0, 2), 12)
             + this.normaliser(str.substring(2, 4), 31)
+            + this.normaliser(str.substring(0, 2), 12)
             + this.normaliser(str.substring(4, 6), 24)
-
     };
 
   	/* The Renderer */

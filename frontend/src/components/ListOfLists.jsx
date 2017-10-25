@@ -32,11 +32,14 @@ class ListOfLists extends Component {
         if (list.isContracted) sign = "glyphicon-plus";
         return (
             <tr key={'tr'+i}>
-                <td colSpan={3} onClick={this.props.toggleContracted.bind(this, list.contractedTitle, !list.isContracted)} >
+                <td colSpan={2} onClick={this.props.toggleContracted.bind(this, list.contractedTitle, !list.isContracted)} >
 					<span className={"glyphicon list-item list-item-glyph glyphicon " + sign}
                           aria-hidden="true">
 					</span>
                     {list.contractedTitle}
+                </td>
+                <td className="right-align">
+                    (<strong>{ list.list.length }</strong>)
                 </td>
             </tr>
         );
