@@ -95,7 +95,7 @@ function* planWeek() {
         let shift_date = new Date();
 
         for (let shift = 6; shift >= 0; shift--) {
-            shift_date.setDate(now.getDate() + shift);
+            shift_date = new Date(now.getTime() + 1000*60*60*24*shift);
             let listName = `${days[shift_date.getDay()]}, ${months[shift_date.getMonth()]} ${shift_date.getDate()} d.`;
             let filtered = listOfLists.filter((e) => e.name === listName);
             if (!filtered.length) {
