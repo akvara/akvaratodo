@@ -1,7 +1,7 @@
 const CONFIG = {
     // devHost: 'http://akvaratododb.herokuapp.com/',
     devHost: 'http://localhost:5000/',
-    apiHost: 'http://akvaratododb.herokuapp.com/',
+    apiHost: 'https://akvaratododb.herokuapp.com/',
     separatorString: "..................",
     listsAddon: "lists",
     settingsAddon: "settings",
@@ -31,7 +31,7 @@ const CONFIG = {
     footerNode: document.getElementById('footer'),
 
     clickSound: "https://www.soundjay.com/button/button-20.mp3",
-    version: '1029-10'
+    version: '1209-10'
 };
 
 export default CONFIG;
