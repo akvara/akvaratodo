@@ -8,8 +8,8 @@ var CONFIG = {
     maxTaskLength: 50,
     loadingStringLength: 40,
     user: {
-        id: 1,
-        name: 'akvara',
+        id: 2,
+        name: 'asta',
         settings: {
             openListIfExists: "Current",
             addNewAt: 4,
@@ -26,7 +26,7 @@ var CONFIG = {
         openListIfExists: {explain: 'Load this list on start', handler: 'selector', field: ''},
     },
     clickSound: "https://www.soundjay.com/button/button-20.mp3",
-    version: '0711-01'
+    version: '0128-13'
 };
 
 export default Object.freeze(CONFIG);
