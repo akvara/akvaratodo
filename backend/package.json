@@ -25,6 +25,7 @@
     "mongodb-migrations": "^0.8.5",
     "mongoose": "^4.8.7",
     "morgan": "^1.8.1",
+    "nodemon": "^1.14.11",
     "passport": "^0.3.2",
     "passport-jwt": "^2.2.1",
     "passport-local": "^1.0.0"

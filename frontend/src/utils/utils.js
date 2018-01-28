@@ -86,6 +86,7 @@ export function overLength(which, items) {
 }
 
 export function grabDate(someDateStr) {
+    console.log("grabDate", someDateStr);
     return toLocalTime(someDateStr).substr(0, 10);
 }
 
@@ -94,7 +95,7 @@ export function grabTime(someDateStr) {
 }
 
 export function toLocalTime(utcDateStr) {
-    return new Date(new Date(utcDateStr).toString() + " UTC").toISOString();
+    return new Date(new Date(utcDateStr).toString().replace(/GMT.*/g,"") + " UTC").toISOString();
 }
 
 export function registerHotKeys(checkKeyPressed) {
