@@ -1,7 +1,7 @@
 var CONFIG = {
     // devHost: 'http://akvaratododb.herokuapp.com/',
     devHost: 'http://localhost:5000/',
-    apiHost: 'http://akvaratododb.herokuapp.com/',
+    apiHost: 'https://akvaratododb.herokuapp.com/',
     separatorString: "..................",
     listsAddon: "lists",
     settingsAddon: "settings",
