@@ -37,7 +37,7 @@ const CONFIG = {
     footerNode: document.getElementById('footer'),
 
     clickSound: "https://www.soundjay.com/button/button-20.mp3",
-    version: '1209-10'
+    version: '0425-19'
 };
 
 export default CONFIG;
