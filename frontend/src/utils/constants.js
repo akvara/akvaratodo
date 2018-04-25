@@ -1,5 +1,5 @@
 const CONST = {
-    mode : {
+    mode: {
         MODE_LOADING: 'LOADING',
         MODE_ERROR: 'ERROR',
         MODE_LIST_OF_LISTS: 'LIST_OF_LISTS',

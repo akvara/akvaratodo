@@ -10,10 +10,10 @@ import {createLogger} from 'redux-logger';
 
 console.log('Starting App ...');
 
-window.onbeforeunload = function() {
-   return "Do you really want to leave ToDo app?";
-   //if we return nothing here (just calling return;) then there will be no pop-up question at all
-   //return;
+window.onbeforeunload = function () {
+    return "Do you really want to leave ToDo app?";
+    //if we return nothing here (just calling return;) then there will be no pop-up question at all
+    //return;
 };
 
 let middleware = [];
@@ -26,22 +26,22 @@ if (window.devToolsExtension) {
 const store = buildStore(middleware);
 
 ReactDOM.render(
-  <Provider store={store}>
-      <App
-          store={store}
-          openAtStartup={CONFIG.user.settings.openListIfExists}
-      />
-  </Provider>, CONFIG.appNode
+    <Provider store={store}>
+        <App
+            store={store}
+            openAtStartup={CONFIG.user.settings.openListIfExists}
+        />
+    </Provider>, CONFIG.appNode
 );
 
 ReactDOM.render(
-  <Provider store={store}>
-      <Status store={store}/>
-  </Provider>, CONFIG.statusNode
+    <Provider store={store}>
+        <Status store={store}/>
+    </Provider>, CONFIG.statusNode
 );
 
 ReactDOM.render(
-  <Provider store={store}>
-      <User store={store}/>
-  </Provider>, CONFIG.userNode
+    <Provider store={store}>
+        <User store={store}/>
+    </Provider>, CONFIG.userNode
 );

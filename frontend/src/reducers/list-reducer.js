@@ -142,7 +142,7 @@ class AppReducer extends BaseReducer {
     moveTo(state, action) {
         return {
             ...state,
-            status_msg: 'Move task to ... ' ,
+            status_msg: 'Move task to ... ',
             mode: CONST.mode.MODE_MOVE,
             from_list: action.payload.data.from_list,
             task: action.payload.data.task

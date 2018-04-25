@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 export function registerHotKeys() {
     // console.log("hotkeys ENabled");
-    $(document).on("keypress", (e) => this.checkKeyPressed(e) );
+    $(document).on("keypress", (e) => this.checkKeyPressed(e));
 }
 
 export function disableHotKeys() {

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import CONFIG from '../config.js';
 import * as Utils from '../utils/utils.js';
 import PropTypes from 'prop-types';
@@ -28,7 +28,6 @@ class TasksDoneList extends Component {
         );
     };
 
-    /* The Renderer */
     render() {
         return (
             <div>

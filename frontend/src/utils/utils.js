@@ -3,7 +3,7 @@ import $ from 'jquery';
 import CONFIG from '../config.js';
 
 export function sortArrOfObjectsByParam(arrToSort, sortBy, sortDesc) {
-    if(!sortDesc) {
+    if (!sortDesc) {
         return arrToSort.sort(function (a, b) {
             return a[sortBy] < b[sortBy] ? -1 : 1;
         });
@@ -55,10 +55,6 @@ export function removeItem(items, i) {
     return items;
 }
 
-// export function textToArray(text) {
-    // return text.split(/\r?\n/).filter(entry => entry.trim() !== '');
-// }
-
 export function concatTwoJSONs(json1, json2) {
     return JSON.stringify(
         _.unique(
@@ -86,7 +82,6 @@ export function overLength(which, items) {
 }
 
 export function grabDate(someDateStr) {
-    console.log("grabDate", someDateStr);
     return toLocalTime(someDateStr).substr(0, 10);
 }
 
@@ -95,7 +90,7 @@ export function grabTime(someDateStr) {
 }
 
 export function toLocalTime(utcDateStr) {
-    return new Date(new Date(utcDateStr).toString().replace(/GMT.*/g,"") + " UTC").toISOString();
+    return new Date(new Date(utcDateStr).toString().replace(/GMT.*/g, "") + " UTC").toISOString();
 }
 
 export function registerHotKeys(checkKeyPressed) {

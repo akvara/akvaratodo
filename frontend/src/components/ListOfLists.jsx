@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import * as Utils from '../utils/utils.js';
 import CONFIG from '../config.js';
@@ -13,33 +13,34 @@ class ListOfLists extends Component {
 
     hotKeyedListName = (listName) => {
         if (!this.props.hotKeys) return listName;
-    	let corresponding = this.props.hotKeys.filter((elem) => elem.listName === listName);
+        let corresponding = this.props.hotKeys.filter((elem) => elem.listName === listName);
         if (!corresponding.length) return listName;
 
-		return this.strongify(listName, corresponding[0].key)
+        return this.strongify(listName, corresponding[0].key)
     };
 
     /* underline first of given letters */
     strongify = (str, letter) => {
-    	let n = str.toLowerCase().indexOf(letter);
-  		if (n === -1) return str;
+        let n = str.toLowerCase().indexOf(letter);
+        if (n === -1) return str;
 
-  		return <span>{str.substring(0, n)}<u>{str.substring(n, n + 1)}</u>{str.substring(n + 1, str.length)}</span>;
-	};
-    
+        return <span>{str.substring(0, n)}<u>{str.substring(n, n + 1)}</u>{str.substring(n + 1, str.length)}</span>;
+    };
+
     contractedListItemHeader = (list, i) => {
         let sign = "glyphicon-minus";
         if (list.isContracted) sign = "glyphicon-plus";
         return (
-            <tr key={'tr'+i}>
-                <td colSpan={2} onClick={this.props.toggleContracted.bind(this, list.contractedTitle, !list.isContracted)} >
+            <tr key={'tr' + i}>
+                <td colSpan={2}
+                    onClick={this.props.toggleContracted.bind(this, list.contractedTitle, !list.isContracted)}>
 					<span className={"glyphicon list-item list-item-glyph glyphicon " + sign}
                           aria-hidden="true">
 					</span>
                     {list.contractedTitle}
                 </td>
                 <td className="right-align">
-                    (<strong>{ list.list.length }</strong>)
+                    (<strong>{list.list.length}</strong>)
                 </td>
             </tr>
         );
@@ -64,36 +65,36 @@ class ListOfLists extends Component {
     };
 
 
-	displayListRow = (list, i) => (
-		<tr key={'tr'+i}>
-			<td className={list.itemClass} onClick={list.action} >
+    displayListRow = (list, i) => (
+        <tr key={'tr' + i}>
+            <td className={list.itemClass} onClick={list.action}>
                 {list.indent &&
-                    <span className={"glyphicon list-item list-item-glyph"} aria-hidden="true">
+                <span className={"glyphicon list-item list-item-glyph"} aria-hidden="true">
                         {' '}
 					</span>
                 }
-					<span className={"glyphicon list-item list-item-glyph glyphicon-folder-open"}
-						  aria-hidden="true">
+                <span className={"glyphicon list-item list-item-glyph glyphicon-folder-open"}
+                      aria-hidden="true">
 					</span>
-                { list.name }
-			</td>
-			<td className="actions">
-                {list.deletable  &&
-				<span className="glyphicon glyphicon-trash action-button"
-					  aria-hidden="true"
-					  onClick={this.props.removeList.bind(this, list._id)}>
+                {list.name}
+            </td>
+            <td className="actions">
+                {list.deletable &&
+                <span className="glyphicon glyphicon-trash action-button"
+                      aria-hidden="true"
+                      onClick={this.props.removeList.bind(this, list._id)}>
 					</span>
                 }
-			</td>
-			<td className="right-align">
-				(<strong>{ list.noOfTasks }</strong>)
+            </td>
+            <td className="right-align">
+                (<strong>{list.noOfTasks}</strong>)
                 {' '}
-                { list.updatedDateOrTime }
-			</td>
-		</tr>
-	);
+                {list.updatedDateOrTime}
+            </td>
+        </tr>
+    );
 
-	prepareListForDisplaying = (list) => {
+    prepareListForDisplaying = (list) => {
         let item = {
             _id: list._id,
             tasks: list.tasks,
@@ -118,24 +119,23 @@ class ListOfLists extends Component {
         return item;
     };
 
-	displayList = (list, i) => {
+    displayList = (list, i) => {
 
-		if (list.isList) return this.contractedList(list, i);
+        if (list.isList) return this.contractedList(list, i);
         let item = this.prepareListForDisplaying(list);
 
-		return this.displayListRow(item, i);
-	};
+        return this.displayListRow(item, i);
+    };
 
-    /* The Renderer */
-	render() {
-		return (
-			<table className="table table-hover">
-				<tbody>
-					{this.props.lists.map(this.displayList)}
-				</tbody>
-			</table>
-		);
-	}
+    render() {
+        return (
+            <table className="table table-hover">
+                <tbody>
+                {this.props.lists.map(this.displayList)}
+                </tbody>
+            </table>
+        );
+    }
 }
 
 export default ListOfLists;

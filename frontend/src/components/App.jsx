@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {Spinner} from './Spinner.jsx'
@@ -21,7 +21,7 @@ class App extends Component {
                 // this.props.dispatch(listActions.addOrOpenAList(this.props.openAtStartup));
             }
             this.props.dispatch(listActions.getListOfLists());
-         }
+        }
     }
 
     switcher = () => {
@@ -34,7 +34,7 @@ class App extends Component {
         }
 
         if (this.props.mode === CONST.mode.MODE_LIST_OF_LISTS) {
-            return <ListsApp lists={this.props.lists} />
+            return <ListsApp lists={this.props.lists}/>
         }
 
         if (this.props.mode === CONST.mode.MODE_A_LIST) {
@@ -63,11 +63,11 @@ class App extends Component {
         }
 
         if (this.props.mode === CONST.mode.DATA_CONFLICT) {
-            return <Failure msg="Data conflict" />
+            return <Failure msg="Data conflict"/>
         }
 
         if (this.props.mode === CONST.mode.MODE_ERROR) {
-            return <Failure onClick={window.location.reload} />
+            return <Failure onClick={window.location.reload}/>
         }
 
         return (
@@ -75,22 +75,18 @@ class App extends Component {
         );
     };
 
-    /* The Renderer */
     render() {
         return this.switcher();
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
+
+export default connect(
+    state => ({
         mode: state.app.mode,
         lists: state.app.lists,
         a_list: state.app.a_list,
         task: state.app.task,
         from_list: state.app.from_list,
-    };
-};
-
-export default connect(
-    mapStateToProps
+    })
 )(App);

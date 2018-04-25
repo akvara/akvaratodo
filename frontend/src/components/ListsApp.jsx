@@ -3,7 +3,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import ListOfLists from './ListOfLists';
-import {addOrOpenAList, getAList, removeList, getListOfLists, planWeek} from '../actions/list-actions';
+import {addOrOpenAList, getAList, getListOfLists, planWeek, removeList} from '../actions/list-actions';
 import {makeContractableList} from '../utils/listUtils';
 import {playSound} from '../utils/hotkeys';
 import * as Utils from '../utils/utils';
@@ -30,8 +30,8 @@ class ListsApp extends Component {
         };
 
         this.hotKeys = [ // reserved hotkeys
-            { key: 'a'},
-            { key: 'r'},
+            {key: 'a'},
+            {key: 'r'},
         ];
     }
 
@@ -92,7 +92,7 @@ class ListsApp extends Component {
     };
 
     onNameChange = (e) => {
-        this.setState({ listName: e.target.value });
+        this.setState({listName: e.target.value});
     };
 
     handleSubmit = (e) => {
@@ -115,7 +115,7 @@ class ListsApp extends Component {
                 return list;
             }
         });
-        this.setState({ lists: newList });
+        this.setState({lists: newList});
     };
 
     removeList = (listId) => {
@@ -152,7 +152,9 @@ class ListsApp extends Component {
                 <form onSubmit={this.handleSubmit}>
                     <input
                         className="list-input"
-                        ref={(input) => { this.listNameInput = input; }}
+                        ref={(input) => {
+                            this.listNameInput = input;
+                        }}
                         value={this.state.listName}
                         onFocus={Utils.disableHotKeys.bind(this)}
                         onBlur={Utils.registerHotKeys.bind(this, this.checkKeyPressed)}
@@ -161,7 +163,7 @@ class ListsApp extends Component {
                     />
                     <button disabled={!this.state.listName.trim()}>Create new list</button>
                 </form>
-                <hr />
+                <hr/>
                 <button onClick={this.props.actions.planWeek}>Plan week</button>
                 <button onClick={this.reload}>
                     <span className={'glyphicon glyphicon-refresh'}
@@ -173,8 +175,9 @@ class ListsApp extends Component {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
+export default connect(
+    null,
+    (dispatch) => ({
         actions: bindActionCreators({
             getAList: getAList,
             getListOfLists: getListOfLists,
@@ -182,10 +185,5 @@ const mapDispatchToProps = (dispatch) => {
             removeList: removeList,
             planWeek: planWeek
         }, dispatch),
-    };
-};
-
-export default connect(
-    null,
-    mapDispatchToProps
+    })
 )(ListsApp);

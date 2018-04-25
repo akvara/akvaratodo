@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
@@ -6,7 +6,13 @@ import TasksList from './TasksList';
 import TasksDoneList from './TasksDoneList';
 import CONFIG from '../config.js';
 import {
-    getAList, getListOfLists, addOrOpenAList, checkAndSave, importList, exportList, moveOutside
+    addOrOpenAList,
+    checkAndSave,
+    exportList,
+    getAList,
+    getListOfLists,
+    importList,
+    moveOutside
 } from '../actions/list-actions';
 import {playSound} from '../utils/hotkeys';
 import * as Utils from '../utils/utils.js';
@@ -59,23 +65,23 @@ class TasksApp extends Component {
 
     serialize(object) {
         let res = {
-                listId: object.listId,
-                previousAction: object.previousAction,
-                listData: {
-                    lastAction: object.lastAction,
-                    immutable: !!object.immutable
-                }
-            };
+            listId: object.listId,
+            previousAction: object.previousAction,
+            listData: {
+                lastAction: object.lastAction,
+                immutable: !!object.immutable
+            }
+        };
         if (object.name) res.listData.name = object.name;
         if (object.itemsToDo) res.listData.tasks = JSON.stringify(object.itemsToDo);
         if (object.itemsDone) res.listData.done = JSON.stringify(object.itemsDone);
         if (object.taskToAdd) res.taskToAdd = object.taskToAdd;
         return res;
     }
-    
+
     /* Calculations */
     calculatePostponePosition = (number) => (Math.floor(number / 2));
-    
+
     /* Show full/contracted ist */
     expand = (which) => {
         this.setState({
@@ -182,7 +188,7 @@ class TasksApp extends Component {
     /* Move task to another list */
     moveOutside = (task) => {
         let data = {
-            from_list: {listId: this.props.list._id,name: this.state.listName},
+            from_list: {listId: this.props.list._id, name: this.state.listName},
             task: task,
         };
         this.props.actions.moveOutside(data);
@@ -208,13 +214,13 @@ class TasksApp extends Component {
         let dataToSave = this.prepareClone();
 
         dataToSave.itemsToDo = Utils.moveFromTo(
-            this.state.itemsToDo, 
-            i, 
+            this.state.itemsToDo,
+            i,
             i + this.calculatePostponePosition(this.state.itemsToDo.length)
         );
 
         let highlightIndex = Math.min(
-            this.state.itemsToDo.length - 1, 
+            this.state.itemsToDo.length - 1,
             i + this.calculatePostponePosition(this.state.itemsToDo.length)
         );
 
@@ -265,8 +271,7 @@ class TasksApp extends Component {
         let key = String.fromCharCode(e.which);
         if ('alrp<'.indexOf(key) !== -1) playSound();
 
-        switch(String.fromCharCode(e.which))
-        {
+        switch (String.fromCharCode(e.which)) {
             case 'a':
                 e.preventDefault();
 
@@ -309,7 +314,7 @@ class TasksApp extends Component {
 
     /* Edit header keypress */
     handleKeyDownAtHeader = (e) => {
-        switch(e.key) {
+        switch (e.key) {
             case 'Enter':
             case 'Tab':
                 this.changeListName(e);
@@ -347,7 +352,7 @@ class TasksApp extends Component {
 
     /* User input */
     onChange = (e) => {
-        this.setState({ task: e.target.value });
+        this.setState({task: e.target.value});
     };
 
     importList = (listId) => {
@@ -419,7 +424,9 @@ class TasksApp extends Component {
             <h1>
                 <form onSubmit={this.handleHeaderSubmit}>
                     <input
-                        ref={(input) => { this.headerInput = input; }}
+                        ref={(input) => {
+                            this.headerInput = input;
+                        }}
                         className="task-input"
                         defaultValue={this.state.listName}
                         onFocus={Utils.disableHotKeys}
@@ -431,7 +438,6 @@ class TasksApp extends Component {
         );
     };
 
-    /* The Renderer */
     render() {
         let markTitle = this.state.immutable ? <span>Un<u>p</u>rotect</span> : <span><u>P</u>rotect</span>,
             markGlyphicon = this.state.immutable ? 'screen-shot' : 'exclamation-sign',
@@ -440,20 +446,20 @@ class TasksApp extends Component {
 
         return (
             <div>
-                { this.manageHeader() }
+                {this.manageHeader()}
                 <h3>
                     Finished ({this.state.itemsDone.length})
                     {Utils.overLength("displayDoneLength", this.state.itemsDone) &&
-                        <span className={"small action-button glyphicon " + expandDoneGlyphicon}
-                              aria-hidden="true"
-                              onClick={this.expand.bind(this, 'expandDone')}>
+                    <span className={"small action-button glyphicon " + expandDoneGlyphicon}
+                          aria-hidden="true"
+                          onClick={this.expand.bind(this, 'expandDone')}>
                         </span>
                     }
                     {'  '}
                     {this.state.itemsDone.length > 0 &&
-                        <span className="small action-button glyphicon glyphicon-trash"
-                              aria-hidden="true"
-                              onClick={this.clearDone}>
+                    <span className="small action-button glyphicon glyphicon-trash"
+                          aria-hidden="true"
+                          onClick={this.clearDone}>
                         </span>
                     }
                 </h3>
@@ -462,13 +468,13 @@ class TasksApp extends Component {
                     undone={this.unDoneTask}
                     expand={this.state.expandDone}
                 />
-                <hr />
+                <hr/>
                 <h3>
                     Remaining ({this.state.itemsToDo.length})
                     {Utils.overLength("displayListLength", this.state.itemsToDo) &&
-                        <span className={"small list-item action-button glyphicon " + expandToDoGlyphicon}
-                              aria-hidden="true"
-                              onClick={this.expand.bind(this, 'expandToDo')}>
+                    <span className={"small list-item action-button glyphicon " + expandToDoGlyphicon}
+                          aria-hidden="true"
+                          onClick={this.expand.bind(this, 'expandToDo')}>
                         </span>
                     }
                 </h3>
@@ -488,13 +494,15 @@ class TasksApp extends Component {
                 />
 
                 {!this.state.immutable &&
-                    <div>
-                    <hr />
+                <div>
+                    <hr/>
                     <h3>Add new:</h3>
                     <form onSubmit={this.handleSubmit}>
                         <input
                             className="task-input"
-                            ref={(input) => { this.taskInput = input; }}
+                            ref={(input) => {
+                                this.taskInput = input;
+                            }}
                             value={this.state.task}
                             onFocus={Utils.disableHotKeys.bind(this)}
                             onBlur={Utils.registerHotKeys.bind(this, this.checkKeyPressed)}
@@ -503,9 +511,9 @@ class TasksApp extends Component {
                         />
                         <button disabled={!this.state.task.trim()}>Add task</button>
                     </form>
-                    </div>
+                </div>
                 }
-                <hr />
+                <hr/>
                 {this.displayImportBlock()}
                 {this.displayExportBlock()}
                 <button disabled={this.state.task.trim()} onClick={this.mark}>
@@ -519,25 +527,26 @@ class TasksApp extends Component {
                     </span> <u>R</u>eload
                 </button>
                 {this.props.previous_list &&
-                    <button disabled={this.state.task.trim()}
-                            onClick={this.listChanger.bind(this, this.props.previous_list.name)}>
+                <button disabled={this.state.task.trim()}
+                        onClick={this.listChanger.bind(this, this.props.previous_list.name)}>
                         <span className="glyphicon glyphicon-chevron-left" aria-hidden="true">
                         </span> {this.props.previous_list.name}
-                    </button>
+                </button>
                 }
                 <button disabled={this.state.task.trim()} onClick={this.props.actions.getListOfLists}>
                     <span className="glyphicon glyphicon-tasks" aria-hidden="true">
                     </span> <u>L</u>ists
                 </button>
-                <br />
+                <br/>
 
             </div>
         );
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
+export default connect(
+    null,
+    (dispatch) => ({
         actions: bindActionCreators({
             getAList: getAList,
             getListOfLists: getListOfLists,
@@ -547,10 +556,5 @@ const mapDispatchToProps = (dispatch) => {
             addOrOpenAList: addOrOpenAList,
             moveOutside: moveOutside
         }, dispatch),
-    }
-};
-
-export default connect(
-    null,
-    mapDispatchToProps
+    })
 )(TasksApp);

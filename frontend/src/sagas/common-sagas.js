@@ -1,5 +1,5 @@
-import {put, call} from 'redux-saga/effects';
-import {callGet, callPost, callUpdate, callDelete} from '../utils/api';
+import {call, put} from 'redux-saga/effects';
+import {callDelete, callGet, callPost, callUpdate} from '../utils/api';
 
 export function* fetchItemSaga(url, actionType) {
     try {

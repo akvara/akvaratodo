@@ -1,7 +1,7 @@
 import types from '../actions/types';
-import {fetchItemSaga, createItemSaga, removeItemSaga, updateItemSaga} from './common-sagas';
-import {callGet, callPost, callUpdate, callDelete} from '../utils/api';
-import {takeEvery, put, call, all} from 'redux-saga/effects';
+import {createItemSaga, fetchItemSaga, removeItemSaga, updateItemSaga} from './common-sagas';
+import {callDelete, callGet, callPost, callUpdate} from '../utils/api';
+import {all, call, put, takeEvery} from 'redux-saga/effects';
 import * as UrlUtils from '../utils/urlUtils';
 import * as Utils from '../utils/utils.js';
 import {NewTaskEntity} from "../utils/entity";
@@ -15,7 +15,7 @@ function* checkAndSave(action) {
         listId = new_data.listId;
     let originalList = yield call(callGet, UrlUtils.getAListUrl(listId));
     if (originalList.lastAction !== new_data.previousAction) {
-        if (new_data.taskToAdd ) {
+        if (new_data.taskToAdd) {
             let payload = {
                 data: {
                     listId: listId,
@@ -86,8 +86,8 @@ function* addOrOpenListsSaga(action) {
 }
 
 function* planWeek() {
-    const days = ['Sekmadienį','Pirmadienį','Antradienį','Trečiadienį','Ketvirtadienį','Penktadienį','Šeštadienį'];
-    const months = ['sausio','vasario','kovo','balandžio','gegužės','birželio','liepos','rugpjūčio','rugsėjo','spalio','lapkričio','gruodžio'];
+    const days = ['Sekmadienį', 'Pirmadienį', 'Antradienį', 'Trečiadienį', 'Ketvirtadienį', 'Penktadienį', 'Šeštadienį'];
+    const months = ['sausio', 'vasario', 'kovo', 'balandžio', 'gegužės', 'birželio', 'liepos', 'rugpjūčio', 'rugsėjo', 'spalio', 'lapkričio', 'gruodžio'];
 
     try {
         let listOfLists = yield call(callGet, UrlUtils.getListsUrl());
@@ -95,7 +95,7 @@ function* planWeek() {
         let shift_date = new Date();
 
         for (let shift = 6; shift >= 0; shift--) {
-            shift_date = new Date(now.getTime() + 1000*60*60*24*shift);
+            shift_date = new Date(now.getTime() + 1000 * 60 * 60 * 24 * shift);
             let listName = `${days[shift_date.getDay()]}, ${months[shift_date.getMonth()]} ${shift_date.getDate()} d.`;
             let filtered = listOfLists.filter((e) => e.name === listName);
             if (!filtered.length) {
