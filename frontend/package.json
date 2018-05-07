@@ -3,23 +3,23 @@
   "version": "1.08.25",
   "private": true,
   "dependencies": {
-    "jquery": "^3.1.1",
+    "jquery": "^3.3.1",
     "mongodb-migrations": "^0.8.5",
     "path": "^0.12.7",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "react-hot-loader": "^4.1.2",
-    "react-redux": "^5.0.6",
+    "react-redux": "^5.0.7",
     "redux": "^4.0.0",
-    "redux-form": "^7.0.3",
+    "redux-form": "^7.3.0",
     "redux-logger": "^3.0.6",
     "redux-saga": "^0.16.0",
     "redux-thunk": "^2.2.0",
     "simple-redux-utils": "^1.0.0",
-    "underscore": "^1.8.3"
+    "underscore": "^1.9.0"
   },
   "devDependencies": {
-    "react-scripts": "^1.0.11"
+    "react-scripts": "^1.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
