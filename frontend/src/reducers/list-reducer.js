@@ -149,7 +149,7 @@ class AppReducer extends BaseReducer {
         };
     }
 
-    error(state, action) {
+    error(state) {
         return {
             ...state,
             mode: CONST.mode.ERROR
@@ -157,7 +157,7 @@ class AppReducer extends BaseReducer {
     }
 
     dataConflict(state, action) {
-        let date = (new Date(action.payload)).toLocaleTimeString("lt-LT");
+        let date = (new Date(action.payload)).toLocaleTimeString('lt-LT');
         return {
             ...state,
             status_msg: date,

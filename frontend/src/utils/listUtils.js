@@ -7,9 +7,9 @@ export function makeContractableList(listOfLists) {
         if (dashPos > -1) {
             let contractedTitle = list.name.substring(0, dashPos);
             if (!contractedList[contractedTitle]) {
-                contractedList[contractedTitle] = {used: false, list: []}
+                contractedList[contractedTitle] = { used: false, list: [] };
             }
-            contractedList[contractedTitle].list.push(list)
+            contractedList[contractedTitle].list.push(list);
         }
         return null;
     });
@@ -31,10 +31,10 @@ export function makeContractableList(listOfLists) {
                     });
                 }
             } else {
-                displayList.push(list)
+                displayList.push(list);
             }
         } else {
-            displayList.push(list)
+            displayList.push(list);
         }
         return null;
     });

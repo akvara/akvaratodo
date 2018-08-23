@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import {Spinner} from './Spinner.jsx'
+import { connect } from 'react-redux';
+import { Spinner } from './Spinner.jsx';
 import CONST from '../utils/constants.js';
 import * as listActions from '../actions/list-actions';
-import ListsApp from './ListsApp.jsx'
-import TasksApp from './TasksApp.jsx'
-import Move from './Move.jsx'
-import Failure from './Failure.jsx'
+import ListsApp from './ListsApp.jsx';
+import TasksApp from './TasksApp.jsx';
+import Move from './Move.jsx';
+import Failure from './Failure.jsx';
 
 class App extends Component {
     static propTypes = {
@@ -16,8 +16,9 @@ class App extends Component {
     };
 
     componentDidMount() {
-        if (this.props.mode === undefined) {
+        if (!this.props.mode) {
             if (this.props.openAtStartup) {
+                // Uncomment when opening list at startup is back in fashion
                 // this.props.dispatch(listActions.addOrOpenAList(this.props.openAtStartup));
             }
             this.props.dispatch(listActions.getListOfLists());
@@ -25,8 +26,8 @@ class App extends Component {
     }
 
     switcher = () => {
-        if (this.props.mode === undefined) {
-            return <div className="error">mode undefined!</div>
+        if (!this.props.mode) {
+            return <div className="error">mode undefined!</div>;
         }
 
         if (this.props.mode === CONST.mode.MODE_LOADING) {
@@ -34,7 +35,7 @@ class App extends Component {
         }
 
         if (this.props.mode === CONST.mode.MODE_LIST_OF_LISTS) {
-            return <ListsApp lists={this.props.lists}/>
+            return <ListsApp lists={this.props.lists}/>;
         }
 
         if (this.props.mode === CONST.mode.MODE_A_LIST) {
@@ -63,11 +64,11 @@ class App extends Component {
         }
 
         if (this.props.mode === CONST.mode.DATA_CONFLICT) {
-            return <Failure msg="Data conflict"/>
+            return <Failure msg="Data conflict"/>;
         }
 
         if (this.props.mode === CONST.mode.MODE_ERROR) {
-            return <Failure onClick={window.location.reload}/>
+            return <Failure onClick={window.location.reload}/>;
         }
 
         return (

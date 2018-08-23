@@ -5,44 +5,44 @@ import CONFIG from '../config.js';
 export function sortArrOfObjectsByParam(arrToSort, sortBy, sortDesc) {
     if (!sortDesc) {
         return arrToSort.sort(function (a, b) {
-            return a[sortBy] < b[sortBy] ? -1 : 1;
+            return a[ sortBy ] < b[ sortBy ] ? -1 : 1;
         });
     }
     else {
         return arrToSort.sort(function (a, b) {
-            return a[sortBy] > b[sortBy] ? -1 : 1;
+            return a[ sortBy ] > b[ sortBy ] ? -1 : 1;
         });
     }
 }
 
 export function moveToAnother(fromA, toB, i, toTop) {
-    let trans = fromA[i];
+    let trans = fromA[ i ];
     fromA.splice(i, 1);
     if (toTop) {
-        toB = _.unique([trans].concat(toB));
+        toB = _.unique([ trans ].concat(toB));
     } else {
-        toB = _.unique(toB.concat([trans]));
+        toB = _.unique(toB.concat([ trans ]));
     }
 
-    return {A: fromA, B: toB};
+    return { A: fromA, B: toB };
 }
 
 export function moveToEnd(items, i) {
-    let trans = items[i];
+    let trans = items[ i ];
     items.splice(i, 1);
 
-    return items.concat([trans]);
+    return items.concat([ trans ]);
 }
 
 export function moveToTop(items, i) {
-    let trans = items[i];
+    let trans = items[ i ];
     items.splice(i, 1);
 
-    return [trans].concat(items);
+    return [ trans ].concat(items);
 }
 
 export function moveFromTo(items, fromPos, toPos) {
-    let trans = items[fromPos];
+    let trans = items[ fromPos ];
     items.splice(fromPos, 1);
     items.splice(toPos, 0, trans);
 
@@ -66,7 +66,7 @@ export function concatTwoJSONs(json1, json2) {
 export function prependToJSON(strng, jsn) {
     return JSON.stringify(
         _.unique(
-            [strng].concat(JSON.parse(jsn))
+            [ strng ].concat(JSON.parse(jsn))
         )
     );
 }
@@ -78,7 +78,7 @@ export function removeTask(strng, jsn) {
 }
 
 export function overLength(which, items) {
-    return items.length > CONFIG.user.settings[which];
+    return items.length > CONFIG.user.settings[ which ];
 }
 
 export function grabDate(someDateStr) {
@@ -90,15 +90,15 @@ export function grabTime(someDateStr) {
 }
 
 export function toLocalTime(utcDateStr) {
-    return new Date(new Date(utcDateStr).toString().replace(/GMT.*/g, "") + " UTC").toISOString();
+    return new Date(new Date(utcDateStr).toString().replace(/GMT.*/g, '') + ' UTC').toISOString();
 }
 
 export function registerHotKeys(checkKeyPressed) {
-    console.log("Hot keys ON");
-    $(document).on("keypress", (e) => checkKeyPressed(e));
+    // console.log('Hot keys ON');
+    $(document).on('keypress', (e) => checkKeyPressed(e));
 }
 
 export function disableHotKeys() {
-    console.log("Hot keys OFF");
-    $(document).off("keypress");
+    // console.log('Hot keys OFF');
+    $(document).off('keypress');
 }

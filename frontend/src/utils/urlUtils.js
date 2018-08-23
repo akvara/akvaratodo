@@ -5,7 +5,7 @@ let getHostUrl = function () {
 };
 
 let getBaseUrl = function () {
-    return getHostUrl() + CONFIG.default.user.id + "/";
+    return getHostUrl() + CONFIG.default.user.id + '/';
 };
 
 let getListsUrl = function () {
@@ -13,7 +13,7 @@ let getListsUrl = function () {
 };
 
 let getAListUrl = function (listId) {
-    return getListsUrl() + "/" + listId;
+    return getListsUrl() + '/' + listId;
 };
 
 let getUserSettingsUrl = function () {
