@@ -22,7 +22,7 @@ Object.keys(types).forEach(key => {
         types[key] = {
             all: []
         };
-        ['REQUEST', 'SUCCESS', 'FAILURE'].forEach(type => {
+        [ 'REQUEST', 'SUCCESS', 'FAILURE' ].forEach(type => {
             const full_type = `${key}_${type}`;
             types[key][type] = full_type;
             types[key].all.push(full_type);

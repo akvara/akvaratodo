@@ -1,17 +1,18 @@
+/* eslint-disable no-console */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Provider} from 'react-redux';
-import {buildStore} from './store/store';
+import { Provider } from 'react-redux';
+import { buildStore } from './store/store';
 import CONFIG from './config.js';
 import App from './components/App';
 import Status from './components/Status';
 import User from './components/User';
-import {createLogger} from 'redux-logger';
+import { createLogger } from 'redux-logger';
 
 console.log('Starting App ...');
 
 window.onbeforeunload = function () {
-    return "Do you really want to leave ToDo app?";
+    return 'Do you really want to leave ToDo app?';
     //if we return nothing here (just calling return;) then there will be no pop-up question at all
     //return;
 };
