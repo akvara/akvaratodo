@@ -2,7 +2,7 @@ import CONFIG from '../config.js';
 
 export const BaseTaskEntity = () => {
   return {
-    userId: CONFIG.default.user.id,
+    userId: CONFIG.user.id,
     lastAction: new Date().toISOString(),
   };
 };

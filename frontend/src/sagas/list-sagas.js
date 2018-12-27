@@ -6,15 +6,16 @@ import { callDelete, callGet, callPost, callUpdate } from '../utils/api';
 import * as UrlUtils from '../utils/urlUtils';
 import * as Utils from '../utils/utils.js';
 import { NewTaskEntity } from '../utils/entity';
+import { DAYS, MONTHS } from '../locale/lt';
 
 function* listOfListsRequest() {
   yield fetchItemSaga(UrlUtils.getListsUrl(), types.LIST_OF_LISTS);
 }
 
 function* checkAndSave(action) {
-  let new_data = action.payload.data,
-    listId = new_data.listId;
-  let originalList = yield call(callGet, UrlUtils.getAListUrl(listId));
+  const new_data = action.payload.data;
+  const listId = new_data.listId;
+  const originalList = yield call(callGet, UrlUtils.getAListUrl(listId));
   if (originalList.lastAction !== new_data.previousAction) {
     if (new_data.taskToAdd) {
       let payload = {
@@ -50,10 +51,10 @@ function* removeListRequest(action) {
  */
 function* findOrCreateListByName(action) {
   try {
-    let url = UrlUtils.getListsUrl(),
-      listName = action.payload.data.listName,
-      listOfLists = yield call(callGet, url),
-      filtered = listOfLists.filter((e) => e.name === listName);
+    const url = UrlUtils.getListsUrl();
+    const listName = action.payload.data.listName;
+    const listOfLists = yield call(callGet, url);
+    const filtered = listOfLists.filter((e) => e.name === listName);
 
     if (filtered.length) {
       return filtered[0]._id;
@@ -68,9 +69,9 @@ function* findOrCreateListByName(action) {
 
 function* addOrOpenListsSaga(action) {
   try {
-    let listOfLists = yield call(callGet, UrlUtils.getListsUrl()),
-      listName = action.payload.data,
-      filtered = listOfLists.filter((e) => e.name === listName);
+    const listOfLists = yield call(callGet, UrlUtils.getListsUrl());
+    const listName = action.payload.data;
+    const filtered = listOfLists.filter((e) => e.name === listName);
 
     if (filtered.length) {
       return yield fetchItemSaga(UrlUtils.getAListUrl(filtered[0]._id), types.GET_A_LIST);
@@ -83,31 +84,15 @@ function* addOrOpenListsSaga(action) {
 }
 
 function* planWeek() {
-  const days = ['Sekmadienį', 'Pirmadienį', 'Antradienį', 'Trečiadienį', 'Ketvirtadienį', 'Penktadienį', 'Šeštadienį'];
-  const months = [
-    'sausio',
-    'vasario',
-    'kovo',
-    'balandžio',
-    'gegužės',
-    'birželio',
-    'liepos',
-    'rugpjūčio',
-    'rugsėjo',
-    'spalio',
-    'lapkričio',
-    'gruodžio',
-  ];
-
   try {
-    let listOfLists = yield call(callGet, UrlUtils.getListsUrl());
-    let now = new Date();
+    const listOfLists = yield call(callGet, UrlUtils.getListsUrl());
+    const now = new Date();
     let shift_date = new Date();
 
     for (let shift = 6; shift >= 0; shift--) {
       shift_date = new Date(now.getTime() + 1000 * 60 * 60 * 24 * shift);
-      let listName = `${days[shift_date.getDay()]}, ${months[shift_date.getMonth()]} ${shift_date.getDate()} d.`;
-      let filtered = listOfLists.filter((e) => e.name === listName);
+      const listName = `${DAYS[shift_date.getDay()]}, ${MONTHS[shift_date.getMonth()]} ${shift_date.getDate()} d.`;
+      const filtered = listOfLists.filter((e) => e.name === listName);
       if (!filtered.length) {
         yield call(callPost, UrlUtils.getListsUrl(), NewTaskEntity(listName));
       }
@@ -168,8 +153,7 @@ function* moveTaskToAnotherListSaga(action) {
 
 function* copyOrMoveToNewListSaga(action) {
   try {
-    let listId = yield findOrCreateListByName(action);
-    action.payload.data.listId = listId;
+    action.payload.data.listId = yield findOrCreateListByName(action);
 
     if (action.payload.data.move) {
       yield removeTaskFromListSaga(action);
@@ -186,9 +170,9 @@ function* prependToAListSaga(action) {
     const new_data = action.payload.data;
     const url = UrlUtils.getAListUrl(new_data.listId);
 
-    let originalList = yield call(callGet, url);
+    const originalList = yield call(callGet, url);
 
-    let data = {
+    const data = {
       lastAction: new Date().toISOString(),
       tasks: Utils.prependToJSON(new_data.task, originalList.tasks),
     };
@@ -205,9 +189,9 @@ function* removeTaskFromListSaga(action) {
     const new_data = action.payload.data;
     const url = UrlUtils.getAListUrl(new_data.fromListId);
 
-    let originalList = yield call(callGet, url);
+    const originalList = yield call(callGet, url);
 
-    let data = {
+    const data = {
       lastAction: new Date().toISOString(),
       tasks: Utils.removeTask(new_data.task, originalList.tasks),
     };
