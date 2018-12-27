@@ -1,7 +1,6 @@
 import appSagas from './list-sagas';
+import { all } from 'redux-saga/effects';
 
 export default function* RootSaga() {
-    yield [
-        appSagas()
-    ];
+  yield all([appSagas()]);
 }
