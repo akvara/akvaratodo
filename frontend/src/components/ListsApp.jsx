@@ -1,12 +1,12 @@
-import React, {Component} from 'react';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+
 import ListOfLists from './ListOfLists';
-import {addOrOpenAList, getAList, getListOfLists, planWeek, removeList} from '../actions/list-actions';
-import {makeContractableList} from '../utils/listUtils';
-import {playSound} from '../utils/hotkeys';
-import * as Utils from '../utils/utils';
+import { addOrOpenAList, getAList, getListOfLists, planWeek, removeList } from '../store/actions/list-actions';
+import { makeContractableList } from '../utils/listUtils';
+import { playSound, disableHotKeys, registerHotKeys } from '../utils/hotkeys';
 
 class ListsApp extends Component {
     static propTypes = {
@@ -30,18 +30,18 @@ class ListsApp extends Component {
         };
 
         this.hotKeys = [ // reserved hotkeys
-            {key: 'a'},
-            {key: 'r'},
+            { key: 'a' },
+            { key: 'r' },
         ];
     }
 
     componentWillUnmount() {
-        Utils.disableHotKeys();
+        disableHotKeys();
     }
 
     componentDidMount() {
-        document.title = "ToDo lists";
-        Utils.registerHotKeys(this.checkKeyPressed);
+        document.title = 'ToDo lists';
+        registerHotKeys(this.checkKeyPressed);
     }
 
     checkKeyPressed = (e) => {
@@ -71,7 +71,7 @@ class ListsApp extends Component {
         this.state.lists.forEach((list) => {
             if (!list.isList) {
                 let newKey = this.findFreeKey(list.name);
-                if (newKey) this.hotKeys.push({key: newKey, listId: list._id, listName: list.name})
+                if (newKey) this.hotKeys.push({ key: newKey, listId: list._id, listName: list.name });
             }
         });
     };
@@ -80,7 +80,7 @@ class ListsApp extends Component {
 
     findFreeKey = (str) => {
         for (let i = 0, len = str.length; i < len; i++) {
-            let pretender = str[i].toLowerCase();
+            let pretender = str[ i ].toLowerCase();
             if ('abcdefghijklmnopqrstuvwxyz'.indexOf(pretender) !== -1 && this.keyIsNotOccupied(pretender)) return pretender;
         }
         return null;
@@ -92,7 +92,7 @@ class ListsApp extends Component {
     };
 
     onNameChange = (e) => {
-        this.setState({listName: e.target.value});
+        this.setState({ listName: e.target.value });
     };
 
     handleSubmit = (e) => {
@@ -110,12 +110,12 @@ class ListsApp extends Component {
                 return {
                     ...list,
                     isContracted: beContracted
-                }
+                };
             } else {
                 return list;
             }
         });
-        this.setState({lists: newList});
+        this.setState({ lists: newList });
     };
 
     removeList = (listId) => {
@@ -156,8 +156,8 @@ class ListsApp extends Component {
                             this.listNameInput = input;
                         }}
                         value={this.state.listName}
-                        onFocus={Utils.disableHotKeys.bind(this)}
-                        onBlur={Utils.registerHotKeys.bind(this, this.checkKeyPressed)}
+                        onFocus={disableHotKeys.bind(this)}
+                        onBlur={registerHotKeys.bind(this, this.checkKeyPressed)}
                         onKeyDown={this.handleKeyDownAtListInput}
                         onChange={this.onNameChange}
                     />

@@ -1,27 +1,15 @@
-let CONFIG = require('../config.js');
+import CONFIG from '../config.js';
 
-let getHostUrl = function () {
-    return process.env.NODE_ENV === 'development' ? CONFIG.default.devHost : CONFIG.default.apiHost;
-};
+export const getHostUrl = () =>
+  process.env.NODE_ENV === 'development' ? CONFIG.devHost : CONFIG.apiHost;
 
-let getBaseUrl = function () {
-    return getHostUrl() + CONFIG.default.user.id + '/';
-};
+export const getBaseUrl = () => getHostUrl() + CONFIG.user.id + '/';
 
-let getListsUrl = function () {
-    return getBaseUrl() + CONFIG.default.listsAddon;
-};
+export const getListsUrl = () => getBaseUrl() + CONFIG.listsAddon;
 
-let getAListUrl = function (listId) {
-    return getListsUrl() + '/' + listId;
-};
+export const getAListUrl = (listId) => getListsUrl() + '/' + listId;
 
-let getUserSettingsUrl = function () {
-    return getBaseUrl() + CONFIG.default.settingsAddon;
-};
-
-module.exports = {
-    getListsUrl,
-    getAListUrl,
-    getUserSettingsUrl
-};
+// export const getUserSettingsUrl = () => {
+//   return getBaseUrl() + CONFIG.default.settingsAddon;
+// };
+//
