@@ -1,8 +1,8 @@
 import $ from 'jquery';
 
-export const registerHotKeys = () => {
+export const registerHotKeys = (checkKeyPressed) => {
   // console.log("hotkeys ENabled");
-  $(document).on('keypress', (e) => this.checkKeyPressed(e));
+  $(document).on('keypress', (e) => checkKeyPressed(e));
 };
 
 export const disableHotKeys = () => {

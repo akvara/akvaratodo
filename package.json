@@ -12,5 +12,6 @@
   },
   "scripts": {
     "both": "concurrently \"cd ./backend && yarn run start\" \"cd ./frontend && yarn run start\""
+    "single": "concurrently  \"cd ./frontend && yarn run production\""
   }
 }

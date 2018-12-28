@@ -41,7 +41,7 @@ class ListsApp extends Component {
 
     componentDidMount() {
         document.title = 'ToDo lists';
-        registerHotKeys(this.checkKeyPressed);
+        registerHotKeys(this.checkKeyPressed.bind(this));
     }
 
     checkKeyPressed = (e) => {

@@ -247,7 +247,7 @@ class TasksApp extends Component {
     });
 
     this.props.actions.checkAndSave(this.serialize(dataToSave));
-    registerHotKeys(this.checkKeyPressed);
+    registerHotKeys(this.checkKeyPressed.bind(this));
   };
 
   /* Go to another list */
