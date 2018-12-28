@@ -34,7 +34,7 @@ class TaskList extends Component {
         taskTruncated = taskTruncated.substr(0, taskTruncated.length - 1);
       }
       taskAsDisplayed = (
-        <a href={task} target="_blank">
+        <a href={task} target="_blank" rel="noopener noreferrer">
           {taskTruncated}
         </a>
       );

@@ -11,7 +11,7 @@
     "concurrently": "^3.5.1"
   },
   "scripts": {
-    "both": "concurrently \"cd ./backend && yarn run start\" \"cd ./frontend && yarn run start\""
-    "single": "concurrently  \"cd ./frontend && yarn run production\""
+    "both": "concurrently \"cd ./backend && yarn run start\" \"cd ./frontend && yarn run start\"",
+    "single": "concurrently  \"cd ./frontend && yarn run start\""
   }
 }
