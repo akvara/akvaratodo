@@ -13,7 +13,15 @@ Git hooks:
 cd .git/hooks/ && ln -s ../../.githooks/pre-push . && cd ../..
 ```
 
-Dev env:
+Initialize (npm install, etc)
 ```sh
-bin/both
+./bin/init.sh
+```
+Start in dev env:
+```sh
+./bin/both
+```
+or 
+```sh
+./bin/develop.sh
 ```
