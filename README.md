@@ -17,11 +17,11 @@ Initialize (npm install, etc)
 ```sh
 ./bin/init.sh
 ```
-Start in dev env:
-```sh
-./bin/both
-```
-or 
+Start with development DB:
 ```sh
 ./bin/develop.sh
+```
+Start with production DB:
+```sh
+./bin/production.sh
 ```
