@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import ListOfLists from './ListOfLists';
-import { addOrOpenAList, getAList, getListOfLists, planWeek, removeList } from '../actions/list-actions';
+import { addOrOpenAList, getAList, getListOfLists, planWeek, removeList } from '../store/actions/list-actions';
 import { makeContractableList } from '../utils/listUtils';
 import { playSound, disableHotKeys, registerHotKeys } from '../utils/hotkeys';
 

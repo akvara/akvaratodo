@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import CONST from '../utils/constants.js';
 import { Spinner } from './Spinner.jsx';
-import * as listActions from '../actions/list-actions';
+import * as listActions from '../store/actions/list-actions';
 import ListsApp from './ListsApp.jsx';
 import TasksApp from './TasksApp.jsx';
 import Move from './Move.jsx';

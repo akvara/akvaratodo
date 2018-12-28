@@ -1,9 +1,9 @@
-import combineReducers from '../reducers';
+import combineReducers from './reducers';
 import createSagaMiddleware from 'redux-saga';
 import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 
-import RootSaga from '../sagas';
+import RootSaga from './sagas';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 

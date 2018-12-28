@@ -1,7 +1,7 @@
 import types from '../actions/types';
 import BaseReducer from './base-reducer';
-import CONST from '../utils/constants.js';
-import * as Utils from '../utils/utils';
+import CONST from '../../utils/constants.js';
+import * as Utils from '../../utils/utils';
 
 class AppReducer extends BaseReducer {
   constructor() {

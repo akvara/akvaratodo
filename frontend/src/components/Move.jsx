@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import CONFIG from '../config.js';
-import { copyOrMoveToNew, getAList, moveToList, prependToAList } from '../actions/list-actions';
+import { copyOrMoveToNew, getAList, moveToList, prependToAList } from '../store/actions/list-actions';
 
 class Move extends Component {
   constructor(props, context) {

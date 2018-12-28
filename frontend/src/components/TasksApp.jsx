@@ -15,7 +15,7 @@ import {
   getListOfLists,
   importList,
   moveOutside,
-} from '../actions/list-actions';
+} from '../store/actions/list-actions';
 import { playSound, registerHotKeys, disableHotKeys } from '../utils/hotkeys';
 import * as Utils from '../utils/utils.js';
 

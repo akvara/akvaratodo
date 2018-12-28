@@ -2,11 +2,11 @@ import { all, call, put, takeEvery } from 'redux-saga/effects';
 
 import types from '../actions/types';
 import { createItemSaga, fetchItemSaga, removeItemSaga, updateItemSaga } from './common-sagas';
-import { callDelete, callGet, callPost, callUpdate } from '../utils/api';
-import * as UrlUtils from '../utils/urlUtils';
-import * as Utils from '../utils/utils.js';
-import { NewTaskEntity } from '../utils/entity';
-import { DAYS, MONTHS } from '../locale/lt';
+import { callDelete, callGet, callPost, callUpdate } from '../../utils/api';
+import * as UrlUtils from '../../utils/urlUtils';
+import * as Utils from '../../utils/utils.js';
+import { NewTaskEntity } from '../../utils/entity';
+import { DAYS, MONTHS } from '../../locale/lt';
 
 function* listOfListsRequest() {
   yield fetchItemSaga(UrlUtils.getListsUrl(), types.LIST_OF_LISTS);

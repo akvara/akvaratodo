@@ -1,4 +1,4 @@
-import appSagas from './list-sagas';
+import appSagas from './app-sagas';
 import { all } from 'redux-saga/effects';
 
 export default function* RootSaga() {
