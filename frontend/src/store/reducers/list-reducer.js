@@ -2,30 +2,31 @@ import types from '../actions/types';
 import BaseReducer from './base-reducer';
 import CONST from '../../utils/constants.js';
 import * as Utils from '../../utils/utils';
+import { addOrOpenAList, getAList, getListOfLists, planWeek, removeList } from '../../store/actions/list-actions';
 
 class AppReducer extends BaseReducer {
   constructor() {
     super();
     this.initialState = {};
     this.ACTION_HANDLERS = {
-      [types.LIST_OF_LISTS.REQUEST]: this.listOfListsRequest,
-      [types.LIST_OF_LISTS.SUCCESS]: this.listOfListsFetched,
-      [types.REFRESH_LIST.SUCCESS]: this.listOfListsRefreshed,
+      [getListOfLists.started]: this.listOfListsRequest,
+      [getListOfLists.done]: this.listOfListsFetched,
+      [types.REFRESH_LIST.done]: this.listOfListsRefreshed,
 
-      [types.REMOVE_LIST.REQUEST]: this.removeListRequest,
-      [types.UPDATE_LIST.SUCCESS]: this.listSaved,
+      [removeList.started]: this.removeListRequest,
+      [types.UPDATE_LIST.done]: this.listSaved,
 
-      [types.GET_A_LIST.REQUEST]: this.alistRequest,
-      [types.GET_A_LIST.SUCCESS]: this.aListFetched,
+      [getAList.started]: this.alistRequest,
+      [getAList.done]: this.aListFetched,
 
       [types.CHECK_AND_SAVE]: this.checkAList,
       [types.MOVE_CHOOSE]: this.moveTo,
       [types.MOVE_TO]: this.prependRequest,
       [types.IMPORT_LIST]: this.importListRequest,
       [types.EXPORT_LIST]: this.exportListRequest,
-      [types.ADD_OR_OPEN_LIST]: this.addAListRequest,
+      [addOrOpenAList]: this.addAListRequest,
 
-      [types.PLAN_WEEK]: this.planWeek,
+      [planWeek]: this.planWeek,
 
       [types.ERROR]: this.error,
       [types.DATA_CONFLICT]: this.dataConflict,

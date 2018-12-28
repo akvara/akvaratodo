@@ -1,6 +1,6 @@
 export default {
-    devHost: 'http://akvaratododb.herokuapp.com/',
-    // devHost: 'http://localhost:5000/',
+    // devHost: 'http://akvaratododb.herokuapp.com/',
+    devHost: 'http://localhost:5000/',
     apiHost: 'https://akvaratododb.herokuapp.com/',
     separatorString: '..................',
     listsAddon: 'lists',

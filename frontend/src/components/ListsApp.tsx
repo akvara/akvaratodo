@@ -1,28 +1,32 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { connect, Dispatch, MapDispatchToProps, MapStateToProps } from 'react-redux';
 
 import ListOfLists from './ListOfLists';
 import { addOrOpenAList, getAList, getListOfLists, planWeek, removeList } from '../store/actions/list-actions';
 import { makeContractableList } from '../utils/listUtils';
 import { playSound, disableHotKeys, registerHotKeys } from '../utils/hotkeys';
+import { RootState } from '../store/reducers';
+import { compose, lifecycle, withProps } from 'recompose';
+import { TodoList } from '../core/types';
+
+export interface ListsAppPrivateProps {
+  lists: TodoList[];
+}
+
+export interface ListsAppProps extends ListsAppPrivateProps{
+  getAList: typeof getAList.started,
+  getListOfLists: typeof getListOfLists.started,
+  addOrOpenAList: typeof addOrOpenAList.started,
+  removeList: typeof removeList.started,
+  planWeek: typeof planWeek.started,
+}
 
 class ListsApp extends Component {
-    static propTypes = {
-        lists: PropTypes.array.isRequired,
-        actions: PropTypes.shape({
-            getAList: PropTypes.func.isRequired,
-            getListOfLists: PropTypes.func.isRequired,
-            addOrOpenAList: PropTypes.func.isRequired,
-            removeList: PropTypes.func.isRequired,
-            planWeek: PropTypes.func.isRequired,
-        }).isRequired
-    };
 
     constructor(props, context) {
         super(props, context);
-
+        console.log('****- this.props', this.props);
         this.state = {
             lists: makeContractableList(this.props.lists.filter(list => !list.immutable)),
             immutableLists: this.props.lists.filter(list => list.immutable),
@@ -88,7 +92,7 @@ class ListsApp extends Component {
 
     /* Go to list of lists */
     reload = () => {
-        this.props.actions.getListOfLists();
+        this.props.getListOfLists();
     };
 
     onNameChange = (e) => {
@@ -97,11 +101,11 @@ class ListsApp extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
-        this.props.actions.addOrOpenAList(this.state.listName);
+        this.props.addOrOpenAList(this.state.listName);
     };
 
     openAList = (listId) => {
-        this.props.actions.getAList(listId);
+        this.props.getAList(listId);
     };
 
     toggleContracted = (listTitle, beContracted) => {
@@ -119,7 +123,7 @@ class ListsApp extends Component {
     };
 
     removeList = (listId) => {
-        this.props.actions.removeList(listId);
+        this.props.removeList(listId);
     };
 
     handleKeyDownAtListInput = (e) => {
@@ -164,7 +168,7 @@ class ListsApp extends Component {
                     <button disabled={!this.state.listName.trim()}>Create new list</button>
                 </form>
                 <hr/>
-                <button onClick={this.props.actions.planWeek}>Plan week</button>
+                <button onClick={this.props.planWeek}>Plan week</button>
                 <button onClick={this.reload}>
                     <span className={'glyphicon glyphicon-refresh'}
                           aria-hidden="true">
@@ -175,15 +179,29 @@ class ListsApp extends Component {
     }
 }
 
-export default connect(
-    null,
-    (dispatch) => ({
-        actions: bindActionCreators({
-            getAList: getAList,
-            getListOfLists: getListOfLists,
-            addOrOpenAList: addOrOpenAList,
-            removeList: removeList,
-            planWeek: planWeek
-        }, dispatch),
-    })
+const mapStateToProps: MapStateToProps<ListsAppPrivateProps, void, RootState> = (state: RootState) => ({
+  lists: state.app.lists,
+});
+
+const mapDispatchToProps: MapDispatchToProps<any, ListsAppProps> = (dispatch: Dispatch<RootState>) => {
+  return bindActionCreators(
+    {
+      getAList: getAList.started,
+      getListOfLists: getListOfLists.started,
+      addOrOpenAList: addOrOpenAList.started,
+      removeList: removeList.started,
+      planWeek: planWeek
+    },
+    dispatch,
+  );
+};
+
+export default compose(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  ),
+  withProps(({ listName }) => ({
+    listName
+  })),
 )(ListsApp);

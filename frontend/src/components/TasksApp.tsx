@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { connect, Dispatch, MapDispatchToProps, MapStateToProps } from 'react-redux';
 import _ from 'underscore';
 
 import TasksList from './TasksList';
@@ -15,9 +15,14 @@ import {
   getListOfLists,
   importList,
   moveOutside,
+  planWeek,
+  removeList,
 } from '../store/actions/list-actions';
 import { playSound, registerHotKeys, disableHotKeys } from '../utils/hotkeys';
 import * as Utils from '../utils/utils.js';
+import { RootState } from '../store/reducers';
+import { compose, withProps } from 'recompose';
+import { ListsAppPrivateProps, ListsAppProps } from './ListsApp';
 
 class TasksApp extends Component {
   static propTypes = {
@@ -28,10 +33,12 @@ class TasksApp extends Component {
   constructor(props, context) {
     super(props, context);
 
+    console.log('****- props', props);
+
     this.state = {
       listName: props.list.name,
-      itemsToDo: JSON.parse(this.props.list.tasks),
-      itemsDone: this.props.list.done ? JSON.parse(this.props.list.done) : [],
+      itemsToDo: JSON.parse(props.list.tasks),
+      itemsDone: props.list.done ? JSON.parse(props.list.done) : [],
       prepend: props.prepend,
       highLightIndex: props.prepend ? 0 : null,
       lastAction: props.list.lastAction,
@@ -104,7 +111,7 @@ class TasksApp extends Component {
       highlightIndex: null,
     });
 
-    this.props.actions.checkAndSave(this.serialize(dataToSave));
+    this.props.checkAndSave(this.serialize(dataToSave));
   };
 
   /* Move task back from Done tasks array */
@@ -122,7 +129,7 @@ class TasksApp extends Component {
       highlightIndex: 0,
     });
 
-    this.props.actions.checkAndSave(this.serialize(dataToSave));
+    this.props.checkAndSave(this.serialize(dataToSave));
   };
 
   /* Delete done tasks */
@@ -137,7 +144,7 @@ class TasksApp extends Component {
       highlightIndex: null,
     });
 
-    this.props.actions.checkAndSave(this.serialize(dataToSave));
+    this.props.checkAndSave(this.serialize(dataToSave));
   };
 
   /* Remove task from list */
@@ -152,7 +159,7 @@ class TasksApp extends Component {
       highlightIndex: null,
     });
 
-    this.props.actions.checkAndSave(this.serialize(dataToSave));
+    this.props.checkAndSave(this.serialize(dataToSave));
   };
 
   /* Move task to top position */
@@ -167,7 +174,7 @@ class TasksApp extends Component {
       highlightIndex: 0,
     });
 
-    this.props.actions.checkAndSave(this.serialize(dataToSave));
+    this.props.checkAndSave(this.serialize(dataToSave));
   };
 
   /* Toggle immutable. No checking if changed */
@@ -182,7 +189,7 @@ class TasksApp extends Component {
       highlightIndex: null,
     });
 
-    this.props.actions.checkAndSave(this.serialize(dataToSave));
+    this.props.checkAndSave(this.serialize(dataToSave));
   };
 
   /* Move task to another list */
@@ -191,7 +198,7 @@ class TasksApp extends Component {
       from_list: { listId: this.props.list._id, name: this.state.listName },
       task: task,
     };
-    this.props.actions.moveOutside(data);
+    this.props.moveOutside(data);
   };
 
   /* Move task to the end of the list */
@@ -206,7 +213,7 @@ class TasksApp extends Component {
       highlightIndex: this.state.itemsToDo.length,
     });
 
-    this.props.actions.checkAndSave(this.serialize(dataToSave));
+    this.props.checkAndSave(this.serialize(dataToSave));
   };
 
   /* Move task to the middle of the list */
@@ -230,7 +237,7 @@ class TasksApp extends Component {
       highlightIndex: highlightIndex,
     });
 
-    this.props.actions.checkAndSave(this.serialize(dataToSave));
+    this.props.checkAndSave(this.serialize(dataToSave));
   };
 
   /* Change list name */
@@ -246,18 +253,18 @@ class TasksApp extends Component {
       highlightIndex: null,
     });
 
-    this.props.actions.checkAndSave(this.serialize(dataToSave));
+    this.props.checkAndSave(this.serialize(dataToSave));
     registerHotKeys(this.checkKeyPressed.bind(this));
   };
 
   /* Go to another list */
   listChanger = (listName) => {
-    this.props.actions.addOrOpenAList(listName);
+    this.props.addOrOpenAList(listName);
   };
 
   /* Reload this list*/
   reload = () => {
-    this.props.actions.getAList(this.props.list._id);
+    this.props.getAList(this.props.list._id);
   };
 
   /* Mode: List name is on edit */
@@ -279,7 +286,7 @@ class TasksApp extends Component {
         break;
       case 'l':
         e.preventDefault();
-        this.props.actions.getListOfLists();
+        this.props.getListOfLists();
         break;
       case 'r':
         e.preventDefault();
@@ -347,7 +354,7 @@ class TasksApp extends Component {
       highlightIndex: highlightIndex,
       task: '',
     });
-    this.props.actions.checkAndSave(this.serialize(dataToSave));
+    this.props.checkAndSave(this.serialize(dataToSave));
   };
 
   /* User input */
@@ -360,7 +367,7 @@ class TasksApp extends Component {
       firstListId: listId,
       secondListId: this.props.list._id,
     };
-    this.props.actions.importList(data);
+    this.props.importList(data);
   };
 
   exportList = (listId) => {
@@ -368,7 +375,7 @@ class TasksApp extends Component {
       listId: this.props.list._id,
       toListId: listId,
     };
-    this.props.actions.exportList(data);
+    this.props.exportList(data);
   };
 
   makeListOption = (list) => (
@@ -542,7 +549,7 @@ class TasksApp extends Component {
             <span className="glyphicon glyphicon-chevron-left" aria-hidden="true" /> {this.props.previous_list.name}
           </button>
         )}
-        <button disabled={this.state.task.trim()} onClick={this.props.actions.getListOfLists}>
+        <button disabled={this.state.task.trim()} onClick={this.props.getListOfLists}>
           <span className="glyphicon glyphicon-tasks" aria-hidden="true" /> <u>L</u>ists
         </button>
         <br />
@@ -551,20 +558,31 @@ class TasksApp extends Component {
   }
 }
 
-export default connect(
-  null,
-  (dispatch) => ({
-    actions: bindActionCreators(
-      {
-        getAList: getAList,
-        getListOfLists: getListOfLists,
-        checkAndSave: checkAndSave,
-        importList: importList,
-        exportList: exportList,
-        addOrOpenAList: addOrOpenAList,
-        moveOutside: moveOutside,
-      },
-      dispatch,
-    ),
-  }),
+// const mapStateToProps: MapStateToProps<ListsAppPrivateProps, void, RootState> = (state: RootState) => ({
+//   lists: state.app.lists,
+// });
+
+const mapDispatchToProps: MapDispatchToProps<any, ListsAppProps> = (dispatch: Dispatch<RootState>) => {
+  return bindActionCreators(
+    {
+      getAList: getAList.started,
+      getListOfLists: getListOfLists.started,
+      checkAndSave: checkAndSave.started,
+      importList: importList.started,
+      exportList: exportList.started,
+      addOrOpenAList: addOrOpenAList.started,
+      moveOutside: moveOutside.started,
+    },
+    dispatch,
+  );
+};
+
+export default compose(
+  connect(
+    null,
+    mapDispatchToProps,
+  ),
+  withProps(({ listName }) => ({
+    listName,
+  })),
 )(TasksApp);
