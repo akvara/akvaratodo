@@ -35,3 +35,5 @@ Object.keys(types).forEach((key) => {
 });
 
 export default types;
+
+// FixMe: delete this

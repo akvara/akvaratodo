@@ -1,5 +1,5 @@
-import React from 'react';
+import * as React from 'react';
 
 import './style/spinner.css';
 
-export const Spinner = () => <div className="spinner">Loading...</div>;
+export const Spinner: React.FunctionComponent<{}> = () => <div className="spinner">Loading...</div>;

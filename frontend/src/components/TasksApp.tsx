@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
-import PropTypes from 'prop-types';
 import { connect, Dispatch, MapDispatchToProps, MapStateToProps } from 'react-redux';
 import _ from 'underscore';
 
@@ -8,32 +7,25 @@ import TasksList from './TasksList';
 import TasksDoneList from './TasksDoneList';
 import CONFIG from '../config.js';
 import {
-  addOrOpenAList,
-  checkAndSave,
-  exportList,
-  getAList,
+  addOrOpenListAction,
+  checkAndSaveAction,
+  exportListAction,
+  getAListAction,
   getListOfLists,
-  importList,
-  moveOutside,
-  planWeek,
-  removeList,
+  importListAction,
+  moveInitiationAction,
 } from '../store/actions/list-actions';
-import { playSound, registerHotKeys, disableHotKeys } from '../utils/hotkeys';
+import { disableHotKeys, playSound, registerHotKeys } from '../utils/hotkeys';
 import * as Utils from '../utils/utils.js';
 import { RootState } from '../store/reducers';
 import { compose, withProps } from 'recompose';
-import { ListsAppPrivateProps, ListsAppProps } from './ListsApp';
+import { ListsAppProps } from './ListsApp';
+import { AppPrivateProps } from './App';
 
 class TasksApp extends Component {
-  static propTypes = {
-    list: PropTypes.object.isRequired,
-    previous_list: PropTypes.object,
-  };
 
   constructor(props, context) {
     super(props, context);
-
-    console.log('****- props', props);
 
     this.state = {
       listName: props.list.name,
@@ -558,20 +550,24 @@ class TasksApp extends Component {
   }
 }
 
-// const mapStateToProps: MapStateToProps<ListsAppPrivateProps, void, RootState> = (state: RootState) => ({
-//   lists: state.app.lists,
-// });
+const mapStateToProps: MapStateToProps<AppPrivateProps, void, RootState> = (state: RootState) => ({
+  mode: state.app.mode,
+  lists: state.app.lists,
+  a_list: state.app.a_list,
+  task: state.app.task,
+  from_list: state.app.from_list,
+});
 
 const mapDispatchToProps: MapDispatchToProps<any, ListsAppProps> = (dispatch: Dispatch<RootState>) => {
   return bindActionCreators(
     {
-      getAList: getAList.started,
+      getAList: getAListAction.started,
       getListOfLists: getListOfLists.started,
-      checkAndSave: checkAndSave.started,
-      importList: importList.started,
-      exportList: exportList.started,
-      addOrOpenAList: addOrOpenAList.started,
-      moveOutside: moveOutside.started,
+      checkAndSave: checkAndSaveAction,
+      importList: importListAction,
+      exportList: exportListAction,
+      addOrOpenAList: addOrOpenListAction,
+      moveOutside: moveInitiationAction,
     },
     dispatch,
   );

@@ -1,12 +1,15 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import * as React from 'react';
+import { connect, MapStateToProps } from 'react-redux';
+import { RootState } from '../store/reducers';
 
-class Status extends Component {
-  render() {
-    return <div>{this.props.status_msg}</div>;
-  }
+export interface StatusProps {
+  status_msg: string;
 }
 
-export default connect((state) => ({
+const Status: React.FunctionComponent<StatusProps> = (props: StatusProps) => <div>{props.status_msg}</div>;
+
+const mapStateToProps: MapStateToProps<StatusProps, void, RootState> = (state: RootState) => ({
   status_msg: state.app.status_msg,
-}))(Status);
+});
+
+export default connect(mapStateToProps)(Status);

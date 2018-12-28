@@ -7,14 +7,29 @@ import * as UrlUtils from '../../utils/urlUtils';
 import * as Utils from '../../utils/utils.js';
 import { NewTaskEntity } from '../../utils/entity';
 import { DAYS, MONTHS } from '../../locale/lt';
-import { getAList, getListOfLists, newList, planWeek, removeList,addOrOpenAList } from '../../store/actions/list-actions';
+import {
+  getAListAction,
+  getListOfLists,
+  newListAction,
+  planWeekAction,
+  removeListAction,
+  addOrOpenListAction,
+  checkAndSaveAction,
+  updateListAction,
+  prependToAListAction,
+  importListAction,
+  exportListAction,
+  moveToListAction,
+  copyOrMoveToNewListAction,
+  moveInitiationAction,
+} from '../../store/actions/list-actions';
 
 function* listOfListsRequest() {
   yield fetchItemSaga(UrlUtils.getListsUrl(), getListOfLists);
 }
 
 function* checkAndSave(action) {
-  const new_data = action.payload.data;
+  const new_data = action.payload;
   const listId = new_data.listId;
   const originalList = yield call(callGet, UrlUtils.getAListUrl(listId));
   if (originalList.lastAction !== new_data.previousAction) {
@@ -25,15 +40,15 @@ function* checkAndSave(action) {
           task: new_data.taskToAdd,
         },
       };
-      return yield put({ type: types.PREPEND, payload });
+      return yield put({ type: prependToAListAction, payload });
     }
     return yield put({ type: types.DATA_CONFLICT, payload: originalList.lastAction });
   }
-  yield updateItemSaga(UrlUtils.getAListUrl(listId), new_data.listData, types.UPDATE_LIST);
+  yield updateItemSaga(UrlUtils.getAListUrl(listId), new_data.listData, updateListAction);
 }
 
 function* getAListRequest(action) {
-  yield fetchItemSaga(UrlUtils.getAListUrl(action.payload), getAList);
+  yield fetchItemSaga(UrlUtils.getAListUrl(action.payload), getAListAction);
 }
 
 function* getAListSuccess(action) {
@@ -43,22 +58,22 @@ function* getAListSuccess(action) {
 }
 
 function* removeListRequest(action) {
-  yield removeItemSaga(UrlUtils.getAListUrl(action.payload), action.payload.data, removeList);
+  yield removeItemSaga(UrlUtils.getAListUrl(action.payload), action.payload, removeListAction);
 }
 
 /*
- * params: list name as action.payload.data.listName
+ * params: list name as action.payload.listName
  * returns listId
  */
 function* findOrCreateListByName(action) {
   try {
     const url = UrlUtils.getListsUrl();
-    const listName = action.payload.data.listName;
+    const listName = action.payload.listName;
     const listOfLists = yield call(callGet, url);
     const filtered = listOfLists.filter((e) => e.name === listName);
 
     if (filtered.length) {
-      return filtered[0]._id;
+      return filtered[ 0 ]._id;
     }
     const result = yield call(callPost, url, NewTaskEntity(listName));
     yield fetchItemSaga(UrlUtils.getListsUrl(), types.REFRESH_LIST);
@@ -71,21 +86,20 @@ function* findOrCreateListByName(action) {
 function* addOrOpenListsSaga(action) {
   try {
     const listOfLists = yield call(callGet, UrlUtils.getListsUrl());
-    const listName = action.payload.data;
+    const listName = action.payload;
     const filtered = listOfLists.filter((e) => e.name === listName);
 
     if (filtered.length) {
-      return yield fetchItemSaga(UrlUtils.getAListUrl(filtered[0]._id), getAList);
+      return yield fetchItemSaga(UrlUtils.getAListUrl(filtered[ 0 ]._id), getAListAction);
     }
 
-    return yield createItemSaga(UrlUtils.getListsUrl(), NewTaskEntity(listName), types.NEW_LIST);
+    return yield createItemSaga(UrlUtils.getListsUrl(), NewTaskEntity(listName), newListAction);
   } catch (e) {
     yield generalFailure(e);
   }
 }
 
 function* planWeekSaga() {
-  console.log('****- planWeekSaga');
   try {
     const listOfLists = yield call(callGet, UrlUtils.getListsUrl());
     const now = new Date();
@@ -93,7 +107,7 @@ function* planWeekSaga() {
 
     for (let shift = 6; shift >= 0; shift--) {
       shift_date = new Date(now.getTime() + 1000 * 60 * 60 * 24 * shift);
-      const listName = `${DAYS[shift_date.getDay()]}, ${MONTHS[shift_date.getMonth()]} ${shift_date.getDate()} d.`;
+      const listName = `${DAYS[ shift_date.getDay() ]}, ${MONTHS[ shift_date.getMonth() ]} ${shift_date.getDate()} d.`;
       const filtered = listOfLists.filter((e) => e.name === listName);
       if (!filtered.length) {
         yield call(callPost, UrlUtils.getListsUrl(), NewTaskEntity(listName));
@@ -111,8 +125,8 @@ function* generalFailure(e) {
 
 function* importListSaga(action) {
   try {
-    const urlFirst = UrlUtils.getAListUrl(action.payload.data.firstListId);
-    const urlSecond = UrlUtils.getAListUrl(action.payload.data.secondListId);
+    const urlFirst = UrlUtils.getAListUrl(action.payload.firstListId);
+    const urlSecond = UrlUtils.getAListUrl(action.payload.secondListId);
     const firstList = yield call(callGet, urlFirst);
     const second = yield call(callGet, urlSecond);
     let data = {
@@ -120,7 +134,7 @@ function* importListSaga(action) {
       tasks: Utils.concatTwoJSONs(firstList.tasks, second.tasks),
     };
     yield call(callUpdate, urlSecond, data);
-    return yield fetchItemSaga(urlSecond, getAList);
+    return yield fetchItemSaga(urlSecond, getAListAction);
   } catch (e) {
     yield generalFailure(e);
   }
@@ -128,8 +142,8 @@ function* importListSaga(action) {
 
 function* exportListSaga(action) {
   try {
-    const urlThisList = UrlUtils.getAListUrl(action.payload.data.listId);
-    const urlToThatList = UrlUtils.getAListUrl(action.payload.data.toListId);
+    const urlThisList = UrlUtils.getAListUrl(action.payload.listId);
+    const urlToThatList = UrlUtils.getAListUrl(action.payload.toListId);
     const thisList = yield call(callGet, urlThisList);
     const toThatList = yield call(callGet, urlToThatList);
     let data = {
@@ -138,7 +152,7 @@ function* exportListSaga(action) {
     };
     yield call(callUpdate, urlToThatList, data);
     yield call(callDelete, urlThisList);
-    return yield fetchItemSaga(urlToThatList, getAList);
+    return yield fetchItemSaga(urlToThatList, getAListAction);
   } catch (e) {
     yield generalFailure(e);
   }
@@ -155,9 +169,9 @@ function* moveTaskToAnotherListSaga(action) {
 
 function* copyOrMoveToNewListSaga(action) {
   try {
-    action.payload.data.listId = yield findOrCreateListByName(action);
+    action.payload.listId = yield findOrCreateListByName(action);
 
-    if (action.payload.data.move) {
+    if (action.payload.move) {
       yield removeTaskFromListSaga(action);
     }
     yield prependToAListSaga(action);
@@ -169,7 +183,7 @@ function* copyOrMoveToNewListSaga(action) {
 /* Expects: {listId, task} */
 function* prependToAListSaga(action) {
   try {
-    const new_data = action.payload.data;
+    const new_data = action.payload;
     const url = UrlUtils.getAListUrl(new_data.listId);
 
     const originalList = yield call(callGet, url);
@@ -179,7 +193,7 @@ function* prependToAListSaga(action) {
       tasks: Utils.prependToJSON(new_data.task, originalList.tasks),
     };
     yield call(callUpdate, url, data);
-    return yield fetchItemSaga(url, getAList);
+    return yield fetchItemSaga(url, getAListAction);
   } catch (e) {
     yield generalFailure(e);
   }
@@ -188,7 +202,7 @@ function* prependToAListSaga(action) {
 /* Expects: {fromListId, task} */
 function* removeTaskFromListSaga(action) {
   try {
-    const new_data = action.payload.data;
+    const new_data = action.payload;
     const url = UrlUtils.getAListUrl(new_data.fromListId);
 
     const originalList = yield call(callGet, url);
@@ -208,26 +222,26 @@ export default function* listSagas() {
     takeEvery(getListOfLists.started, listOfListsRequest),
     takeEvery(getListOfLists.failed, generalFailure),
 
-    takeEvery(getAList.started, getAListRequest),
-    takeEvery(getAList.done, getAListSuccess),
-    takeEvery(getAList.failed, generalFailure),
+    takeEvery(getAListAction.started, getAListRequest),
+    takeEvery(getAListAction.done, getAListSuccess),
+    takeEvery(getAListAction.failed, generalFailure),
 
-    takeEvery(removeList.started, removeListRequest),
-    takeEvery(removeList.done, listOfListsRequest),
-    takeEvery(removeList.failed, generalFailure),
+    takeEvery(removeListAction.started, removeListRequest),
+    takeEvery(removeListAction.done, listOfListsRequest),
+    takeEvery(removeListAction.failed, generalFailure),
 
-    takeEvery(newList.done, getAListRequest),
-    takeEvery(newList.failed, generalFailure),
+    takeEvery(newListAction.done, getAListRequest),
+    takeEvery(newListAction.failed, generalFailure),
 
-    // takeEvery(types.UPDATE_LIST.failed, generalFailure),
-    //
-    takeEvery(addOrOpenAList, addOrOpenListsSaga),
-    // takeEvery(types.CHECK_AND_SAVE, checkAndSave),
-    // takeEvery(types.PREPEND, prependToAListSaga),
-    // takeEvery(types.MOVE_TO, moveTaskToAnotherListSaga),
-    // takeEvery(types.COPY_OR_MOVE, copyOrMoveToNewListSaga),
-    // takeEvery(types.IMPORT_LIST, importListSaga),
-    // takeEvery(types.EXPORT_LIST, exportListSaga),
-    takeEvery(planWeek, planWeekSaga),
+    takeEvery(updateListAction.failed, generalFailure),
+
+    takeEvery(addOrOpenListAction, addOrOpenListsSaga),
+    takeEvery(checkAndSaveAction, checkAndSave),
+    takeEvery(prependToAListAction, prependToAListSaga),
+    takeEvery(moveToListAction, moveTaskToAnotherListSaga),
+    takeEvery(copyOrMoveToNewListAction, copyOrMoveToNewListSaga),
+    takeEvery(importListAction, importListSaga),
+    takeEvery(exportListAction, exportListSaga),
+    takeEvery(planWeekAction, planWeekSaga),
   ]);
 }

@@ -2,7 +2,19 @@ import types from '../actions/types';
 import BaseReducer from './base-reducer';
 import CONST from '../../utils/constants.js';
 import * as Utils from '../../utils/utils';
-import { addOrOpenAList, getAList, getListOfLists, planWeek, removeList } from '../../store/actions/list-actions';
+import {
+  addOrOpenListAction,
+  getAListAction,
+  getListOfLists,
+  planWeekAction,
+  removeListAction,
+  checkAndSaveAction,
+  updateListAction,
+  importListAction,
+  exportListAction,
+  moveToListAction,
+  moveInitiationAction,
+} from '../../store/actions/list-actions';
 
 class AppReducer extends BaseReducer {
   constructor() {
@@ -13,20 +25,20 @@ class AppReducer extends BaseReducer {
       [getListOfLists.done]: this.listOfListsFetched,
       [types.REFRESH_LIST.done]: this.listOfListsRefreshed,
 
-      [removeList.started]: this.removeListRequest,
-      [types.UPDATE_LIST.done]: this.listSaved,
+      [removeListAction.started]: this.removeListRequest,
+      [updateListAction.done]: this.listSaved,
 
-      [getAList.started]: this.alistRequest,
-      [getAList.done]: this.aListFetched,
+      [getAListAction.started]: this.alistRequest,
+      [getAListAction.done]: this.aListFetched,
 
-      [types.CHECK_AND_SAVE]: this.checkAList,
-      [types.MOVE_CHOOSE]: this.moveTo,
-      [types.MOVE_TO]: this.prependRequest,
-      [types.IMPORT_LIST]: this.importListRequest,
-      [types.EXPORT_LIST]: this.exportListRequest,
-      [addOrOpenAList]: this.addAListRequest,
+      [checkAndSaveAction]: this.checkAList,
+      [moveInitiationAction]: this.moveTo,
+      [moveToListAction]: this.prependRequest,
+      [importListAction]: this.importListRequest,
+      [exportListAction]: this.exportListRequest,
+      [addOrOpenListAction]: this.addAListRequest,
 
-      [planWeek]: this.planWeek,
+      [planWeekAction]: this.planWeek,
 
       [types.ERROR]: this.error,
       [types.DATA_CONFLICT]: this.dataConflict,
@@ -144,8 +156,8 @@ class AppReducer extends BaseReducer {
       ...state,
       status_msg: 'Move task to ... ',
       mode: CONST.mode.MODE_MOVE,
-      from_list: action.payload.data.from_list,
-      task: action.payload.data.task,
+      from_list: action.payload.from_list,
+      task: action.payload.task,
     };
   }
 
