@@ -1,20 +1,15 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import * as React from 'react';
 import { connect } from 'react-redux';
 
 import CONST from '../utils/constants.js';
-import { Spinner } from './Spinner.jsx';
+import { Spinner } from './Spinner';
 import * as listActions from '../store/actions/list-actions';
-import ListsApp from './ListsApp.jsx';
-import TasksApp from './TasksApp.jsx';
-import Move from './Move.jsx';
-import Failure from './Failure.jsx';
+import ListsApp from './ListsApp';
+import TasksApp from './TasksApp';
+import Move from './Move';
+import Failure from './Failure';
 
-class App extends Component {
-  static propTypes = {
-    mode: PropTypes.string,
-    openAtStartup: PropTypes.string,
-  };
+class App extends React.PureComponent {
 
   componentDidMount() {
     if (!this.props.mode) {

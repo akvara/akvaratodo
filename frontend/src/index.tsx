@@ -27,21 +27,21 @@ const store = buildStore(middleware);
 
 ReactDOM.render(
   <Provider store={store}>
-    <App store={store} openAtStartup={CONFIG.user.settings.openListIfExists} />
+    <App openAtStartup={CONFIG.user.settings.openListIfExists} />
   </Provider>,
   CONFIG.appNode,
 );
 
 ReactDOM.render(
   <Provider store={store}>
-    <Status store={store} />
+    <Status />
   </Provider>,
   CONFIG.statusNode,
 );
 
 ReactDOM.render(
   <Provider store={store}>
-    <User store={store} />
+    <User />
   </Provider>,
   CONFIG.userNode,
 );
