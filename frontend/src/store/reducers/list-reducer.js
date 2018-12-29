@@ -1,11 +1,10 @@
-import types from '../actions/types';
 import BaseReducer from './base-reducer';
 import CONST from '../../utils/constants.js';
 import * as Utils from '../../utils/utils';
 import {
   addOrOpenListAction,
   getAListAction,
-  getListOfLists,
+  getListOfListsAction,
   planWeekAction,
   removeListAction,
   checkAndSaveAction,
@@ -14,6 +13,9 @@ import {
   exportListAction,
   moveToListAction,
   moveInitiationAction,
+  dataConflictAction,
+  errorAction,
+  refreshListAction,
 } from '../../store/actions/list-actions';
 
 class AppReducer extends BaseReducer {
@@ -21,14 +23,14 @@ class AppReducer extends BaseReducer {
     super();
     this.initialState = {};
     this.ACTION_HANDLERS = {
-      [getListOfLists.started]: this.listOfListsRequest,
-      [getListOfLists.done]: this.listOfListsFetched,
-      [types.REFRESH_LIST.done]: this.listOfListsRefreshed,
+      [getListOfListsAction.started]: this.listOfListsRequest,
+      [getListOfListsAction.done]: this.listOfListsFetched,
+      [refreshListAction.done]: this.listOfListsRefreshed,
 
       [removeListAction.started]: this.removeListRequest,
       [updateListAction.done]: this.listSaved,
 
-      [getAListAction.started]: this.alistRequest,
+      [getAListAction.started]: this.getAListRequest,
       [getAListAction.done]: this.aListFetched,
 
       [checkAndSaveAction]: this.checkAList,
@@ -40,23 +42,23 @@ class AppReducer extends BaseReducer {
 
       [planWeekAction]: this.planWeek,
 
-      [types.ERROR]: this.error,
-      [types.DATA_CONFLICT]: this.dataConflict,
+      [errorAction]: this.error,
+      [dataConflictAction]: this.dataConflict,
     };
   }
 
   listOfListsRequest(state) {
     return {
       ...state,
-      status_msg: 'Loading lists ...',
+      statusMsg: 'Loading lists ...',
       mode: CONST.mode.MODE_LOADING,
     };
   }
 
-  alistRequest(state) {
+  getAListRequest(state) {
     return {
       ...state,
-      status_msg: 'Loading list ...',
+      statusMsg: 'Loading list ...',
       mode: CONST.mode.MODE_LOADING,
     };
   }
@@ -64,7 +66,7 @@ class AppReducer extends BaseReducer {
   planWeek(state) {
     return {
       ...state,
-      status_msg: 'Planing a week ...',
+      statusMsg: 'Planing a week ...',
       mode: CONST.mode.MODE_LOADING,
     };
   }
@@ -72,7 +74,7 @@ class AppReducer extends BaseReducer {
   removeListRequest(state) {
     return {
       ...state,
-      status_msg: 'Removing list ...',
+      statusMsg: 'Removing list ...',
       mode: CONST.mode.MODE_LOADING,
     };
   }
@@ -80,7 +82,7 @@ class AppReducer extends BaseReducer {
   importListRequest(state) {
     return {
       ...state,
-      status_msg: 'Adding a list on top ...',
+      statusMsg: 'Adding a list on top ...',
       mode: CONST.mode.MODE_LOADING,
     };
   }
@@ -88,7 +90,7 @@ class AppReducer extends BaseReducer {
   exportListRequest(state) {
     return {
       ...state,
-      status_msg: 'Exporting to a list ...',
+      statusMsg: 'Exporting to a list ...',
       mode: CONST.mode.MODE_LOADING,
     };
   }
@@ -96,7 +98,7 @@ class AppReducer extends BaseReducer {
   prependRequest(state) {
     return {
       ...state,
-      status_msg: 'Adding on top ...',
+      statusMsg: 'Adding on top ...',
       mode: CONST.mode.MODE_LOADING,
     };
   }
@@ -104,7 +106,7 @@ class AppReducer extends BaseReducer {
   addAListRequest(state) {
     return {
       ...state,
-      status_msg: 'Checking lists ...',
+      statusMsg: 'Checking lists ...',
       mode: CONST.mode.MODE_LOADING,
     };
   }
@@ -112,14 +114,14 @@ class AppReducer extends BaseReducer {
   checkAList(state) {
     return {
       ...state,
-      status_msg: 'Checking a list ...',
+      statusMsg: 'Checking a list ...',
     };
   }
 
   listSaved(state) {
     return {
       ...state,
-      status_msg: 'List saved',
+      statusMsg: 'List saved',
     };
   }
 
@@ -133,7 +135,7 @@ class AppReducer extends BaseReducer {
   listOfListsFetched(state, action) {
     return {
       ...state,
-      status_msg: 'Lists loaded',
+      statusMsg: 'Lists loaded',
       mode: CONST.mode.MODE_LIST_OF_LISTS,
       lists: Utils.sortArrOfObjectsByParam(action.payload, 'updatedAt', true),
     };
@@ -145,18 +147,18 @@ class AppReducer extends BaseReducer {
     }
     return {
       ...state,
-      status_msg: action.payload.name + ' loaded',
+      statusMsg: action.payload.name + ' loaded',
       mode: CONST.mode.MODE_A_LIST,
-      a_list: action.payload,
+      aList: action.payload,
     };
   }
 
   moveTo(state, action) {
     return {
       ...state,
-      status_msg: 'Move task to ... ',
+      statusMsg: 'Move task to ... ',
       mode: CONST.mode.MODE_MOVE,
-      from_list: action.payload.from_list,
+      fromList: action.payload.fromList,
       task: action.payload.task,
     };
   }
@@ -172,7 +174,7 @@ class AppReducer extends BaseReducer {
     let date = new Date(action.payload).toLocaleTimeString('lt-LT');
     return {
       ...state,
-      status_msg: date,
+      statusMsg: date,
       mode: CONST.mode.DATA_CONFLICT,
     };
   }

@@ -31,7 +31,6 @@ export function* updateItemSaga(url, data, actionType) {
 export function* createItemSaga(url, data, actionType) {
   try {
     const result = yield call(callPost, url, data);
-    // let payload = { data: result._id };
     yield put(actionType.done(result._id));
   } catch (e) {
     yield put(actionType.failure(e));

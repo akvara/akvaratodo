@@ -1,6 +1,5 @@
 import { all, call, put, takeEvery } from 'redux-saga/effects';
 
-import types from '../actions/types';
 import { createItemSaga, fetchItemSaga, removeItemSaga, updateItemSaga } from './common-sagas';
 import { callDelete, callGet, callPost, callUpdate } from '../../utils/api';
 import * as UrlUtils from '../../utils/urlUtils';
@@ -9,7 +8,7 @@ import { NewTaskEntity } from '../../utils/entity';
 import { DAYS, MONTHS } from '../../locale/lt';
 import {
   getAListAction,
-  getListOfLists,
+  getListOfListsAction,
   newListAction,
   planWeekAction,
   removeListAction,
@@ -21,11 +20,12 @@ import {
   exportListAction,
   moveToListAction,
   copyOrMoveToNewListAction,
-  moveInitiationAction,
+  dataConflictAction,
+  refreshListAction,
 } from '../../store/actions/list-actions';
 
 function* listOfListsRequest() {
-  yield fetchItemSaga(UrlUtils.getListsUrl(), getListOfLists);
+  yield fetchItemSaga(UrlUtils.getListsUrl(), getListOfListsAction);
 }
 
 function* checkAndSave(action) {
@@ -34,15 +34,13 @@ function* checkAndSave(action) {
   const originalList = yield call(callGet, UrlUtils.getAListUrl(listId));
   if (originalList.lastAction !== new_data.previousAction) {
     if (new_data.taskToAdd) {
-      let payload = {
-        data: {
+      const payload = {
           listId: listId,
           task: new_data.taskToAdd,
-        },
       };
-      return yield put({ type: prependToAListAction, payload });
+      return yield put(prependToAListAction(payload));
     }
-    return yield put({ type: types.DATA_CONFLICT, payload: originalList.lastAction });
+    return yield put(dataConflictAction(originalList.lastAction));
   }
   yield updateItemSaga(UrlUtils.getAListUrl(listId), new_data.listData, updateListAction);
 }
@@ -53,7 +51,7 @@ function* getAListRequest(action) {
 
 function* getAListSuccess(action) {
   if (!action.payload) {
-    yield fetchItemSaga(UrlUtils.getListsUrl(), getListOfLists);
+    yield fetchItemSaga(UrlUtils.getListsUrl(), getListOfListsAction);
   }
 }
 
@@ -76,7 +74,7 @@ function* findOrCreateListByName(action) {
       return filtered[ 0 ]._id;
     }
     const result = yield call(callPost, url, NewTaskEntity(listName));
-    yield fetchItemSaga(UrlUtils.getListsUrl(), types.REFRESH_LIST);
+    yield fetchItemSaga(UrlUtils.getListsUrl(), refreshListAction);
     return result._id;
   } catch (e) {
     yield generalFailure(e);
@@ -113,14 +111,14 @@ function* planWeekSaga() {
         yield call(callPost, UrlUtils.getListsUrl(), NewTaskEntity(listName));
       }
     }
-    return yield fetchItemSaga(UrlUtils.getListsUrl(), getListOfLists);
+    return yield fetchItemSaga(UrlUtils.getListsUrl(), getListOfListsAction);
   } catch (e) {
     yield generalFailure(e);
   }
 }
 
 function* generalFailure(e) {
-  yield put({ type: types.ERROR, payload: e });
+  yield put({ type: errorAction, payload: e });
 }
 
 function* importListSaga(action) {
@@ -219,8 +217,8 @@ function* removeTaskFromListSaga(action) {
 
 export default function* listSagas() {
   yield all([
-    takeEvery(getListOfLists.started, listOfListsRequest),
-    takeEvery(getListOfLists.failed, generalFailure),
+    takeEvery(getListOfListsAction.started, listOfListsRequest),
+    takeEvery(getListOfListsAction.failed, generalFailure),
 
     takeEvery(getAListAction.started, getAListRequest),
     takeEvery(getAListAction.done, getAListSuccess),

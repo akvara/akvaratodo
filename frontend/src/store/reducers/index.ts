@@ -4,12 +4,12 @@ import { ListCreds, TodoList } from '../../core/types';
 
 export interface RootState {
   app: {
-    status_msg: string;
+    statusMsg: string;
     mode: string;
     lists: TodoList[];
-    a_list: TodoList;
+    aList: TodoList;
     task: string;
-    from_list: ListCreds;
+    fromList: ListCreds;
   }
 }
 

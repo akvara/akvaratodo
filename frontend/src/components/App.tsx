@@ -6,27 +6,22 @@ import { Spinner } from './Spinner';
 import * as listActions from '../store/actions/list-actions';
 import ListsApp from './ListsApp';
 import TasksApp from './TasksApp';
-import Move from './Move';
+import MovePage from './MovePage';
 import Failure from './Failure';
 import { RootState } from '../store/reducers';
 import { compose, lifecycle } from 'recompose';
 import { bindActionCreators } from 'redux';
-import { ListCreds, TodoList } from '../core/types';
 
 export interface AppPrivateProps {
   mode: string;
-  lists: TodoList[];
-  a_list: TodoList;
-  task: string;
-  from_list: ListCreds;
 }
 
-interface AppContainerProps extends AppPrivateProps{
-  getListOfLists: typeof listActions.getListOfLists.started;
+interface AppContainerProps extends AppPrivateProps {
+  getListOfLists: typeof listActions.getListOfListsAction.started;
 }
 
 const App: React.FunctionComponent<AppPrivateProps> = (props) => {
-  const { mode, lists, a_list, from_list, task } = props;
+  const { mode } = props;
 
   if (!mode) {
     return <div className="error">mode undefined!</div>;
@@ -41,18 +36,11 @@ const App: React.FunctionComponent<AppPrivateProps> = (props) => {
   }
 
   if (mode === CONST.mode.MODE_A_LIST) {
-    return (
-      <TasksApp
-        list={a_list}
-        immutables={lists.filter((item) => item.immutable)}
-        exportables={lists.filter((item) => item._id !== a_list._id && !item.immutable).slice(0, 20)}
-        previous_list={from_list && a_list._id === from_list.listId ? null : from_list}
-      />
-    );
+    return <TasksApp />;
   }
 
   if (mode === CONST.mode.MODE_MOVE) {
-    return <Move lists={lists.filter((item) => !item.immutable)} task={task} from_list={from_list} />;
+    return <MovePage />;
   }
 
   if (mode === CONST.mode.DATA_CONFLICT) {
@@ -60,7 +48,7 @@ const App: React.FunctionComponent<AppPrivateProps> = (props) => {
   }
 
   if (mode === CONST.mode.MODE_ERROR) {
-    return <Failure onClick={window.location.reload} />;
+    return <Failure />;
   }
 
   return <div className="error">Mode {mode} not impelemented</div>;
@@ -68,16 +56,12 @@ const App: React.FunctionComponent<AppPrivateProps> = (props) => {
 
 const mapStateToProps: MapStateToProps<AppPrivateProps, void, RootState> = (state: RootState) => ({
   mode: state.app.mode,
-  lists: state.app.lists,
-  a_list: state.app.a_list,
-  task: state.app.task,
-  from_list: state.app.from_list,
 });
 
 const mapDispatchToProps: MapDispatchToProps<any, AppPrivateProps> = (dispatch: Dispatch<RootState>) => {
   return bindActionCreators(
     {
-      getListOfLists: listActions.getListOfLists.started,
+      getListOfLists: listActions.getListOfListsAction.started,
     },
     dispatch,
   );

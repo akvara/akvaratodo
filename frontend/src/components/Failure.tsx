@@ -1,23 +1,53 @@
-import React, { Component } from 'react';
+import * as React from 'react';
+import { bindActionCreators, compose } from 'redux';
+import { connect, Dispatch } from 'react-redux';
 
-class Failure extends Component {
-  defaultReload = () => {
-    window.location.reload();
-  };
+import { RootState } from '../store/reducers';
+import { getAListAction } from '../store/actions/list-actions';
+import { defaultProps } from 'recompose';
+import { TodoList } from '../core/types';
 
-  render() {
-    let msg = this.props.msg ? this.props.msg : 'Ooops, something went wrong...';
-    let onClick = this.props.onClick ? this.props.onClick : this.defaultReload;
-    return (
-      <div>
-        <br />
-        {msg}
-        <br />
-        Please
-        <button onClick={onClick}>reload</button>
-      </div>
-    );
-  }
+// const defaultReload = () => {
+//   window.location.reload();
+// };
+
+export interface FailureProps {
+  msg: string;
+  getAList: typeof getAListAction.started;
+  aList: TodoList;
 }
 
-export default Failure;
+const Failure: React.FunctionComponent<FailureProps> = (props: FailureProps) => {
+  const { msg, getAList, aList } = props;
+  return (
+    <div>
+      <br />
+      {msg}
+      <br />
+      Please <button onClick={() => getAList(aList._id)}>reload</button>
+    </div>
+  );
+};
+
+const mapStateToProps = (state: RootState) => ({
+  aList: state.app.aList,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
+  return bindActionCreators(
+    {
+      getAList: getAListAction.started,
+    },
+    dispatch,
+  );
+};
+
+export default compose(
+  defaultProps({
+    msg: 'Ooops, something went wrong...',
+  }),
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  ),
+)(Failure);

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
-import { connect, Dispatch, MapDispatchToProps, MapStateToProps } from 'react-redux';
+import { connect, Dispatch } from 'react-redux';
 import _ from 'underscore';
 
 import TasksList from './TasksList';
@@ -11,7 +11,7 @@ import {
   checkAndSaveAction,
   exportListAction,
   getAListAction,
-  getListOfLists,
+  getListOfListsAction,
   importListAction,
   moveInitiationAction,
 } from '../store/actions/list-actions';
@@ -19,11 +19,8 @@ import { disableHotKeys, playSound, registerHotKeys } from '../utils/hotkeys';
 import * as Utils from '../utils/utils.js';
 import { RootState } from '../store/reducers';
 import { compose, withProps } from 'recompose';
-import { ListsAppProps } from './ListsApp';
-import { AppPrivateProps } from './App';
 
 class TasksApp extends Component {
-
   constructor(props, context) {
     super(props, context);
 
@@ -187,7 +184,7 @@ class TasksApp extends Component {
   /* Move task to another list */
   moveOutside = (task) => {
     let data = {
-      from_list: { listId: this.props.list._id, name: this.state.listName },
+      fromList: { listId: this.props.list._id, name: this.state.listName },
       task: task,
     };
     this.props.moveOutside(data);
@@ -550,19 +547,23 @@ class TasksApp extends Component {
   }
 }
 
-const mapStateToProps: MapStateToProps<AppPrivateProps, void, RootState> = (state: RootState) => ({
+const mapStateToProps = (state: RootState) => ({
   mode: state.app.mode,
   lists: state.app.lists,
-  a_list: state.app.a_list,
+  list: state.app.aList,
   task: state.app.task,
-  from_list: state.app.from_list,
+  fromList: state.app.fromList,
+  immutables: state.app.lists.filter((item) => item.immutable),
+  exportables: state.app.lists.filter((item) => item._id !== state.app.aList._id && !item.immutable).slice(0, 20),
+  previous_list:
+    state.app.fromList && state.app.aList._id === state.app.fromList.listId ? null : state.app.fromList,
 });
 
-const mapDispatchToProps: MapDispatchToProps<any, ListsAppProps> = (dispatch: Dispatch<RootState>) => {
+const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
   return bindActionCreators(
     {
       getAList: getAListAction.started,
-      getListOfLists: getListOfLists.started,
+      getListOfLists: getListOfListsAction.started,
       checkAndSave: checkAndSaveAction,
       importList: importListAction,
       exportList: exportListAction,
@@ -575,7 +576,7 @@ const mapDispatchToProps: MapDispatchToProps<any, ListsAppProps> = (dispatch: Di
 
 export default compose(
   connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps,
   ),
   withProps(({ listName }) => ({

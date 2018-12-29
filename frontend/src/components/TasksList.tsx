@@ -127,8 +127,8 @@ class TaskList extends Component {
   }
 
   render() {
-    let taskListDisplayed = this.props.items,
-      shouldOmit = 0;
+    let taskListDisplayed = this.props.items;
+    let shouldOmit = 0;
 
     if (!this.props.expand && Utils.overLength('displayListLength', this.props.items)) {
       shouldOmit = this.props.items.length - CONFIG.user.settings.displayListLength;

@@ -3,9 +3,15 @@ import { bindActionCreators } from 'redux';
 import { connect, Dispatch, MapDispatchToProps, MapStateToProps } from 'react-redux';
 
 import ListOfLists from './ListOfLists';
-import { addOrOpenListAction, getAListAction, getListOfLists, planWeekAction, removeListAction } from '../store/actions/list-actions';
+import {
+  addOrOpenListAction,
+  getAListAction,
+  getListOfListsAction,
+  planWeekAction,
+  removeListAction,
+} from '../store/actions/list-actions';
 import { makeContractableList } from '../utils/listUtils';
-import { playSound, disableHotKeys, registerHotKeys } from '../utils/hotkeys';
+import { disableHotKeys, playSound, registerHotKeys } from '../utils/hotkeys';
 import { RootState } from '../store/reducers';
 import { compose, lifecycle, withProps } from 'recompose';
 import { TodoList } from '../core/types';
@@ -15,24 +21,24 @@ export interface ListsAppPrivateProps {
 }
 
 export interface ListsAppProps extends ListsAppPrivateProps {
-  getAList: typeof getAListAction.started,
-  getListOfLists: typeof getListOfLists.started,
-  addOrOpenAList: typeof addOrOpenListAction.started,
-  removeList: typeof removeListAction.started,
-  planWeek: typeof planWeekAction.started,
+  getAList: typeof getAListAction.started;
+  getListOfLists: typeof getListOfListsAction.started;
+  addOrOpenAList: typeof addOrOpenListAction.started;
+  removeList: typeof removeListAction.started;
+  planWeek: typeof planWeekAction.started;
 }
 
 class ListsApp extends Component {
-
   constructor(props, context) {
     super(props, context);
     this.state = {
-      lists: makeContractableList(this.props.lists.filter(list => !list.immutable)),
-      immutableLists: this.props.lists.filter(list => list.immutable),
+      lists: makeContractableList(this.props.lists.filter((list) => !list.immutable)),
+      immutableLists: this.props.lists.filter((list) => list.immutable),
       listName: '',
     };
 
-    this.hotKeys = [ // reserved hotkeys
+    this.hotKeys = [
+      // reserved hotkeys
       { key: 'a' },
       { key: 'r' },
     ];
@@ -61,7 +67,8 @@ class ListsApp extends Component {
       this.reload();
       return;
     }
-    this.hotKeys.forEach(function(k) {
+    this.hotKeys.forEach(
+      function(k) {
         if (k.key === pressed) {
           playSound();
           this.openAList(k.listId);
@@ -108,7 +115,7 @@ class ListsApp extends Component {
   };
 
   toggleContracted = (listTitle, beContracted) => {
-    let newList = this.state.lists.map(list => {
+    let newList = this.state.lists.map((list) => {
       if (list.isList && list.contractedTitle === listTitle) {
         return {
           ...list,
@@ -148,10 +155,7 @@ class ListsApp extends Component {
           hotKeys={this.hotKeys}
         />
         <h3>Protected</h3>
-        <ListOfLists
-          lists={this.state.immutableLists}
-          openList={this.openAList}
-        />
+        <ListOfLists lists={this.state.immutableLists} openList={this.openAList} />
         <form onSubmit={this.handleSubmit}>
           <input
             className="list-input"
@@ -166,12 +170,10 @@ class ListsApp extends Component {
           />
           <button disabled={!this.state.listName.trim()}>Create new list</button>
         </form>
-        <hr/>
+        <hr />
         <button onClick={this.props.planWeek}>Plan week</button>
         <button onClick={this.reload}>
-                    <span className={'glyphicon glyphicon-refresh'}
-                          aria-hidden="true">
-                    </span> <u>R</u>eload
+          <span className={'glyphicon glyphicon-refresh'} aria-hidden="true" /> <u>R</u>eload
         </button>
       </div>
     );
@@ -186,7 +188,7 @@ const mapDispatchToProps: MapDispatchToProps<any, ListsAppProps> = (dispatch: Di
   return bindActionCreators(
     {
       getAList: getAListAction.started,
-      getListOfLists: getListOfLists.started,
+      getListOfLists: getListOfListsAction.started,
       addOrOpenAList: addOrOpenListAction,
       removeList: removeListAction.started,
       planWeek: planWeekAction,

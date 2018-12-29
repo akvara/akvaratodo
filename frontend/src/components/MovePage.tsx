@@ -1,33 +1,30 @@
 import React, { Component } from 'react';
 import { bindActionCreators, compose } from 'redux';
-import { connect, MapDispatchToProps, MapStateToProps, Dispatch } from 'react-redux';
+import { connect, Dispatch } from 'react-redux';
 
 import CONFIG from '../config.js';
 import {
-  addOrOpenListAction,
   copyOrMoveToNewListAction,
-  getAListAction, getListOfLists,
-  moveToListAction, planWeekAction,
-  prependToAListAction, removeListAction,
+  getAListAction,
+  moveToListAction,
+  prependToAListAction,
 } from '../store/actions/list-actions';
 import { RootState } from '../store/reducers';
-import { TodoList } from '../core/types';
+import { ListCreds, TodoList } from '../core/types';
 
-export interface MovePrivateProps {
+export interface MoveProps {
+  task: string;
   lists: TodoList[];
+  fromList: ListCreds;
+  getAList: typeof getAListAction.started;
+  moveToList: typeof moveToListAction;
+  copyOrMoveToNew: typeof copyOrMoveToNewListAction;
+  prependToAList: typeof prependToAListAction;
 }
 
-export interface MoveProps extends MovePrivateProps {
-  getAList: typeof getAListAction.started,
-  getListOfLists: typeof getListOfLists.started,
-  addOrOpenAList: typeof addOrOpenListAction.started,
-  removeList: typeof removeListAction.started,
-  planWeek: typeof planWeekAction.started,
-}
-
-class Move extends Component {
-  constructor(props, context) {
-    super(props, context);
+class MovePage extends Component {
+  constructor(props: MoveProps) {
+    super(props);
     console.log('lll', props);
 
     this.state = {
@@ -38,7 +35,7 @@ class Move extends Component {
 
   /* Returns back to the same list with no changes */
   back = () => {
-    this.props.getAList(this.props.from_list.listId);
+    this.props.getAList(this.props.fromList.listId);
   };
 
   /* Moves or copies item to new list */
@@ -48,19 +45,19 @@ class Move extends Component {
   move = (toListId) => {
     this.props.moveToList({
       listId: toListId,
-      fromListId: this.props.from_list.listId,
+      fromListId: this.props.fromList.listId,
       task: this.props.task,
     });
   };
 
   /* Copies item to another list byt its id*/
-  copy = (toListId) => {
+  copy = (toListId: string) => {
     this.props.prependToAList({ listId: toListId, task: this.props.task });
   };
 
   /* To List */
-  displayToButton = (list) => {
-    if (list._id === this.props.from_list.listId) return null;
+  displayToButton = (list:TodoList) => {
+    if (list._id === this.props.fromList.listId) return null;
     return (
       <tr key={'tr' + list._id}>
         <td>
@@ -77,7 +74,7 @@ class Move extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.copyOrMoveToNew({
-      fromListId: this.props.from_list.listId,
+      fromListId: this.props.fromList.listId,
       task: this.props.task,
       listName: this.state.newListName,
       move: true,
@@ -104,17 +101,19 @@ class Move extends Component {
           </button>
         </form>
         <hr />
-        <button onClick={this.back}>Back to {this.props.from_list.name}</button>
+        <button onClick={this.back}>Back to {this.props.fromList.name}</button>
       </div>
     );
   }
 }
 
-// const mapStateToProps: MapStateToProps<MovePrivateProps, void, RootState> = (state: RootState) => ({
-//   lists: state.app.lists,
-// });
+const mapStateToProps = (state: RootState) => ({
+  lists: state.app.lists.filter((item: TodoList) => !item.immutable),
+  task: state.app.task,
+  fromList: state.app.fromList,
+});
 
-const mapDispatchToProps: MapDispatchToProps<any, MoveProps> = (dispatch: Dispatch<RootState>) => {
+const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
   return bindActionCreators(
     {
       getAList: getAListAction.started,
@@ -128,10 +127,7 @@ const mapDispatchToProps: MapDispatchToProps<any, MoveProps> = (dispatch: Dispat
 
 export default compose(
   connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps,
   ),
-  // withProps(({ listName }) => ({
-  //   listName,
-  // })),
-)(Move);
+)(MovePage);

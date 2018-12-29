@@ -1,42 +1,38 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import CONFIG from '../config.js';
+import { StatusProps } from './Status';
 
-class User extends Component {
-  normaliser = (val, base) => {
-    return ('00' + Math.floor((val * 256) / base).toString(16)).substr(-2, 2);
-  };
+const normaliser = (val: number, base: number) => {
+  return ('00' + Math.floor((val * 256) / base).toString(16)).substr(-2, 2);
+};
 
-  versionColor = () => {
-    let str = CONFIG.version.replace(/-/g, '');
-    return (
-      '#' +
-      this.normaliser(str.substring(2, 4), 31) +
-      this.normaliser(str.substring(0, 2), 12) +
-      this.normaliser(str.substring(4, 6), 24)
-    );
-  };
+const versionColor = () => {
+  let str = CONFIG.version.replace(/-/g, '');
+  return (
+    '#' +
+    normaliser(parseInt(str.substring(2, 4)), 31) +
+    normaliser(parseInt(str.substring(0, 2)), 12) +
+    normaliser(parseInt(str.substring(4, 6)), 24)
+  );
+};
 
-  /* The Renderer */
-  render() {
-    return (
-      <div>
-        <span className="list-item">
-          <span style={{ color: this.versionColor() }}> {CONFIG.version}</span>{' '}
-          <small>
-            <b>{process.env.NODE_ENV}</b>
-          </small>
-        </span>
-        <span
-          className="glyphicon glyphicon-cog action-button"
-          aria-hidden="true"
-          // onClick={this.renderSettings.bind(this, this.props.lists)}
-        />
-        <span className="action-button">{CONFIG.user.name}</span>
-        <audio id="clickSound" src={CONFIG.clickSound} />
-        <hr />
-      </div>
-    );
-  }
-}
+const User: React.FunctionComponent<StatusProps> = () => (
+  <div>
+    <span className="list-item">
+      <span style={{ color: versionColor() }}> {CONFIG.version}</span>{' '}
+      <small>
+        <b>{process.env.NODE_ENV}</b>
+      </small>
+    </span>
+    <span
+      className="glyphicon glyphicon-cog action-button"
+      aria-hidden="true"
+      // onClick={this.renderSettings.bind(this, this.props.lists)}
+    />
+    <span className="action-button">{CONFIG.user.name}</span>
+    <audio id="clickSound" src={CONFIG.clickSound} />
+    <hr />
+  </div>
+);
 
 export default User;
