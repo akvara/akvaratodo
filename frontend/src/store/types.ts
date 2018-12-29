@@ -3,6 +3,7 @@ export interface TodoList {
   name: string;
   tasks: string;
   immutable: boolean;
+  lastAction: Date;
 }
 
 export interface ListCreds {
@@ -21,3 +22,10 @@ export interface ListMoveData {
   listName: string;
   move: boolean;
 }
+
+export interface TodoListUpdate {
+  name?: string;
+  tasks: string;
+  lastAction: string;
+}
+

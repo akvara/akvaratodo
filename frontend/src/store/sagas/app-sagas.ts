@@ -2,7 +2,7 @@ import { all, call, put, takeEvery } from 'redux-saga/effects';
 import { Action } from 'typescript-fsa';
 
 import { createItemSaga, fetchItemSaga, updateItemSaga } from './common-sagas';
-import { callDelete, callGet, callPost, callUpdate } from '../../utils/api';
+import { callGet, callPost } from '../../utils/api';
 import * as urlUtils from '../../utils/urlUtils';
 import * as utils from '../../utils/utils.js';
 import { NewTaskEntity } from '../../utils/entity';
@@ -11,40 +11,40 @@ import * as appActions from '../../store/actions/app-actions';
 import * as listActions from '../../store/actions/list-actions';
 import { ListMoveData, ListTransferData } from '../types';
 import { getAListRequestSaga, listOfListsRequestSaga } from './list-sagas';
+import { deleteAList, fetchAList, getListOfLists, updateAList } from '../../api/api';
 
-function* checkAndSave(action) {
-  const new_data = action.payload;
-  const listId = new_data.listId;
-  const originalList = yield call(callGet, urlUtils.getAListUrl(listId));
-  if (originalList.lastAction !== new_data.previousAction) {
-    if (new_data.taskToAdd) {
-      const payload = {
+function* checkAndSave({ payload }: Action<any>) {
+  const { listId } = payload;
+  const originalList = yield fetchAList(listId);
+  if (originalList.lastAction !== payload.previousAction) {
+    if (payload.taskToAdd) {
+      const data = {
         listId: listId,
-        task: new_data.taskToAdd,
+        task: payload.taskToAdd,
       };
-      return yield put(appActions.copyToListAction(payload));
+      return yield put(appActions.copyToListAction(data));
     }
     return yield put(appActions.dataConflictAction(originalList.lastAction));
   }
-  yield updateItemSaga(urlUtils.getAListUrl(listId), new_data.listData, listActions.updateListAction);
+  yield updateItemSaga(urlUtils.getAListUrl(listId), payload.listData, listActions.updateListAction);
 }
 
 /*
  * params: list name as action.payload.listName
  * returns listId
  */
-function* findOrCreateListByName(action) {
+function* findOrCreateListByName(action: Action<any>) {
   try {
     const url = urlUtils.getListsUrl();
     const listName = action.payload.listName;
-    const listOfLists = yield call(callGet, url);
+    const listOfLists = yield getListOfLists();
     const filtered = listOfLists.filter((e) => e.name === listName);
 
     if (filtered.length) {
       return filtered[0]._id;
     }
     const result = yield call(callPost, url, NewTaskEntity(listName));
-    // FixMe:     yield getAListRequestSaga(action);
+    // FixMe:
     yield fetchItemSaga(urlUtils.getListsUrl(), listActions.refreshListAction);
     return result._id;
   } catch (e) {
@@ -52,7 +52,7 @@ function* findOrCreateListByName(action) {
   }
 }
 
-function* addOrOpenListsByNameSaga(action) {
+function* addOrOpenListsByNameSaga(action: Action<any>) {
   try {
     const listOfLists = yield call(callGet, urlUtils.getListsUrl());
     const listName = action.payload;
@@ -91,42 +91,40 @@ export function* generalFailure(e) {
   yield put(appActions.errorAction(e));
 }
 
-function* importListSaga(action) {
+function* importListSaga({ payload }: Action<any>) {
   try {
-    const idFirst = urlUtils.getAListUrl(action.payload.firstListId);
-    const idSecond = urlUtils.getAListUrl(action.payload.secondListId);
-    const firstList = yield call(callGet, idFirst);
-    const second = yield call(callGet, idSecond);
+    const { firstListId, secondListId } = payload;
+    const first = yield fetchAList(firstListId);
+    const second = yield fetchAList(secondListId);
     let data = {
       lastAction: new Date().toISOString(),
-      tasks: utils.concatTwoJSONs(firstList.tasks, second.tasks),
+      tasks: utils.concatTwoJSONs(first.tasks, second.tasks),
     };
-    yield call(callUpdate, idSecond, data);
-    yield getAListRequestSaga({ payload: idSecond });
+    yield updateAList(secondListId, data);
+    yield getAListRequestSaga({ payload: secondListId });
   } catch (e) {
     yield generalFailure(e);
   }
 }
 
-function* exportListSaga(action) {
+function* exportListSaga({ payload }: Action<any>) {
   try {
-    const urlThisList = urlUtils.getAListUrl(action.payload.listId);
-    const urlToThatList = urlUtils.getAListUrl(action.payload.toListId);
-    const thisList = yield call(callGet, urlThisList);
-    const toThatList = yield call(callGet, urlToThatList);
+    const { toListId, listId } = payload;
+    const fromList = yield fetchAList(listId);
+    const toList = yield fetchAList(toListId);
     let data = {
       lastAction: new Date().toISOString(),
-      tasks: utils.concatTwoJSONs(thisList.tasks, toThatList.tasks),
+      tasks: utils.concatTwoJSONs(fromList.tasks, toList.tasks),
     };
-    yield call(callUpdate, urlToThatList, data);
-    yield call(callDelete, urlThisList);
-    yield getAListRequestSaga({ payload: urlToThatList });
+    yield updateAList(toListId, data);
+    yield deleteAList(listId);
+    yield getAListRequestSaga({ payload: toListId });
   } catch (e) {
     yield generalFailure(e);
   }
 }
 
-function* moveTaskToListSaga(action) {
+function* moveTaskToListSaga(action: Action<any>) {
   try {
     yield removeTaskFromListSaga(action);
     yield prependToAListSaga(action);
@@ -136,7 +134,7 @@ function* moveTaskToListSaga(action) {
   }
 }
 
-function* copyTaskToListSaga(action) {
+function* copyTaskToListSaga(action: Action<ListTransferData>) {
   try {
     yield prependToAListSaga(action);
     yield getAListRequestSaga({ payload: action.payload.listId });
@@ -145,7 +143,7 @@ function* copyTaskToListSaga(action) {
   }
 }
 
-function* moveToListByNameSaga(action) {
+function* moveToListByNameSaga(action: Action<ListTransferData>) {
   try {
     action.payload.listId = yield findOrCreateListByName(action);
 
@@ -161,16 +159,13 @@ function* moveToListByNameSaga(action) {
 
 function* prependToAListSaga({ payload }: Action<ListTransferData>) {
   try {
-    const new_data = payload;
-    const url = urlUtils.getAListUrl(new_data.listId);
-
-    const originalList = yield call(callGet, url);
-
+    const { listId, task } = payload;
+    const originalList = yield fetchAList(listId);
     const data = {
       lastAction: new Date().toISOString(),
-      tasks: utils.prependToJSON(new_data.task, originalList.tasks),
+      tasks: utils.prependToJSON(task, originalList.tasks),
     };
-    yield call(callUpdate, url, data);
+    yield updateAList(listId, data);
   } catch (e) {
     yield generalFailure(e);
   }
@@ -178,16 +173,13 @@ function* prependToAListSaga({ payload }: Action<ListTransferData>) {
 
 function* removeTaskFromListSaga({ payload }: Action<ListMoveData>) {
   try {
-    const new_data = payload;
-    const url = urlUtils.getAListUrl(new_data.fromListId);
-
-    const originalList = yield call(callGet, url);
-
+    const { fromListId, task } = payload;
+    const originalList = yield fetchAList(fromListId);
     const data = {
       lastAction: new Date().toISOString(),
-      tasks: utils.removeTask(new_data.task, originalList.tasks),
+      tasks: utils.removeTask(task, originalList.tasks),
     };
-    yield call(callUpdate, url, data);
+    yield updateAList(fromListId, data);
   } catch (e) {
     yield generalFailure(e);
   }

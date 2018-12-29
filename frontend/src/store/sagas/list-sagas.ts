@@ -4,23 +4,24 @@ import { fetchItemSaga, removeItemSaga } from './common-sagas';
 import * as urlUtils from '../../utils/urlUtils';
 import * as listActions from '../../store/actions/list-actions';
 import { generalFailure } from './app-sagas';
+import { Action } from 'typescript-fsa';
 
 export function* listOfListsRequestSaga() {
   yield fetchItemSaga(urlUtils.getListsUrl(), listActions.getListOfListsAction);
 }
 
-export function* getAListRequestSaga(action) {
-  yield fetchItemSaga(urlUtils.getAListUrl(action.payload), listActions.getAListAction);
+export function* getAListRequestSaga({ payload }: Action<any>) {
+  yield fetchItemSaga(urlUtils.getAListUrl(payload), listActions.getAListAction);
 }
 
-function* getAListSuccess(action) {
+function* getAListSuccess(action: Action<any>) {
   if (!action.payload) {
     yield fetchItemSaga(urlUtils.getListsUrl(), listActions.getListOfListsAction);
   }
 }
 
-function* removeListRequest(action) {
-  yield removeItemSaga(urlUtils.getAListUrl(action.payload), action.payload, listActions.removeListAction);
+function* removeListRequest({ payload }: Action<any>) {
+  yield removeItemSaga(urlUtils.getAListUrl(payload), payload, listActions.removeListAction);
 }
 
 export default function* listSagas() {
