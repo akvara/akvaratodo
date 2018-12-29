@@ -5,11 +5,10 @@ import { createItemSaga, fetchItemSaga, updateItemSaga } from './common-sagas';
 import { callGet, callPost } from '../../utils/api';
 import * as urlUtils from '../../utils/urlUtils';
 import * as utils from '../../utils/utils.js';
-import { NewTaskEntity } from '../../utils/entity';
 import { DAYS, MONTHS } from '../../locale/lt';
 import * as appActions from '../../store/actions/app-actions';
 import * as listActions from '../../store/actions/list-actions';
-import { ListMoveData, ListTransferData } from '../types';
+import { ListMoveData, ListTransferData, NewTodoListEntity } from '../types';
 import { getAListRequestSaga, listOfListsRequestSaga } from './list-sagas';
 import { deleteAList, fetchAList, getListOfLists, updateAList } from '../../api/api';
 
@@ -43,7 +42,7 @@ function* findOrCreateListByName(action: Action<any>) {
     if (filtered.length) {
       return filtered[0]._id;
     }
-    const result = yield call(callPost, url, NewTaskEntity(listName));
+    const result = yield call(callPost, url, NewTodoListEntity(listName));
     // FixMe:
     yield fetchItemSaga(urlUtils.getListsUrl(), listActions.refreshListAction);
     return result._id;
@@ -61,7 +60,7 @@ function* addOrOpenListsByNameSaga(action: Action<any>) {
     if (filtered.length) {
       return yield fetchItemSaga(urlUtils.getAListUrl(filtered[0]._id), listActions.getAListAction);
     }
-    yield createItemSaga(urlUtils.getListsUrl(), NewTaskEntity(listName), listActions.newListAction);
+    yield createItemSaga(urlUtils.getListsUrl(), NewTodoListEntity(listName), listActions.newListAction);
   } catch (e) {
     yield generalFailure(e);
   }
@@ -78,7 +77,7 @@ function* planWeekSaga() {
       const listName = `${DAYS[shift_date.getDay()]}, ${MONTHS[shift_date.getMonth()]} ${shift_date.getDate()} d.`;
       const filtered = listOfLists.filter((e) => e.name === listName);
       if (!filtered.length) {
-        yield call(callPost, urlUtils.getListsUrl(), NewTaskEntity(listName));
+        yield call(callPost, urlUtils.getListsUrl(), NewTodoListEntity(listName));
       }
     }
     yield listOfListsRequestSaga();

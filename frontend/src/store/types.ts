@@ -1,9 +1,10 @@
 export interface TodoList {
-  _id: string;
+  _id?: string;
   name: string;
   tasks: string;
+  done: string;
   immutable: boolean;
-  lastAction: Date;
+  lastAction: string;
 }
 
 export interface ListCreds {
@@ -29,3 +30,12 @@ export interface TodoListUpdate {
   lastAction: string;
 }
 
+export const NewTodoListEntity = (name: string): TodoList => {
+  return {
+    lastAction: new Date().toISOString(),
+    name,
+    tasks: '[]',
+    done: '[]',
+    immutable: false,
+  };
+};

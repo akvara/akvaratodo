@@ -1,7 +1,7 @@
 import { actionCreatorFactory } from 'typescript-fsa';
 import reduxConfig from '../config';
 
-const actionCreator = actionCreatorFactory(reduxConfig.appName + '/lists');
+const actionCreator = actionCreatorFactory(reduxConfig.appName + '/list');
 
 // Async
 export const getListOfListsAction = actionCreator.async<{}, any>('GET_LIST_OF_LISTS');
