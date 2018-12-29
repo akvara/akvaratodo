@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import * as React from "react";
 import PropTypes from 'prop-types';
 
 import CONFIG from '../config.js';
 import * as Utils from '../utils/utils.js';
 
-class TasksDoneList extends Component {
+class TasksDoneList extends React.Component {
   static propTypes = {
     items: PropTypes.array.isRequired,
     expand: PropTypes.bool,

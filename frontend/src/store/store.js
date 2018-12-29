@@ -1,4 +1,4 @@
-import combineReducers from './reducers';
+import combineReducers from './reducers/index';
 import createSagaMiddleware from 'redux-saga';
 import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';

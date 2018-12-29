@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import * as React from "react";
 import PropTypes from 'prop-types';
 
 import CONFIG from '../config.js';
 import * as Utils from '../utils/utils.js';
 
-class TaskList extends Component {
+class TaskList extends React.Component {
   static propTypes = {
     items: PropTypes.array.isRequired,
     done: PropTypes.func.isRequired,
@@ -127,8 +127,8 @@ class TaskList extends Component {
   }
 
   render() {
-    let taskListDisplayed = this.props.items,
-      shouldOmit = 0;
+    let taskListDisplayed = this.props.items;
+    let shouldOmit = 0;
 
     if (!this.props.expand && Utils.overLength('displayListLength', this.props.items)) {
       shouldOmit = this.props.items.length - CONFIG.user.settings.displayListLength;

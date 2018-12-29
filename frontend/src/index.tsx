@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
-import React from 'react';
-import ReactDOM from 'react-dom';
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+
 import { Provider } from 'react-redux';
 import { buildStore } from './store/store';
 import { createLogger } from 'redux-logger';
@@ -18,6 +19,7 @@ window.onbeforeunload = function() {
 
 let middleware = [];
 
+// @ts-ignore
 if (window.devToolsExtension) {
   console.log('window.devToolsExtension is used: no Redux spam in console.');
 } else {
@@ -27,21 +29,21 @@ const store = buildStore(middleware);
 
 ReactDOM.render(
   <Provider store={store}>
-    <App store={store} openAtStartup={CONFIG.user.settings.openListIfExists} />
+    <App openAtStartup={CONFIG.user.settings.openListIfExists} />
   </Provider>,
   CONFIG.appNode,
 );
 
 ReactDOM.render(
   <Provider store={store}>
-    <Status store={store} />
+    <Status />
   </Provider>,
   CONFIG.statusNode,
 );
 
 ReactDOM.render(
   <Provider store={store}>
-    <User store={store} />
+    <User />
   </Provider>,
   CONFIG.userNode,
 );
