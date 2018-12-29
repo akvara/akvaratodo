@@ -103,7 +103,7 @@ class ListsApp extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.props.addOrOpenAList(this.state.listName);
+    this.props.addOrOpenAList({listName: this.state.listName});
   };
 
   openAList = (listId) => {
@@ -198,7 +198,4 @@ export default compose(
     mapStateToProps,
     mapDispatchToProps,
   ),
-  withProps(({ listName }) => ({
-    listName,
-  })),
 )(ListsApp);

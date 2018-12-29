@@ -1,25 +1,13 @@
-import * as React from "react";
+import * as React from 'react';
 import { bindActionCreators, compose } from 'redux';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 
 import CONFIG from '../config.js';
 import * as listActions from '../store/actions/list-actions';
 import * as appActions from '../store/actions/app-actions';
-import { RootState } from '../store/reducers';
-import { ListCreds, TodoList } from '../store/types';
 
-export interface MoveProps {
-  task: string;
-  lists: TodoList[];
-  fromList: ListCreds;
-  getAList: typeof listActions.getAListAction.started;
-  moveToList: typeof appActions.moveToListAction;
-  moveToListByName: typeof appActions.moveToListByNameAction;
-  copyToAList: typeof appActions.copyToListAction;
-}
-
-class MovePage extends React.Component {
-  constructor(props: MoveProps) {
+class MovePage extends React.PureComponent {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -36,19 +24,19 @@ class MovePage extends React.Component {
   /* Moves item to another list */
   move = (toListId) => {
     this.props.moveToList({
-      listId: toListId,
+      toListId,
       fromListId: this.props.fromList.listId,
       task: this.props.task,
     });
   };
 
-  /* Copies item to another list byt its id*/
-  copy = (toListId: string) => {
-    this.props.copyToAList({ listId: toListId, task: this.props.task });
+  /* Copies item to another list byt its id */
+  copy = (toListId) => {
+    this.props.copyToAList({ toListId, task: this.props.task });
   };
 
   /* To List */
-  displayToButton = (list:TodoList) => {
+  displayToButton = (list) => {
     if (list._id === this.props.fromList.listId) return null;
     return (
       <tr key={'tr' + list._id}>
@@ -69,7 +57,7 @@ class MovePage extends React.Component {
       fromListId: this.props.fromList.listId,
       task: this.props.task,
       listName: this.state.newListName,
-      move: true,
+      // move: true, //??
     });
   };
 
@@ -99,13 +87,13 @@ class MovePage extends React.Component {
   }
 }
 
-const mapStateToProps = (state: RootState) => ({
-  lists: state.app.lists.filter((item: TodoList) => !item.immutable),
+const mapStateToProps = (state) => ({
+  lists: state.app.lists.filter((item) => !item.immutable),
   task: state.app.task,
   fromList: state.app.fromList,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
+const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
     {
       getAList: listActions.getAListAction.started,

@@ -1,5 +1,12 @@
+import CONFIG from '../config.js';
+import { Error } from 'tslint/lib/error';
+
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+export type OmitId<T extends { _id: string }> = Omit<T, '_id'>;
+
 export interface TodoList {
-  _id?: string;
+  _id: string;
+  userId: number;
   name: string;
   tasks: string;
   done: string;
@@ -7,21 +14,41 @@ export interface TodoList {
   lastAction: string;
 }
 
+export interface SerializedTodoList {
+  listId: string;
+  itemsDone: string[];
+  itemsTodo: string[];
+  lastAction: string;
+  previousAction: string;
+  taskToAdd?: string;
+  listData?: TodoList;
+}
+
+export interface TodoListImpEx {
+  fromListId: string;
+  toListId: string;
+}
+
+export interface TodoListMove {
+  fromListId: string;
+  toListId: string;
+  task: string;
+}
+
+export interface TodoListMoveByName {
+  fromListId: string;
+  listName: string;
+  task: string;
+}
+
+export interface TodoListCopy {
+  toListId: string;
+  task: string;
+}
+
 export interface ListCreds {
   listId: string;
   name: string;
-}
-
-export interface ListTransferData {
-  listId: string;
-  task: string;
-}
-
-export interface ListMoveData {
-  fromListId: string;
-  task: string;
-  listName: string;
-  move: boolean;
 }
 
 export interface TodoListUpdate {
@@ -30,10 +57,18 @@ export interface TodoListUpdate {
   lastAction: string;
 }
 
-export const NewTodoListEntity = (name: string): TodoList => {
+export interface ListNameOnly {
+  listName: string;
+}
+
+export const NewTodoListEntity = (listName: string): OmitId<TodoList> => {
+  if (!listName) {
+    throw new Error("Trying create list without name!");
+  }
   return {
+    userId: CONFIG.user.id,
     lastAction: new Date().toISOString(),
-    name,
+    name: listName,
     tasks: '[]',
     done: '[]',
     immutable: false,
