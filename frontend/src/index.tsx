@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
-import React from 'react';
-import ReactDOM from 'react-dom';
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+
 import { Provider } from 'react-redux';
 import { buildStore } from './store/store';
 import { createLogger } from 'redux-logger';
@@ -18,6 +19,7 @@ window.onbeforeunload = function() {
 
 let middleware = [];
 
+// @ts-ignore
 if (window.devToolsExtension) {
   console.log('window.devToolsExtension is used: no Redux spam in console.');
 } else {

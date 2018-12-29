@@ -1,5 +1,5 @@
 const reduxConfig = {
-  appName: '@@akvaraToDo',
+  appName: 'app',
 };
 
 export default reduxConfig;

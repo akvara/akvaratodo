@@ -1,26 +1,19 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect, Dispatch } from 'react-redux';
+import { compose, withProps } from 'recompose';
 import _ from 'underscore';
 
 import TasksList from './TasksList';
 import TasksDoneList from './TasksDoneList';
 import CONFIG from '../config.js';
-import {
-  addOrOpenListAction,
-  checkAndSaveAction,
-  exportListAction,
-  getAListAction,
-  getListOfListsAction,
-  importListAction,
-  moveInitiationAction,
-} from '../store/actions/list-actions';
+import * as listActions from '../store/actions/list-actions';
+import * as appActions from '../store/actions/app-actions';
 import { disableHotKeys, playSound, registerHotKeys } from '../utils/hotkeys';
 import * as Utils from '../utils/utils.js';
 import { RootState } from '../store/reducers';
-import { compose, withProps } from 'recompose';
 
-class TasksApp extends Component {
+class TasksApp extends React.Component {
   constructor(props, context) {
     super(props, context);
 
@@ -555,20 +548,19 @@ const mapStateToProps = (state: RootState) => ({
   fromList: state.app.fromList,
   immutables: state.app.lists.filter((item) => item.immutable),
   exportables: state.app.lists.filter((item) => item._id !== state.app.aList._id && !item.immutable).slice(0, 20),
-  previous_list:
-    state.app.fromList && state.app.aList._id === state.app.fromList.listId ? null : state.app.fromList,
+  previous_list: state.app.fromList && state.app.aList._id === state.app.fromList.listId ? null : state.app.fromList,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
   return bindActionCreators(
     {
-      getAList: getAListAction.started,
-      getListOfLists: getListOfListsAction.started,
-      checkAndSave: checkAndSaveAction,
-      importList: importListAction,
-      exportList: exportListAction,
-      addOrOpenAList: addOrOpenListAction,
-      moveOutside: moveInitiationAction,
+      getAList: listActions.getAListAction.started,
+      getListOfLists: listActions.getListOfListsAction.started,
+      checkAndSave: appActions.checkAndSaveAction,
+      importList: appActions.importListAction,
+      exportList: appActions.exportListAction,
+      addOrOpenAList: appActions.addOrOpenListAction,
+      moveOutside: appActions.moveInitiationAction,
     },
     dispatch,
   );

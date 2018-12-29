@@ -1,49 +1,35 @@
 import BaseReducer from './base-reducer';
 import CONST from '../../utils/constants.js';
 import * as Utils from '../../utils/utils';
-import {
-  addOrOpenListAction,
-  getAListAction,
-  getListOfListsAction,
-  planWeekAction,
-  removeListAction,
-  checkAndSaveAction,
-  updateListAction,
-  importListAction,
-  exportListAction,
-  moveToListAction,
-  moveInitiationAction,
-  dataConflictAction,
-  errorAction,
-  refreshListAction,
-} from '../../store/actions/list-actions';
+import * as listActions from '../../store/actions/list-actions';
+import * as appActions from '../../store/actions/app-actions';
 
 class AppReducer extends BaseReducer {
   constructor() {
     super();
     this.initialState = {};
     this.ACTION_HANDLERS = {
-      [getListOfListsAction.started]: this.listOfListsRequest,
-      [getListOfListsAction.done]: this.listOfListsFetched,
-      [refreshListAction.done]: this.listOfListsRefreshed,
+      [listActions.getListOfListsAction.started]: this.listOfListsRequest,
+      [listActions.getListOfListsAction.done]: this.listOfListsFetched,
+      [listActions.refreshListAction.done]: this.listOfListsRefreshed,
 
-      [removeListAction.started]: this.removeListRequest,
-      [updateListAction.done]: this.listSaved,
+      [listActions.removeListAction.started]: this.removeListRequest,
+      [listActions.updateListAction.done]: this.listSaved,
 
-      [getAListAction.started]: this.getAListRequest,
-      [getAListAction.done]: this.aListFetched,
+      [listActions.getAListAction.started]: this.getAListRequest,
+      [listActions.getAListAction.done]: this.aListFetched,
 
-      [checkAndSaveAction]: this.checkAList,
-      [moveInitiationAction]: this.moveTo,
-      [moveToListAction]: this.prependRequest,
-      [importListAction]: this.importListRequest,
-      [exportListAction]: this.exportListRequest,
-      [addOrOpenListAction]: this.addAListRequest,
+      [appActions.addOrOpenListAction]: this.addAListRequest,
+      [appActions.checkAndSaveAction]: this.checkAList,
+      [appActions.moveInitiationAction]: this.moveTo,
+      [appActions.moveToListAction]: this.prependRequest,
+      [appActions.importListAction]: this.importListRequest,
+      [appActions.exportListAction]: this.exportListRequest,
 
-      [planWeekAction]: this.planWeek,
+      [appActions.planWeekAction]: this.planWeek,
 
-      [errorAction]: this.error,
-      [dataConflictAction]: this.dataConflict,
+      [appActions.errorAction]: this.error,
+      [appActions.dataConflictAction]: this.dataConflict,
     };
   }
 

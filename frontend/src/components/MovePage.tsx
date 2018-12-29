@@ -1,14 +1,10 @@
-import React, { Component } from 'react';
+import * as React from "react";
 import { bindActionCreators, compose } from 'redux';
 import { connect, Dispatch } from 'react-redux';
 
 import CONFIG from '../config.js';
-import {
-  copyOrMoveToNewListAction,
-  getAListAction,
-  moveToListAction,
-  prependToAListAction,
-} from '../store/actions/list-actions';
+import * as listActions from '../store/actions/list-actions';
+import * as appActions from '../store/actions/app-actions';
 import { RootState } from '../store/reducers';
 import { ListCreds, TodoList } from '../core/types';
 
@@ -16,13 +12,13 @@ export interface MoveProps {
   task: string;
   lists: TodoList[];
   fromList: ListCreds;
-  getAList: typeof getAListAction.started;
-  moveToList: typeof moveToListAction;
-  copyOrMoveToNew: typeof copyOrMoveToNewListAction;
-  prependToAList: typeof prependToAListAction;
+  getAList: typeof listActions.getAListAction.started;
+  moveToList: typeof appActions.moveToListAction;
+  copyOrMoveToNew: typeof appActions.copyOrMoveToNewListAction;
+  prependToAList: typeof appActions.prependToAListAction;
 }
 
-class MovePage extends Component {
+class MovePage extends React.Component {
   constructor(props: MoveProps) {
     super(props);
     console.log('lll', props);
@@ -39,7 +35,7 @@ class MovePage extends Component {
   };
 
   /* Moves or copies item to new list */
-  // copyOrMoveToNewListAction = (toListName, move) => {};
+  // appActions.copyOrMoveToNewListAction = (toListName, move) => {};
 
   /* Moves item to another list */
   move = (toListId) => {
@@ -116,10 +112,10 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
   return bindActionCreators(
     {
-      getAList: getAListAction.started,
-      moveToList: moveToListAction,
-      copyOrMoveToNew: copyOrMoveToNewListAction,
-      prependToAList: prependToAListAction,
+      getAList: listActions.getAListAction.started,
+      copyOrMoveToNew: appActions.copyOrMoveToNewListAction,
+      moveToList: appActions.moveToListAction,
+      prependToAList: appActions.prependToAListAction,
     },
     dispatch,
   );

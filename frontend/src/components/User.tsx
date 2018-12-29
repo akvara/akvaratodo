@@ -1,6 +1,5 @@
 import * as React from 'react';
 import CONFIG from '../config.js';
-import { StatusProps } from './Status';
 
 const normaliser = (val: number, base: number) => {
   return ('00' + Math.floor((val * 256) / base).toString(16)).substr(-2, 2);
@@ -16,7 +15,7 @@ const versionColor = () => {
   );
 };
 
-const User: React.FunctionComponent<StatusProps> = () => (
+const User: React.FunctionComponent<{}> = () => (
   <div>
     <span className="list-item">
       <span style={{ color: versionColor() }}> {CONFIG.version}</span>{' '}

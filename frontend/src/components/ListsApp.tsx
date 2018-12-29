@@ -1,15 +1,11 @@
-import React, { Component } from 'react';
+import * as React from "react";
 import { bindActionCreators } from 'redux';
 import { connect, Dispatch, MapDispatchToProps, MapStateToProps } from 'react-redux';
 
 import ListOfLists from './ListOfLists';
-import {
-  addOrOpenListAction,
-  getAListAction,
-  getListOfListsAction,
-  planWeekAction,
-  removeListAction,
-} from '../store/actions/list-actions';
+import * as listActions from '../store/actions/list-actions';
+import * as appActions from '../store/actions/app-actions';
+
 import { makeContractableList } from '../utils/listUtils';
 import { disableHotKeys, playSound, registerHotKeys } from '../utils/hotkeys';
 import { RootState } from '../store/reducers';
@@ -21,14 +17,14 @@ export interface ListsAppPrivateProps {
 }
 
 export interface ListsAppProps extends ListsAppPrivateProps {
-  getAList: typeof getAListAction.started;
-  getListOfLists: typeof getListOfListsAction.started;
-  addOrOpenAList: typeof addOrOpenListAction.started;
-  removeList: typeof removeListAction.started;
-  planWeek: typeof planWeekAction.started;
+  getAList: typeof listActions.getAListAction.started;
+  getListOfLists: typeof listActions.getListOfListsAction.started;
+  addOrOpenAList: typeof appActions.addOrOpenListAction;
+  removeList: typeof listActions.removeListAction.started;
+  planWeek: typeof appActions.planWeekAction;
 }
 
-class ListsApp extends Component {
+class ListsApp extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -187,11 +183,11 @@ const mapStateToProps: MapStateToProps<ListsAppPrivateProps, void, RootState> = 
 const mapDispatchToProps: MapDispatchToProps<any, ListsAppProps> = (dispatch: Dispatch<RootState>) => {
   return bindActionCreators(
     {
-      getAList: getAListAction.started,
-      getListOfLists: getListOfListsAction.started,
-      addOrOpenAList: addOrOpenListAction,
-      removeList: removeListAction.started,
-      planWeek: planWeekAction,
+      getAList: listActions.getAListAction.started,
+      getListOfLists: listActions.getListOfListsAction.started,
+      removeList: listActions.removeListAction.started,
+      addOrOpenAList: appActions.addOrOpenListAction,
+      planWeek: appActions.planWeekAction,
     },
     dispatch,
   );
