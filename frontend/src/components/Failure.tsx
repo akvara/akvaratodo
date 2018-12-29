@@ -5,7 +5,7 @@ import { connect, Dispatch } from 'react-redux';
 import { RootState } from '../store/reducers';
 import { getAListAction } from '../store/actions/list-actions';
 import { defaultProps } from 'recompose';
-import { TodoList } from '../core/types';
+import { TodoList } from '../store/types';
 
 // const defaultReload = () => {
 //   window.location.reload();

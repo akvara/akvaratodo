@@ -6,7 +6,7 @@ import CONFIG from '../config.js';
 import * as listActions from '../store/actions/list-actions';
 import * as appActions from '../store/actions/app-actions';
 import { RootState } from '../store/reducers';
-import { ListCreds, TodoList } from '../core/types';
+import { ListCreds, TodoList } from '../store/types';
 
 export interface MoveProps {
   task: string;
@@ -14,14 +14,13 @@ export interface MoveProps {
   fromList: ListCreds;
   getAList: typeof listActions.getAListAction.started;
   moveToList: typeof appActions.moveToListAction;
-  copyOrMoveToNew: typeof appActions.copyOrMoveToNewListAction;
-  prependToAList: typeof appActions.prependToAListAction;
+  moveToListByName: typeof appActions.moveToListByNameAction;
+  copyToAList: typeof appActions.copyToListAction;
 }
 
 class MovePage extends React.Component {
   constructor(props: MoveProps) {
     super(props);
-    console.log('lll', props);
 
     this.state = {
       newListName: '',
@@ -34,9 +33,6 @@ class MovePage extends React.Component {
     this.props.getAList(this.props.fromList.listId);
   };
 
-  /* Moves or copies item to new list */
-  // appActions.copyOrMoveToNewListAction = (toListName, move) => {};
-
   /* Moves item to another list */
   move = (toListId) => {
     this.props.moveToList({
@@ -48,7 +44,7 @@ class MovePage extends React.Component {
 
   /* Copies item to another list byt its id*/
   copy = (toListId: string) => {
-    this.props.prependToAList({ listId: toListId, task: this.props.task });
+    this.props.copyToAList({ listId: toListId, task: this.props.task });
   };
 
   /* To List */
@@ -69,7 +65,7 @@ class MovePage extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.props.copyOrMoveToNew({
+    this.props.moveToListByName({
       fromListId: this.props.fromList.listId,
       task: this.props.task,
       listName: this.state.newListName,
@@ -113,9 +109,9 @@ const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
   return bindActionCreators(
     {
       getAList: listActions.getAListAction.started,
-      copyOrMoveToNew: appActions.copyOrMoveToNewListAction,
+      moveToListByName: appActions.moveToListByNameAction,
       moveToList: appActions.moveToListAction,
-      prependToAList: appActions.prependToAListAction,
+      copyToAList: appActions.copyToListAction,
     },
     dispatch,
   );

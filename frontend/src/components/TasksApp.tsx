@@ -559,7 +559,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
       checkAndSave: appActions.checkAndSaveAction,
       importList: appActions.importListAction,
       exportList: appActions.exportListAction,
-      addOrOpenAList: appActions.addOrOpenListAction,
+      addOrOpenAList: appActions.addOrOpenListByNameAction,
       moveOutside: appActions.moveInitiationAction,
     },
     dispatch,

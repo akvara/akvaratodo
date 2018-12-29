@@ -10,7 +10,7 @@ import { makeContractableList } from '../utils/listUtils';
 import { disableHotKeys, playSound, registerHotKeys } from '../utils/hotkeys';
 import { RootState } from '../store/reducers';
 import { compose, lifecycle, withProps } from 'recompose';
-import { TodoList } from '../core/types';
+import { TodoList } from '../store/types';
 
 export interface ListsAppPrivateProps {
   lists: TodoList[];
@@ -19,7 +19,7 @@ export interface ListsAppPrivateProps {
 export interface ListsAppProps extends ListsAppPrivateProps {
   getAList: typeof listActions.getAListAction.started;
   getListOfLists: typeof listActions.getListOfListsAction.started;
-  addOrOpenAList: typeof appActions.addOrOpenListAction;
+  addOrOpenAList: typeof appActions.addOrOpenListByNameAction;
   removeList: typeof listActions.removeListAction.started;
   planWeek: typeof appActions.planWeekAction;
 }
@@ -186,7 +186,7 @@ const mapDispatchToProps: MapDispatchToProps<any, ListsAppProps> = (dispatch: Di
       getAList: listActions.getAListAction.started,
       getListOfLists: listActions.getListOfListsAction.started,
       removeList: listActions.removeListAction.started,
-      addOrOpenAList: appActions.addOrOpenListAction,
+      addOrOpenAList: appActions.addOrOpenListByNameAction,
       planWeek: appActions.planWeekAction,
     },
     dispatch,

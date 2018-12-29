@@ -77,7 +77,7 @@ export default compose(
       if (!this.props.mode) {
         //     if (this.props.openAtStartup) {
         //       // Uncomment when opening list at startup is back in fashion
-        //       // this.props.dispatch(listActions.addOrOpenListAction(this.props.openAtStartup));
+        //       // this.props.dispatch(listActions.addOrOpenListByNameAction(this.props.openAtStartup));
         //     }
         this.props.getListOfLists({});
       }

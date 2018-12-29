@@ -9,31 +9,31 @@ class AppReducer extends BaseReducer {
     super();
     this.initialState = {};
     this.ACTION_HANDLERS = {
-      [listActions.getListOfListsAction.started]: this.listOfListsRequest,
-      [listActions.getListOfListsAction.done]: this.listOfListsFetched,
-      [listActions.refreshListAction.done]: this.listOfListsRefreshed,
+      [listActions.getListOfListsAction.started.type]: this.listOfListsRequestSaga,
+      [listActions.getListOfListsAction.done.type]: this.listOfListsFetched,
+      [listActions.refreshListAction.done.type]: this.listOfListsRefreshed,
 
-      [listActions.removeListAction.started]: this.removeListRequest,
-      [listActions.updateListAction.done]: this.listSaved,
+      [listActions.removeListAction.started.type]: this.removeListRequest,
+      [listActions.updateListAction.done.type]: this.listSaved,
 
-      [listActions.getAListAction.started]: this.getAListRequest,
-      [listActions.getAListAction.done]: this.aListFetched,
+      [listActions.getAListAction.started.type]: this.getAListRequest,
+      [listActions.getAListAction.done.type]: this.aListFetched,
 
-      [appActions.addOrOpenListAction]: this.addAListRequest,
-      [appActions.checkAndSaveAction]: this.checkAList,
-      [appActions.moveInitiationAction]: this.moveTo,
-      [appActions.moveToListAction]: this.prependRequest,
-      [appActions.importListAction]: this.importListRequest,
-      [appActions.exportListAction]: this.exportListRequest,
+      [appActions.addOrOpenListByNameAction.type]: this.addAListRequest,
+      [appActions.checkAndSaveAction.type]: this.checkAList,
+      [appActions.moveInitiationAction.type]: this.moveTo,
+      [appActions.moveToListAction.type]: this.prependRequest,
+      [appActions.importListAction.type]: this.importListRequest,
+      [appActions.exportListAction.type]: this.exportListRequest,
 
-      [appActions.planWeekAction]: this.planWeek,
+      [appActions.planWeekAction.type]: this.planWeek,
 
-      [appActions.errorAction]: this.error,
-      [appActions.dataConflictAction]: this.dataConflict,
+      [appActions.errorAction.type]: this.error,
+      [appActions.dataConflictAction.type]: this.dataConflict,
     };
   }
 
-  listOfListsRequest(state) {
+  listOfListsRequestSaga(state) {
     return {
       ...state,
       statusMsg: 'Loading lists ...',
