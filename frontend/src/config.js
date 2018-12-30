@@ -36,5 +36,5 @@ export default {
     appNode: document.getElementById('app'),
     footerNode: document.getElementById('footer'),
     clickSound: 'https://www.soundjay.com/button/button-20.mp3',
-    version: '1230-09'
+    version: '1230-10'
 };

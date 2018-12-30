@@ -8,7 +8,7 @@ import * as appActions from '../store/actions/app-actions';
 import { RootState } from '../store/reducers';
 import { ListCreds, TodoList } from '../store/types';
 
-export interface MoveProps {
+export interface MovePageProps {
   task: string;
   lists: TodoList[];
   fromList: ListCreds;
@@ -18,23 +18,20 @@ export interface MoveProps {
   copyToAList: typeof appActions.copyToListAction;
 }
 
-class MovePage extends React.Component {
-  constructor(props: MoveProps) {
-    super(props);
+export class MovePageState{
+  readonly newListName:string= "";
+}
 
-    this.state = {
-      newListName: '',
-      movingItem: props.task,
-    };
-  }
+class MovePage extends React.PureComponent<MovePageProps, MovePageState> {
+  readonly state = new MovePageState();
 
   /* Returns back to the same list with no changes */
-  back = () => {
+  readonly back = () => {
     this.props.getAList(this.props.fromList.listId);
   };
 
   /* Moves item to another list */
-  move = (toListId) => {
+  readonly move = (toListId: string) => {
     this.props.moveToList({
       toListId,
       fromListId: this.props.fromList.listId,
@@ -43,13 +40,13 @@ class MovePage extends React.Component {
   };
 
   /* Copies item to another list byt its id */
-  copy = (toListId) => {
+  readonly copy = (toListId: string) => {
     this.props.copyToAList({ toListId, task: this.props.task });
   };
 
   /* To List */
-  displayToButton = (list) => {
-    if (list._id === this.props.fromList.listId) return null;
+  readonly displayToButton = (list: TodoList) => {
+    if (list._id === this.props.fromList.listId) {return null};
     return (
       <tr key={'tr' + list._id}>
         <td>
@@ -63,7 +60,7 @@ class MovePage extends React.Component {
     );
   };
 
-  handleSubmit = (e) => {
+  readonly handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     this.props.moveToListByName({
       fromListId: this.props.fromList.listId,
@@ -73,15 +70,15 @@ class MovePage extends React.Component {
     });
   };
 
-  onListInputChange = (e) => {
+  readonly onListInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newListName: e.target.value });
   };
 
-  render() {
+  render(): React.ReactNode {
     return (
       <div>
         <hr />
-        <h2>{this.state.movingItem.substring(0, CONFIG.maxTaskLength)}</h2>
+        <h2>{this.props.task.substring(0, CONFIG.maxTaskLength)}</h2>
         <table className="table table-hover">
           <tbody>{this.props.lists.map((list) => this.displayToButton(list))}</tbody>
         </table>
