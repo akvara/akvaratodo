@@ -1,21 +1,48 @@
 #!/bin/bash
 
-deploy_dir=build
-deploy_remote=git@github.com:akvara/akvaratodo-deploy.git
-app_dir=$(pwd)
+# Set colors
+ESC_SEQ="\x1b["
+COL_RESET=$ESC_SEQ"39;49;00m"
+COL_RED=$ESC_SEQ"31;01m"
+COL_GREEN=$ESC_SEQ"32;01m"
 
-echo Building
-rm -r build/
+check_git_result () {
+   if [[ $? -ne 0 ]]; then
+      echo -en "${COL_RED}git failed!${COL_RESET}\n"
+      popd
+      exit 1
+   fi
+}
+
+DEPLOY_DIR=build
+DEPLOY_REMOTE=git@github.com:akvara/akvaratodo-deploy.git
+APP_DIR=$(pwd)
+
+# Execute build
+echo -en "${COL_GREEN}Building...${COL_RESET}\n"
+rm -r build/ > /dev/null
 npm run build
-echo Adding deploy as remote in $deploy_dir ...
+
+# Check if build failed
+if [[ $? -ne 0 ]]; then
+   echo -en "${COL_RED}Build failed!${COL_RESET}\n"
+   exit 1
+fi
+
+echo -en "${COL_GREEN}Adding deploy as remote in $DEPLOY_DIR ...${COL_RESET}\n"
 cd build/
-git remote add deploy $deploy_remote
-echo Initializing git ...
 git init
-echo Adding deploy as remote ...
-git remote add deploy $deploy_remote
+git remote add deploy $DEPLOY_REMOTE
 git add .
-git ci -m "Build"
+check_git_result
+git ci -m "Build at $(date +"%y-%m-%d-%r")"
+check_git_result
 git push -f deploy master
-cd $app_dir
+check_git_result
+
+cd $APP_DIR
 rm -rf build/
+
+echo -e "${COL_GREEN}Deploy finished.${COL_RESET}"
+
+exit 0
