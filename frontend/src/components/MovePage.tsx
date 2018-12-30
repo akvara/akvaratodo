@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 import { bindActionCreators, compose } from 'redux';
 import { connect, Dispatch } from 'react-redux';
 
@@ -36,19 +36,19 @@ class MovePage extends React.Component {
   /* Moves item to another list */
   move = (toListId) => {
     this.props.moveToList({
-      listId: toListId,
+      toListId,
       fromListId: this.props.fromList.listId,
       task: this.props.task,
     });
   };
 
-  /* Copies item to another list byt its id*/
-  copy = (toListId: string) => {
-    this.props.copyToAList({ listId: toListId, task: this.props.task });
+  /* Copies item to another list byt its id */
+  copy = (toListId) => {
+    this.props.copyToAList({ toListId, task: this.props.task });
   };
 
   /* To List */
-  displayToButton = (list:TodoList) => {
+  displayToButton = (list) => {
     if (list._id === this.props.fromList.listId) return null;
     return (
       <tr key={'tr' + list._id}>
@@ -69,7 +69,7 @@ class MovePage extends React.Component {
       fromListId: this.props.fromList.listId,
       task: this.props.task,
       listName: this.state.newListName,
-      move: true,
+      // move: true, //??
     });
   };
 

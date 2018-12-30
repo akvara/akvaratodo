@@ -52,19 +52,19 @@ class TasksApp extends React.Component {
     return clone;
   }
 
-  serialize(object) {
+  serialize(entity) {
     let res = {
-      listId: object.listId,
-      previousAction: object.previousAction,
+      listId: entity.listId,
+      previousAction: entity.previousAction,
       listData: {
-        lastAction: object.lastAction,
-        immutable: !!object.immutable,
+        lastAction: entity.lastAction,
+        immutable: !!entity.immutable,
       },
     };
-    if (object.name) res.listData.name = object.name;
-    if (object.itemsToDo) res.listData.tasks = JSON.stringify(object.itemsToDo);
-    if (object.itemsDone) res.listData.done = JSON.stringify(object.itemsDone);
-    if (object.taskToAdd) res.taskToAdd = object.taskToAdd;
+    if (entity.name) res.listData.name = entity.name;
+    if (entity.itemsToDo) res.listData.tasks = JSON.stringify(entity.itemsToDo);
+    if (entity.itemsDone) res.listData.done = JSON.stringify(entity.itemsDone);
+    if (entity.taskToAdd) res.taskToAdd = entity.taskToAdd;
     return res;
   }
 
@@ -241,7 +241,7 @@ class TasksApp extends React.Component {
 
   /* Go to another list */
   listChanger = (listName) => {
-    this.props.addOrOpenAList(listName);
+    this.props.addOrOpenAList({listName});
   };
 
   /* Reload this list*/
@@ -345,19 +345,17 @@ class TasksApp extends React.Component {
   };
 
   importList = (listId) => {
-    let data = {
-      firstListId: listId,
-      secondListId: this.props.list._id,
-    };
-    this.props.importList(data);
+    this.props.importList({
+      fromListId: listId,
+      toListId: this.props.list._id,
+    });
   };
 
   exportList = (listId) => {
-    let data = {
-      listId: this.props.list._id,
+    this.props.exportList({
+      fromListId: this.props.list._id,
       toListId: listId,
-    };
-    this.props.exportList(data);
+    });
   };
 
   makeListOption = (list) => (
@@ -540,7 +538,7 @@ class TasksApp extends React.Component {
   }
 }
 
-const mapStateToProps = (state: RootState) => ({
+const mapStateToProps = (state) => ({
   mode: state.app.mode,
   lists: state.app.lists,
   list: state.app.aList,
@@ -551,7 +549,7 @@ const mapStateToProps = (state: RootState) => ({
   previous_list: state.app.fromList && state.app.aList._id === state.app.fromList.listId ? null : state.app.fromList,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
+const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
     {
       getAList: listActions.getAListAction.started,
@@ -571,7 +569,4 @@ export default compose(
     mapStateToProps,
     mapDispatchToProps,
   ),
-  withProps(({ listName }) => ({
-    listName,
-  })),
 )(TasksApp);

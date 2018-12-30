@@ -1,17 +1,20 @@
 import * as React from 'react';
 import CONFIG from '../config.js';
 
-const normaliser = (val: number, base: number) => {
+const base256 = (val: number, base: number) => {
   return ('00' + Math.floor((val * 256) / base).toString(16)).substr(-2, 2);
 };
 
+const substrToNum = (dateString: string, indexStart: number, indexEnd: number): number =>
+  parseInt(dateString.substring(indexStart, indexEnd), 10);
+
 const versionColor = () => {
-  let str = CONFIG.version.replace(/-/g, '');
+  const dateString = CONFIG.version.replace(/-/g, '');
   return (
     '#' +
-    normaliser(parseInt(str.substring(2, 4)), 31) +
-    normaliser(parseInt(str.substring(0, 2)), 12) +
-    normaliser(parseInt(str.substring(4, 6)), 24)
+    base256(substrToNum(dateString, 2, 4), 31) +
+    base256(substrToNum(dateString, 0, 2), 12) +
+    base256(substrToNum(dateString, 4, 6), 24)
   );
 };
 
