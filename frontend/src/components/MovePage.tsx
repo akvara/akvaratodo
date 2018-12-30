@@ -1,13 +1,25 @@
 import * as React from 'react';
 import { bindActionCreators, compose } from 'redux';
-import { connect } from 'react-redux';
+import { connect, Dispatch } from 'react-redux';
 
 import CONFIG from '../config.js';
 import * as listActions from '../store/actions/list-actions';
 import * as appActions from '../store/actions/app-actions';
+import { RootState } from '../store/reducers';
+import { ListCreds, TodoList } from '../store/types';
 
-class MovePage extends React.PureComponent {
-  constructor(props) {
+export interface MoveProps {
+  task: string;
+  lists: TodoList[];
+  fromList: ListCreds;
+  getAList: typeof listActions.getAListAction.started;
+  moveToList: typeof appActions.moveToListAction;
+  moveToListByName: typeof appActions.moveToListByNameAction;
+  copyToAList: typeof appActions.copyToListAction;
+}
+
+class MovePage extends React.Component {
+  constructor(props: MoveProps) {
     super(props);
 
     this.state = {
@@ -87,13 +99,13 @@ class MovePage extends React.PureComponent {
   }
 }
 
-const mapStateToProps = (state) => ({
-  lists: state.app.lists.filter((item) => !item.immutable),
+const mapStateToProps = (state: RootState) => ({
+  lists: state.app.lists.filter((item: TodoList) => !item.immutable),
   task: state.app.task,
   fromList: state.app.fromList,
 });
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
   return bindActionCreators(
     {
       getAList: listActions.getAListAction.started,
