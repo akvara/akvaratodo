@@ -5,7 +5,7 @@ import CONST from '../utils/constants.js';
 import { Spinner } from './Spinner';
 import * as listActions from '../store/actions/list-actions';
 import ListsApp from './ListsApp';
-import TasksApp from './TasksApp';
+import TasksApp from './TasksPage';
 import MovePage from './MovePage';
 import Failure from './Failure';
 import { RootState } from '../store/reducers';

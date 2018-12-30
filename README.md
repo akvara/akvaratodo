@@ -32,7 +32,11 @@ Hosting on netlify.com
 cd frontend
 ./bin/deploy.sh
 ```
+Deploy on oldakvaratodo
+```sh
+./bin/old-deploy.sh
+```
 
 # ToDo
 - MovePage: data types
-- AppSagas: data types
+- MovePage: filter list
