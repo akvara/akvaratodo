@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect, Dispatch } from 'react-redux';
-import { compose, withProps } from 'recompose';
+import { compose } from 'recompose';
 import _ from 'underscore';
 
 import TasksList from './TasksList';
@@ -12,11 +12,43 @@ import * as appActions from '../store/actions/app-actions';
 import { disableHotKeys, playSound, registerHotKeys } from '../utils/hotkeys';
 import * as Utils from '../utils/utils.js';
 import { RootState } from '../store/reducers';
+import { SerializedTodoList, TodoList } from '../store/types';
 
-class TasksApp extends React.Component {
-  constructor(props, context) {
-    super(props, context);
+export interface TaskPageProps {
+  lists: TodoList[];
+  list: TodoList;
+  task: string;
+  fromList: string;
+  immutables: TodoList[];
+  exportables: TodoList[];
+  previousList: string;
+  getAList: typeof listActions.getAListAction.started;
+  getListOfLists: typeof listActions.getListOfListsAction.started;
+  checkAndSave: typeof appActions.checkAndSaveAction;
+  importList: typeof appActions.importListAction;
+  exportList: typeof appActions.exportListAction;
+  addOrOpenAList: typeof appActions.addOrOpenListByNameAction;
+  moveOutside: typeof appActions.moveInitiationAction;
+}
 
+interface TasksPageState {
+  listName: string;
+  itemsToDo: string[];
+  itemsDone: string[];
+  prepend: boolean;
+  highLightIndex: number | null;
+  lastAction: string;
+  immutable: boolean;
+  task: string;
+  reloadNeeded: boolean;
+  expandToDo: boolean;
+  listNameOnEdit: boolean;
+  expandDone: boolean;
+}
+
+class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
+  constructor(props: any) {
+    super(props);
     this.state = {
       listName: props.list.name,
       itemsToDo: JSON.parse(props.list.tasks),
@@ -27,8 +59,8 @@ class TasksApp extends React.Component {
       immutable: props.list.immutable,
       task: '',
       reloadNeeded: false,
-      expandToDo: false,
       listNameOnEdit: false,
+      expandToDo: false,
       expandDone: false,
     };
   }
@@ -43,17 +75,17 @@ class TasksApp extends React.Component {
   }
 
   /* cloning State */
-  prepareClone() {
-    let clone = {};
-    clone.lastAction = new Date().toISOString();
-    clone.listId = this.props.list._id;
-    clone.previousAction = this.state.lastAction;
-
-    return clone;
+  prepareClone(newProps: any) {
+    return {
+      lastAction: new Date().toISOString(),
+      listId: this.props.list._id,
+      previousAction: this.state.lastAction,
+      ...newProps,
+    };
   }
 
-  serialize(entity) {
-    let res = {
+  serialize(entity: SerializedTodoList) {
+    const res: SerializedTodoList = {
       listId: entity.listId,
       previousAction: entity.previousAction,
       listData: {
@@ -61,54 +93,58 @@ class TasksApp extends React.Component {
         immutable: !!entity.immutable,
       },
     };
-    if (entity.name) res.listData.name = entity.name;
-    if (entity.itemsToDo) res.listData.tasks = JSON.stringify(entity.itemsToDo);
-    if (entity.itemsDone) res.listData.done = JSON.stringify(entity.itemsDone);
-    if (entity.taskToAdd) res.taskToAdd = entity.taskToAdd;
+    if (entity.name) {
+      res.listData.name = entity.name;
+    }
+    if (entity.itemsToDo) {
+      res.listData.tasks = JSON.stringify(entity.itemsToDo);
+    }
+    if (entity.itemsDone) {
+      res.listData.done = JSON.stringify(entity.itemsDone);
+    }
+    if (entity.taskToAdd) {
+      res.taskToAdd = entity.taskToAdd;
+    }
     return res;
   }
 
   /* Calculations */
-  calculatePostponePosition = (number) => Math.floor(number / 2);
+  readonly calculatePostponePosition = (pos: number) => Math.floor(pos / 2);
 
   /* Show full/contracted ist */
-  expand = (which) => {
+  readonly expand = (which: 'expandToDo' | 'expandDone') => {
     this.setState({
       [which]: !this.state[which],
-    });
+    } as any);
   };
 
   /* Move task to Done tasks array */
-  doneTask = (i) => {
-    let dataToSave = this.prepareClone(),
-      moved = Utils.moveToAnother(this.state.itemsToDo, this.state.itemsDone, i, false);
-
-    dataToSave.itemsToDo = moved.A;
-    dataToSave.itemsDone = moved.B;
+  doneTask = (fromPos: number) => {
+    const moved = Utils.moveToAnother(this.state.itemsToDo, this.state.itemsDone, fromPos, false);
+    const itemsToDo = moved.A;
+    const itemsDone = moved.B;
+    const dataToSave = this.prepareClone({ itemsToDo, itemsDone });
 
     this.setState({
       lastAction: dataToSave.lastAction,
       itemsToDo: dataToSave.itemsToDo,
       itemsDone: dataToSave.itemsDone,
-      highlightIndex: null,
+      highLightIndex: null,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
   };
 
   /* Move task back from Done tasks array */
-  unDoneTask = (i) => {
-    let dataToSave = this.prepareClone(),
-      moved = Utils.moveToAnother(this.state.itemsDone, this.state.itemsToDo, i, true);
-
-    dataToSave.itemsToDo = moved.B;
-    dataToSave.itemsDone = moved.A;
+  unDoneTask = (atPos: number) => {
+    const moved = Utils.moveToAnother(this.state.itemsDone, this.state.itemsToDo, atPos, true);
+    const dataToSave = this.prepareClone({ itemsToDo: moved.B, itemsDone: moved.A });
 
     this.setState({
       lastAction: dataToSave.lastAction,
       itemsToDo: dataToSave.itemsToDo,
       itemsDone: dataToSave.itemsDone,
-      highlightIndex: 0,
+      highLightIndex: 0,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -116,44 +152,40 @@ class TasksApp extends React.Component {
 
   /* Delete done tasks */
   clearDone = () => {
-    let dataToSave = this.prepareClone();
-
-    dataToSave.itemsDone = [];
+    const dataToSave = this.prepareClone({ itemsDone: [] });
 
     this.setState({
       lastAction: dataToSave.lastAction,
       itemsDone: dataToSave.itemsDone,
-      highlightIndex: null,
+      highLightIndex: null,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
   };
 
   /* Remove task from list */
-  removeTask = (i) => {
-    let dataToSave = this.prepareClone();
-
-    dataToSave.itemsToDo = Utils.removeItem(this.state.itemsToDo, i);
+  removeTask = (atPos: number) => {
+    const itemsToDo = Utils.removeItem(this.state.itemsToDo, atPos);
+    const dataToSave = this.prepareClone({ itemsToDo });
 
     this.setState({
       lastAction: dataToSave.lastAction,
       itemsToDo: dataToSave.itemsToDo,
-      highlightIndex: null,
+      highLightIndex: null,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
   };
 
   /* Move task to top position */
-  toTop = (i) => {
-    let dataToSave = this.prepareClone();
-
-    dataToSave.itemsToDo = Utils.moveToTop(this.state.itemsToDo, i);
+  toTop = (fromPos: number) => {
+    const itemsToDo = Utils.moveToTop(this.state.itemsToDo, fromPos);
+    const dataToSave = this.prepareClone({ itemsToDo });
 
     this.setState({
       lastAction: dataToSave.lastAction,
       itemsToDo: dataToSave.itemsToDo,
-      highlightIndex: 0,
+      highLightIndex: 0,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -161,78 +193,73 @@ class TasksApp extends React.Component {
 
   /* Toggle immutable. No checking if changed */
   mark = () => {
-    let dataToSave = this.prepareClone();
-
-    dataToSave.immutable = !this.state.immutable;
+    const dataToSave = this.prepareClone({ immutable: !this.state.immutable });
 
     this.setState({
       lastAction: dataToSave.lastAction,
       immutable: dataToSave.immutable,
-      highlightIndex: null,
+      highLightIndex: null,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
   };
 
   /* Move task to another list */
-  moveOutside = (task) => {
-    let data = {
+  moveOutside = (task: string) => {
+    const data = {
       fromList: { listId: this.props.list._id, name: this.state.listName },
-      task: task,
+      task,
     };
     this.props.moveOutside(data);
   };
 
   /* Move task to the end of the list */
-  procrastinateTask = (i) => {
-    let dataToSave = this.prepareClone();
+  readonly procrastinateTask = (fromPos: number) => {
+    const itemsToDo = Utils.moveToEnd(this.state.itemsToDo, fromPos);
 
-    dataToSave.itemsToDo = Utils.moveToEnd(this.state.itemsToDo, i);
+    const dataToSave = this.prepareClone({ itemsToDo });
 
     this.setState({
       lastAction: dataToSave.lastAction,
       itemsToDo: dataToSave.itemsToDo,
-      highlightIndex: this.state.itemsToDo.length,
+      highLightIndex: this.state.itemsToDo.length,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
   };
 
   /* Move task to the middle of the list */
-  postponeTask = (i) => {
-    let dataToSave = this.prepareClone();
-
-    dataToSave.itemsToDo = Utils.moveFromTo(
+  readonly postponeTask = (fromPos: number) => {
+    const itemsToDo = Utils.moveFromTo(
       this.state.itemsToDo,
-      i,
-      i + this.calculatePostponePosition(this.state.itemsToDo.length),
+      fromPos,
+      fromPos + this.calculatePostponePosition(this.state.itemsToDo.length),
     );
+    const dataToSave = this.prepareClone({ itemsToDo });
 
-    let highlightIndex = Math.min(
+    const highLightIndex = Math.min(
       this.state.itemsToDo.length - 1,
-      i + this.calculatePostponePosition(this.state.itemsToDo.length),
+      fromPos + this.calculatePostponePosition(this.state.itemsToDo.length),
     );
 
     this.setState({
       lastAction: dataToSave.lastAction,
       itemsToDo: dataToSave.itemsToDo,
-      highlightIndex: highlightIndex,
+      highLightIndex,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
   };
 
   /* Change list name */
-  changeListName = (e) => {
-    let dataToSave = this.prepareClone();
-
-    dataToSave.name = e.target.value.trim();
+  readonly changeListName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const dataToSave = this.prepareClone({ name: e.target.value.trim() });
 
     this.setState({
       lastAction: dataToSave.lastAction,
       listName: dataToSave.name,
       listNameOnEdit: false,
-      highlightIndex: null,
+      highLightIndex: null,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -240,8 +267,8 @@ class TasksApp extends React.Component {
   };
 
   /* Go to another list */
-  listChanger = (listName) => {
-    this.props.addOrOpenAList({listName});
+  listChanger = (listName: string) => {
+    this.props.addOrOpenAList({ listName });
   };
 
   /* Reload this list*/
@@ -257,8 +284,10 @@ class TasksApp extends React.Component {
   };
 
   checkKeyPressed = (e) => {
-    let key = String.fromCharCode(e.which);
-    if ('alrp<'.indexOf(key) !== -1) playSound();
+    const key = String.fromCharCode(e.which);
+    if ('alrp<'.indexOf(key) !== -1) {
+      playSound();
+    }
 
     switch (String.fromCharCode(e.which)) {
       case 'a':
@@ -280,7 +309,9 @@ class TasksApp extends React.Component {
         break;
       case '<':
         e.preventDefault();
-        if (this.props.previous_list) this.listChanger(this.props.previous_list.name);
+        if (this.props.previousList) {
+          this.listChanger(this.props.previousList.name);
+        }
         break;
       default:
         break;
@@ -288,11 +319,11 @@ class TasksApp extends React.Component {
   };
 
   /* Edit header submit */
-  handleHeaderSubmit = (e) => {
+  handleHeaderSubmit = (e: React.FormEvent) => {
     e.preventDefault();
   };
 
-  handleKeyDownAtTask = (e) => {
+  handleKeyDownAtTask = (e: React.KeyboardEvent) => {
     if (e.keyCode === 27) {
       this.taskInput.blur();
       this.setState({
@@ -302,7 +333,7 @@ class TasksApp extends React.Component {
   };
 
   /* Edit header keypress */
-  handleKeyDownAtHeader = (e) => {
+  handleKeyDownAtHeader = (e: React.KeyboardEvent) => {
     switch (e.key) {
       case 'Enter':
       case 'Tab':
@@ -317,48 +348,44 @@ class TasksApp extends React.Component {
   };
 
   /* New task submit */
-  handleSubmit = (e) => {
+  handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     this.taskInput.blur();
 
-    let dataToSave = this.prepareClone(),
-      highlightIndex = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1),
-      taskToAdd = this.state.task.replace(/(^\s+|\s+$)/g, '');
-
-    dataToSave.itemsToDo = this.state.itemsToDo;
-    dataToSave.itemsToDo.splice(CONFIG.user.settings.addNewAt - 1, 0, taskToAdd);
-    dataToSave.itemsToDo = _.unique(dataToSave.itemsToDo);
-    dataToSave.taskToAdd = taskToAdd;
+    const highLightIndex = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
+    const taskToAdd = this.state.task.replace(/(^\s+|\s+$)/g, '');
+    const itemsToDo = _.unique(this.state.itemsToDo.splice(CONFIG.user.settings.addNewAt - 1, 0, taskToAdd));
+    const dataToSave = this.prepareClone({ itemsToDo, taskToAdd });
 
     this.setState({
       lastAction: dataToSave.lastAction,
       itemsToDo: dataToSave.itemsToDo,
-      highlightIndex: highlightIndex,
+      highLightIndex,
       task: '',
     });
     this.props.checkAndSave(this.serialize(dataToSave));
   };
 
   /* User input */
-  onChange = (e) => {
+  onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ task: e.target.value });
   };
 
-  importList = (listId) => {
+  importList = (listId: string) => {
     this.props.importList({
       fromListId: listId,
       toListId: this.props.list._id,
     });
   };
 
-  exportList = (listId) => {
+  exportList = (listId: string) => {
     this.props.exportList({
       fromListId: this.props.list._id,
       toListId: listId,
     });
   };
 
-  makeListOption = (list) => (
+  makeListOption = (list: TodoList) => (
     <option key={'o-' + list._id} value={list._id}>
       {list.name}
     </option>
@@ -366,13 +393,17 @@ class TasksApp extends React.Component {
 
   /* Select for loading tasks from another list */
   displayImportBlock = () => {
-    if (this.state.immutable) return null;
+    if (this.state.immutable) {
+      return null;
+    }
 
     return (
       <select
         className="import-select"
         onChange={(e) => {
-          if (e.target.value) this.importList(e.target.value);
+          if (e.target.value) {
+            this.importList(e.target.value);
+          }
         }}
       >
         <option value="">Import list</option>
@@ -383,13 +414,17 @@ class TasksApp extends React.Component {
 
   /* Select for exporting tasks to another list */
   displayExportBlock = () => {
-    if (this.state.immutable) return null;
+    if (this.state.immutable) {
+      return null;
+    }
 
     return (
       <select
         className="import-select"
         onChange={(e) => {
-          if (e.target.value) this.exportList(e.target.value);
+          if (e.target.value) {
+            this.exportList(e.target.value);
+          }
         }}
       >
         <option value="">Export to</option>
@@ -400,7 +435,7 @@ class TasksApp extends React.Component {
 
   /* Header - edit mode or not */
   manageHeader = () => {
-    if (!this.state.listNameOnEdit)
+    if (!this.state.listNameOnEdit) {
       return (
         <div>
           <h1>{this.state.listName}</h1>{' '}
@@ -411,6 +446,7 @@ class TasksApp extends React.Component {
           />
         </div>
       );
+    }
 
     return (
       <h1>
@@ -431,7 +467,7 @@ class TasksApp extends React.Component {
   };
 
   render() {
-    let markTitle = this.state.immutable ? (
+    const markTitle = this.state.immutable ? (
         <span>
           Un<u>p</u>rotect
         </span>
@@ -479,7 +515,7 @@ class TasksApp extends React.Component {
         </h3>
         <TasksList
           items={this.state.itemsToDo}
-          highlightIndex={this.state.highlightIndex}
+          highLightIndex={this.state.highLightIndex}
           immutable={this.state.immutable}
           delete={this.removeTask}
           move={this.moveOutside}
@@ -503,8 +539,8 @@ class TasksApp extends React.Component {
                   this.taskInput = input;
                 }}
                 value={this.state.task}
-                onFocus={disableHotKeys.bind(this)}
-                onBlur={registerHotKeys.bind(this, this.checkKeyPressed)}
+                onFocus={disableHotKeys}
+                onBlur={() => registerHotKeys(this.checkKeyPressed)}
                 onKeyDown={this.handleKeyDownAtTask}
                 onChange={this.onChange}
               />
@@ -515,21 +551,21 @@ class TasksApp extends React.Component {
         <hr />
         {this.displayImportBlock()}
         {this.displayExportBlock()}
-        <button disabled={this.state.task.trim()} onClick={this.mark}>
+        <button disabled={!!this.state.task.trim()} onClick={this.mark}>
           <span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true" /> {markTitle}
         </button>
         <button onClick={this.reload}>
           <span className={'glyphicon glyphicon-refresh'} aria-hidden="true" /> <u>R</u>eload
         </button>
-        {this.props.previous_list && (
+        {this.props.previousList && (
           <button
-            disabled={this.state.task.trim()}
-            onClick={this.listChanger.bind(this, this.props.previous_list.name)}
+            disabled={!!this.state.task.trim()}
+            onClick={this.listChanger.bind(this, this.props.previousList.name)}
           >
-            <span className="glyphicon glyphicon-chevron-left" aria-hidden="true" /> {this.props.previous_list.name}
+            <span className="glyphicon glyphicon-chevron-left" aria-hidden="true" /> {this.props.previousList.name}
           </button>
         )}
-        <button disabled={this.state.task.trim()} onClick={this.props.getListOfLists}>
+        <button disabled={!!this.state.task.trim()} onClick={() => this.props.getListOfLists}>
           <span className="glyphicon glyphicon-tasks" aria-hidden="true" /> <u>L</u>ists
         </button>
         <br />
@@ -538,18 +574,17 @@ class TasksApp extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  mode: state.app.mode,
+const mapStateToProps = (state: RootState) => ({
   lists: state.app.lists,
   list: state.app.aList,
   task: state.app.task,
   fromList: state.app.fromList,
   immutables: state.app.lists.filter((item) => item.immutable),
   exportables: state.app.lists.filter((item) => item._id !== state.app.aList._id && !item.immutable).slice(0, 20),
-  previous_list: state.app.fromList && state.app.aList._id === state.app.fromList.listId ? null : state.app.fromList,
+  previousList: state.app.fromList && state.app.aList._id === state.app.fromList.listId ? null : state.app.fromList,
 });
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
   return bindActionCreators(
     {
       getAList: listActions.getAListAction.started,
@@ -569,4 +604,4 @@ export default compose(
     mapStateToProps,
     mapDispatchToProps,
   ),
-)(TasksApp);
+)(TasksPage);

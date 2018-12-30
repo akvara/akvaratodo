@@ -18,8 +18,8 @@ export interface MovePageProps {
   copyToAList: typeof appActions.copyToListAction;
 }
 
-export class MovePageState{
-  readonly newListName:string= "";
+export class MovePageState {
+  readonly newListName: string = '';
 }
 
 class MovePage extends React.PureComponent<MovePageProps, MovePageState> {
@@ -46,7 +46,9 @@ class MovePage extends React.PureComponent<MovePageProps, MovePageState> {
 
   /* To List */
   readonly displayToButton = (list: TodoList) => {
-    if (list._id === this.props.fromList.listId) {return null};
+    if (list._id === this.props.fromList.listId) {
+      return null;
+    }
     return (
       <tr key={'tr' + list._id}>
         <td>
