@@ -354,7 +354,9 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
 
     const highLightIndex = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
     const taskToAdd = this.state.task.replace(/(^\s+|\s+$)/g, '');
-    const itemsToDo = _.unique(this.state.itemsToDo.splice(CONFIG.user.settings.addNewAt - 1, 0, taskToAdd));
+    let itemsToDo = this.state.itemsToDo;
+    itemsToDo.splice(CONFIG.user.settings.addNewAt - 1, 0, taskToAdd);
+    itemsToDo = _.unique(itemsToDo);
     const dataToSave = this.prepareClone({ itemsToDo, taskToAdd });
 
     this.setState({
@@ -558,14 +560,11 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
           <span className={'glyphicon glyphicon-refresh'} aria-hidden="true" /> <u>R</u>eload
         </button>
         {this.props.previousList && (
-          <button
-            disabled={!!this.state.task.trim()}
-            onClick={this.listChanger.bind(this, this.props.previousList.name)}
-          >
+          <button disabled={!!this.state.task.trim()} onClick={() => this.listChanger(this.props.previousList.name)}>
             <span className="glyphicon glyphicon-chevron-left" aria-hidden="true" /> {this.props.previousList.name}
           </button>
         )}
-        <button disabled={!!this.state.task.trim()} onClick={() => this.props.getListOfLists}>
+        <button disabled={!!this.state.task.trim()} onClick={() => this.props.getListOfLists()}>
           <span className="glyphicon glyphicon-tasks" aria-hidden="true" /> <u>L</u>ists
         </button>
         <br />
