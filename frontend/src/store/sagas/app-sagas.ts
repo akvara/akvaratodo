@@ -196,9 +196,9 @@ function* moveToListByNameSaga(action: Action<TodoListMoveByName>) {
     const listId = yield findOrCreateListByName(action);
     const newAction = dotProp.set(action, 'payload.toListId', listId);
     yield prependToAList(newAction);
-    // if (action.payload.move) {
-    yield removeTaskFromList(newAction);
-    // }
+    if (action.payload.move) {
+      yield removeTaskFromList(newAction);
+    }
     yield put(listActions.getAListAction.started(listId));
   } catch (e) {
     yield generalFailure(e);
