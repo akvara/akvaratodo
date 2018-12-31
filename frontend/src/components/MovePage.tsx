@@ -64,6 +64,7 @@ class MovePage extends React.PureComponent<MovePageProps, MovePageState> {
 
   readonly handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('****- e', e);
     this.props.moveToListByName({
       fromListId: this.props.fromList.listId,
       task: this.props.task,
@@ -87,8 +88,11 @@ class MovePage extends React.PureComponent<MovePageProps, MovePageState> {
         <hr />
         <form onSubmit={this.handleSubmit}>
           <input className="list-input" value={this.state.newListName} onChange={this.onListInputChange} />
-          <button disabled={!this.state.newListName.trim()} type="submit">
+          <button disabled={!this.state.newListName.trim()} value="move" type="submit">
             Move to new list
+          </button>
+          <button disabled={!this.state.newListName.trim()} value="copy" type="submit">
+            Copy
           </button>
         </form>
         <hr />
