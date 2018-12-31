@@ -292,7 +292,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     switch (String.fromCharCode(e.which)) {
       case 'a':
         e.preventDefault();
-
+        // @ts-ignore
         this.taskInput.focus();
         break;
       case 'l':
@@ -325,6 +325,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
 
   handleKeyDownAtTask = (e: React.KeyboardEvent) => {
     if (e.keyCode === 27) {
+      // @ts-ignore
       this.taskInput.blur();
       this.setState({
         task: '',
@@ -350,6 +351,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   /* New task submit */
   handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // @ts-ignore
     this.taskInput.blur();
 
     const highLightIndex = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
@@ -455,6 +457,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
         <form onSubmit={this.handleHeaderSubmit}>
           <input
             ref={(input) => {
+              // @ts-ignore
               this.headerInput = input;
             }}
             className="task-input"
@@ -538,6 +541,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
               <input
                 className="task-input"
                 ref={(input) => {
+                  // @ts-ignore
                   this.taskInput = input;
                 }}
                 value={this.state.task}

@@ -39,6 +39,7 @@ export interface TodoListMoveByName {
   fromListId: string;
   listName: string;
   task: string;
+  move: boolean;
 }
 
 export interface TodoListCopy {

@@ -62,14 +62,15 @@ class MovePage extends React.PureComponent<MovePageProps, MovePageState> {
     );
   };
 
-  readonly handleSubmit = (e: React.FormEvent) => {
+  readonly handleNewListClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log('****- e', e);
+
     this.props.moveToListByName({
       fromListId: this.props.fromList.listId,
       task: this.props.task,
       listName: this.state.newListName,
-      // move: true, //??
+      // @ts-ignore
+      move: e.target.value === 'move',
     });
   };
 
@@ -86,12 +87,12 @@ class MovePage extends React.PureComponent<MovePageProps, MovePageState> {
           <tbody>{this.props.lists.map((list) => this.displayToButton(list))}</tbody>
         </table>
         <hr />
-        <form onSubmit={this.handleSubmit}>
+        <form >
           <input className="list-input" value={this.state.newListName} onChange={this.onListInputChange} />
-          <button disabled={!this.state.newListName.trim()} value="move" type="submit">
+          <button disabled={!this.state.newListName.trim()} value="move" type="submit" onClick={this.handleNewListClick} >
             Move to new list
           </button>
-          <button disabled={!this.state.newListName.trim()} value="copy" type="submit">
+          <button disabled={!this.state.newListName.trim()} value="copy" type="submit" onClick={this.handleNewListClick} >
             Copy
           </button>
         </form>
