@@ -35,7 +35,7 @@ git init
 git remote add deploy $DEPLOY_REMOTE
 git add .
 check_git_result
-git ci -m "Build at $(date +"%y-%m-%d-%r")"
+git ci -m "Build at $(date +"%y-%m-%d %T")"
 check_git_result
 git push -f deploy master
 check_git_result
