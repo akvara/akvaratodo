@@ -6,7 +6,6 @@ import { updateItemSaga } from './common-sagas';
 import { callGet } from '../../utils/api';
 import * as urlUtils from '../../utils/urlUtils';
 import * as utils from '../../utils/utils.js';
-import { DAYS, MONTHS } from '../../locale/lt';
 import * as appActions from '../../store/actions/app-actions';
 import * as listActions from '../../store/actions/list-actions';
 import {
@@ -20,6 +19,7 @@ import {
 } from '../types';
 import { listOfListsRequestSaga } from './list-sagas';
 import { createAList, deleteAList, fetchAList, findListByName, updateAList } from '../../api/api';
+import { dayString } from '../../utils/calendar';
 
 /**
  * Checks if TodoList can be safely saved
@@ -97,7 +97,7 @@ function* planWeekSaga() {
 
     for (let shift = 6; shift >= 0; shift--) {
       shiftDate = new Date(now.getTime() + 1000 * 60 * 60 * 24 * shift);
-      const listName = `${DAYS[shiftDate.getDay()]}, ${MONTHS[shiftDate.getMonth()]} ${shiftDate.getDate()} d.`;
+      const listName = dayString(shiftDate);
       const filtered = listOfLists.filter((list: TodoList) => list.name === listName);
       if (!filtered.length) {
         yield createAList(listName);
