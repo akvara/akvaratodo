@@ -29,7 +29,7 @@ const store = buildStore(middleware);
 
 ReactDOM.render(
   <Provider store={store}>
-    <App openAtStartup={CONFIG.user.settings.openListIfExists} />
+    <App />
   </Provider>,
   CONFIG.appNode,
 );

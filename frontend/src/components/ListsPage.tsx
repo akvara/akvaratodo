@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect, Dispatch, MapDispatchToProps, MapStateToProps } from 'react-redux';
 
@@ -26,8 +26,9 @@ export interface ListsAppProps extends ListsAppPrivateProps {
 }
 
 class
+
 class ListsPage extends React.PureComponent {
-  constructor(props:ListsAppProps ) {
+  constructor(props: ListsAppProps) {
     super(props);
     this.state = {
       lists: makeContractableList(props.lists.filter((list) => !list.immutable)),
@@ -105,7 +106,7 @@ class ListsPage extends React.PureComponent {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.props.addOrOpenAList({listName: this.state.listName});
+    this.props.addOrOpenAList({ listName: this.state.listName });
   };
 
   openAList = (listId) => {
@@ -141,14 +142,25 @@ class ListsPage extends React.PureComponent {
 
   /* The Renderer */
   render() {
+    const todayString = dayString(new Date());
+    const yesterdayString = dayString(new Date(Date.now() - 864e5)); // 864e5 == 86400000 == 24*60*60*1000);
+    const filtered = this.props.lists.filter((list: TodoList) => list.name === yesterdayString);
+
     this.addHotKeys();
+
     return (
       <div>
         <h1>Lists</h1>
-        <span >
-          <button onClick={()=>this.props.addOrOpenAList({listName: dayString(new Date())})}>
+        <span>
+          <button onClick={() => this.props.addOrOpenAList({ listName: todayString })}>
             Today
           </button>
+          {filtered.length > 0 &&
+          <button onClick={() => this.props.addOrOpenAList({ listName: yesterdayString })}>
+            Yesterday
+          </button>
+          }
+
         </span>
         <ListOfLists
           lists={this.state.lists}
@@ -158,7 +170,7 @@ class ListsPage extends React.PureComponent {
           hotKeys={this.hotKeys}
         />
         <h3>Protected</h3>
-        <ListOfLists lists={this.state.immutableLists} openList={this.openAList} />
+        <ListOfLists lists={this.state.immutableLists} openList={this.openAList}/>
         <form onSubmit={this.handleSubmit}>
           <input
             className="list-input"
@@ -173,10 +185,10 @@ class ListsPage extends React.PureComponent {
           />
           <button disabled={!this.state.listName.trim()}>Create new list</button>
         </form>
-        <hr />
+        <hr/>
         <button onClick={this.props.planWeek}>Plan week</button>
         <button onClick={this.reload}>
-          <span className={'glyphicon glyphicon-refresh'} aria-hidden="true" /> <u>R</u>eload
+          <span className={'glyphicon glyphicon-refresh'} aria-hidden="true"/> <u>R</u>eload
         </button>
       </div>
     );

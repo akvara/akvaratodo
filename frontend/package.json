@@ -1,6 +1,6 @@
 {
   "name": "akvaratodo-frontend",
-  "version": "2.01.03",
+  "version": "2.01.05",
   "private": true,
   "dependencies": {
     "@jpavon/react-scripts-ts": "0.11.2",
