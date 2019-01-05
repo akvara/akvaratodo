@@ -150,18 +150,25 @@ class ListsPage extends React.PureComponent {
 
     return (
       <div>
-        <h1>Lists</h1>
-        <span>
-          <button onClick={() => this.props.addOrOpenAList({ listName: todayString })}>
-            Today
-          </button>
-          {filtered.length > 0 &&
-          <button onClick={() => this.props.addOrOpenAList({ listName: yesterdayString })}>
-            Yesterday
-          </button>
-          }
-
-        </span>
+        <table width="100%">
+          <tbody>
+          <tr>
+            <td>
+              <h1>Lists</h1>
+            </td>
+            <td className="right-align">
+              {filtered.length > 0 &&
+              <button onClick={() => this.props.addOrOpenAList({ listName: yesterdayString })}>
+                Yesterday
+              </button>
+              }
+              <button onClick={() => this.props.addOrOpenAList({ listName: todayString })}>
+                Today
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
         <ListOfLists
           lists={this.state.lists}
           openList={this.openAList}

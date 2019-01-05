@@ -44,7 +44,7 @@ class ListOfLists extends Component {
           {list.contractedTitle}
         </td>
         <td className="right-align">
-          (<strong>{list.list.length}</strong>)
+          <strong>{list.list.length}</strong>
         </td>
       </tr>
     );
