@@ -40,6 +40,7 @@ class ListsPage extends React.PureComponent {
       // reserved hotkeys
       { key: 'a' },
       { key: 'r' },
+      { key: 't' },
     ];
   }
 
@@ -64,6 +65,10 @@ class ListsPage extends React.PureComponent {
       playSound();
       e.preventDefault();
       this.reload();
+      return;
+    }
+    if (pressed === 't') {
+      this.goToday();
       return;
     }
     this.hotKeys.forEach(
@@ -140,9 +145,10 @@ class ListsPage extends React.PureComponent {
     }
   };
 
+  goToday = () => this.props.addOrOpenAList({ listName: dayString(new Date()) });
+
   /* The Renderer */
   render() {
-    const todayString = dayString(new Date());
     const yesterdayString = dayString(new Date(Date.now() - 864e5)); // 864e5 == 86400000 == 24*60*60*1000);
     const filtered = this.props.lists.filter((list: TodoList) => list.name === yesterdayString);
 
@@ -162,8 +168,8 @@ class ListsPage extends React.PureComponent {
                 Yesterday
               </button>
               }
-              <button onClick={() => this.props.addOrOpenAList({ listName: todayString })}>
-                Today
+              <button onClick={this.goToday}>
+                <u>T</u>oday
               </button>
             </td>
           </tr>
