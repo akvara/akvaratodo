@@ -36,7 +36,7 @@ interface TasksPageState {
   itemsToDo: string[];
   itemsDone: string[];
   prepend: boolean;
-  highLightIndex: number | null;
+  highlightIndex: number | null;
   lastAction: string;
   immutable: boolean;
   task: string;
@@ -54,7 +54,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
       itemsToDo: JSON.parse(props.list.tasks),
       itemsDone: props.list.done ? JSON.parse(props.list.done) : [],
       prepend: props.prepend,
-      highLightIndex: props.prepend ? 0 : null,
+      highlightIndex: props.prepend ? 0 : null,
       lastAction: props.list.lastAction,
       immutable: props.list.immutable,
       task: '',
@@ -129,7 +129,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
       lastAction: dataToSave.lastAction,
       itemsToDo: dataToSave.itemsToDo,
       itemsDone: dataToSave.itemsDone,
-      highLightIndex: null,
+      highlightIndex: null,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -144,7 +144,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
       lastAction: dataToSave.lastAction,
       itemsToDo: dataToSave.itemsToDo,
       itemsDone: dataToSave.itemsDone,
-      highLightIndex: 0,
+      highlightIndex: 0,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -157,7 +157,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.setState({
       lastAction: dataToSave.lastAction,
       itemsDone: dataToSave.itemsDone,
-      highLightIndex: null,
+      highlightIndex: null,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -171,7 +171,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.setState({
       lastAction: dataToSave.lastAction,
       itemsToDo: dataToSave.itemsToDo,
-      highLightIndex: null,
+      highlightIndex: null,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -185,7 +185,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.setState({
       lastAction: dataToSave.lastAction,
       itemsToDo: dataToSave.itemsToDo,
-      highLightIndex: 0,
+      highlightIndex: 0,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -198,7 +198,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.setState({
       lastAction: dataToSave.lastAction,
       immutable: dataToSave.immutable,
-      highLightIndex: null,
+      highlightIndex: null,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -222,7 +222,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.setState({
       lastAction: dataToSave.lastAction,
       itemsToDo: dataToSave.itemsToDo,
-      highLightIndex: this.state.itemsToDo.length,
+      highlightIndex: this.state.itemsToDo.length,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -237,7 +237,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     );
     const dataToSave = this.prepareClone({ itemsToDo });
 
-    const highLightIndex = Math.min(
+    const highlightIndex = Math.min(
       this.state.itemsToDo.length - 1,
       fromPos + this.calculatePostponePosition(this.state.itemsToDo.length),
     );
@@ -245,7 +245,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.setState({
       lastAction: dataToSave.lastAction,
       itemsToDo: dataToSave.itemsToDo,
-      highLightIndex,
+      highlightIndex,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -259,7 +259,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
       lastAction: dataToSave.lastAction,
       listName: dataToSave.name,
       listNameOnEdit: false,
-      highLightIndex: null,
+      highlightIndex: null,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -354,7 +354,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     // @ts-ignore
     this.taskInput.blur();
 
-    const highLightIndex = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
+    const highlightIndex = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
     const taskToAdd = this.state.task.replace(/(^\s+|\s+$)/g, '');
     let itemsToDo = this.state.itemsToDo;
     itemsToDo.splice(CONFIG.user.settings.addNewAt - 1, 0, taskToAdd);
@@ -364,7 +364,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.setState({
       lastAction: dataToSave.lastAction,
       itemsToDo: dataToSave.itemsToDo,
-      highLightIndex,
+      highlightIndex,
       task: '',
     });
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -520,7 +520,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
         </h3>
         <TasksList
           items={this.state.itemsToDo}
-          highLightIndex={this.state.highLightIndex}
+          highlightIndex={this.state.highlightIndex}
           immutable={this.state.immutable}
           delete={this.removeTask}
           move={this.moveOutside}
