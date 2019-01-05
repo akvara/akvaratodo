@@ -11,6 +11,7 @@ import { disableHotKeys, playSound, registerHotKeys } from '../utils/hotkeys';
 import { RootState } from '../store/reducers';
 import { compose, lifecycle, withProps } from 'recompose';
 import { TodoList } from '../store/types';
+import { dayString } from '../utils/calendar';
 
 export interface ListsAppPrivateProps {
   lists: TodoList[];
@@ -24,12 +25,13 @@ export interface ListsAppProps extends ListsAppPrivateProps {
   planWeek: typeof appActions.planWeekAction;
 }
 
-class ListsApp extends React.Component {
-  constructor(props, context) {
-    super(props, context);
+class
+class ListsPage extends React.PureComponent {
+  constructor(props:ListsAppProps ) {
+    super(props);
     this.state = {
-      lists: makeContractableList(this.props.lists.filter((list) => !list.immutable)),
-      immutableLists: this.props.lists.filter((list) => list.immutable),
+      lists: makeContractableList(props.lists.filter((list) => !list.immutable)),
+      immutableLists: props.lists.filter((list) => list.immutable),
       listName: '',
     };
 
@@ -50,7 +52,7 @@ class ListsApp extends React.Component {
   }
 
   checkKeyPressed = (e) => {
-    let pressed = String.fromCharCode(e.which);
+    const pressed = String.fromCharCode(e.which);
     if (pressed === 'a') {
       playSound();
       e.preventDefault();
@@ -143,6 +145,11 @@ class ListsApp extends React.Component {
     return (
       <div>
         <h1>Lists</h1>
+        <span >
+          <button onClick={()=>this.props.addOrOpenAList({listName: dayString(new Date())})}>
+            Today
+          </button>
+        </span>
         <ListOfLists
           lists={this.state.lists}
           openList={this.openAList}
@@ -198,4 +205,9 @@ export default compose(
     mapStateToProps,
     mapDispatchToProps,
   ),
-)(ListsApp);
+  // withProps({
+  //   listNameInput: undefined,
+  //   hotKeys: []
+  //   }
+  // )
+)(ListsPage);

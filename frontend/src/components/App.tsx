@@ -4,7 +4,7 @@ import { connect, Dispatch, MapDispatchToProps, MapStateToProps } from 'react-re
 import CONST from '../utils/constants.js';
 import { Spinner } from './Spinner';
 import * as listActions from '../store/actions/list-actions';
-import ListsApp from './ListsApp';
+import ListsApp from './ListsPage';
 import TasksApp from './TasksPage';
 import MovePage from './MovePage';
 import Failure from './Failure';
