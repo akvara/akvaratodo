@@ -1,16 +1,13 @@
 import * as React from 'react';
-import { connect, Dispatch, MapDispatchToProps, MapStateToProps } from 'react-redux';
+import { compose, lifecycle } from 'recompose';
 
 import CONST from '../utils/constants.js';
-import { Spinner } from './Spinner';
-import * as listActions from '../store/actions/list-actions';
-import ListsApp from './ListsPage';
-import TasksApp from './TasksPage';
-import MovePage from './MovePage';
-import Failure from './Failure';
-import { RootState } from '../store/reducers';
-import { compose, lifecycle } from 'recompose';
-import { bindActionCreators } from 'redux';
+import { Spinner } from '../components/Spinner';
+import * as listActions from '../store/list/list.actions';
+import ListsApp from '../components/ListsPage';
+import TasksApp from '../components/TasksPage';
+import MovePage from '../components/MovePage';
+import Failure from '../components/Failure';
 
 export interface AppPrivateProps {
   mode: string;
@@ -54,24 +51,7 @@ const App: React.FunctionComponent<AppPrivateProps> = (props) => {
   return <div className="error">Mode {mode} not impelemented</div>;
 };
 
-const mapStateToProps: MapStateToProps<AppPrivateProps, void, RootState> = (state: RootState) => ({
-  mode: state.app.mode,
-});
-
-const mapDispatchToProps: MapDispatchToProps<any, AppPrivateProps> = (dispatch: Dispatch<RootState>) => {
-  return bindActionCreators(
-    {
-      getListOfLists: listActions.getListOfListsAction.started,
-    },
-    dispatch,
-  );
-};
-
 export default compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  ),
   lifecycle<AppContainerProps, {}>({
     componentDidMount() {
       if (!this.props.mode) {
@@ -79,7 +59,7 @@ export default compose(
         //       // Uncomment when opening list at startup is back in fashion
         //       // this.props.dispatch(listActions.addOrOpenListByNameAction(this.props.openAtStartup));
         //     }
-        this.props.getListOfLists({});
+        this.props.getListOfLists();
       }
     },
   }),

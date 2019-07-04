@@ -1,13 +1,14 @@
-import combineReducers from './reducers/index';
-import createSagaMiddleware from 'redux-saga';
 import { applyMiddleware, compose, createStore } from 'redux';
+import createSagaMiddleware from 'redux-saga';
 import thunk from 'redux-thunk';
 
+import combineReducers from './reducers';
 import RootSaga from './sagas';
 
+// @ts-ignore
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-export function configureStore(middlewares) {
+export function configureStore(middlewares: []) {
   const sagaMiddleware = createSagaMiddleware();
   const middleware = [sagaMiddleware, thunk, ...middlewares];
   // middleware.push(authMiddleware);
@@ -19,7 +20,7 @@ export function configureStore(middlewares) {
   };
 }
 
-export function buildStore(middlewares) {
+export function buildStore(middlewares: []) {
   const store = configureStore(middlewares);
   store.runSaga(RootSaga);
   return store;

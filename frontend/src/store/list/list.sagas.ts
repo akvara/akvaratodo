@@ -1,10 +1,10 @@
 import { all, takeEvery } from 'redux-saga/effects';
-
-import { fetchItemSaga, removeItemSaga } from './common-sagas';
-import * as urlUtils from '../../utils/urlUtils';
-import * as listActions from '../../store/actions/list-actions';
-import { generalFailure } from './app-sagas';
 import { Action } from 'typescript-fsa';
+
+import { fetchItemSaga, removeItemSaga } from '../utils/common-sagas';
+import * as urlUtils from '../../utils/urlUtils';
+import * as listActions from './list.actions';
+import { generalFailure } from '../app/app.sagas';
 
 export function* listOfListsRequestSaga() {
   yield fetchItemSaga(urlUtils.getListsUrl(), listActions.getListOfListsAction);

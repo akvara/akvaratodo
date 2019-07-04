@@ -3,13 +3,13 @@ import { bindActionCreators } from 'redux';
 import { connect, Dispatch, MapDispatchToProps, MapStateToProps } from 'react-redux';
 
 import ListOfLists from './ListOfLists';
-import * as listActions from '../store/actions/list-actions';
-import * as appActions from '../store/actions/app-actions';
+import * as listActions from '../store/list/list.actions';
+import * as appActions from '../store/app/app.actions';
 
 import { makeContractableList } from '../utils/listUtils';
 import { disableHotKeys, playSound, registerHotKeys } from '../utils/hotkeys';
 import { RootState } from '../store/reducers';
-import { compose, lifecycle, withProps } from 'recompose';
+import { compose } from 'recompose';
 import { TodoList } from '../store/types';
 import { dayString } from '../utils/calendar';
 
@@ -38,9 +38,10 @@ class ListsPage extends React.PureComponent {
 
     this.hotKeys = [
       // reserved hotkeys
-      { key: 'a' },
-      { key: 'r' },
-      { key: 't' },
+      { key: 'a' }, // "Add"
+      { key: 'r' }, // "Refresh"
+      { key: 't' }, // "Today"
+      { key: 'p' }, // "Plan"
     ];
   }
 
@@ -69,6 +70,10 @@ class ListsPage extends React.PureComponent {
     }
     if (pressed === 't') {
       this.goToday();
+      return;
+    }
+    if (pressed === 'p') {
+      this.props.planWeek();
       return;
     }
     this.hotKeys.forEach(
@@ -147,7 +152,6 @@ class ListsPage extends React.PureComponent {
 
   goToday = () => this.props.addOrOpenAList({ listName: dayString(new Date()) });
 
-  /* The Renderer */
   render() {
     const yesterdayString = dayString(new Date(Date.now() - 864e5)); // 864e5 == 86400000 == 24*60*60*1000);
     const filtered = this.props.lists.filter((list: TodoList) => list.name === yesterdayString);
@@ -230,9 +234,4 @@ export default compose(
     mapStateToProps,
     mapDispatchToProps,
   ),
-  // withProps({
-  //   listNameInput: undefined,
-  //   hotKeys: []
-  //   }
-  // )
 )(ListsPage);

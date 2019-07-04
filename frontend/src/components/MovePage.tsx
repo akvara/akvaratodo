@@ -3,8 +3,8 @@ import { bindActionCreators, compose } from 'redux';
 import { connect, Dispatch } from 'react-redux';
 
 import CONFIG from '../config.js';
-import * as listActions from '../store/actions/list-actions';
-import * as appActions from '../store/actions/app-actions';
+import * as listActions from '../store/list/list.actions';
+import * as appActions from '../store/app/app.actions';
 import { RootState } from '../store/reducers';
 import { ListCreds, TodoList } from '../store/types';
 

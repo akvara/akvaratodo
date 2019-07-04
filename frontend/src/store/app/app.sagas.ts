@@ -2,12 +2,12 @@ import { all, call, put, takeEvery } from 'redux-saga/effects';
 import { Action } from 'typescript-fsa';
 import * as dotProp from 'dot-prop-immutable';
 
-import { updateItemSaga } from './common-sagas';
+import { updateItemSaga } from '../utils/common-sagas';
 import { callGet } from '../../utils/api';
 import * as urlUtils from '../../utils/urlUtils';
 import * as utils from '../../utils/utils.js';
-import * as appActions from '../../store/actions/app-actions';
-import * as listActions from '../../store/actions/list-actions';
+import * as appActions from './app.actions';
+import * as listActions from '../list/list.actions';
 import {
   ListNameOnly,
   SerializedTodoList,
@@ -17,7 +17,7 @@ import {
   TodoListMove,
   TodoListMoveByName,
 } from '../types';
-import { listOfListsRequestSaga } from './list-sagas';
+import { listOfListsRequestSaga } from '../list/list.sagas';
 import { createAList, deleteAList, fetchAList, findListByName, updateAList } from '../../api/api';
 import { dayString } from '../../utils/calendar';
 

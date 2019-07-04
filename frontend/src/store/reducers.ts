@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import AppReducer from './list-reducer';
-import { ListCreds, TodoList } from '../types';
+import AppReducer from './list/list.reducer';
+import { ListCreds, TodoList } from './types';
 
 export interface RootState {
   app: {
