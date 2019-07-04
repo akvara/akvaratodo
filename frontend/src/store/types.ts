@@ -64,7 +64,7 @@ export interface ListNameOnly {
 
 export const NewTodoListEntity = (listName: string): OmitId<TodoList> => {
   if (!listName) {
-    throw new Error("Trying create list without name!");
+    throw new Error('Trying create list without name!');
   }
   return {
     userId: CONFIG.user.id,

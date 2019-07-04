@@ -1,6 +1,6 @@
 {
   "name": "akvaratodo-frontend",
-  "version": "2.01.05",
+  "version": "2.07.04",
   "private": true,
   "dependencies": {
     "@jpavon/react-scripts-ts": "0.11.2",
@@ -11,11 +11,13 @@
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-redux": "^6.0.0",
+    "recompose": "^0.30.0",
     "redux": "^4.0.1",
     "redux-form": "^8.1.0",
     "redux-logger": "^3.0.6",
     "redux-saga": "^0.16.2",
     "redux-thunk": "^2.3.0",
+    "typescript-fsa": "^3.0.0-beta-2",
     "underscore": "^1.9.1"
   },
   "scripts": {
@@ -25,15 +27,15 @@
     "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
-    "@types/jest": "^23.3.10",
     "@types/node": "^10.12.18",
     "@types/react-redux": "5.0.19",
     "@types/redux-logger": "^3.0.6",
     "@types/redux-thunk": "^2.1.0",
-    "prettier": "^1.15.3",
-    "tslint": "^5.12.0",
+    "prettier": "^1.18.2",
+    "tslint": "^5.18.0",
     "tslint-config-prettier": "^1.17.0",
-    "tslint-react": "^3.6.0",
+    "tslint-plugin-graphql": "^0.0.6",
+    "tslint-react": "^4.0.0",
     "typescript": "^3.2.2"
   },
   "browserslist": [
