@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect, MapStateToProps } from 'react-redux';
+
 import { RootState } from '../store/reducers';
 
 export interface StatusProps {

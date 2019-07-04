@@ -1,16 +1,10 @@
 import { combineReducers } from 'redux';
-import AppReducer from './list/list.reducer';
-import { ListCreds, TodoList } from './types';
+
+import AppReducer from './app/app.reducer';
+import { AppState } from './app/app.reducer';
 
 export interface RootState {
-  app: {
-    statusMsg: string;
-    mode: string;
-    lists: TodoList[];
-    aList: TodoList;
-    task: string;
-    fromList: ListCreds;
-  }
+  app: AppState,
 }
 
 export default combineReducers({
