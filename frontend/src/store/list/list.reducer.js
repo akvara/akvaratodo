@@ -1,8 +1,8 @@
-import BaseReducer from './base-reducer';
+import BaseReducer from '../utils/base-reducer';
 import CONST from '../../utils/constants.js';
 import * as Utils from '../../utils/utils';
-import * as listActions from '../../store/actions/list-actions';
-import * as appActions from '../../store/actions/app-actions';
+import * as listActions from './list.actions';
+import * as appActions from '../app/app.actions';
 
 class AppReducer extends BaseReducer {
   constructor() {

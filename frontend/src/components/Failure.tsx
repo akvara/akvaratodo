@@ -3,7 +3,7 @@ import { bindActionCreators, compose } from 'redux';
 import { connect, Dispatch } from 'react-redux';
 
 import { RootState } from '../store/reducers';
-import { getAListAction } from '../store/actions/list-actions';
+import { getAListAction } from '../store/list/list.actions';
 import { defaultProps } from 'recompose';
 import { TodoList } from '../store/types';
 

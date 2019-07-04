@@ -1,5 +1,5 @@
-import CONFIG from '../config.js';
 import { Error } from 'tslint/lib/error';
+import CONFIG from '../config.js';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type OmitId<T extends { _id: string }> = Omit<T, '_id'>;
@@ -64,7 +64,7 @@ export interface ListNameOnly {
 
 export const NewTodoListEntity = (listName: string): OmitId<TodoList> => {
   if (!listName) {
-    throw new Error("Trying create list without name!");
+    throw new Error('Trying create list without name!');
   }
   return {
     userId: CONFIG.user.id,
