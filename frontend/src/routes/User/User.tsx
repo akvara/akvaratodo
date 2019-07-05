@@ -1,5 +1,5 @@
 import * as React from 'react';
-import CONFIG from '../config.js';
+import CONFIG from '../../config/config.js';
 
 const base256 = (val: number, base: number) => {
   return ('00' + Math.floor((val * 256) / base).toString(16)).substr(-2, 2);
@@ -10,12 +10,10 @@ const substrToNum = (dateString: string, indexStart: number, indexEnd: number): 
 
 const versionColor = () => {
   const dateString = CONFIG.version.replace(/-/g, '');
-  return (
-    '#' +
-    base256(substrToNum(dateString, 2, 4), 31) +
-    base256(substrToNum(dateString, 0, 2), 12) +
-    base256(substrToNum(dateString, 4, 6), 24)
-  );
+  const r = base256(substrToNum(dateString, 2, 4), 31);
+  const g = base256(substrToNum(dateString, 0, 2), 12);
+  const b = base256(substrToNum(dateString, 4, 6), 24);
+  return `#${r}${g}${b}`;
 };
 
 const User: React.FunctionComponent<{}> = () => (
@@ -26,11 +24,7 @@ const User: React.FunctionComponent<{}> = () => (
         <b>{process.env.NODE_ENV}</b>
       </small>
     </span>
-    <span
-      className="glyphicon glyphicon-cog action-button"
-      aria-hidden="true"
-      // onClick={this.renderSettings.bind(this, this.props.lists)}
-    />
+    <span className="glyphicon glyphicon-cog action-button" aria-hidden="true" />
     <span className="action-button">{CONFIG.user.name}</span>
     <audio id="clickSound" src={CONFIG.clickSound} />
     <hr />
