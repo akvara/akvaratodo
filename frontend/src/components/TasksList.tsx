@@ -1,8 +1,9 @@
-import * as React from "react";
+import * as React from 'react';
 import PropTypes from 'prop-types';
 
-import CONFIG from '../config.js';
+import CONFIG from '../config/config.js';
 import * as Utils from '../utils/utils.js';
+import { restrictions } from '../config/constants';
 
 class TaskList extends React.Component {
   static propTypes = {
@@ -24,7 +25,7 @@ class TaskList extends React.Component {
 
   processTaskText(task) {
     if (task === null) task = 'null';
-    let taskTruncated = task.substring(0, CONFIG.maxTaskLength),
+    let taskTruncated = task.substring(0, restrictions.maxTaskLength),
       taskAsDisplayed = taskTruncated;
 
     /* If task is a link: */

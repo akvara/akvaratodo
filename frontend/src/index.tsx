@@ -2,10 +2,10 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
-import CONFIG from './config.js';
+import CONFIG from './config/config.js';
 import App from './routes/AppContainer';
 import Status from './components/Status';
-import User from './components/User';
+import User from './routes/User/User';
 import { buildStore } from './store/store';
 
 window.onbeforeunload = function() {

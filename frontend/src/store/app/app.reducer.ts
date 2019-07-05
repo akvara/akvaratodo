@@ -1,10 +1,9 @@
 import { createReducer } from '../utils/frontend.utils';
 import { getListOfListsAction } from '../list/list.actions';
 import { ListCreds, TodoList } from '../types';
-import CONST from '../../utils/constants';
-import * as listActions from '../list/list.actions';
-import * as appActions from './app.actions';
 import * as Utils from '../../utils/utils';
+import { appActions, listActions } from '../actions';
+import { appModes } from '../../config/constants';
 
 export type AppState = {
   mode: string;
@@ -26,13 +25,13 @@ export const initialState: AppState = {
 
 const appReducer = createReducer(initialState, {
   [getListOfListsAction.started.type]: (state: AppState, action: any) => {
-    return { ...state, statusMsg: 'Loading lists ...', mode: CONST.mode.MODE_LOADING };
+    return { ...state, statusMsg: 'Loading lists ...', mode: appModes.MODE_LOADING };
   },
   [listActions.getListOfListsAction.done.type]: (state: AppState, action: any) => {
     return {
       ...state,
       statusMsg: 'Lists loaded',
-      mode: CONST.mode.MODE_LIST_OF_LISTS,
+      mode: appModes.MODE_LIST_OF_LISTS,
       lists: Utils.sortArrOfObjectsByParam(action.payload, 'updatedAt', true),
     };
   },
@@ -42,12 +41,11 @@ const appReducer = createReducer(initialState, {
       lists: Utils.sortArrOfObjectsByParam(action.payload, 'updatedAt', true),
     };
   },
-
   [listActions.removeListAction.started.type]: (state: AppState, action: any) => {
     return {
       ...state,
       statusMsg: 'Removing list ...',
-      mode: CONST.mode.MODE_LOADING,
+      mode: appModes.MODE_LOADING,
     };
   },
   [listActions.updateListAction.done.type]: (state: AppState, action: any) => {
@@ -56,12 +54,11 @@ const appReducer = createReducer(initialState, {
       statusMsg: 'List saved',
     };
   },
-
   [listActions.getAListAction.started.type]: (state: AppState, action: any) => {
     return {
       ...state,
       statusMsg: 'Loading list ...',
-      mode: CONST.mode.MODE_LOADING,
+      mode: appModes.MODE_LOADING,
     };
   },
   [listActions.getAListAction.done.type]: (state: AppState, action: any) => {
@@ -71,16 +68,15 @@ const appReducer = createReducer(initialState, {
     return {
       ...state,
       statusMsg: action.payload.name + ' loaded',
-      mode: CONST.mode.MODE_A_LIST,
+      mode: appModes.MODE_A_LIST,
       aList: action.payload,
     };
   },
-
   [appActions.addOrOpenListByNameAction.type]: (state: AppState, action: any) => {
     return {
       ...state,
       statusMsg: 'Checking lists ...',
-      mode: CONST.mode.MODE_LOADING,
+      mode: appModes.MODE_LOADING,
     };
   },
   [appActions.checkAndSaveAction.type]: (state: AppState, action: any) => {
@@ -93,7 +89,7 @@ const appReducer = createReducer(initialState, {
     return {
       ...state,
       statusMsg: 'Move task to ... ',
-      mode: CONST.mode.MODE_MOVE,
+      mode: appModes.MODE_MOVE,
       fromList: action.payload.fromList,
       task: action.payload.task,
     };
@@ -102,41 +98,41 @@ const appReducer = createReducer(initialState, {
     return {
       ...state,
       statusMsg: 'Adding on top ...',
-      mode: CONST.mode.MODE_LOADING,
+      mode: appModes.MODE_LOADING,
     };
   },
   [appActions.importListAction.type]: (state: AppState, action: any) => {
     return {
       ...state,
       statusMsg: 'Adding a list on top ...',
-      mode: CONST.mode.MODE_LOADING,
+      mode: appModes.MODE_LOADING,
     };
   },
   [appActions.exportListAction.type]: (state: AppState, action: any) => {
     return {
       ...state,
       statusMsg: 'Exporting to a list ...',
-      mode: CONST.mode.MODE_LOADING,
+      mode: appModes.MODE_LOADING,
     };
   },
   [appActions.planWeekAction.type]: (state: AppState, action: any) => {
     return {
       ...state,
       statusMsg: 'Planing a week ...',
-      mode: CONST.mode.MODE_LOADING,
+      mode: appModes.MODE_LOADING,
     };
   },
   [appActions.errorAction.type]: (state: AppState, action: any) => {
     return {
       ...state,
-      mode: CONST.mode.MODE_ERROR,
+      mode: appModes.MODE_ERROR,
     };
   },
   [appActions.dataConflictAction.type]: (state: AppState, action: any) => {
     return {
       ...state,
       statusMsg: new Date(action.payload).toLocaleTimeString('lt-LT'),
-      mode: CONST.mode.DATA_CONFLICT,
+      mode: appModes.DATA_CONFLICT,
     };
   },
 });

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import * as Utils from '../utils/utils.js';
-import CONFIG from '../config.js';
+import CONFIG from '../config/config.js';
 
 class ListOfLists extends Component {
   static propTypes = {

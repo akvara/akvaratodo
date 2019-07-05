@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { compose, lifecycle } from 'recompose';
 
-import CONST from '../utils/constants.js';
 import { Spinner } from '../components/Spinner';
-import * as listActions from '../store/list/list.actions';
+import { listActions } from '../store/actions';
 import ListsApp from '../components/ListsPage';
 import TasksApp from '../components/TasksPage';
-import MovePage from '../components/MovePage';
 import Failure from '../components/Failure';
+import MovePage from './MovePage';
+import { appModes } from '../config/constants';
 
 export interface AppPrivateProps {
   mode: string;
@@ -24,27 +24,27 @@ const App: React.FunctionComponent<AppPrivateProps> = (props) => {
     return <div className="error">mode undefined!</div>;
   }
 
-  if (mode === CONST.mode.MODE_LOADING) {
+  if (mode === appModes.MODE_LOADING) {
     return <Spinner />;
   }
 
-  if (mode === CONST.mode.MODE_LIST_OF_LISTS) {
+  if (mode === appModes.MODE_LIST_OF_LISTS) {
     return <ListsApp />;
   }
 
-  if (mode === CONST.mode.MODE_A_LIST) {
+  if (mode === appModes.MODE_A_LIST) {
     return <TasksApp />;
   }
 
-  if (mode === CONST.mode.MODE_MOVE) {
+  if (mode === appModes.MODE_MOVE) {
     return <MovePage />;
   }
 
-  if (mode === CONST.mode.DATA_CONFLICT) {
+  if (mode === appModes.DATA_CONFLICT) {
     return <Failure msg="Data conflict" />;
   }
 
-  if (mode === CONST.mode.MODE_ERROR) {
+  if (mode === appModes.MODE_ERROR) {
     return <Failure />;
   }
 

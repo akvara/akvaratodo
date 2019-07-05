@@ -6,7 +6,7 @@ import _ from 'underscore';
 
 import TasksList from './TasksList';
 import TasksDoneList from './TasksDoneList';
-import CONFIG from '../config.js';
+import CONFIG from '../config/config.js';
 import * as listActions from '../store/list/list.actions';
 import * as appActions from '../store/app/app.actions';
 import { disableHotKeys, playSound, registerHotKeys } from '../utils/hotkeys';
