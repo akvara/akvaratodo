@@ -10,10 +10,10 @@ const substrToNum = (dateString: string, indexStart: number, indexEnd: number): 
 
 const versionColor = () => {
   const dateString = CONFIG.version.replace(/-/g, '');
-  return `#${base256(substrToNum(dateString, 2, 4), 31)}${base256(substrToNum(dateString, 0, 2), 12)}${base256(
-    substrToNum(dateString, 4, 6),
-    24,
-  )}`;
+  const r = base256(substrToNum(dateString, 2, 4), 31);
+  const g = base256(substrToNum(dateString, 0, 2), 12);
+  const b = base256(substrToNum(dateString, 4, 6), 24);
+  return `#${r}${g}${b}`;
 };
 
 const User: React.FunctionComponent<{}> = () => (

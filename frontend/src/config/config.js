@@ -1,6 +1,6 @@
 export const config = {
-  // devHost: 'http://akvaratododb.herokuapp.com/',
-  devHost: 'http://localhost:5000/',
+  devHost: 'http://akvaratododb.herokuapp.com/',
+  // devHost: 'http://localhost:5000/',
   apiHost: 'https://akvaratododb.herokuapp.com/',
   separatorString: '..................',
   listsAddon: 'lists',
@@ -21,7 +21,7 @@ export const config = {
   appNode: document.getElementById('app'),
   footerNode: document.getElementById('footer'),
   clickSound: 'https://www.soundjay.com/button/button-20.mp3',
-  version: '0704-13',
+  version: '0705-14',
 };
 
 export default config;

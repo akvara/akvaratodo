@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { compose, lifecycle } from 'recompose';
 
-import { Spinner } from '../components/Spinner';
+import Spinner from '../shared/Spinner';
 import { listActions } from '../store/actions';
 import ListsApp from '../components/ListsPage';
 import TasksApp from '../components/TasksPage';
-import Failure from '../components/Failure';
+import Failure from './Failure';
 import MovePage from './MovePage';
 import { appModes } from '../config/constants';
 

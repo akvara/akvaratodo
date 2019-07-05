@@ -4,8 +4,8 @@ import { Provider } from 'react-redux';
 
 import CONFIG from './config/config.js';
 import App from './routes/AppContainer';
-import Status from './components/Status';
-import User from './routes/User/User';
+import Status from './routes/Status/Status';
+import User from './routes/User';
 import { buildStore } from './store/store';
 
 window.onbeforeunload = function() {
