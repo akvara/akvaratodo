@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { compose, withProps, withHandlers } from 'recompose';
+import { compose, lifecycle, withHandlers, withProps } from 'recompose';
+import { disableHotKeys, playSound, registerHotKeys } from '../../utils/hotkeys';
 
 import { ListCreds, TodoList } from '../../store/types';
 import { appActions, listActions } from '../../store/actions';
@@ -26,6 +27,7 @@ interface MovePagePrivateProps extends MovePageProps {
   onCopyToNewList: () => void;
   onBack: () => void;
   onReload: () => void;
+  pageHotKeys: (e: any) => void;
 }
 
 const MovePage: React.FunctionComponent<MovePagePrivateProps> = (props) => {
@@ -78,10 +80,15 @@ const MovePage: React.FunctionComponent<MovePagePrivateProps> = (props) => {
           )}
         </tbody>
       </table>
-
     </>
   );
 };
+//
+// const pageHotKeys = (e) => {
+//   const pressed = String.fromCharCode(e.which);
+//
+//   console.log('-****- pressed', pressed);
+// };
 
 export default compose(
   withHandlers({
@@ -112,6 +119,29 @@ export default compose(
     },
     onReload: ({ reloadListOfListsPage }: MovePagePrivateProps) => () => {
       reloadListOfListsPage();
+    },
+  }),
+  withProps(({ onReload, onBack }: MovePagePrivateProps) => ({
+    pageHotKeys: (e) => {
+      const pressed = String.fromCharCode(e.which);
+      if (pressed === 'r') {
+        playSound();
+        onReload();
+        return;
+      }
+      if (pressed === '<') {
+        playSound();
+        onBack();
+        return;
+      }
+    },
+  })),
+  lifecycle<MovePagePrivateProps, {}>({
+    componentDidMount() {
+      registerHotKeys(this.props.pageHotKeys);
+    },
+    componentWillUnmount() {
+      disableHotKeys();
     },
   }),
 )(MovePage);
