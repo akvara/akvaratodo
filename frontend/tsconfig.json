@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "skipLibCheck": true,
     "outDir": "dist/",
     "allowSyntheticDefaultImports": true,

@@ -56,12 +56,12 @@ class ListsPage extends React.PureComponent {
 
   checkKeyPressed = (e) => {
     const pressed = String.fromCharCode(e.which);
-    if (pressed === 'a') {
-      playSound();
-      e.preventDefault();
-      this.listNameInput.focus();
-      return;
-    }
+    // if (pressed === 'a') {
+    //   playSound();
+    //   e.preventDefault();
+    //   this.listNameInput.focus();
+    //   return;
+    // }
     if (pressed === 'r') {
       playSound();
       e.preventDefault();

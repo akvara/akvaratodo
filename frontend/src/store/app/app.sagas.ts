@@ -239,7 +239,7 @@ function* removeTaskFromList({ payload }: Action<TodoListMove>) {
 }
 // New from here
 
-function* reloadListOfListsSaga({ }: Action<TodoListMove>) {
+function* reloadListOfListsSaga({  }: Action<TodoListMove>) {
   try {
     const currentMode = yield select(appSelector.getCurrentMode);
     const currentMsg = yield select(statusSelector.getCurrentMessage);
@@ -255,14 +255,6 @@ function* reloadListOfListsSaga({ }: Action<TodoListMove>) {
   } catch (e) {
     yield generalFailure(e);
   }
-}
-
-// function* openAListSaga({ }: Action<TodoListMove>) {
-//   try {
-//
-//   } catch (e) {
-//     yield generalFailure(e);
-//   }
 }
 
 export function* generalFailure(e: Action<{}>) {

@@ -5,7 +5,7 @@ import { disableHotKeys, playSound, registerHotKeys } from '../../utils/hotkeys'
 import { ListCreds, TodoList } from '../../store/types';
 import { appActions, listActions } from '../../store/actions';
 import { config } from '../../config/config';
-import ListsFilter from './ListsFilter/ListsFilter';
+import ListsFilter from './ListsFilter';
 import { restrictions } from '../../config/constants';
 
 export interface MovePageProps {
@@ -30,6 +30,8 @@ interface MovePagePrivateProps extends MovePageProps {
   pageHotKeys: (e: any) => void;
 }
 
+const ref = React.createRef();
+
 const MovePage: React.FunctionComponent<MovePagePrivateProps> = (props) => {
   const {
     task,
@@ -42,7 +44,9 @@ const MovePage: React.FunctionComponent<MovePagePrivateProps> = (props) => {
     onCopy,
     onBack,
     onReload,
+    pageHotKeys,
   } = props;
+
   return (
     <>
       <hr />
@@ -55,12 +59,12 @@ const MovePage: React.FunctionComponent<MovePagePrivateProps> = (props) => {
         <span className={'glyphicon glyphicon-refresh'} aria-hidden="true" /> <u>R</u>eload
       </button>
       <hr />
-      <ListsFilter />
+      <ListsFilter pageHotKeys={pageHotKeys} />
       <button disabled={!newListName} onClick={onMoveToNewList}>
         Move to new list
-      </button>
+      </button>{' '}
       <button disabled={!newListName} onClick={onCopyToNewList}>
-        Copy
+        Copy to new list
       </button>
       <hr />
       <table className="table table-hover">
@@ -83,12 +87,6 @@ const MovePage: React.FunctionComponent<MovePagePrivateProps> = (props) => {
     </>
   );
 };
-//
-// const pageHotKeys = (e) => {
-//   const pressed = String.fromCharCode(e.which);
-//
-//   console.log('-****- pressed', pressed);
-// };
 
 export default compose(
   withHandlers({
@@ -124,12 +122,15 @@ export default compose(
   withProps(({ onReload, onBack }: MovePagePrivateProps) => ({
     pageHotKeys: (e) => {
       const pressed = String.fromCharCode(e.which);
+
       if (pressed === 'r') {
+        e.preventDefault();
         playSound();
         onReload();
         return;
       }
       if (pressed === '<') {
+        e.preventDefault();
         playSound();
         onBack();
         return;
