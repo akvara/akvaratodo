@@ -56,12 +56,12 @@ class ListsPage extends React.PureComponent {
 
   checkKeyPressed = (e) => {
     const pressed = String.fromCharCode(e.which);
-    if (pressed === 'a') {
-      playSound();
-      e.preventDefault();
-      this.listNameInput.focus();
-      return;
-    }
+    // if (pressed === 'a') {
+    //   playSound();
+    //   e.preventDefault();
+    //   this.listNameInput.focus();
+    //   return;
+    // }
     if (pressed === 'r') {
       playSound();
       e.preventDefault();
@@ -69,10 +69,12 @@ class ListsPage extends React.PureComponent {
       return;
     }
     if (pressed === 't') {
+      playSound();
       this.goToday();
       return;
     }
     if (pressed === 'p') {
+      playSound();
       this.props.planWeek();
       return;
     }

@@ -1,7 +1,8 @@
-import { all, call, put, takeEvery } from 'redux-saga/effects';
+import { all, call, put, select, takeEvery } from 'redux-saga/effects';
 import { Action } from 'typescript-fsa';
 import * as dotProp from 'dot-prop-immutable';
 
+import api from '../../core/api';
 import { updateItemSaga } from '../utils/common-sagas';
 import { callGet } from '../../utils/api';
 import * as urlUtils from '../../utils/urlUtils';
@@ -20,6 +21,9 @@ import {
 import { listOfListsRequestSaga } from '../list/list.sagas';
 import { createAList, deleteAList, fetchAList, findListByName, updateAList } from '../../api/api';
 import { dayString } from '../../utils/calendar';
+import { appSelector, statusSelector } from '../selectors';
+import { appModes, statusMessages } from '../../config/constants';
+import { statusActions } from '../actions';
 
 /**
  * Checks if TodoList can be safely saved
@@ -233,6 +237,25 @@ function* removeTaskFromList({ payload }: Action<TodoListMove>) {
     yield generalFailure(e);
   }
 }
+// New from here
+
+function* reloadListOfListsSaga({  }: Action<TodoListMove>) {
+  try {
+    const currentMode = yield select(appSelector.getCurrentMode);
+    const currentMsg = yield select(statusSelector.getCurrentMessage);
+
+    yield put(appActions.setMode(appModes.MODE_LOADING));
+    yield put(statusActions.setStatusMessage(statusMessages.msgLoadingLists));
+
+    const result = yield call(api.lists.fetchListOfList);
+    yield put(listActions.getListOfLists.done(result));
+
+    yield put(appActions.setMode(currentMode));
+    yield put(statusActions.setStatusMessage(currentMsg));
+  } catch (e) {
+    yield generalFailure(e);
+  }
+}
 
 export function* generalFailure(e: Action<{}>) {
   yield put(appActions.errorAction(e));
@@ -248,5 +271,8 @@ export default function* appSagas() {
     takeEvery(appActions.importListAction, importListSaga),
     takeEvery(appActions.exportListAction, exportListSaga),
     takeEvery(appActions.planWeekAction, planWeekSaga),
+    // New from here
+    // takeEvery(appActions.openAList, openAListSaga),
+    takeEvery(appActions.reloadListOfListsPageAction, reloadListOfListsSaga),
   ]);
 }

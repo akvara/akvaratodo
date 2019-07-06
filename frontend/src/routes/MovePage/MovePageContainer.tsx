@@ -25,6 +25,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
       moveToListByName: appActions.moveToListByNameAction,
       moveToList: appActions.moveToListAction,
       copyToAList: appActions.copyToListAction,
+      reloadListOfListsPage: appActions.reloadListOfListsPageAction,
     },
     dispatch,
   );

@@ -1,5 +1,4 @@
 import { createReducer } from '../utils/frontend.utils';
-import { getListOfListsAction } from '../list/list.actions';
 import { ListCreds, TodoList } from '../types';
 import * as Utils from '../../utils/utils';
 import { appActions, listActions } from '../actions';
@@ -24,7 +23,7 @@ export const initialState: AppState = {
 };
 
 const appReducer = createReducer(initialState, {
-  [getListOfListsAction.started.type]: (state: AppState, action: any) => {
+  [listActions.getListOfListsAction.started.type]: (state: AppState, action: any) => {
     return { ...state, statusMsg: 'Loading lists ...', mode: appModes.MODE_LOADING };
   },
   [listActions.getListOfListsAction.done.type]: (state: AppState, action: any) => {
@@ -133,6 +132,22 @@ const appReducer = createReducer(initialState, {
       ...state,
       statusMsg: new Date(action.payload).toLocaleTimeString('lt-LT'),
       mode: appModes.DATA_CONFLICT,
+    };
+  },
+
+  // New, correct from here
+
+  [appActions.setMode.type]: (state: AppState, action: ReturnType<typeof appActions.setMode>) => {
+    return {
+      ...state,
+      mode: action.payload,
+    };
+  },
+  [listActions.getListOfLists.done.type]: (state: AppState, action: ReturnType<typeof listActions.getListOfLists.done>) => {
+    console.log('-****- done', action);
+    return {
+      ...state,
+      lists: Utils.sortArrOfObjectsByParam(action.payload, 'updatedAt', true),
     };
   },
 });
