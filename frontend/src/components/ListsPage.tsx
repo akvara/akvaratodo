@@ -69,10 +69,12 @@ class ListsPage extends React.PureComponent {
       return;
     }
     if (pressed === 't') {
+      playSound();
       this.goToday();
       return;
     }
     if (pressed === 'p') {
+      playSound();
       this.props.planWeek();
       return;
     }

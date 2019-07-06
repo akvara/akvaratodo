@@ -7,4 +7,10 @@ export enum appModes {
   DATA_CONFLICT = 'DATA_CONFLICT',
 }
 
-export const restrictions = {  maxTaskLength :  50}
+export const restrictions = { maxTaskLength: 50 };
+
+export const statusMessages = {
+  msgHello: 'Hello!',
+  msgLoadingLists: 'Loading lists ...',
+  msgListsLoaded: 'Lists loaded.',
+};
