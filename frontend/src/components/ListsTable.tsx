@@ -2,36 +2,38 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import * as Utils from '../utils/utils.js';
-import CONFIG from '../config/config.js';
 
-class ListOfLists extends Component {
+/* underline first of given letters */
+const strongify = (str, letter) => {
+  let n = str.toLowerCase().indexOf(letter);
+  if (n === -1) return str;
+
+  return (
+    <span>
+      {str.substring(0, n)}
+      <u>{str.substring(n, n + 1)}</u>
+      {str.substring(n + 1, str.length)}
+    </span>
+  );
+};
+
+const hotKeyedListName = (listName, hotKeys) => {
+  if (!hotKeys) {
+    return listName;
+  }
+  const corresponding = hotKeys.filter((elem) => elem.listName === listName);
+  if (!corresponding.length) {
+    return listName;
+  }
+  return strongify(listName, corresponding[0].key);
+};
+
+class ListsTable extends Component {
   static propTypes = {
     hotKeys: PropTypes.array,
     lists: PropTypes.array,
     openList: PropTypes.func.isRequired,
     removeList: PropTypes.func,
-  };
-
-  hotKeyedListName = (listName) => {
-    if (!this.props.hotKeys) return listName;
-    let corresponding = this.props.hotKeys.filter((elem) => elem.listName === listName);
-    if (!corresponding.length) return listName;
-
-    return this.strongify(listName, corresponding[0].key);
-  };
-
-  /* underline first of given letters */
-  strongify = (str, letter) => {
-    let n = str.toLowerCase().indexOf(letter);
-    if (n === -1) return str;
-
-    return (
-      <span>
-        {str.substring(0, n)}
-        <u>{str.substring(n, n + 1)}</u>
-        {str.substring(n + 1, str.length)}
-      </span>
-    );
   };
 
   contractedListItemHeader = (list, i) => {
@@ -50,8 +52,10 @@ class ListOfLists extends Component {
     );
   };
 
-  contractedListItems = (list, i) => {
-    if (list.isContracted) return null;
+  contractedListItems = (list) => {
+    if (list.isContracted) {
+      return null;
+    }
     return list.list.map(this.displayIndentedListRow);
   };
 
@@ -96,7 +100,7 @@ class ListOfLists extends Component {
       _id: list._id,
       tasks: list.tasks,
       noOfTasks: list.tasks ? JSON.parse(list.tasks).length : 0,
-      name: this.hotKeyedListName(list.name),
+      name: hotKeyedListName(list.name, this.props.hotkeys),
       itemClass: 'list-item',
       action: this.props.openList.bind(this, list._id, list.name),
       deletable: list.tasks ? list.tasks === '[]' && !list.immutable : true,
@@ -108,10 +112,6 @@ class ListOfLists extends Component {
 
     if (list.immutable) {
       item.itemClass += ' list-item-immutable';
-    }
-
-    if (list.name === CONFIG.user.settings.openListIfExists) {
-      item.itemClass += ' list-item-current';
     }
 
     return item;
@@ -133,4 +133,4 @@ class ListOfLists extends Component {
   }
 }
 
-export default ListOfLists;
+export default ListsTable;
