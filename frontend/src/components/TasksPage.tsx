@@ -1,18 +1,14 @@
 import * as React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect, Dispatch } from 'react-redux';
 import { compose } from 'recompose';
 import _ from 'underscore';
 
 import TasksList from './TasksList';
 import TasksDoneList from './TasksDoneList';
 import CONFIG from '../config/config.js';
-import * as listActions from '../store/list/list.actions';
-import * as appActions from '../store/app/app.actions';
 import { disableHotKeys, playSound, registerHotKeys } from '../utils/hotkeys';
 import * as Utils from '../utils/utils.js';
-import { RootState } from '../store/reducers';
 import { SerializedTodoList, TodoList } from '../store/types';
+import { appActions, listActions } from '../store/actions';
 
 export interface TaskPageProps {
   lists: TodoList[];
@@ -84,7 +80,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     };
   }
 
-  serialize(entity: SerializedTodoList) {
+  static serialize(entity: SerializedTodoList) {
     const res: SerializedTodoList = {
       listId: entity.listId,
       previousAction: entity.previousAction,
@@ -572,34 +568,4 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   }
 }
 
-const mapStateToProps = (state: RootState) => ({
-  lists: state.app.lists,
-  list: state.app.aList,
-  task: state.app.task,
-  fromList: state.app.fromList,
-  immutables: state.app.lists.filter((item) => item.immutable),
-  exportables: state.app.lists.filter((item) => item._id !== state.app.aList._id && !item.immutable).slice(0, 20),
-  previousList: state.app.fromList && state.app.aList._id === state.app.fromList.listId ? null : state.app.fromList,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
-  return bindActionCreators(
-    {
-      getAList: listActions.getAListAction.started,
-      getListOfLists: listActions.getListOfListsAction.started,
-      checkAndSave: appActions.checkAndSaveAction,
-      importList: appActions.importListAction,
-      exportList: appActions.exportListAction,
-      addOrOpenAList: appActions.addOrOpenListByNameAction,
-      moveOutside: appActions.moveInitiationAction,
-    },
-    dispatch,
-  );
-};
-
-export default compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  ),
-)(TasksPage);
+export default TasksPage;

@@ -1,4 +1,4 @@
-import { connect, Dispatch, MapDispatchToProps, MapStateToProps } from 'react-redux';
+import { connect, Dispatch } from 'react-redux';
 import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
 
@@ -6,19 +6,18 @@ import * as listActions from '../store/list/list.actions';
 import { RootState } from '../store/reducers';
 import App from './App';
 
-export interface AppPrivateProps {
-  mode: string;
-}
+interface AppProps {}
 
-interface AppContainerProps extends AppPrivateProps {
+interface AppPrivateProps extends AppProps {
+  mode: string;
   getListOfLists: typeof listActions.getListOfListsAction.started;
 }
 
-const mapStateToProps: MapStateToProps<AppPrivateProps, AppContainerProps, RootState> = (state: RootState) => ({
+const mapStateToProps = (state: RootState) => ({
   mode: state.app.mode,
 });
 
-const mapDispatchToProps: MapDispatchToProps<any, AppPrivateProps> = (dispatch: Dispatch<RootState>) => {
+const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
   return bindActionCreators(
     {
       getListOfLists: listActions.getListOfListsAction.started,
@@ -27,7 +26,7 @@ const mapDispatchToProps: MapDispatchToProps<any, AppPrivateProps> = (dispatch: 
   );
 };
 
-export default compose(
+export default compose<AppPrivateProps, {}>(
   connect(
     mapStateToProps,
     mapDispatchToProps,

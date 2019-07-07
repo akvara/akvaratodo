@@ -1,21 +1,15 @@
 import * as React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect, Dispatch, MapDispatchToProps, MapStateToProps } from 'react-redux';
 import { compose } from 'recompose';
 
 import ListsTable from './ListsTable';
 
 import { disableHotKeys, playSound, registerHotKeys } from '../utils/hotkeys';
-import { RootState } from '../store/reducers';
 import { TodoList } from '../store/types';
 import { dayString } from '../utils/calendar';
 import { appActions, listActions } from '../store/actions';
 
-export interface ListsAppPrivateProps {
+export interface ListsPageProps {
   lists: TodoList[];
-}
-
-export interface ListsAppProps extends ListsAppPrivateProps {
   getAList: typeof listActions.getAListAction.started;
   getListOfLists: typeof listActions.getListOfListsAction.started;
   addOrOpenAList: typeof appActions.addOrOpenListByNameAction;
@@ -23,13 +17,16 @@ export interface ListsAppProps extends ListsAppPrivateProps {
   planWeek: typeof appActions.planWeekAction;
 }
 
+export interface ListsPagePrivateProps extends ListsPageProps {
+}
+
 const makeContractableList = (listOfLists) => {
-  let contractedList = [];
+  const contractedList = [];
 
   listOfLists.map((list) => {
-    let dashPos = list.name.indexOf(' - ');
+    const dashPos = list.name.indexOf(' - ');
     if (dashPos > -1) {
-      let contractedTitle = list.name.substring(0, dashPos);
+      const contractedTitle = list.name.substring(0, dashPos);
       if (!contractedList[contractedTitle]) {
         contractedList[contractedTitle] = { used: false, list: [] };
       }
@@ -38,12 +35,12 @@ const makeContractableList = (listOfLists) => {
     return null;
   });
 
-  let displayList = [];
+  const displayList = [];
 
   listOfLists.map((list) => {
-    let dashPos = list.name.indexOf(' - ');
+    const dashPos = list.name.indexOf(' - ');
     if (dashPos > -1) {
-      let contractedTitle = list.name.substring(0, dashPos);
+      const contractedTitle = list.name.substring(0, dashPos);
       if (contractedList[contractedTitle].list.length > 1) {
         if (!contractedList[contractedTitle].used) {
           contractedList[contractedTitle].used = true;
@@ -65,9 +62,8 @@ const makeContractableList = (listOfLists) => {
   return displayList;
 };
 
-
 class ListsPage extends React.PureComponent {
-  constructor(props: ListsAppProps) {
+  constructor(props: ListsPagePrivateProps) {
     super(props);
     this.state = {
       lists: makeContractableList(props.lists.filter((list) => !list.immutable)),
@@ -165,7 +161,7 @@ class ListsPage extends React.PureComponent {
   };
 
   toggleContracted = (listTitle, beContracted) => {
-    let newList = this.state.lists.map((list) => {
+    const newList = this.state.lists.map((list) => {
       if (list.isList && list.contractedTitle === listTitle) {
         return {
           ...list,
@@ -201,21 +197,19 @@ class ListsPage extends React.PureComponent {
       <div>
         <table width="100%">
           <tbody>
-          <tr>
-            <td>
-              <h1>Lists</h1>
-            </td>
-            <td className="right-align">
-              {filtered.length > 0 &&
-              <button onClick={() => this.props.addOrOpenAList({ listName: yesterdayString })}>
-                Yesterday
-              </button>
-              }
-              <button onClick={this.goToday}>
-                <u>T</u>oday
-              </button>
-            </td>
-          </tr>
+            <tr>
+              <td>
+                <h1>Lists</h1>
+              </td>
+              <td className="right-align">
+                {filtered.length > 0 && (
+                  <button onClick={() => this.props.addOrOpenAList({ listName: yesterdayString })}>Yesterday</button>
+                )}
+                <button onClick={this.goToday}>
+                  <u>T</u>oday
+                </button>
+              </td>
+            </tr>
           </tbody>
         </table>
         <ListsTable
@@ -226,7 +220,7 @@ class ListsPage extends React.PureComponent {
           hotKeys={this.hotKeys}
         />
         <h3>Protected</h3>
-        <ListsTable lists={this.state.immutableLists} openList={this.openAList}/>
+        <ListsTable lists={this.state.immutableLists} openList={this.openAList} />
         <form onSubmit={this.handleSubmit}>
           <input
             className="list-input"
@@ -241,36 +235,16 @@ class ListsPage extends React.PureComponent {
           />
           <button disabled={!this.state.listName.trim()}>Create new list</button>
         </form>
-        <hr/>
-        <button onClick={this.props.planWeek}><u>P</u>lan week</button>
+        <hr />
+        <button onClick={this.props.planWeek}>
+          <u>P</u>lan week
+        </button>
         <button onClick={this.reload}>
-          <span className={'glyphicon glyphicon-refresh'} aria-hidden="true"/> <u>R</u>eload
+          <span className={'glyphicon glyphicon-refresh'} aria-hidden="true" /> <u>R</u>eload
         </button>
       </div>
     );
   }
 }
 
-const mapStateToProps: MapStateToProps<ListsAppPrivateProps, void, RootState> = (state: RootState) => ({
-  lists: state.app.lists,
-});
-
-const mapDispatchToProps: MapDispatchToProps<any, ListsAppProps> = (dispatch: Dispatch<RootState>) => {
-  return bindActionCreators(
-    {
-      getAList: listActions.getAListAction.started,
-      getListOfLists: listActions.getListOfListsAction.started,
-      removeList: listActions.removeListAction.started,
-      addOrOpenAList: appActions.addOrOpenListByNameAction,
-      planWeek: appActions.planWeekAction,
-    },
-    dispatch,
-  );
-};
-
-export default compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  ),
-)(ListsPage);
+export default ListsPage;

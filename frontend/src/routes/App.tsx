@@ -2,12 +2,12 @@ import * as React from 'react';
 import { compose, lifecycle } from 'recompose';
 
 import Spinner from '../shared/Spinner';
+import { appModes } from '../config/constants';
 import { listActions } from '../store/actions';
-import ListsApp from '../components/ListsPage';
-import TasksApp from '../components/TasksPage';
 import Failure from './Failure';
 import MovePage from './MovePage';
-import { appModes } from '../config/constants';
+import ListsApp from './ListsApp';
+import TasksApp from './TasksApp';
 
 export interface AppPrivateProps {
   mode: string;
@@ -21,7 +21,7 @@ const App: React.FunctionComponent<AppPrivateProps> = (props) => {
   const { mode } = props;
 
   if (!mode) {
-    return <div className="error">mode undefined!</div>;
+    return <div className="error">Mode undefined!</div>;
   }
 
   if (mode === appModes.MODE_LOADING) {
