@@ -2,31 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import * as Utils from '../utils/utils.js';
+import { hotKeyedListName, strongify } from "../utils/stringUtils";
 
-/* underline first of given letters */
-const strongify = (str, letter) => {
-  let n = str.toLowerCase().indexOf(letter);
-  if (n === -1) return str;
 
-  return (
-    <span>
-      {str.substring(0, n)}
-      <u>{str.substring(n, n + 1)}</u>
-      {str.substring(n + 1, str.length)}
-    </span>
-  );
-};
-
-const hotKeyedListName = (listName, hotKeys) => {
-  if (!hotKeys) {
-    return listName;
-  }
-  const corresponding = hotKeys.filter((elem) => elem.listName === listName);
-  if (!corresponding.length) {
-    return listName;
-  }
-  return strongify(listName, corresponding[0].key);
-};
 
 class ListsTable extends Component {
   static propTypes = {
@@ -38,7 +16,9 @@ class ListsTable extends Component {
 
   contractedListItemHeader = (list, i) => {
     let sign = 'glyphicon-minus';
-    if (list.isContracted) sign = 'glyphicon-plus';
+    if (list.isContracted) {
+      sign = 'glyphicon-plus';
+    }
     return (
       <tr key={'tr' + i}>
         <td colSpan={2} onClick={this.props.toggleContracted.bind(this, list.contractedTitle, !list.isContracted)}>
@@ -100,7 +80,7 @@ class ListsTable extends Component {
       _id: list._id,
       tasks: list.tasks,
       noOfTasks: list.tasks ? JSON.parse(list.tasks).length : 0,
-      name: hotKeyedListName(list.name, this.props.hotkeys),
+      name: hotKeyedListName(list.name, this.props.hotKeys),
       itemClass: 'list-item',
       action: this.props.openList.bind(this, list._id, list.name),
       deletable: list.tasks ? list.tasks === '[]' && !list.immutable : true,

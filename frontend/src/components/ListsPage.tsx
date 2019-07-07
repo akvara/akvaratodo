@@ -95,12 +95,12 @@ class ListsPage extends React.PureComponent {
 
   checkKeyPressed = (e) => {
     const pressed = String.fromCharCode(e.which);
-    // if (pressed === 'a') {
-    //   playSound();
-    //   e.preventDefault();
-    //   this.listNameInput.focus();
-    //   return;
-    // }
+    if (pressed === 'a') {
+      playSound();
+      e.preventDefault();
+      this.listNameInput.focus();
+      return;
+    }
     if (pressed === 'r') {
       playSound();
       e.preventDefault();
@@ -196,9 +196,7 @@ class ListsPage extends React.PureComponent {
   render() {
     const yesterdayString = dayString(new Date(Date.now() - 864e5)); // 864e5 == 86400000 == 24*60*60*1000);
     const filtered = this.props.lists.filter((list: TodoList) => list.name === yesterdayString);
-
     this.addHotKeys();
-
     return (
       <div>
         <table width="100%">
@@ -244,7 +242,7 @@ class ListsPage extends React.PureComponent {
           <button disabled={!this.state.listName.trim()}>Create new list</button>
         </form>
         <hr/>
-        <button onClick={this.props.planWeek}>Plan week</button>
+        <button onClick={this.props.planWeek}><u>P</u>lan week</button>
         <button onClick={this.reload}>
           <span className={'glyphicon glyphicon-refresh'} aria-hidden="true"/> <u>R</u>eload
         </button>

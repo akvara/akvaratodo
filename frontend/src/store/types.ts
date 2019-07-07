@@ -58,6 +58,12 @@ export interface TodoListUpdate {
   lastAction: string;
 }
 
+export interface HotKey {
+  key: string;
+  listId: string;
+  listName: string;
+}
+
 export interface ListNameOnly {
   listName: string;
 }

@@ -121,7 +121,7 @@ const appReducer = createReducer(initialState, {
       mode: appModes.MODE_LOADING,
     };
   },
-  [appActions.errorAction.type]: (state: AppState, action: any) => {
+  [appActions.errorAction.type]: (state: AppState) => {
     return {
       ...state,
       mode: appModes.MODE_ERROR,
@@ -144,7 +144,6 @@ const appReducer = createReducer(initialState, {
     };
   },
   [listActions.getListOfLists.done.type]: (state: AppState, action: ReturnType<typeof listActions.getListOfLists.done>) => {
-    console.log('-****- done', action);
     return {
       ...state,
       lists: Utils.sortArrOfObjectsByParam(action.payload, 'updatedAt', true),

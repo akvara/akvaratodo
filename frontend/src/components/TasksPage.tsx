@@ -284,32 +284,28 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   };
 
   checkKeyPressed = (e) => {
-    const key = String.fromCharCode(e.which);
-    if ('alrp<'.indexOf(key) !== -1) {
-      playSound();
-    }
-
     switch (String.fromCharCode(e.which)) {
       case 'a':
-        e.preventDefault();
+        playSound();
         // @ts-ignore
         this.taskInput.focus();
         break;
       case 'l':
-        e.preventDefault();
+        playSound();
         this.props.getListOfLists();
         break;
       case 'r':
-        e.preventDefault();
+        playSound();
         this.reload();
         break;
       case 'p':
-        e.preventDefault();
+        playSound();
         this.mark();
         break;
       case '<':
-        e.preventDefault();
-        if (this.props.previousList) {
+        if (this.props.previousList.listId) {
+          playSound();
+
           this.listChanger(this.props.previousList.name);
         }
         break;
@@ -484,7 +480,6 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
       markGlyphicon = this.state.immutable ? 'screen-shot' : 'exclamation-sign',
       expandToDoGlyphicon = this.state.expandToDo ? 'glyphicon-resize-small' : 'glyphicon-resize-full',
       expandDoneGlyphicon = this.state.expandDone ? 'glyphicon-resize-small' : 'glyphicon-resize-full';
-
     return (
       <div>
         {this.manageHeader()}
@@ -563,7 +558,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
         <button onClick={this.reload}>
           <span className={'glyphicon glyphicon-refresh'} aria-hidden="true" /> <u>R</u>eload
         </button>
-        {this.props.previousList && (
+        {this.props.previousList && this.props.previousList.listId && (
           <button disabled={!!this.state.task.trim()} onClick={() => this.listChanger(this.props.previousList.name)}>
             <span className="glyphicon glyphicon-chevron-left" aria-hidden="true" /> {this.props.previousList.name}
           </button>

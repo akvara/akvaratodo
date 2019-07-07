@@ -13,7 +13,10 @@ class TasksDoneList extends React.Component {
 
   /* Display one done task */
   displayTask = (task, i) => {
-    if (!this.props.expand && i < this.props.items.length - CONFIG.user.settings.displayDoneLength) return null;
+    if (!this.props.expand && i < this.props.items.length - CONFIG.user.settings.displayDoneLength) {
+      return null;
+    }
+
     return (
       <tr key={'tr' + i}>
         <td>
