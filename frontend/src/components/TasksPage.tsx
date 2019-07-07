@@ -80,7 +80,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     };
   }
 
-  static serialize(entity: SerializedTodoList) {
+  serialize(entity: SerializedTodoList) {
     const res: SerializedTodoList = {
       listId: entity.listId,
       previousAction: entity.previousAction,
