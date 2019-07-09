@@ -18,7 +18,7 @@ import {
 import { fetchAList, findListByName, updateAList } from '../../api/api';
 import { dayString } from '../../utils/calendar';
 import { appSelector, statusSelector } from '../selectors';
-import { appModes, restrictions, secsPerDay, statusMessages } from '../../config/constants';
+import { appModes, statusMessages } from '../../config/constants';
 import { appActions, listActions, selectedActions, statusActions } from '../actions';
 import { getAListSaga, getListOfListsSaga } from '../list/list.sagas';
 import { getPreviousDays } from '../../utils/stringUtils';
@@ -40,9 +40,9 @@ function* checkAndSave({ payload }: Action<SerializedTodoList>) {
         toListId: listId,
         task: taskToAdd,
       };
-      yield copyTaskToListSaga({ payload: data, type: '' });
-      // yield put(appActions.copyToListAction(data));
-      yield put(statusActions.setStatusMessage(statusMessages.msgAddedAndRefreshed));
+      // yield copyTaskToListSaga({ payload: data, type: '' });
+      yield put(appActions.copyToListAction(data));
+      // yield put(statusActions.setStatusMessage(statusMessages.msgAddedAndRefreshed));
       return;
     }
     yield put(statusActions.setStatusMessage(statusMessages.msgDataConflict));
@@ -86,9 +86,10 @@ function* addOrOpenListsByNameSaga({ payload }: Action<ListNameOnly>) {
 
     let listId = yield findListByName(listName);
     if (!listId) {
-      listId = yield call(api.lists.addAList, NewTodoListEntity(listName));
+      const newList = yield call(api.lists.addAList, NewTodoListEntity(listName));
+      listId = newList._id;
     }
-    yield openAListByIdSaga({ payload: listId, type: '' });
+    yield put(appActions.openAList(listId));
   } catch (e) {
     yield generalFailure(e);
   }
@@ -110,7 +111,7 @@ function* importListSaga({ payload }: Action<TodoListImpEx>) {
       tasks: utils.concatTwoJSONs(first.tasks, second.tasks),
     };
     yield call(api.lists.editAList, { _id: toListId, ...data } as TodoList);
-    yield openAListByIdSaga({ payload: toListId, type: '' });
+    yield put(appActions.openAList(toListId));
   } catch (e) {
     yield generalFailure(e);
   }
@@ -133,7 +134,8 @@ function* exportListSaga({ payload }: Action<TodoListImpEx>) {
     };
     yield call(api.lists.editAList, { _id: toListId, ...data } as TodoList);
     yield call(api.lists.removeAList, fromListId);
-    yield openAListByIdSaga({ payload: toListId, type: '' });
+    yield put(appActions.openAList(toListId));
+    yield put(statusActions.setStatusMessage(statusMessages.msgExported));
   } catch (e) {
     yield generalFailure(e);
   }
@@ -149,7 +151,8 @@ function* moveTaskToListSaga(action: Action<TodoListMove>) {
   try {
     yield removeTaskFromList(action);
     yield prependToAList(action);
-    yield openAListByIdSaga({ payload: action.payload.fromListId, type: '' });
+    yield put(appActions.openAList(action.payload.fromListId));
+    yield put(statusActions.setStatusMessage(statusMessages.msgMoved));
   } catch (e) {
     yield generalFailure(e);
   }
@@ -164,7 +167,8 @@ function* moveTaskToListSaga(action: Action<TodoListMove>) {
 function* copyTaskToListSaga(action: Action<TodoListCopy>) {
   try {
     yield prependToAList(action);
-    yield openAListByIdSaga({ payload: action.payload.toListId, type: '' });
+    yield put(appActions.openAList(action.payload.toListId));
+    yield put(statusActions.setStatusMessage(statusMessages.msgCopied));
   } catch (e) {
     yield generalFailure(e);
   }
@@ -184,8 +188,9 @@ function* moveToListByNameSaga(action: Action<TodoListMoveByName>) {
     if (action.payload.move) {
       yield removeTaskFromList(newAction);
     }
-    yield openAListByIdSaga({ payload: listId, type: '' });
+    yield put(appActions.openAList(listId));
     yield put(appActions.setMode(appModes.MODE_A_LIST));
+    yield put(statusActions.setStatusMessage(statusMessages.msgMoved));
   } catch (e) {
     yield generalFailure(e);
   }
@@ -340,6 +345,8 @@ function* planWeekSaga() {
       }
     }
     yield getListOfListsSaga();
+    // ToDo: check kodėl neveikia
+    // yield put(listActions.getListOfLists);
     yield put(statusActions.setStatusMessage(statusMessages.msgWeekPlanned));
     yield put(appActions.setMode(appModes.MODE_LIST_OF_LISTS));
   } catch (e) {

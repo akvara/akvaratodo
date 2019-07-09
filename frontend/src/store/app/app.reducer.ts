@@ -13,7 +13,7 @@ export type AppState = {
 };
 
 export const initialState: AppState = {
-  mode: '',
+  mode: appModes.MODE_LOADING,
   lists: [],
   aList: { _id: '', userId: 0, name: '', tasks: '', done: '', immutable: false, lastAction: '' },
   task: '',
@@ -21,60 +21,6 @@ export const initialState: AppState = {
 };
 
 const appReducer = createReducer(initialState, {
-  // [listActions.getListOfLists.started.type]: (state: AppState, action: any) => {
-  //   return { ...state, statusMsg: 'Loading lists ...', mode: appModes.MODE_LOADING };
-  // },
-  // [listActions.getListOfLists.done.type]: (state: AppState, action: any) => {
-  //   return {
-  //     ...state,
-  //     statusMsg: 'Lists loaded',
-  //     mode: appModes.MODE_LIST_OF_LISTS,
-  //     lists: Utils.sortArrOfObjectsByParam(action.payload, 'updatedAt', true),
-  //   };
-  // },
-  // [listActions.refreshListAction.done.type]: (state: AppState, action: any) => {
-  //   return {
-  //     ...state,
-  //     lists: Utils.sortArrOfObjectsByParam(action.payload, 'updatedAt', true),
-  //   };
-  // },
-  // [listActions.updateListAction.done.type]: (state: AppState, action: any) => {
-  //   return {
-  //     ...state,
-  //     statusMsg: 'List saved',
-  //   };
-  // },
-  // [listActions.getAList.started.type]: (state: AppState, action: any) => {
-  //   return {
-  //     ...state,
-  //     statusMsg: 'Loading list ...',
-  //     mode: appModes.MODE_LOADING,
-  //   };
-  // },
-  // [listActions.getAListAction.done.type]: (state: AppState, action: any) => {
-  //   if (!action.payload) {
-  //     return state;
-  //   }
-  //   return {
-  //     ...state,
-  //     statusMsg: action.payload.name + ' loaded',
-  //     mode: appModes.MODE_A_LIST,
-  //     aList: action.payload,
-  //   };
-  // },
-  // [appActions.addOrOpenListByNameAction.type]: (state: AppState, action: any) => {
-  //   return {
-  //     ...state,
-  //     statusMsg: 'Checking lists ...',
-  //     mode: appModes.MODE_LOADING,
-  //   };
-  // },
-  // [appActions.checkAndSaveAction.type]: (state: AppState, action: any) => {
-  //   return {
-  //     ...state,
-  //     statusMsg: 'Checking a list ...',
-  //   };
-  // },
   [appActions.moveInitiationAction.type]: (state: AppState, action: any) => {
     return {
       ...state,
