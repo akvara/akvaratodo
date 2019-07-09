@@ -3,14 +3,11 @@ import { Action } from 'typescript-fsa';
 import * as dotProp from 'dot-prop-immutable';
 
 import api from '../../core/api';
-import { updateItemSaga } from '../utils/common-sagas';
 import { callGet } from '../../utils/api';
-import * as urlUtils from '../../utils/urlUtils';
 import * as utils from '../../utils/utils.js';
-import * as appActions from './app.actions';
-import * as listActions from '../list/list.actions';
 import {
   ListNameOnly,
+  NewTodoListEntity,
   SerializedTodoList,
   TodoList,
   TodoListCopy,
@@ -18,12 +15,13 @@ import {
   TodoListMove,
   TodoListMoveByName,
 } from '../types';
-import { listOfListsRequestSaga } from '../list/list.sagas';
-import { createAList, deleteAList, fetchAList, findListByName, updateAList } from '../../api/api';
+import { fetchAList, findListByName, updateAList } from '../../api/api';
 import { dayString } from '../../utils/calendar';
 import { appSelector, statusSelector } from '../selectors';
-import { appModes, statusMessages } from '../../config/constants';
-import { statusActions } from '../actions';
+import { appModes, restrictions, secsPerDay, statusMessages } from '../../config/constants';
+import { appActions, listActions, selectedActions, statusActions } from '../actions';
+import { getAListSaga, getListOfListsSaga } from '../list/list.sagas';
+import { getPreviousDays } from '../../utils/stringUtils';
 
 /**
  * Checks if TodoList can be safely saved
@@ -32,19 +30,27 @@ import { statusActions } from '../actions';
  * @returns {IterableIterator<any>}
  */
 function* checkAndSave({ payload }: Action<SerializedTodoList>) {
-  const { listId } = payload;
+  const { listId, listData, previousAction, taskToAdd } = payload;
+  yield put(statusActions.setStatusMessage(statusMessages.msgChecking));
   const originalList = yield fetchAList(listId);
-  if (originalList.lastAction !== payload.previousAction) {
-    if (payload.taskToAdd) {
+  if (originalList.lastAction !== previousAction) {
+    if (taskToAdd) {
+      yield put(statusActions.setStatusMessage(statusMessages.msgAdding));
       const data = {
         toListId: listId,
-        task: payload.taskToAdd,
+        task: taskToAdd,
       };
-      return yield put(appActions.copyToListAction(data));
+      yield copyTaskToListSaga({ payload: data, type: '' });
+      // yield put(appActions.copyToListAction(data));
+      yield put(statusActions.setStatusMessage(statusMessages.msgAddedAndRefreshed));
+      return;
     }
-    return yield put(appActions.dataConflictAction(originalList.lastAction));
+    yield put(statusActions.setStatusMessage(statusMessages.msgDataConflict));
+    yield put(appActions.dataConflictAction(originalList.lastAction));
+    return;
   }
-  yield updateItemSaga(urlUtils.getAListUrl(listId), payload.listData, listActions.updateListAction);
+  yield put(statusActions.setStatusMessage(statusMessages.msgAdded));
+  yield call(api.lists.editAList, { _id: listId, ...listData } as TodoList);
 }
 
 /**
@@ -61,7 +67,7 @@ function* findOrCreateListByName({ payload }: Action<ListNameOnly>) {
     if (listId) {
       return listId;
     }
-    const result = yield createAList(listName);
+    const result = yield call(api.lists.addAList, NewTodoListEntity(listName));
     return result._id;
   } catch (e) {
     yield generalFailure(e);
@@ -77,37 +83,12 @@ function* findOrCreateListByName({ payload }: Action<ListNameOnly>) {
 function* addOrOpenListsByNameSaga({ payload }: Action<ListNameOnly>) {
   try {
     const { listName } = payload;
-    const listId = yield findListByName(listName);
-    if (listId) {
-      return yield put(listActions.getAListAction.started(listId));
-    }
-    const result = yield createAList(listName);
-    yield put(listActions.getAListAction.started(result._id));
-  } catch (e) {
-    yield generalFailure(e);
-  }
-}
 
-/**
- * Creates lists for upcoming week
- *
- * @returns {IterableIterator<any>}
- */
-function* planWeekSaga() {
-  try {
-    const listOfLists = yield call(callGet, urlUtils.getListsUrl());
-    const now = new Date();
-    let shiftDate = new Date();
-
-    for (let shift = 6; shift >= 0; shift--) {
-      shiftDate = new Date(now.getTime() + 1000 * 60 * 60 * 24 * shift);
-      const listName = dayString(shiftDate);
-      const filtered = listOfLists.filter((list: TodoList) => list.name === listName);
-      if (!filtered.length) {
-        yield createAList(listName);
-      }
+    let listId = yield findListByName(listName);
+    if (!listId) {
+      listId = yield call(api.lists.addAList, NewTodoListEntity(listName));
     }
-    yield listOfListsRequestSaga();
+    yield openAListByIdSaga({ payload: listId, type: '' });
   } catch (e) {
     yield generalFailure(e);
   }
@@ -128,8 +109,8 @@ function* importListSaga({ payload }: Action<TodoListImpEx>) {
       lastAction: new Date().toISOString(),
       tasks: utils.concatTwoJSONs(first.tasks, second.tasks),
     };
-    yield updateAList(toListId, data);
-    yield put(listActions.getAListAction.started(toListId));
+    yield call(api.lists.editAList, { _id: toListId, ...data } as TodoList);
+    yield openAListByIdSaga({ payload: toListId, type: '' });
   } catch (e) {
     yield generalFailure(e);
   }
@@ -150,9 +131,9 @@ function* exportListSaga({ payload }: Action<TodoListImpEx>) {
       lastAction: new Date().toISOString(),
       tasks: utils.concatTwoJSONs(fromList.tasks, toList.tasks),
     };
-    yield updateAList(toListId, data);
-    yield deleteAList(fromListId);
-    yield put(listActions.getAListAction.started(toListId));
+    yield call(api.lists.editAList, { _id: toListId, ...data } as TodoList);
+    yield call(api.lists.removeAList, fromListId);
+    yield openAListByIdSaga({ payload: toListId, type: '' });
   } catch (e) {
     yield generalFailure(e);
   }
@@ -168,7 +149,7 @@ function* moveTaskToListSaga(action: Action<TodoListMove>) {
   try {
     yield removeTaskFromList(action);
     yield prependToAList(action);
-    yield put(listActions.getAListAction.started(action.payload.fromListId));
+    yield openAListByIdSaga({ payload: action.payload.fromListId, type: '' });
   } catch (e) {
     yield generalFailure(e);
   }
@@ -183,7 +164,7 @@ function* moveTaskToListSaga(action: Action<TodoListMove>) {
 function* copyTaskToListSaga(action: Action<TodoListCopy>) {
   try {
     yield prependToAList(action);
-    yield put(listActions.getAListAction.started(action.payload.toListId));
+    yield openAListByIdSaga({ payload: action.payload.toListId, type: '' });
   } catch (e) {
     yield generalFailure(e);
   }
@@ -203,7 +184,8 @@ function* moveToListByNameSaga(action: Action<TodoListMoveByName>) {
     if (action.payload.move) {
       yield removeTaskFromList(newAction);
     }
-    yield put(listActions.getAListAction.started(listId));
+    yield openAListByIdSaga({ payload: listId, type: '' });
+    yield put(appActions.setMode(appModes.MODE_A_LIST));
   } catch (e) {
     yield generalFailure(e);
   }
@@ -237,18 +219,31 @@ function* removeTaskFromList({ payload }: Action<TodoListMove>) {
     yield generalFailure(e);
   }
 }
-// New from here
 
-function* reloadListOfListsSaga({  }: Action<TodoListMove>) {
+// New, correct from here
+/**
+ * Called on startup
+ */
+function* startupSaga() {
   try {
-    const currentMode = yield select(appSelector.getCurrentMode);
+    yield getListOfListsSaga();
+    yield put(appActions.setMode(appModes.MODE_LIST_OF_LISTS));
+  } catch (e) {
+    yield generalFailure(e);
+  }
+}
+/**
+ * Reloads ListOfLists data
+ */
+function* reloadListOfListsSaga() {
+  try {
+    const currentMode = yield select(appSelector.selectCurrentMode);
     const currentMsg = yield select(statusSelector.getCurrentMessage);
 
     yield put(appActions.setMode(appModes.MODE_LOADING));
     yield put(statusActions.setStatusMessage(statusMessages.msgLoadingLists));
 
-    const result = yield call(api.lists.fetchListOfList);
-    yield put(listActions.getListOfLists.done(result));
+    yield getListOfListsSaga();
 
     yield put(appActions.setMode(currentMode));
     yield put(statusActions.setStatusMessage(currentMsg));
@@ -257,7 +252,117 @@ function* reloadListOfListsSaga({  }: Action<TodoListMove>) {
   }
 }
 
+/**
+ * Collects previous days todos into Today
+ * Creates Today in not present
+ */
+function* collectPastDaysSaga() {
+  try {
+    // Set messages
+    yield put(appActions.setMode(appModes.MODE_LOADING));
+    yield put(statusActions.setStatusMessage(statusMessages.msgLoadingLists));
+
+    // Refresh list
+    const listOfLists = yield call(api.lists.fetchListOfList);
+    // Save received list
+    yield put(listActions.getListOfLists.done(listOfLists));
+    // Find/create today's list
+    const todayListName = dayString(new Date());
+    let todayList = listOfLists.find((list: TodoList) => list.name === todayListName);
+    if (!todayList) {
+      yield put(statusActions.setStatusMessage(`statusMessages.msgCreatingAList${todayListName}`));
+      todayList = yield call(api.lists.addAList, NewTodoListEntity(todayListName));
+      yield getListOfListsSaga();
+    }
+
+    // Collect legacy ToDos
+    let prevDayList;
+    const legacyListIds: string[] = [];
+    let collectedTasks = todayList.tasks;
+    getPreviousDays().forEach((prevDayString) => {
+      // prevDayString = dayString(new Date(Date.now() - secsPerDay * before));
+      prevDayList = listOfLists.find((list: TodoList) => list.name === prevDayString);
+      if (prevDayList) {
+        legacyListIds.push(prevDayList._id as string);
+        collectedTasks = utils.concatTwoJSONs(prevDayList.tasks, collectedTasks);
+      }
+    });
+
+    // Update Today and delete legacy lists
+    if (legacyListIds.length) {
+      todayList = {
+        ...todayList,
+        lastAction: new Date().toISOString(),
+        tasks: collectedTasks,
+      } as TodoList;
+      yield call(api.lists.editAList, todayList);
+      yield put(statusActions.setStatusMessage(statusMessages.msgDeletingAList));
+      yield all(legacyListIds.map((listId) => call(api.lists.removeAList, listId)));
+      yield getListOfListsSaga();
+    }
+    yield put(listActions.getAList.done(todayList)); // ToDo: get rid of
+    yield put(selectedActions.setSelectedList(todayList._id));
+    yield put(statusActions.setStatusMessage(statusMessages.msgTodaysLoaded));
+    yield put(appActions.setMode(appModes.MODE_A_LIST));
+  } catch (e) {
+    yield generalFailure(e);
+  }
+}
+
+function* deleteAListSaga({ payload }: ReturnType<typeof appActions.deleteAList>) {
+  yield put(appActions.setMode(appModes.MODE_LOADING));
+  yield put(statusActions.setStatusMessage(statusMessages.msgDeletingAList));
+  yield call(api.lists.removeAList, payload);
+  yield getListOfListsSaga();
+  yield put(statusActions.setStatusMessage(statusMessages.msgListDeleted));
+  yield put(appActions.setMode(appModes.MODE_LIST_OF_LISTS));
+}
+
+/**
+ * Creates lists for upcoming week
+ *
+ * @returns {IterableIterator<any>}
+ */
+function* planWeekSaga() {
+  yield put(statusActions.setStatusMessage(statusMessages.msgPlanAWeek));
+  yield put(appActions.setMode(appModes.MODE_LOADING));
+  try {
+    // Refresh list
+    const listOfLists = yield call(api.lists.fetchListOfList);
+    const now = new Date();
+    let shiftDate = new Date();
+
+    for (let shift = 6; shift >= 0; shift--) {
+      shiftDate = new Date(now.getTime() + 1000 * 60 * 60 * 24 * shift);
+      const listName = dayString(shiftDate);
+      if (!listOfLists.find((list: TodoList) => list.name === listName)) {
+        yield call(api.lists.addAList, NewTodoListEntity(listName));
+      }
+    }
+    yield getListOfListsSaga();
+    yield put(statusActions.setStatusMessage(statusMessages.msgWeekPlanned));
+    yield put(appActions.setMode(appModes.MODE_LIST_OF_LISTS));
+  } catch (e) {
+    yield generalFailure(e);
+  }
+}
+
+function* openAListByIdSaga({ payload }: ReturnType<typeof appActions.openAList>) {
+  try {
+    yield put(appActions.setMode(appModes.MODE_LOADING));
+    yield getAListSaga({ payload, type: '' });
+    yield put(appActions.setMode(appModes.MODE_A_LIST));
+  } catch (e) {
+    yield generalFailure(e);
+  }
+}
+
+/**
+ * Fires Error action
+ * @param e Error
+ */
 export function* generalFailure(e: Action<{}>) {
+  console.error(e);
   yield put(appActions.errorAction(e));
 }
 
@@ -273,6 +378,11 @@ export default function* appSagas() {
     takeEvery(appActions.planWeekAction, planWeekSaga),
     // New from here
     // takeEvery(appActions.openAList, openAListSaga),
-    takeEvery(appActions.reloadListOfListsPageAction, reloadListOfListsSaga),
+    takeEvery(appActions.startup, startupSaga),
+    takeEvery(appActions.openAList, openAListByIdSaga),
+    takeEvery(appActions.reloadListOfLists, reloadListOfListsSaga),
+    takeEvery(appActions.collectPastDays, collectPastDaysSaga),
+    takeEvery(appActions.deleteAList, deleteAListSaga),
+    // takeEvery(appActions.moveInitiationAction, moveInitiationActionSaga),
   ]);
 }

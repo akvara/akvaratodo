@@ -1,45 +1,29 @@
-import { all, takeEvery } from 'redux-saga/effects';
-import { Action } from 'typescript-fsa';
+import { all, call, put, takeEvery } from 'redux-saga/effects';
 
-import { fetchItemSaga, removeItemSaga } from '../utils/common-sagas';
-import * as urlUtils from '../../utils/urlUtils';
-import * as listActions from './list.actions';
 import { generalFailure } from '../app/app.sagas';
+import api from '../../core/api';
+import { getAList, getListOfLists, newListAction } from './list.actions';
+import * as statusActions from '../status/status.actions';
+import { statusMessages } from '../../config/constants';
 
-export function* listOfListsRequestSaga() {
-  yield fetchItemSaga(urlUtils.getListsUrl(), listActions.getListOfListsAction);
+export function* getListOfListsSaga() {
+  yield put(statusActions.setStatusMessage(statusMessages.msgLoadingLists));
+  const result = yield call(api.lists.fetchListOfList);
+  yield put(getListOfLists.done(result));
+  yield put(statusActions.setStatusMessage(statusMessages.msgListsLoaded));
 }
 
-export function* getAListRequestSaga({ payload }: Action<any>) {
-  yield fetchItemSaga(urlUtils.getAListUrl(payload), listActions.getAListAction);
-}
-
-function* getAListSuccess(action: Action<any>) {
-  if (!action.payload) {
-    yield fetchItemSaga(urlUtils.getListsUrl(), listActions.getListOfListsAction);
-  }
-}
-
-function* removeListRequest({ payload }: Action<any>) {
-  yield removeItemSaga(urlUtils.getAListUrl(payload), payload, listActions.removeListAction);
+export function* getAListSaga({ payload }: ReturnType<typeof getAList.started>) {
+  yield put(statusActions.setStatusMessage(statusMessages.msgLoadingAList));
+  const result = yield call(api.lists.fetchAList, payload);
+  yield put(getAList.done(result));
+  yield put(statusActions.setStatusMessage(`${result.name}${statusMessages.msgLoaded}`));
 }
 
 export default function* listSagas() {
   yield all([
-    takeEvery(listActions.getListOfListsAction.started, listOfListsRequestSaga),
-    takeEvery(listActions.getListOfListsAction.failed, generalFailure),
-
-    takeEvery(listActions.getAListAction.started, getAListRequestSaga),
-    takeEvery(listActions.getAListAction.done, getAListSuccess),
-    takeEvery(listActions.getAListAction.failed, generalFailure),
-
-    takeEvery(listActions.removeListAction.started, removeListRequest),
-    takeEvery(listActions.removeListAction.done, listOfListsRequestSaga),
-    takeEvery(listActions.removeListAction.failed, generalFailure),
-
-    takeEvery(listActions.newListAction.done, getAListRequestSaga),
-    takeEvery(listActions.newListAction.failed, generalFailure),
-
-    takeEvery(listActions.updateListAction.failed, generalFailure),
+    takeEvery(getListOfLists.started, getListOfListsSaga),
+    takeEvery(getAList.started, getAListSaga),
+    takeEvery(newListAction.failed, generalFailure),
   ]);
 }

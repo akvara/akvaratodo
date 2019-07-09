@@ -1,4 +1,4 @@
-import { createReducer } from '../utils/frontend.utils';
+import { createReducer } from '../../utils/frontend.utils';
 import { statusActions } from '../actions';
 import { setStatusMessage } from './status.actions';
 

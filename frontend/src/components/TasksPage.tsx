@@ -12,14 +12,14 @@ import { appActions, listActions } from '../store/actions';
 
 export interface TaskPageProps {
   lists: TodoList[];
-  list: TodoList;
+  aList: TodoList;
   task: string;
   fromList: string;
   immutables: TodoList[];
   exportables: TodoList[];
   previousList: string;
-  getAList: typeof listActions.getAListAction.started;
-  getListOfLists: typeof listActions.getListOfListsAction.started;
+  openAList: typeof appActions.openAList;
+  startupRequest: typeof appActions.startup;
   checkAndSave: typeof appActions.checkAndSaveAction;
   importList: typeof appActions.importListAction;
   exportList: typeof appActions.exportListAction;
@@ -46,13 +46,13 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      listName: props.list.name,
-      itemsToDo: JSON.parse(props.list.tasks),
-      itemsDone: props.list.done ? JSON.parse(props.list.done) : [],
+      listName: props.aList.name,
+      itemsToDo: JSON.parse(props.aList.tasks),
+      itemsDone: props.aList.done ? JSON.parse(props.aList.done) : [],
       prepend: props.prepend,
       highlightIndex: props.prepend ? 0 : null,
-      lastAction: props.list.lastAction,
-      immutable: props.list.immutable,
+      lastAction: props.aList.lastAction,
+      immutable: props.aList.immutable,
       task: '',
       reloadNeeded: false,
       listNameOnEdit: false,
@@ -74,7 +74,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   prepareClone(newProps: any) {
     return {
       lastAction: new Date().toISOString(),
-      listId: this.props.list._id,
+      listId: this.props.aList._id,
       previousAction: this.state.lastAction,
       ...newProps,
     };
@@ -203,7 +203,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   /* Move task to another list */
   moveOutside = (task: string) => {
     const data = {
-      fromList: { listId: this.props.list._id, name: this.state.listName },
+      fromList: { listId: this.props.aList._id, name: this.state.listName },
       task,
     };
     this.props.moveOutside(data);
@@ -269,7 +269,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
 
   /* Reload this list*/
   reload = () => {
-    this.props.getAList(this.props.list._id);
+    this.props.openAList(this.props.aList._id);
   };
 
   /* Mode: List name is on edit */
@@ -288,7 +288,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
         break;
       case 'l':
         playSound();
-        this.props.getListOfLists();
+        this.props.startupRequest();
         break;
       case 'r':
         playSound();
@@ -301,7 +301,6 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
       case '<':
         if (this.props.previousList.listId) {
           playSound();
-
           this.listChanger(this.props.previousList.name);
         }
         break;
@@ -370,13 +369,13 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   importList = (listId: string) => {
     this.props.importList({
       fromListId: listId,
-      toListId: this.props.list._id,
+      toListId: this.props.aList._id,
     });
   };
 
   exportList = (listId: string) => {
     this.props.exportList({
-      fromListId: this.props.list._id,
+      fromListId: this.props.aList._id,
       toListId: listId,
     });
   };
@@ -464,6 +463,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   };
 
   render() {
+
     const markTitle = this.state.immutable ? (
         <span>
           Un<u>p</u>rotect
@@ -559,7 +559,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
             <span className="glyphicon glyphicon-chevron-left" aria-hidden="true" /> {this.props.previousList.name}
           </button>
         )}
-        <button disabled={!!this.state.task.trim()} onClick={() => this.props.getListOfLists()}>
+        <button disabled={!!this.state.task.trim()} onClick={() => this.props.startupRequest()}>
           <span className="glyphicon glyphicon-tasks" aria-hidden="true" /> <u>L</u>ists
         </button>
         <br />

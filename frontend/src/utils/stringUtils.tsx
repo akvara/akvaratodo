@@ -1,5 +1,7 @@
 import React from 'react';
 import { HotKey } from '../store/types';
+import { restrictions, secsPerDay } from '../config/constants';
+import { dayString } from './calendar';
 
 /**
  *  Returns string with underlined first of given letter
@@ -34,3 +36,8 @@ export const hotKeyedListName = (listName: string, hotKeys: HotKey[]) => {
 
   return strongify(listName, corresponding[0].key);
 };
+
+export const getPreviousDays = () =>
+  Array.from({ length: restrictions.collectDaysBefore }, (e, i) =>
+    dayString(new Date(Date.now() - secsPerDay * (i + 1))),
+  );

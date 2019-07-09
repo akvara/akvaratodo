@@ -3,22 +3,29 @@ import { compose, lifecycle } from 'recompose';
 
 import Spinner from '../shared/Spinner';
 import { appModes } from '../config/constants';
-import { listActions } from '../store/actions';
+import { appActions } from '../store/actions';
 import Failure from './Failure';
 import MovePage from './MovePage';
 import ListsApp from './ListsApp';
 import TasksApp from './TasksApp';
+import { TodoList } from '../store/types';
 
-export interface AppPrivateProps {
+export interface AppProps {
   mode: string;
+  lists: TodoList[];
+  aList: TodoList;
 }
 
-interface AppContainerProps extends AppPrivateProps {
-  getListOfLists: typeof listActions.getListOfListsAction.started;
+interface AppContainerProps extends AppProps {
+  startupRequest: typeof appActions.startup;
 }
 
-const App: React.FunctionComponent<AppPrivateProps> = (props) => {
-  const { mode } = props;
+const App: React.FunctionComponent<AppProps> = (props) => {
+  const { mode, lists, aList } = props;
+  // const { mode, lists, aList } = props;
+  // console.log('-****- App: lists', lists);
+  // console.log('-****- App: aList', aList);
+
 
   if (!mode) {
     return <div className="error">Mode undefined!</div>;
@@ -59,7 +66,7 @@ export default compose(
         //       // Uncomment when opening list at startup is back in fashion
         //       // this.props.dispatch(listActions.addOrOpenListByNameAction(this.props.openAtStartup));
         //     }
-        this.props.getListOfLists();
+        this.props.startupRequest();
       }
     },
   }),

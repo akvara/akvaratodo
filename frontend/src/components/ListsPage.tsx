@@ -6,19 +6,19 @@ import ListsTable from './ListsTable';
 import { disableHotKeys, playSound, registerHotKeys } from '../utils/hotkeys';
 import { TodoList } from '../store/types';
 import { dayString } from '../utils/calendar';
-import { appActions, listActions } from '../store/actions';
+import { appActions } from '../store/actions';
 
 export interface ListsPageProps {
   lists: TodoList[];
-  getAList: typeof listActions.getAListAction.started;
-  getListOfLists: typeof listActions.getListOfListsAction.started;
+  legacyExists: boolean;
+  getAList: typeof appActions.openAList;
+  startupRequest: typeof appActions.startup;
   addOrOpenAList: typeof appActions.addOrOpenListByNameAction;
-  removeList: typeof listActions.removeListAction.started;
+  removeList: typeof appActions.deleteAList;
   planWeek: typeof appActions.planWeekAction;
 }
 
-export interface ListsPagePrivateProps extends ListsPageProps {
-}
+export interface ListsPagePrivateProps extends ListsPageProps {}
 
 const makeContractableList = (listOfLists) => {
   const contractedList = [];
@@ -144,7 +144,7 @@ class ListsPage extends React.PureComponent {
 
   /* Go to list of lists */
   reload = () => {
-    this.props.getListOfLists();
+    this.props.startupRequest();
   };
 
   onNameChange = (e) => {
@@ -190,8 +190,6 @@ class ListsPage extends React.PureComponent {
   goToday = () => this.props.addOrOpenAList({ listName: dayString(new Date()) });
 
   render() {
-    const yesterdayString = dayString(new Date(Date.now() - 864e5)); // 864e5 == 86400000 == 24*60*60*1000);
-    const filtered = this.props.lists.filter((list: TodoList) => list.name === yesterdayString);
     this.addHotKeys();
     return (
       <div>
@@ -202,8 +200,10 @@ class ListsPage extends React.PureComponent {
                 <h1>Lists</h1>
               </td>
               <td className="right-align">
-                {filtered.length > 0 && (
-                  <button onClick={() => this.props.addOrOpenAList({ listName: yesterdayString })}>Yesterday</button>
+                {this.props.legacyExists && (
+                  <span>
+                    <button onClick={this.props.collectPastDaysRequest}> >> T</button>
+                  </span>
                 )}
                 <button onClick={this.goToday}>
                   <u>T</u>oday

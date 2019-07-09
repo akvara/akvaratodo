@@ -4,21 +4,23 @@ import { compose } from 'recompose';
 
 import { RootState } from '../../store/reducers';
 import ListsPage, { ListsPageProps } from '../../components/ListsPage';
-import { appActions, listActions } from '../../store/actions';
+import { appActions } from '../../store/actions';
 import { listSelector } from '../../store/selectors';
 
 const mapStateToProps = (state: RootState) => ({
-  lists: listSelector.getListOfLists(state),
+  lists: listSelector.selectListOfLists(state),
+  legacyExists: listSelector.findLegacyExists(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
   return bindActionCreators(
     {
-      getAList: listActions.getAListAction.started,
-      getListOfLists: listActions.getListOfListsAction.started,
-      removeList: listActions.removeListAction.started,
+      getAList: appActions.openAList,
+      startupRequest: appActions.startup,
+      removeList: appActions.deleteAList,
       addOrOpenAList: appActions.addOrOpenListByNameAction,
       planWeek: appActions.planWeekAction,
+      collectPastDaysRequest: appActions.collectPastDays,
     },
     dispatch,
   );

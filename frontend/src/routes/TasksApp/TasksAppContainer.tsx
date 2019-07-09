@@ -8,20 +8,20 @@ import TasksPage from '../../components/TasksPage';
 import { appSelector, listSelector } from '../../store/selectors';
 
 const mapStateToProps = (state: RootState) => ({
-  lists: listSelector.getListOfLists(state),
-  list: listSelector.getAList(state),
+  lists: listSelector.selectListOfLists(state),
+  aList: listSelector.selectAList(state),
   task: state.app.task,
   fromList: state.app.fromList,
-  immutables: listSelector.getImmutableLists(state),
-  exportables: listSelector.getExportables(state),
-  previousList: appSelector.getPreviousList(state),
+  immutables: listSelector.selectImmutableLists(state),
+  exportables: listSelector.selectExportables(state),
+  previousList: appSelector.selectPreviousList(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
   return bindActionCreators(
     {
-      getAList: listActions.getAListAction.started,
-      getListOfLists: listActions.getListOfListsAction.started,
+      openAList: appActions.openAList,
+      startupRequest: appActions.startup,
       checkAndSave: appActions.checkAndSaveAction,
       importList: appActions.importListAction,
       exportList: appActions.exportListAction,
