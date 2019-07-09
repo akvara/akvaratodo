@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect, Dispatch } from 'react-redux';
-import { defaultProps, compose } from 'recompose';
+import { compose, defaultProps } from 'recompose';
 
 import { RootState } from '../../store/reducers';
-import { getAListAction } from '../../store/list/list.actions';
 import Failure, { FailureProps } from './Failure';
+import * as appActions from '../../store/app/app.actions';
 
 const mapStateToProps = (state: RootState) => ({
   aList: state.app.aList,
@@ -14,7 +14,7 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
   return bindActionCreators(
     {
-      getAList: getAListAction.started,
+      openAListRequest: appActions.openAList,
     },
     dispatch,
   );

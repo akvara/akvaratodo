@@ -16,7 +16,10 @@ export const checkAndSaveAction = actionCreator<{}>('CHECK_AND_SAVE');
 export const planWeekAction = actionCreator<{}>('PLAN_WEEK');
 export const dataConflictAction = actionCreator<{}>('DATA_CONFLICT');
 export const errorAction = actionCreator<{}>('ERROR');
-
+// New, correct
 export const setMode = actionCreator<string>('SET_MODE');
-export const reloadListOfListsPageAction = actionCreator<void>('RELOAD_LISTS');
+export const reloadListOfLists = actionCreator<void>('RELOAD_LISTS');
 export const openAList = actionCreator<string>('OPEN_A_LIST');
+export const collectPastDays = actionCreator<void>('COLLECT_PAST');
+export const startup = actionCreator<void>('STARTUP');
+export const deleteAList = actionCreator<string>('DELETE_A_LIST');

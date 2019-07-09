@@ -3,7 +3,7 @@ import { compose, lifecycle, withHandlers, withProps } from 'recompose';
 import { disableHotKeys, playSound, registerHotKeys } from '../../utils/hotkeys';
 
 import { ListCreds, TodoList } from '../../store/types';
-import { appActions, listActions } from '../../store/actions';
+import { appActions } from '../../store/actions';
 import { config } from '../../config/config';
 import ListsFilter from './ListsFilter';
 import { restrictions } from '../../config/constants';
@@ -12,11 +12,11 @@ export interface MovePageProps {
   task: string;
   lists: TodoList[];
   fromList: ListCreds;
-  getAList: typeof listActions.getAListAction.started;
+  openAList: typeof appActions.openAList;
   moveToList: typeof appActions.moveToListAction;
   moveToListByName: typeof appActions.moveToListByNameAction;
   copyToAList: typeof appActions.copyToListAction;
-  reloadListOfListsPage: typeof appActions.reloadListOfListsPageAction;
+  reloadListOfListsPage: typeof appActions.reloadListOfLists;
   newListName: string;
 }
 
@@ -112,8 +112,8 @@ export default compose(
         move: false,
       });
     },
-    onBack: ({ getAList, fromList }: MovePagePrivateProps) => () => {
-      getAList(fromList.listId);
+    onBack: ({ openAList, fromList }: MovePagePrivateProps) => () => {
+      openAList(fromList.listId);
     },
     onReload: ({ reloadListOfListsPage }: MovePagePrivateProps) => () => {
       reloadListOfListsPage();

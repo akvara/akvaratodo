@@ -73,9 +73,3 @@ export function callUpdate(url, data) {
     body: JSON.stringify(data),
   });
 }
-
-export function callDelete(url) {
-  return callApi(url, {
-    method: 'DELETE',
-  });
-}

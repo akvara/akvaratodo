@@ -83,6 +83,10 @@
       "always",
       "ignore-interfaces"
     ],
+    "no-console": [
+      true,
+      "log"
+    ],
     "quotemark": [
       true,
       "single",
