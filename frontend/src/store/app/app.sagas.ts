@@ -225,6 +225,7 @@ function* removeTaskFromList({ payload }: Action<TodoListMove>) {
  */
 function* startupSaga() {
   try {
+    yield put(appActions.setMode(appModes.MODE_LOADING));
     yield getListOfListsSaga();
     yield put(appActions.setMode(appModes.MODE_LIST_OF_LISTS));
   } catch (e) {

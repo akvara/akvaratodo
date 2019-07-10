@@ -18,7 +18,6 @@ DEPLOY_DIR=build
 DEPLOY_REMOTE=git@github.com:akvara/akvaratodo-deploy.git
 APP_DIR=$(pwd)
 
-#pushd $APP_DIR
 cd ./frontend/
 
 # Execute build
@@ -45,8 +44,6 @@ check_git_result
 
 rm -rf build/
 cd $APP_DIR
-
-popd
 
 echo -e "${COL_GREEN}Deploy finished.${COL_RESET}"
 
