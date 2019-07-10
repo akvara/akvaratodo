@@ -11,7 +11,7 @@ import { appActions } from '../store/actions';
 export interface ListsPageProps {
   lists: TodoList[];
   legacyExists: boolean;
-  getAList: typeof appActions.openAList;
+  getAListRequest: typeof appActions.openAList;
   startupRequest: typeof appActions.startup;
   addOrOpenAList: typeof appActions.addOrOpenListByNameAction;
   removeList: typeof appActions.deleteAList;
@@ -157,7 +157,7 @@ class ListsPage extends React.PureComponent {
   };
 
   openAList = (listId) => {
-    this.props.getAList(listId);
+    this.props.getAListRequest(listId);
   };
 
   toggleContracted = (listTitle, beContracted) => {
@@ -202,7 +202,7 @@ class ListsPage extends React.PureComponent {
               <td className="right-align">
                 {this.props.legacyExists && (
                   <span>
-                    <button onClick={this.props.collectPastDaysRequest}> >> T</button>
+                    <button onClick={this.props.collectPastDaysRequest}> >> T</button>{' '}
                   </span>
                 )}
                 <button onClick={this.goToday}>

@@ -15,7 +15,7 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
   return bindActionCreators(
     {
-      getAList: appActions.openAList,
+      getAListRequest: appActions.openAList,
       startupRequest: appActions.startup,
       removeList: appActions.deleteAList,
       addOrOpenAList: appActions.addOrOpenListByNameAction,
