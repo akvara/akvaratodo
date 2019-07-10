@@ -8,14 +8,14 @@ import { statusMessages } from '../../config/constants';
 
 export function* getListOfListsSaga() {
   yield put(statusActions.setStatusMessage(statusMessages.msgLoadingLists));
-  const result = yield call(api.lists.fetchListOfList);
+  const result = yield call(api.lists.apiGetListOfList);
   yield put(getListOfLists.done(result));
   yield put(statusActions.setStatusMessage(statusMessages.msgListsLoaded));
 }
 
 export function* getAListSaga({ payload }: ReturnType<typeof getAList.started>) {
   yield put(statusActions.setStatusMessage(statusMessages.msgLoadingAList));
-  const result = yield call(api.lists.fetchAList, payload);
+  const result = yield call(api.lists.apiGetAList, payload);
   yield put(getAList.done(result));
   yield put(statusActions.setStatusMessage(`${result.name}${statusMessages.msgLoaded}`));
 }

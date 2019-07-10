@@ -283,6 +283,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     switch (String.fromCharCode(e.which)) {
       case 'a':
         playSound();
+        e.preventDefault();
         // @ts-ignore
         this.taskInput.focus();
         break;
