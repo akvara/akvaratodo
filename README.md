@@ -40,3 +40,13 @@ Deploy on oldakvaratodo
 # ToDo
 - MovePage: data types
 - MovePage: filter list
+## Test
+Manual test:
+### Lists page
+- Reload Lists
+- Plan week
+- Create list
+- Create list with existing name
+- Today
+- Collect to Today
+### Lists page

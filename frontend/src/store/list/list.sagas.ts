@@ -1,29 +1,39 @@
-import { all, call, put, takeEvery } from 'redux-saga/effects';
+import { all, call, put } from 'redux-saga/effects';
 
 import { generalFailure } from '../app/app.sagas';
 import api from '../../core/api';
-import { getAList, getListOfLists, newListAction } from './list.actions';
-import * as statusActions from '../status/status.actions';
-import { statusMessages } from '../../config/constants';
+import { getAList, getListOfLists } from './list.actions';
+import { NewTodoListEntity, TodoList } from '../types';
+import { apiGetAList } from '../../core/api/utils';
 
-export function* getListOfListsSaga() {
-  yield put(statusActions.setStatusMessage(statusMessages.msgLoadingLists));
-  const result = yield call(api.lists.apiGetListOfList);
+export function* getListOfListsSagaHelper() {
+  const result = yield call(api.lists.callGetListOfList);
   yield put(getListOfLists.done(result));
-  yield put(statusActions.setStatusMessage(statusMessages.msgListsLoaded));
 }
 
-export function* getAListSaga({ payload }: ReturnType<typeof getAList.started>) {
-  yield put(statusActions.setStatusMessage(statusMessages.msgLoadingAList));
-  const result = yield call(api.lists.apiGetAList, payload);
+export function* getAListSagaHelper(listId: string) {
+  const result = yield apiGetAList(listId);
   yield put(getAList.done(result));
-  yield put(statusActions.setStatusMessage(`${result.name}${statusMessages.msgLoaded}`));
+  return result.name;
 }
 
 export default function* listSagas() {
-  yield all([
-    takeEvery(getListOfLists.started, getListOfListsSaga),
-    takeEvery(getAList.started, getAListSaga),
-    takeEvery(newListAction.failed, generalFailure),
-  ]);
+  yield all([]);
+}
+
+/**
+ * Finds list by name or creates new
+ */
+export function* findOrCreateListByNameHelperSaga(listName: string) {
+  try {
+    const listOfLists = yield call(api.lists.callGetListOfList);
+    const found = listOfLists.find((list: TodoList) => list.name === listName);
+    if (found) {
+      return found._id;
+    }
+    const newList = yield call(api.lists.callCreateAList, NewTodoListEntity(listName));
+    return newList._id;
+  } catch (e) {
+    yield generalFailure(e);
+  }
 }

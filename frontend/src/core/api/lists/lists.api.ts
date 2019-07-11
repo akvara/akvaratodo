@@ -5,12 +5,12 @@ const listsUrl = 'lists';
 
 const ListsServiceFactory = ({ HTTPBase }: { HTTPBase: AxiosInstance }) => {
   return {
-    apiGetListOfList: (): Promise<TodoList[]> => HTTPBase.get(listsUrl).then((res) => res.data),
-    apiGetAList: (listId: string): Promise<TodoList> => HTTPBase.get(`${listsUrl}/${listId}`).then((res) => res.data),
-    apiCreateAList: (aList: OmitId<TodoList>): Promise<TodoList> => HTTPBase.post(listsUrl, aList).then((res) => res.data),
-    apiUpdateAList: (aList: TodoList): Promise<TodoList> =>
+    callGetListOfList: (): Promise<TodoList[]> => HTTPBase.get(listsUrl).then((res) => res.data),
+    callGetAList: (listId: string): Promise<TodoList> => HTTPBase.get(`${listsUrl}/${listId}`).then((res) => res.data),
+    callCreateAList: (aList: OmitId<TodoList>): Promise<TodoList> => HTTPBase.post(listsUrl, aList).then((res) => res.data),
+    callUpdateAList: (aList: TodoList): Promise<TodoList> =>
       HTTPBase.put(`${listsUrl}/${aList._id}`, aList).then((res) => res.data),
-    apiDeleteAList: (listId: string): Promise<any> =>
+    callDeleteAList: (listId: string): Promise<any> =>
       HTTPBase.delete(`${listsUrl}/${listId}`).then((res) => res.data),
   };
 };
