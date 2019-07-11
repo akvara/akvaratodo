@@ -1,8 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-    UserSettings = mongoose.model('UserSettings'),
-    config = require('../../config/main');
+    UserSettings = mongoose.model('UserSettings');
 
 exports.read_user_settings = function(req, res) {
   UserSettings.findOne({ userId: req.params.userId }, function(err, task) {
