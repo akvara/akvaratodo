@@ -43,7 +43,7 @@ function* checkAndSave({ payload }: Action<SerializedTodoList>) {
     yield put(appActions.dataConflictAction(originalList.lastAction));
     return;
   }
-  yield put(statusActions.setStatusMessage(statusMessages.msgAdded));
+  yield put(statusActions.setStatusMessage(statusMessages.msgSaved));
   yield apiUpdateAList(listId, listData);
 }
 
@@ -52,6 +52,7 @@ function* checkAndSave({ payload }: Action<SerializedTodoList>) {
  */
 function* addOrOpenListsByNameSaga({ payload: { listName } }: Action<ListNameOnly>) {
   try {
+    yield put(appActions.setMode(appModes.MODE_LOADING));
     yield put(statusActions.setStatusMessage(statusMessages.msgLoadingLists));
     const listId = yield findOrCreateListByNameHelperSaga(listName);
     yield put(appActions.openAList(listId));

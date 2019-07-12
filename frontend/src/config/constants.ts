@@ -17,7 +17,7 @@ export const statusMessages = {
   msgPlanAWeek: 'Planing a week ...',
   msgChecking: 'Checking ...',
   msgAdding: 'Adding ...',
-  msgAdded: 'Item added.',
+  msgSaved: 'Saved.',
   msgMoved: 'Item moved.',
   msgCopied: 'Item copied.',
   msgExported: 'List exported.',
