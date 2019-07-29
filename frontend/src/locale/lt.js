@@ -1,4 +1,13 @@
-export const DAYS = ['Sekmadienį', 'Pirmadienį', 'Antradienį', 'Trečiadienį', 'Ketvirtadienį', 'Penktadienį', 'Šeštadienį'];
+export const DAYS = [
+  'Sekmadienį',
+  'Pirmadienį',
+  'Antradienį',
+  'Trečiadienį',
+  'Ketvirtadienį',
+  'Penktadienį',
+  'Šeštadienį',
+];
+
 export const MONTHS = [
   'sausio',
   'vasario',

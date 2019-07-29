@@ -1,5 +1,5 @@
 import _ from 'underscore';
-import CONFIG from '../config.js';
+import CONFIG from '../config/config.js';
 
 export const sortArrOfObjectsByParam = (arrToSort, sortBy, sortDesc) => {
   if (!sortDesc) {

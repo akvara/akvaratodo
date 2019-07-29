@@ -1,8 +1,9 @@
-import * as React from "react";
+import * as React from 'react';
 import PropTypes from 'prop-types';
 
-import CONFIG from '../config.js';
+import CONFIG from '../config/config.js';
 import * as Utils from '../utils/utils.js';
+import { restrictions } from '../config/constants';
 
 class TasksDoneList extends React.Component {
   static propTypes = {
@@ -12,7 +13,10 @@ class TasksDoneList extends React.Component {
 
   /* Display one done task */
   displayTask = (task, i) => {
-    if (!this.props.expand && i < this.props.items.length - CONFIG.user.settings.displayDoneLength) return null;
+    if (!this.props.expand && i < this.props.items.length - CONFIG.user.settings.displayDoneLength) {
+      return null;
+    }
+
     return (
       <tr key={'tr' + i}>
         <td>
@@ -21,7 +25,7 @@ class TasksDoneList extends React.Component {
             aria-hidden="true"
             onClick={this.props.undone.bind(this, i)}
           />
-          <span className="list-item task done">{task}</span>
+          <span className="list-item task done">{task.substring(0, restrictions.maxTaskLength)}</span>
         </td>
       </tr>
     );

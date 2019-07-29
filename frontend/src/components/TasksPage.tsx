@@ -1,29 +1,25 @@
 import * as React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect, Dispatch } from 'react-redux';
 import { compose } from 'recompose';
 import _ from 'underscore';
 
 import TasksList from './TasksList';
 import TasksDoneList from './TasksDoneList';
-import CONFIG from '../config.js';
-import * as listActions from '../store/actions/list-actions';
-import * as appActions from '../store/actions/app-actions';
+import CONFIG from '../config/config.js';
 import { disableHotKeys, playSound, registerHotKeys } from '../utils/hotkeys';
 import * as Utils from '../utils/utils.js';
-import { RootState } from '../store/reducers';
 import { SerializedTodoList, TodoList } from '../store/types';
+import { appActions, listActions } from '../store/actions';
 
 export interface TaskPageProps {
   lists: TodoList[];
-  list: TodoList;
+  aList: TodoList;
   task: string;
   fromList: string;
   immutables: TodoList[];
   exportables: TodoList[];
   previousList: string;
-  getAList: typeof listActions.getAListAction.started;
-  getListOfLists: typeof listActions.getListOfListsAction.started;
+  openAList: typeof appActions.openAList;
+  startupRequest: typeof appActions.startup;
   checkAndSave: typeof appActions.checkAndSaveAction;
   importList: typeof appActions.importListAction;
   exportList: typeof appActions.exportListAction;
@@ -36,7 +32,7 @@ interface TasksPageState {
   itemsToDo: string[];
   itemsDone: string[];
   prepend: boolean;
-  highLightIndex: number | null;
+  highlightIndex: number | null;
   lastAction: string;
   immutable: boolean;
   task: string;
@@ -50,13 +46,13 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      listName: props.list.name,
-      itemsToDo: JSON.parse(props.list.tasks),
-      itemsDone: props.list.done ? JSON.parse(props.list.done) : [],
+      listName: props.aList.name,
+      itemsToDo: JSON.parse(props.aList.tasks),
+      itemsDone: props.aList.done ? JSON.parse(props.aList.done) : [],
       prepend: props.prepend,
-      highLightIndex: props.prepend ? 0 : null,
-      lastAction: props.list.lastAction,
-      immutable: props.list.immutable,
+      highlightIndex: props.prepend ? 0 : null,
+      lastAction: props.aList.lastAction,
+      immutable: props.aList.immutable,
       task: '',
       reloadNeeded: false,
       listNameOnEdit: false,
@@ -78,7 +74,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   prepareClone(newProps: any) {
     return {
       lastAction: new Date().toISOString(),
-      listId: this.props.list._id,
+      listId: this.props.aList._id,
       previousAction: this.state.lastAction,
       ...newProps,
     };
@@ -129,7 +125,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
       lastAction: dataToSave.lastAction,
       itemsToDo: dataToSave.itemsToDo,
       itemsDone: dataToSave.itemsDone,
-      highLightIndex: null,
+      highlightIndex: null,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -144,7 +140,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
       lastAction: dataToSave.lastAction,
       itemsToDo: dataToSave.itemsToDo,
       itemsDone: dataToSave.itemsDone,
-      highLightIndex: 0,
+      highlightIndex: 0,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -157,7 +153,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.setState({
       lastAction: dataToSave.lastAction,
       itemsDone: dataToSave.itemsDone,
-      highLightIndex: null,
+      highlightIndex: null,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -171,7 +167,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.setState({
       lastAction: dataToSave.lastAction,
       itemsToDo: dataToSave.itemsToDo,
-      highLightIndex: null,
+      highlightIndex: null,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -185,7 +181,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.setState({
       lastAction: dataToSave.lastAction,
       itemsToDo: dataToSave.itemsToDo,
-      highLightIndex: 0,
+      highlightIndex: 0,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -198,7 +194,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.setState({
       lastAction: dataToSave.lastAction,
       immutable: dataToSave.immutable,
-      highLightIndex: null,
+      highlightIndex: null,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -207,7 +203,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   /* Move task to another list */
   moveOutside = (task: string) => {
     const data = {
-      fromList: { listId: this.props.list._id, name: this.state.listName },
+      fromList: { listId: this.props.aList._id, name: this.state.listName },
       task,
     };
     this.props.moveOutside(data);
@@ -222,7 +218,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.setState({
       lastAction: dataToSave.lastAction,
       itemsToDo: dataToSave.itemsToDo,
-      highLightIndex: this.state.itemsToDo.length,
+      highlightIndex: this.state.itemsToDo.length,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -237,7 +233,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     );
     const dataToSave = this.prepareClone({ itemsToDo });
 
-    const highLightIndex = Math.min(
+    const highlightIndex = Math.min(
       this.state.itemsToDo.length - 1,
       fromPos + this.calculatePostponePosition(this.state.itemsToDo.length),
     );
@@ -245,7 +241,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.setState({
       lastAction: dataToSave.lastAction,
       itemsToDo: dataToSave.itemsToDo,
-      highLightIndex,
+      highlightIndex,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -259,7 +255,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
       lastAction: dataToSave.lastAction,
       listName: dataToSave.name,
       listNameOnEdit: false,
-      highLightIndex: null,
+      highlightIndex: null,
     });
 
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -273,7 +269,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
 
   /* Reload this list*/
   reload = () => {
-    this.props.getAList(this.props.list._id);
+    this.props.openAList(this.props.aList._id);
   };
 
   /* Mode: List name is on edit */
@@ -284,32 +280,28 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   };
 
   checkKeyPressed = (e) => {
-    const key = String.fromCharCode(e.which);
-    if ('alrp<'.indexOf(key) !== -1) {
-      playSound();
-    }
-
     switch (String.fromCharCode(e.which)) {
       case 'a':
+        playSound();
         e.preventDefault();
         // @ts-ignore
         this.taskInput.focus();
         break;
       case 'l':
-        e.preventDefault();
-        this.props.getListOfLists();
+        playSound();
+        this.props.startupRequest();
         break;
       case 'r':
-        e.preventDefault();
+        playSound();
         this.reload();
         break;
       case 'p':
-        e.preventDefault();
+        playSound();
         this.mark();
         break;
       case '<':
-        e.preventDefault();
-        if (this.props.previousList) {
+        if (this.props.previousList.listId) {
+          playSound();
           this.listChanger(this.props.previousList.name);
         }
         break;
@@ -354,7 +346,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     // @ts-ignore
     this.taskInput.blur();
 
-    const highLightIndex = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
+    const highlightIndex = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
     const taskToAdd = this.state.task.replace(/(^\s+|\s+$)/g, '');
     let itemsToDo = this.state.itemsToDo;
     itemsToDo.splice(CONFIG.user.settings.addNewAt - 1, 0, taskToAdd);
@@ -364,7 +356,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.setState({
       lastAction: dataToSave.lastAction,
       itemsToDo: dataToSave.itemsToDo,
-      highLightIndex,
+      highlightIndex,
       task: '',
     });
     this.props.checkAndSave(this.serialize(dataToSave));
@@ -378,13 +370,13 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   importList = (listId: string) => {
     this.props.importList({
       fromListId: listId,
-      toListId: this.props.list._id,
+      toListId: this.props.aList._id,
     });
   };
 
   exportList = (listId: string) => {
     this.props.exportList({
-      fromListId: this.props.list._id,
+      fromListId: this.props.aList._id,
       toListId: listId,
     });
   };
@@ -472,6 +464,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   };
 
   render() {
+
     const markTitle = this.state.immutable ? (
         <span>
           Un<u>p</u>rotect
@@ -484,7 +477,6 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
       markGlyphicon = this.state.immutable ? 'screen-shot' : 'exclamation-sign',
       expandToDoGlyphicon = this.state.expandToDo ? 'glyphicon-resize-small' : 'glyphicon-resize-full',
       expandDoneGlyphicon = this.state.expandDone ? 'glyphicon-resize-small' : 'glyphicon-resize-full';
-
     return (
       <div>
         {this.manageHeader()}
@@ -520,7 +512,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
         </h3>
         <TasksList
           items={this.state.itemsToDo}
-          highLightIndex={this.state.highLightIndex}
+          highlightIndex={this.state.highlightIndex}
           immutable={this.state.immutable}
           delete={this.removeTask}
           move={this.moveOutside}
@@ -563,12 +555,12 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
         <button onClick={this.reload}>
           <span className={'glyphicon glyphicon-refresh'} aria-hidden="true" /> <u>R</u>eload
         </button>
-        {this.props.previousList && (
+        {this.props.previousList && this.props.previousList.listId && (
           <button disabled={!!this.state.task.trim()} onClick={() => this.listChanger(this.props.previousList.name)}>
             <span className="glyphicon glyphicon-chevron-left" aria-hidden="true" /> {this.props.previousList.name}
           </button>
         )}
-        <button disabled={!!this.state.task.trim()} onClick={() => this.props.getListOfLists()}>
+        <button disabled={!!this.state.task.trim()} onClick={() => this.props.startupRequest()}>
           <span className="glyphicon glyphicon-tasks" aria-hidden="true" /> <u>L</u>ists
         </button>
         <br />
@@ -577,34 +569,4 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   }
 }
 
-const mapStateToProps = (state: RootState) => ({
-  lists: state.app.lists,
-  list: state.app.aList,
-  task: state.app.task,
-  fromList: state.app.fromList,
-  immutables: state.app.lists.filter((item) => item.immutable),
-  exportables: state.app.lists.filter((item) => item._id !== state.app.aList._id && !item.immutable).slice(0, 20),
-  previousList: state.app.fromList && state.app.aList._id === state.app.fromList.listId ? null : state.app.fromList,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
-  return bindActionCreators(
-    {
-      getAList: listActions.getAListAction.started,
-      getListOfLists: listActions.getListOfListsAction.started,
-      checkAndSave: appActions.checkAndSaveAction,
-      importList: appActions.importListAction,
-      exportList: appActions.exportListAction,
-      addOrOpenAList: appActions.addOrOpenListByNameAction,
-      moveOutside: appActions.moveInitiationAction,
-    },
-    dispatch,
-  );
-};
-
-export default compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  ),
-)(TasksPage);
+export default TasksPage;
