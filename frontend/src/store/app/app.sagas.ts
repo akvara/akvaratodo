@@ -336,6 +336,29 @@ function* openAListByIdSaga({ payload }: ReturnType<typeof appActions.openAList>
     yield generalFailure(e);
   }
 }
+/**
+ * Reload a list
+ */
+
+function* reloadAListSaga({ payload }: ReturnType<typeof appActions.reloadAList>) {
+  try {
+    yield put(statusActions.setStatusMessage(statusMessages.msgLoadingAList));
+    yield put(appActions.setMode(appModes.MODE_LOADING));
+
+    const listName = yield getAListSagaHelper(payload);
+    if (listName) {
+      yield put(appActions.setMode(appModes.MODE_A_LIST));
+      yield put(statusActions.setStatusMessage(`${listName}${statusMessages.msgLoaded}`));
+      return
+    }
+    yield getListOfListsSagaHelper();
+    yield put(statusActions.setStatusMessage(statusMessages.msgListsLoaded));
+    yield put(appActions.setMode(appModes.MODE_LIST_OF_LISTS));
+
+  } catch (e) {
+    yield generalFailure(e);
+  }
+}
 
 /**
  * Fires Error action
@@ -361,6 +384,7 @@ export default function* appSagas() {
     takeEvery(appActions.startup, startupSaga),
     takeEvery(appActions.openAList, openAListByIdSaga),
     takeEvery(appActions.reloadListOfLists, reloadListOfListsSaga),
+    takeEvery(appActions.reloadAList, reloadAListSaga),
     takeEvery(appActions.collectPastDays, collectPastDaysSaga),
     takeEvery(appActions.deleteAList, deleteAListSaga),
     // takeEvery(appActions.moveInitiationAction, moveInitiationActionSaga),

@@ -14,7 +14,7 @@ export function* getListOfListsSagaHelper() {
 export function* getAListSagaHelper(listId: string) {
   const result = yield apiGetAList(listId);
   yield put(getAList.done(result));
-  return result.name;
+  return result ? result.name : null;
 }
 
 export default function* listSagas() {

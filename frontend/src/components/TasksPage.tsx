@@ -18,7 +18,7 @@ export interface TaskPageProps {
   immutables: TodoList[];
   exportables: TodoList[];
   previousList: string;
-  openAList: typeof appActions.openAList;
+  reloadAList: typeof appActions.reloadAList;
   startupRequest: typeof appActions.startup;
   checkAndSave: typeof appActions.checkAndSaveAction;
   importList: typeof appActions.importListAction;
@@ -269,7 +269,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
 
   /* Reload this list*/
   reload = () => {
-    this.props.openAList(this.props.aList._id);
+    this.props.reloadAList(this.props.aList._id);
   };
 
   /* Mode: List name is on edit */

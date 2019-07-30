@@ -19,6 +19,7 @@ export const errorAction = actionCreator<{}>('ERROR');
 // New, correct
 export const setMode = actionCreator<string>('SET_MODE');
 export const reloadListOfLists = actionCreator<void>('RELOAD_LISTS');
+export const reloadAList = actionCreator<string>('RELOAD_A_LIST');
 export const openAList = actionCreator<string>('OPEN_A_LIST');
 export const collectPastDays = actionCreator<void>('COLLECT_PAST');
 export const startup = actionCreator<void>('STARTUP');

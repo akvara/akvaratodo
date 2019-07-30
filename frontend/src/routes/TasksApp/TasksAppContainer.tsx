@@ -21,6 +21,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
   return bindActionCreators(
     {
       openAList: appActions.openAList,
+      reloadAList: appActions.reloadAList,
       startupRequest: appActions.startup,
       checkAndSave: appActions.checkAndSaveAction,
       importList: appActions.importListAction,
