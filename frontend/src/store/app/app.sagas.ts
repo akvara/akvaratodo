@@ -336,10 +336,10 @@ function* openAListByIdSaga({ payload }: ReturnType<typeof appActions.openAList>
     yield generalFailure(e);
   }
 }
+
 /**
  * Reload a list
  */
-
 function* reloadAListSaga({ payload }: ReturnType<typeof appActions.reloadAList>) {
   try {
     yield put(statusActions.setStatusMessage(statusMessages.msgLoadingAList));
