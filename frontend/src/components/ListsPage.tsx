@@ -77,6 +77,7 @@ class ListsPage extends React.PureComponent {
       { key: 'r' }, // "Refresh"
       { key: 't' }, // "Today"
       { key: 'p' }, // "Plan"
+      { key: '>' }, // ">>"
     ];
   }
 
@@ -111,6 +112,11 @@ class ListsPage extends React.PureComponent {
     if (pressed === 'p') {
       playSound();
       this.props.planWeek();
+      return;
+    }
+    if (pressed === '>') {
+      playSound();
+      this.props.collectPastDaysRequest();
       return;
     }
     this.hotKeys.forEach(
