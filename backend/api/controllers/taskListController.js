@@ -23,6 +23,10 @@ exports.create_a_tasklist = function(req, res) {
 };
 
 exports.read_a_tasklist = function(req, res) {
+    if (req.params.taskListId === "undefined") {
+        return res.status(422).send({ error: 'missing ID'});
+    }
+
     TaskList.findById(req.params.taskListId, function(err, task) {
         if (err)
             res.send(err);
@@ -31,6 +35,10 @@ exports.read_a_tasklist = function(req, res) {
 };
 
 exports.update_a_tasklist = function(req, res) {
+    if (req.params.taskListId === "undefined") {
+        return res.status(422).send({ error: 'missing ID'});
+    }
+
     TaskList.findOneAndUpdate({'_id': req.params.taskListId, userId: req.params.userId}, req.body, {new: false}, function(err, task) {
         if (err)
             res.send(err);
