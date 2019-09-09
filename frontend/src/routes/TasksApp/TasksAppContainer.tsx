@@ -3,7 +3,7 @@ import { connect, Dispatch } from 'react-redux';
 import { compose } from 'recompose';
 
 import { RootState } from '../../store/reducers';
-import { appActions, listActions } from '../../store/actions';
+import { appActions } from '../../store/actions';
 import TasksPage from '../../components/TasksPage';
 import { appSelector, listSelector } from '../../store/selectors';
 
@@ -20,7 +20,6 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
   return bindActionCreators(
     {
-      openAList: appActions.openAList,
       reloadAList: appActions.reloadAList,
       startupRequest: appActions.startup,
       checkAndSave: appActions.checkAndSaveAction,
