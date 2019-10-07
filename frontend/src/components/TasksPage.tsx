@@ -7,7 +7,7 @@ import TasksDoneList from './TasksDoneList';
 import CONFIG from '../config/config.js';
 import { disableHotKeys, playSound, registerHotKeys } from '../utils/hotkeys';
 import * as Utils from '../utils/utils.js';
-import { SerializedTodoList, TodoList } from '../store/types';
+import { ListCreds, SerializedTodoList, TodoList } from '../store/types';
 import { appActions, listActions } from '../store/actions';
 import { dayString } from '../utils/calendar';
 
@@ -18,7 +18,7 @@ export interface TaskPageProps {
   fromList: string;
   immutables: TodoList[];
   exportables: TodoList[];
-  previousList: string;
+  previousList: ListCreds;
   reloadAList: typeof appActions.reloadAList;
   startupRequest: typeof appActions.startup;
   checkAndSave: typeof appActions.checkAndSaveAction;
@@ -268,14 +268,24 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.props.addOrOpenAList({ listName });
   };
 
-  /* Reload this list*/
+  /* Reload this list */
   reload = () => {
     this.props.reloadAList(this.props.aList._id);
   };
 
-  /* Go to todays list*/
+  /* Go to today's list */
   goToday = () => {
     this.props.addOrOpenAList({ listName: dayString(new Date()) });
+  };
+
+  /* Go to lists */
+  goLists = () => {
+    this.props.startupRequest();
+  };
+
+  /* Go to previous lists */
+  goPrevious = () => {
+    this.listChanger(this.props.previousList.name);
   };
 
   /* Mode: List name is on edit */
@@ -295,7 +305,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
         break;
       case 'l':
         playSound();
-        this.props.startupRequest();
+        this.goLists();
         break;
       case 'r':
         playSound();
@@ -312,7 +322,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
       case '<':
         if (this.props.previousList.listId) {
           playSound();
-          this.listChanger(this.props.previousList.name);
+          this.goPrevious();
         }
         break;
       default:
@@ -474,6 +484,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   };
 
   render() {
+    const inputDirty = !!this.state.task.trim();
     const markTitle = this.state.immutable ? (
         <span>
           Un<u>p</u>rotect
@@ -533,7 +544,6 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
           done={this.doneTask}
           expand={this.state.expandToDo}
         />
-
         {!this.state.immutable && (
           <div>
             <hr />
@@ -559,26 +569,23 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
         {this.displayImportBlock()}
         {this.displayExportBlock()}
         <br />
-        <button disabled={!!this.state.task.trim()} onClick={this.mark}>
-          <span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true" /> {markTitle}
-        </button>
-        <button onClick={this.reload}>
+        <button disabled={inputDirty} onClick={this.reload}>
           <span className={'glyphicon glyphicon-refresh'} aria-hidden="true" /> <u>R</u>eload
         </button>
+        <button disabled={inputDirty} onClick={this.mark}>
+          <span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true" /> {markTitle}
+        </button>
+        <button disabled={inputDirty} onClick={this.goLists}>
+          <span className="glyphicon glyphicon-tasks" aria-hidden="true" /> <u>L</u>ists
+        </button>
+        <button disabled={inputDirty} onClick={this.goToday}>
+          <span className="glyphicon glyphicon-subscript" aria-hidden="true" /> <u>T</u>oday
+        </button>
         {this.props.previousList && this.props.previousList.listId && (
-          <button disabled={!!this.state.task.trim()} onClick={() => this.listChanger(this.props.previousList.name)}>
+          <button disabled={inputDirty} onClick={this.goPrevious}>
             <span className="glyphicon glyphicon-chevron-left" aria-hidden="true" /> {this.props.previousList.name}
           </button>
         )}
-        <button disabled={!!this.state.task.trim()} onClick={() => this.props.startupRequest()}>
-          <span className="glyphicon glyphicon-tasks" aria-hidden="true" /> <u>L</u>ists
-        </button>
-        <button
-          onClick={this.goToday}
-        >
-          <span className="glyphicon glyphicon-subscript" aria-hidden="true" /> <u>T</u>oday
-        </button>
-        <br />
       </div>
     );
   }
