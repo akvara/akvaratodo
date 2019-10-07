@@ -9,6 +9,7 @@ import { disableHotKeys, playSound, registerHotKeys } from '../utils/hotkeys';
 import * as Utils from '../utils/utils.js';
 import { SerializedTodoList, TodoList } from '../store/types';
 import { appActions, listActions } from '../store/actions';
+import { dayString } from '../utils/calendar';
 
 export interface TaskPageProps {
   lists: TodoList[];
@@ -272,6 +273,11 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.props.reloadAList(this.props.aList._id);
   };
 
+  /* Go to todays list*/
+  goToday = () => {
+    this.props.addOrOpenAList({ listName: dayString(new Date()) });
+  };
+
   /* Mode: List name is on edit */
   editListName = () => {
     this.setState({
@@ -298,6 +304,10 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
       case 'p':
         playSound();
         this.mark();
+        break;
+      case 't':
+        playSound();
+        this.goToday();
         break;
       case '<':
         if (this.props.previousList.listId) {
@@ -464,7 +474,6 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   };
 
   render() {
-
     const markTitle = this.state.immutable ? (
         <span>
           Un<u>p</u>rotect
@@ -549,6 +558,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
         <hr />
         {this.displayImportBlock()}
         {this.displayExportBlock()}
+        <br />
         <button disabled={!!this.state.task.trim()} onClick={this.mark}>
           <span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true" /> {markTitle}
         </button>
@@ -562,6 +572,11 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
         )}
         <button disabled={!!this.state.task.trim()} onClick={() => this.props.startupRequest()}>
           <span className="glyphicon glyphicon-tasks" aria-hidden="true" /> <u>L</u>ists
+        </button>
+        <button
+          onClick={this.goToday}
+        >
+          <span className="glyphicon glyphicon-subscript" aria-hidden="true" /> <u>T</u>oday
         </button>
         <br />
       </div>
