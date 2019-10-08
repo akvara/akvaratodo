@@ -17,7 +17,7 @@ const mapStateToProps = (state: RootState) => ({
   previousList: appSelector.selectPreviousList(state),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
+const mapDispatchToProps = (dispatch: Dispatch) => {
   return bindActionCreators(
     {
       reloadAList: appActions.reloadAList,

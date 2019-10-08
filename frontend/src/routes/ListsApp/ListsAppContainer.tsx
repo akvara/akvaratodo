@@ -1,18 +1,19 @@
-import { bindActionCreators } from 'redux';
-import { connect, Dispatch } from 'react-redux';
+import { bindActionCreators, Dispatch } from 'redux';
+import { connect } from 'react-redux';
 import { compose } from 'recompose';
 
 import { RootState } from '../../store/reducers';
-import ListsPage, { ListsPageProps } from '../../components/ListsPage';
+import ListsPage, { ListsPageProps } from '../../../../old/ListsPage';
 import { appActions } from '../../store/actions';
 import { listSelector } from '../../store/selectors';
+import ListsApp from './ListsApp';
 
 const mapStateToProps = (state: RootState) => ({
   lists: listSelector.selectListOfLists(state),
   legacyExists: listSelector.findLegacyExists(state),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
+const mapDispatchToProps = (dispatch: Dispatch) => {
   return bindActionCreators(
     {
       getAListRequest: appActions.openAList,
@@ -31,4 +32,5 @@ export default compose<ListsPageProps, ListsPageProps>(
     mapStateToProps,
     mapDispatchToProps,
   ),
-)(ListsPage);
+// )(ListsPage);
+)(ListsApp);

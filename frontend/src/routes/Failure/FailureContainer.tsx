@@ -11,7 +11,7 @@ const mapStateToProps = (state: RootState) => ({
   aList: state.app.aList,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
+const mapDispatchToProps = (dispatch: Dispatch) => {
   return bindActionCreators(
     {
       openAListRequest: appActions.openAList,

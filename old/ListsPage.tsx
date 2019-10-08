@@ -1,12 +1,12 @@
-import * as React from 'react';
+import React from 'react';
 import { compose } from 'recompose';
 
-import ListsTable from './ListsTable';
+import ListsTable from '../frontend/src/components/ListsTable';
 
-import { disableHotKeys, playSound, registerHotKeys } from '../utils/hotkeys';
-import { TodoList } from '../store/types';
-import { dayString } from '../utils/calendar';
-import { appActions } from '../store/actions';
+import { disableHotKeys, playSound, registerHotKeys } from '../frontend/src/utils/hotkeys';
+import { TodoList } from '../frontend/src/store/types';
+import { dayString } from '../frontend/src/utils/calendar';
+import { appActions } from '../frontend/src/store/actions';
 
 export interface ListsPageProps {
   lists: TodoList[];
@@ -21,7 +21,7 @@ export interface ListsPageProps {
 export interface ListsPagePrivateProps extends ListsPageProps {}
 
 const makeContractableList = (listOfLists) => {
-  const contractedList = [];
+  const contractedList = {};
 
   listOfLists.map((list) => {
     const dashPos = list.name.indexOf(' - ');
@@ -35,7 +35,7 @@ const makeContractableList = (listOfLists) => {
     return null;
   });
 
-  const displayList = [];
+  const displayList = [] as any;
 
   listOfLists.map((list) => {
     const dashPos = list.name.indexOf(' - ');
@@ -71,14 +71,14 @@ class ListsPage extends React.PureComponent {
       listName: '',
     };
 
-    this.hotKeys = [
-      // reserved hotkeys
-      { key: 'a' }, // "Add"
-      { key: 'r' }, // "Refresh"
-      { key: 't' }, // "Today"
-      { key: 'p' }, // "Plan"
-      { key: '>' }, // ">>"
-    ];
+    // this.hotKeys = [
+    //   // reserved hotkeys
+    //   { key: 'a' }, // "Add"
+    //   { key: 'r' }, // "Refresh"
+    //   { key: 't' }, // "Today"
+    //   { key: 'p' }, // "Plan"
+    //   { key: '>' }, // ">>"
+    // ];
   }
 
   componentWillUnmount() {
@@ -95,7 +95,7 @@ class ListsPage extends React.PureComponent {
     if (pressed === 'a') {
       playSound();
       e.preventDefault();
-      this.listNameInput.focus();
+      // this.listNameInput.focus();
       return;
     }
     if (pressed === 'r') {
@@ -111,12 +111,12 @@ class ListsPage extends React.PureComponent {
     }
     if (pressed === 'p') {
       playSound();
-      this.props.planWeek();
+      // this.props.planWeek();
       return;
     }
     if (pressed === '>') {
       playSound();
-      this.props.collectPastDaysRequest();
+      // this.props.collectPastDaysRequest();
       return;
     }
     this.hotKeys.forEach(
