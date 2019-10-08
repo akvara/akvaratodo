@@ -25,7 +25,6 @@ const ListsFilterInput: React.FunctionComponent<ListsFilterPrivateProps> = ({ pa
 };
 
 export default compose<ListsFilterPrivateProps, ListsFilterProps>(
-  // withForwardedRef,
   reduxForm({
     form: Forms.listsFilter,
     initialValues: {

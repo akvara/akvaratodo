@@ -12,6 +12,7 @@ export interface TodoList {
   done: string;
   immutable: boolean;
   lastAction: string;
+  updatedAt?: string;
 }
 
 export interface SerializedTodoList {
@@ -50,12 +51,6 @@ export interface TodoListCopy {
 export interface ListCreds {
   listId: string;
   name: string;
-}
-
-export interface TodoListUpdate {
-  name?: string;
-  tasks: string;
-  lastAction: string;
 }
 
 export interface HotKey {

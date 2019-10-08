@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { compose, lifecycle, withHandlers, withProps } from 'recompose';
-import { disableHotKeys, playSound, registerHotKeys } from '../../utils/hotkeys';
 
+import { disableHotKeys, playSound, registerHotKeys } from '../../utils/hotkeys';
 import { ListCreds, TodoList } from '../../store/types';
 import { appActions } from '../../store/actions';
 import { config } from '../../config/config';
@@ -12,25 +12,29 @@ export interface MovePageProps {
   task: string;
   lists: TodoList[];
   fromList: ListCreds;
+  newListName: string;
+}
+
+interface MovePageHandlers {
+  moveHandler: (toListId: string) => void;
+  copyHandler: (toListId: string) => void;
+  moveToNewListHandler: () => void;
+  copyToNewListHandler: () => void;
+  backHandler: () => void;
+  reloadHandler: () => void;
+}
+
+interface MovePagePrivateProps extends MovePageProps, MovePageHandlers {
+  pageHotKeys: (e: any) => void;
   openAList: typeof appActions.openAList;
   moveToList: typeof appActions.moveToListAction;
   moveToListByName: typeof appActions.moveToListByNameAction;
   copyToAList: typeof appActions.copyToListAction;
-  reloadListOfListsPage: typeof appActions.reloadListOfLists;
-  newListName: string;
+  reloadListOfListsRequest: typeof appActions.reloadListOfLists;
+  ref: any;
 }
 
-interface MovePagePrivateProps extends MovePageProps {
-  onMove: (toListId: string) => void;
-  onCopy: (toListId: string) => void;
-  onMoveToNewList: () => void;
-  onCopyToNewList: () => void;
-  onBack: () => void;
-  onReload: () => void;
-  pageHotKeys: (e: any) => void;
-}
-
-const ref = React.createRef();
+// const ref = React.createRef();
 
 const MovePage: React.FunctionComponent<MovePagePrivateProps> = (props) => {
   const {
@@ -38,12 +42,12 @@ const MovePage: React.FunctionComponent<MovePagePrivateProps> = (props) => {
     newListName,
     lists,
     fromList,
-    onMoveToNewList,
-    onCopyToNewList,
-    onMove,
-    onCopy,
-    onBack,
-    onReload,
+    moveToNewListHandler,
+    copyToNewListHandler,
+    moveHandler,
+    copyHandler,
+    backHandler,
+    reloadHandler,
     pageHotKeys,
   } = props;
 
@@ -52,18 +56,18 @@ const MovePage: React.FunctionComponent<MovePagePrivateProps> = (props) => {
       <hr />
       <h2>{task.substring(0, restrictions.maxTaskLength)}</h2>
       <hr />
-      <button onClick={onBack}>
+      <button onClick={backHandler}>
         {'<'} Back to {fromList.name}
       </button>{' '}
-      <button onClick={onReload}>
+      <button onClick={reloadHandler}>
         <span className={'glyphicon glyphicon-refresh'} aria-hidden="true" /> <u>R</u>eload
       </button>
       <hr />
       <ListsFilter pageHotKeys={pageHotKeys} />
-      <button disabled={!newListName} onClick={onMoveToNewList}>
+      <button disabled={!newListName} onClick={moveToNewListHandler}>
         Move to new list
       </button>{' '}
-      <button disabled={!newListName} onClick={onCopyToNewList}>
+      <button disabled={!newListName} onClick={copyToNewListHandler}>
         Copy to new list
       </button>
       <hr />
@@ -71,13 +75,13 @@ const MovePage: React.FunctionComponent<MovePagePrivateProps> = (props) => {
         <tbody>
           {lists.map((list) =>
             list._id === fromList.listId ? null : (
-              <tr key={'tr' + list._id}>
+              <tr key={list._id}>
                 <td>
                   To: <strong>{list.name}</strong>
                 </td>
                 <td>
-                  <button onClick={() => onMove(list._id)}>Move</button>{' '}
-                  <button onClick={() => onCopy(list._id)}>Copy</button>
+                  <button onClick={() => moveHandler(list._id)}>Move</button>{' '}
+                  <button onClick={() => copyHandler(list._id)}>Copy</button>
                 </td>
               </tr>
             ),
@@ -89,14 +93,14 @@ const MovePage: React.FunctionComponent<MovePagePrivateProps> = (props) => {
 };
 
 export default compose(
-  withHandlers({
-    onMove: ({ moveToList, fromList, task }: MovePagePrivateProps) => (toListId) => {
+  withHandlers<MovePagePrivateProps, MovePageHandlers>({
+    moveHandler: ({ moveToList, fromList, task }: MovePagePrivateProps) => (toListId) => {
       moveToList({ fromListId: fromList.listId, toListId, task });
     },
-    onCopy: ({ copyToAList, task }: MovePagePrivateProps) => (toListId) => {
+    copyHandler: ({ copyToAList, task }: MovePagePrivateProps) => (toListId) => {
       copyToAList({ toListId, task });
     },
-    onMoveToNewList: ({ moveToListByName, fromList, task, newListName }: MovePagePrivateProps) => () => {
+    moveToNewListHandler: ({ moveToListByName, fromList, task, newListName }: MovePagePrivateProps) => () => {
       moveToListByName({
         fromListId: fromList.listId,
         task,
@@ -104,7 +108,7 @@ export default compose(
         move: true,
       });
     },
-    onCopyToNewList: ({ moveToListByName, fromList, task, newListName }: MovePagePrivateProps) => () => {
+    copyToNewListHandler: ({ moveToListByName, fromList, task, newListName }: MovePagePrivateProps) => () => {
       moveToListByName({
         fromListId: fromList.listId,
         task,
@@ -112,27 +116,26 @@ export default compose(
         move: false,
       });
     },
-    onBack: ({ openAList, fromList }: MovePagePrivateProps) => () => {
+    backHandler: ({ openAList, fromList }: MovePagePrivateProps) => () => {
       openAList(fromList.listId);
     },
-    onReload: ({ reloadListOfListsPage }: MovePagePrivateProps) => () => {
-      reloadListOfListsPage();
+    reloadHandler: ({ reloadListOfListsRequest }: MovePagePrivateProps) => () => {
+      reloadListOfListsRequest();
     },
   }),
-  withProps(({ onReload, onBack }: MovePagePrivateProps) => ({
+  withProps(({ reloadHandler, backHandler }: MovePagePrivateProps) => ({
     pageHotKeys: (e) => {
       const pressed = String.fromCharCode(e.which);
-
       if (pressed === 'r') {
         e.preventDefault();
         playSound();
-        onReload();
+        reloadHandler();
         return;
       }
       if (pressed === '<') {
         e.preventDefault();
         playSound();
-        onBack();
+        backHandler();
         return;
       }
     },

@@ -1,5 +1,3 @@
-import { getFormValues } from 'redux-form';
-
 import { RootState } from '../reducers';
 import { ListCreds } from '../types';
 
