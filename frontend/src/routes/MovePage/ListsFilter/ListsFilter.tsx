@@ -18,8 +18,8 @@ const ListsFilterInput: React.FunctionComponent<ListsFilterPrivateProps> = ({ pa
       name="searchInput"
       placeholder={''}
       component="input"
-      onFocus={disableHotKeys.bind(this)}
-      onBlur={registerHotKeys.bind(this, pageHotKeys)}
+      onFocus={disableHotKeys}
+      onBlur={() => registerHotKeys(pageHotKeys)}
     />
   );
 };
