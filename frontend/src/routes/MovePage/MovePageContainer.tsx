@@ -7,6 +7,7 @@ import { RootState } from '../../store/reducers';
 import MovePage from './MovePage';
 import { appSelector, listSelector } from '../../store/selectors';
 import { Forms } from '../../store/forms';
+import { dayString } from '../../utils/calendar';
 
 const mapStateToProps = (state: RootState) => {
   const searchFormValues = getFormValues(Forms.listsFilter)(state);
@@ -15,6 +16,7 @@ const mapStateToProps = (state: RootState) => {
     task: appSelector.selectSelectedTask(state),
     fromList: state.app.fromList,
     newListName: searchFormValues ? searchFormValues.searchInput : '',
+    tomorrowListName: dayString(new Date(new Date().setDate(new Date().getDate() + 1))),
   };
 };
 

@@ -154,7 +154,7 @@ function* moveToListByNameSaga(action: Action<TodoListMoveByName>) {
     if (action.payload.move) {
       yield removeTaskFromList(newAction);
     }
-    yield put(appActions.openAList(listId));
+    yield put(appActions.openAList(action.payload.backToOldList ? action.payload.fromListId : listId));
     yield put(appActions.setMode(appModes.MODE_A_LIST));
     yield put(statusActions.setStatusMessage(statusMessages.msgMoved));
   } catch (e) {
@@ -349,12 +349,11 @@ function* reloadAListSaga({ payload }: ReturnType<typeof appActions.reloadAList>
     if (listName) {
       yield put(appActions.setMode(appModes.MODE_A_LIST));
       yield put(statusActions.setStatusMessage(`${listName}${statusMessages.msgLoaded}`));
-      return
+      return;
     }
     yield getListOfListsSagaHelper();
     yield put(statusActions.setStatusMessage(statusMessages.msgListsLoaded));
     yield put(appActions.setMode(appModes.MODE_LIST_OF_LISTS));
-
   } catch (e) {
     yield generalFailure(e);
   }

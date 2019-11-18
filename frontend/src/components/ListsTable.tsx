@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import * as Utils from '../utils/utils.js';
-import { hotKeyedListName, strongify } from "../utils/stringUtils";
-
-
+import { hotKeyedListName } from '../utils/stringUtils';
 
 class ListsTable extends Component {
   static propTypes = {

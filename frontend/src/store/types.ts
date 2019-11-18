@@ -40,6 +40,7 @@ export interface TodoListMoveByName {
   listName: string;
   task: string;
   move: boolean;
+  backToOldList?: boolean;
 }
 
 export interface TodoListCopy {
