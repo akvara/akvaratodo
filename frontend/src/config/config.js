@@ -21,7 +21,7 @@ export const config = {
   appNode: document.getElementById('app'),
   footerNode: document.getElementById('footer'),
   clickSound: 'https://www.soundjay.com/button/button-20.mp3',
-  version: '1118-16',
+  version: '1208-12',
 };
 
 export default config;

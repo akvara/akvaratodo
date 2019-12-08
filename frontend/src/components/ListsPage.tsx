@@ -75,6 +75,7 @@ class ListsPage extends React.PureComponent {
       // reserved hotkeys
       { key: 'a' }, // "Add"
       { key: 'r' }, // "Refresh"
+      { key: 'l' }, // "List refresh"
       { key: 't' }, // "Today"
       { key: 'p' }, // "Plan"
       { key: '>' }, // ">>"
@@ -98,7 +99,7 @@ class ListsPage extends React.PureComponent {
       this.listNameInput.focus();
       return;
     }
-    if (pressed === 'r') {
+    if (pressed === 'r' || pressed === 'l') {
       playSound();
       e.preventDefault();
       this.reload();
