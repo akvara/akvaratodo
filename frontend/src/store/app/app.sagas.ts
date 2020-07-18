@@ -258,7 +258,7 @@ function* collectPastDaysSaga() {
       // prevDayString = dayString(new Date(Date.now() - secsPerDay * before));
       prevDayList = listOfLists.find((list: TodoList) => list.name === prevDayString);
       if (prevDayList) {
-        legacyListIds.push(prevDayList._id as string);
+        legacyListIds.push(prevDayList.id as string);
         collectedTasks = utils.concatTwoJSONs(prevDayList.tasks, collectedTasks);
       }
     });
@@ -270,13 +270,13 @@ function* collectPastDaysSaga() {
         lastAction: new Date().toISOString(),
         tasks: collectedTasks,
       } as TodoList;
-      yield apiUpdateAList(todayList._id, todayList);
+      yield apiUpdateAList(todayList.id, todayList);
       yield put(statusActions.setStatusMessage(statusMessages.msgDeletingAList));
       yield all(legacyListIds.map((listId) => apiDeleteAList(listId)));
       yield getListOfListsSagaHelper();
     }
     yield put(listActions.getAList.done(todayList)); // ToDo: get rid of
-    yield put(selectedActions.setSelectedList(todayList._id));
+    yield put(selectedActions.setSelectedList(todayList.id));
     yield put(statusActions.setStatusMessage(statusMessages.msgTodaysLoaded));
     yield put(appActions.setMode(appModes.MODE_A_LIST));
   } catch (e) {

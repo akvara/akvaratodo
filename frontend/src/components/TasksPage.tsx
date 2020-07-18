@@ -75,7 +75,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   prepareClone(newProps: any) {
     return {
       lastAction: new Date().toISOString(),
-      listId: this.props.aList._id,
+      listId: this.props.aList.id,
       previousAction: this.state.lastAction,
       ...newProps,
     };
@@ -204,7 +204,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   /* Move task to another list */
   moveOutside = (task: string) => {
     const data = {
-      fromList: { listId: this.props.aList._id, name: this.state.listName },
+      fromList: { listId: this.props.aList.id, name: this.state.listName },
       task,
     };
     this.props.moveOutside(data);
@@ -270,7 +270,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
 
   /* Reload this list */
   reload = () => {
-    this.props.reloadAList(this.props.aList._id);
+    this.props.reloadAList(this.props.aList.id);
   };
 
   /* Go to today's list */
@@ -390,19 +390,19 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   importList = (listId: string) => {
     this.props.importList({
       fromListId: listId,
-      toListId: this.props.aList._id,
+      toListId: this.props.aList.id,
     });
   };
 
   exportList = (listId: string) => {
     this.props.exportList({
-      fromListId: this.props.aList._id,
+      fromListId: this.props.aList.id,
       toListId: listId,
     });
   };
 
   makeListOption = (list: TodoList) => (
-    <option key={'o-' + list._id} value={list._id}>
+    <option key={'o-' + list.id} value={list.id}>
       {list.name}
     </option>
   );

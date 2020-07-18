@@ -10,7 +10,7 @@ import { getPreviousDays } from '../../utils/stringUtils';
 export const selectListOfLists = (state: RootState): TodoList[] => state.app.lists;
 
 export const selectAListById = (listId: string) => (state: RootState): TodoList | null =>
-  state.app.lists.find((list) => list._id === listId) || null;
+  state.app.lists.find((list) => list.id === listId) || null;
 
 export const selectAList = (state: RootState): TodoList => state.app.aList;
 
@@ -21,7 +21,7 @@ export const selectImmutableLists = (state: RootState): TodoList[] =>
   state.app.lists.filter((item: TodoList) => item.immutable);
 
 export const selectExportables = (state: RootState): TodoList[] =>
-  state.app.lists.filter((item) => item._id !== state.app.aList._id && !item.immutable).slice(0, 20);
+  state.app.lists.filter((item) => item.id !== state.app.aList.id && !item.immutable).slice(0, 20);
 
 export const getFilteredListOfLists = createSelector(
   [selectMutableLists, getFormValues(Forms.listsFilter)],

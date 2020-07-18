@@ -20,7 +20,7 @@ const Failure: React.FunctionComponent<FailurePrivateProps> = (props) => {
       <br />
       {msg}
       <br />
-      Please <button onClick={() => openAListRequest(aList._id)}>reload</button>
+      Please <button onClick={() => openAListRequest(aList.id)}>reload</button>
     </div>
   );
 };

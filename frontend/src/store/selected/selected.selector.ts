@@ -9,6 +9,6 @@ export const getSelectedListId = (state: RootState): string | null => state.sele
 export const getSelectedList = createSelector(
   [selectListOfLists, getSelectedListId],
   (listList, selectedListId) => {
-    return listList.find((list) => list._id === selectedListId) || {};
+    return listList.find((list) => list.id === selectedListId) || {};
   },
 );

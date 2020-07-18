@@ -6,5 +6,5 @@ export const apiGetAList = (listId: string): Promise<TodoList> => api.lists.call
 export const apiCreateAList = (listName: string): Promise<TodoList> =>
   api.lists.callCreateAList(NewTodoListEntity(listName));
 export const apiUpdateAList = (listId: string, data): Promise<TodoList> =>
-  api.lists.callUpdateAList({ _id: listId, ...data } as TodoList);
+  api.lists.callUpdateAList({ id: listId, ...data } as TodoList);
 export const apiDeleteAList = (listId: string): Promise<TodoList> => api.lists.callDeleteAList(listId);

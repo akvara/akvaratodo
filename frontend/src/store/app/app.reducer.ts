@@ -15,7 +15,7 @@ export type AppState = {
 export const initialState: AppState = {
   mode: appModes.MODE_LOADING,
   lists: [],
-  aList: { _id: '', userId: 0, name: '', tasks: '', done: '', immutable: false, lastAction: '' },
+  aList: { id: '', userId: 0, name: '', tasks: '', done: '', immutable: false, lastAction: '' },
   task: '',
   fromList: { listId: '', name: '' },
 };

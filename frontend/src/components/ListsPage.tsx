@@ -134,7 +134,7 @@ class ListsPage extends React.PureComponent {
     this.state.lists.forEach((list) => {
       if (!list.isList) {
         let newKey = this.findFreeKey(list.name);
-        if (newKey) this.hotKeys.push({ key: newKey, listId: list._id, listName: list.name });
+        if (newKey) this.hotKeys.push({ key: newKey, listId: list.id, listName: list.name });
       }
     });
   };

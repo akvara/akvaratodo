@@ -80,14 +80,14 @@ const MovePage: React.FunctionComponent<MovePagePrivateProps> = (props) => {
       <table className="table table-hover">
         <tbody>
           {lists.map((list) =>
-            list._id === fromList.listId ? null : (
-              <tr key={'tr' + list._id}>
+            list.id === fromList.listId ? null : (
+              <tr key={'tr' + list.id}>
                 <td>
                   To: <strong>{list.name}</strong>
                 </td>
                 <td>
-                  <button onClick={() => moveHandler(list._id)}>Move</button>{' '}
-                  <button onClick={() => copyHandler(list._id)}>Copy</button>
+                  <button onClick={() => moveHandler(list.id)}>Move</button>{' '}
+                  <button onClick={() => copyHandler(list.id)}>Copy</button>
                 </td>
               </tr>
             ),

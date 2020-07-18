@@ -29,10 +29,10 @@ export function* findOrCreateListByNameHelperSaga(listName: string) {
     const listOfLists = yield call(api.lists.callGetListOfList);
     const found = listOfLists.find((list: TodoList) => list.name === listName);
     if (found) {
-      return found._id;
+      return found.id;
     }
     const newList = yield call(api.lists.callCreateAList, NewTodoListEntity(listName));
-    return newList._id;
+    return newList.id;
   } catch (e) {
     yield generalFailure(e);
   }

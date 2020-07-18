@@ -1,7 +1,8 @@
 export const config = {
-  // devHost: 'http://akvaratododb.herokuapp.com/',
+  // devHost: 'https://akvaratodo-flask-api.herokuapp.com/',
   devHost: 'http://localhost:5000/',
-  apiHost: 'https://akvaratododb.herokuapp.com/',
+  // apiHost: 'https://akvaratododb.herokuapp.com/',
+  apiHost: 'https://akvaratodo-flask-api.herokuapp.com/',
   separatorString: '..................',
   listsAddon: 'lists',
   settingsAddon: 'settings',
@@ -21,7 +22,7 @@ export const config = {
   appNode: document.getElementById('app'),
   footerNode: document.getElementById('footer'),
   clickSound: 'https://www.soundjay.com/button/button-20.mp3',
-  version: '1208-12',
+  version: '0717-18',
 };
 
 export default config;

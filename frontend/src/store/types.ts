@@ -2,10 +2,10 @@ import { Error } from 'tslint/lib/error';
 import CONFIG from '../config/config.js';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-export type OmitId<T extends { _id: string }> = Omit<T, '_id'>;
+export type OmitId<T extends { id: string }> = Omit<T, 'id'>;
 
 export interface TodoList {
-  _id: string;
+  id: string;
   userId: number;
   name: string;
   tasks: string;

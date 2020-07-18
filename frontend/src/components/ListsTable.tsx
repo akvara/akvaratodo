@@ -63,7 +63,7 @@ class ListsTable extends Component {
           <span
             className="glyphicon glyphicon-trash action-button"
             aria-hidden="true"
-            onClick={this.props.removeList.bind(this, list._id)}
+            onClick={this.props.removeList.bind(this, list.id)}
           />
         )}
       </td>
@@ -75,12 +75,12 @@ class ListsTable extends Component {
 
   prepareListForDisplaying = (list) => {
     let item = {
-      _id: list._id,
+      id: list.id,
       tasks: list.tasks,
       noOfTasks: list.tasks ? JSON.parse(list.tasks).length : 0,
       name: hotKeyedListName(list.name, this.props.hotKeys),
       itemClass: 'list-item',
-      action: this.props.openList.bind(this, list._id, list.name),
+      action: this.props.openList.bind(this, list.id, list.name),
       deletable: list.tasks ? list.tasks === '[]' && !list.immutable : true,
       updatedDateOrTime:
         Utils.grabDate(new Date().toISOString()) === Utils.grabDate(list.updatedAt)
