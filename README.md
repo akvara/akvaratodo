@@ -38,8 +38,8 @@ Deploy on oldakvaratodo
 ```
 
 # ToDo
-- MovePage: data types
-- MovePage: filter list
+
+
 ## Test
 Manual test:
 ### Lists page
