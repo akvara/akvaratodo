@@ -27,7 +27,10 @@ function* checkAndSave({ payload }: Action<SerializedTodoList>) {
   const { listId, listData, previousAction, taskToAdd } = payload;
   yield put(statusActions.setStatusMessage(statusMessages.msgChecking));
   const originalList = yield apiGetAList(listId);
-  if (originalList.lastAction !== previousAction) {
+
+
+  // ToDo: not perfect
+  if (originalList.lastAction.slice(0,19) !== previousAction.slice(0,19)) {
     if (taskToAdd) {
       yield put(statusActions.setStatusMessage(statusMessages.msgAdding));
       const data = {

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { compose } from 'recompose';
 import _ from 'underscore';
 
 import TasksList from './TasksList';
@@ -8,7 +7,7 @@ import CONFIG from '../config/config.js';
 import { disableHotKeys, playSound, registerHotKeys } from '../utils/hotkeys';
 import * as Utils from '../utils/utils.js';
 import { ListCreds, SerializedTodoList, TodoList } from '../store/types';
-import { appActions, listActions } from '../store/actions';
+import { appActions } from '../store/actions';
 import { dayString } from '../utils/calendar';
 
 export interface TaskPageProps {
