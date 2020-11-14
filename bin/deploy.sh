@@ -14,13 +14,13 @@ check_git_result () {
    fi
 }
 
-DEPLOY_DIR=build
+DEPLOY_DIR='./build'
 DEPLOY_REMOTE=git@github.com:akvara/akvaratodo-deploy.git
 APP_DIR=$(pwd)
 
 # Execute build
 echo -en "${COL_GREEN}Building...${COL_RESET}\n"
-rm -r build/ > /dev/null
+rm -r ${DEPLOY_DIR} > /dev/null
 npm run build
 
 # Check if build failed
@@ -30,7 +30,7 @@ if [[ $? -ne 0 ]]; then
 fi
 
 echo -en "${COL_GREEN}Adding deploy as remote in $DEPLOY_DIR ...${COL_RESET}\n"
-cd build/
+cd ${DEPLOY_DIR}
 git init
 git remote add deploy $DEPLOY_REMOTE
 git add .
@@ -40,7 +40,7 @@ check_git_result
 git push -f deploy master
 check_git_result
 
-rm -rf build/
+rm -r ${DEPLOY_DIR} > /dev/null
 cd $APP_DIR
 
 echo -e "${COL_GREEN}Deploy finished.${COL_RESET}"

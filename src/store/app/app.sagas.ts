@@ -118,6 +118,7 @@ function* exportListSaga({ payload }: Action<TodoListImpEx>) {
  */
 function* moveTaskToListSaga(action: Action<TodoListMove>) {
   try {
+    yield put(appActions.setMode(appModes.MODE_LOADING));
     yield removeTaskFromList(action);
     yield prependToAList(action);
     yield put(appActions.openAList(action.payload.fromListId));
@@ -135,6 +136,7 @@ function* moveTaskToListSaga(action: Action<TodoListMove>) {
  */
 function* copyTaskToListSaga(action: Action<TodoListCopy>) {
   try {
+    yield put(appActions.setMode(appModes.MODE_LOADING));
     yield prependToAList(action);
     yield put(appActions.openAList(action.payload.toListId));
     yield put(statusActions.setStatusMessage(statusMessages.msgCopied));
@@ -151,6 +153,7 @@ function* copyTaskToListSaga(action: Action<TodoListCopy>) {
  */
 function* moveToListByNameSaga(action: Action<TodoListMoveByName>) {
   try {
+    yield put(appActions.setMode(appModes.MODE_LOADING));
     const listId = yield findOrCreateListByNameHelperSaga(action.payload.listName);
     const newAction = dotProp.set(action, 'payload.toListId', listId);
     yield prependToAList(newAction);
