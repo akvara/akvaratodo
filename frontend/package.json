@@ -6,7 +6,7 @@
     "@jpavon/react-scripts-ts": "0.11.2",
     "axios": "^0.19.0",
     "dot-prop-immutable": "^1.5.0",
-    "jquery": "^3.3.1",
+    "jquery": "^3.5.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-redux": "^6.0.0",
