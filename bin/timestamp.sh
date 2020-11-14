@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
+
 timestamp=$(date +"%m%d-%H")
-sed -i -e "s/version: '[0-1][0-9][0-9][0-9]-[0-3][0-9]'/version: '$timestamp'/" ./frontend/src/config/config.js
-release=2
+sed -i.bak -e "s/version: '[0-9][0-9][0-9][0-9]-[0-9][0-9]/version: '$timestamp/" ./src/config/config.js
+rm ./src/config/config.js.bak
+release="2"
 versionstamp=$(date +"%m.%d")
-sed -i -e "s/\"version\": \"[0-9].[0-1][0-9].[0-3][0-9]\",/\"version\": \"$release.$versionstamp\",/" ./frontend/package.json
+sed -i.bak -e  "s/\"version\": \"[0-9].[0-9][0-9].[0-9][0-9]/\"version\": \"$release.$versionstamp/" ./package.json
+rm ./package.json.bak

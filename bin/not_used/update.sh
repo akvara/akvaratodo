@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 cd frontend
 echo "Updating in $PWD..."
 npm update

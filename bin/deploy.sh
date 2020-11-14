@@ -40,7 +40,7 @@ check_git_result
 git push -f deploy master
 check_git_result
 
-rm -rfy build/
+rm -rf build/
 cd $APP_DIR
 
 echo -e "${COL_GREEN}Deploy finished.${COL_RESET}"
