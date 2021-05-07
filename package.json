@@ -20,7 +20,7 @@
     "reselect": "^4.0.0",
     "tslib": "^1.10.0",
     "typescript-fsa": "^3.0.0-beta-2",
-    "underscore": "^1.9.1"
+    "underscore": "^1.12.1"
   },
   "scripts": {
     "start": "react-scripts-ts start",
