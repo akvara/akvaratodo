@@ -18,7 +18,7 @@ DEPLOY_DIR=build
 DEPLOY_REMOTE=git@github.com:akvara/akvaratodo-deploy.git
 APP_DIR=$(pwd)
 
-cd ./frontend/
+#cd ./frontend/
 
 # Execute build
 echo -en "${COL_GREEN}Building...${COL_RESET}\n"
