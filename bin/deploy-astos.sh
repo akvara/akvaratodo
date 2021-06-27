@@ -18,8 +18,6 @@ DEPLOY_DIR=build
 DEPLOY_REMOTE=git@github.com:akvara/astatodo-deploy.git
 APP_DIR=$(pwd)
 
-cd ./frontend/
-
 # Execute build
 echo -en "${COL_GREEN}Building...${COL_RESET}\n"
 rm -r build/ > /dev/null
