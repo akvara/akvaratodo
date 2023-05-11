@@ -53,12 +53,6 @@ export interface ListCreds {
   name: string;
 }
 
-export interface TodoListUpdate {
-  name?: string;
-  tasks: string;
-  lastAction: string;
-}
-
 export interface HotKey {
   key: string;
   listId: string;
@@ -69,7 +63,7 @@ export interface ListNameOnly {
   listName: string;
 }
 
-export const NewTodoListEntity = (listName: string): OmitId<TodoList> => {
+export const getNewTodoListEntity = (listName: string): OmitId<TodoList> => {
   if (!listName) {
     throw new Error('Trying create list without name!');
   }

@@ -3,7 +3,7 @@ import { all, call, put } from 'redux-saga/effects';
 import { generalFailure } from '../app/app.sagas';
 import api from '../../core/api';
 import { getAList, getListOfLists } from './list.actions';
-import { NewTodoListEntity, TodoList } from '../types';
+import { getNewTodoListEntity, TodoList } from '../types';
 import { apiGetAList } from '../../core/api/utils';
 
 export function* getListOfListsSagaHelper() {
@@ -31,7 +31,7 @@ export function* findOrCreateListByNameHelperSaga(listName: string) {
     if (found) {
       return found.id;
     }
-    const newList = yield call(api.lists.callCreateAList, NewTodoListEntity(listName));
+    const newList = yield call(api.lists.callCreateAList, getNewTodoListEntity(listName));
     return newList.id;
   } catch (e) {
     yield generalFailure(e);

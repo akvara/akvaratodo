@@ -22,7 +22,7 @@ export const config = {
   appNode: document.getElementById('app'),
   footerNode: document.getElementById('footer'),
   clickSound: 'https://www.soundjay.com/buttons/button-20.mp3',
-  version: '1114-10',
+  version: '0511-12',
 };
 
 export default config;

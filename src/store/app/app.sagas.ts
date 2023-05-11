@@ -12,7 +12,7 @@ import {
   TodoListMove,
   TodoListMoveByName,
 } from '../types';
-import { dayString } from '../../utils/calendar';
+import { dayMonthName, dayNumber, dayString, dayWeekName } from '../../utils/calendar';
 import { appSelector, statusSelector } from '../selectors';
 import { appModes, statusMessages } from '../../config/constants';
 import { appActions, listActions, selectedActions, statusActions } from '../actions';
@@ -28,9 +28,8 @@ function* checkAndSave({ payload }: Action<SerializedTodoList>) {
   yield put(statusActions.setStatusMessage(statusMessages.msgChecking));
   const originalList = yield apiGetAList(listId);
 
-
   // ToDo: not perfect
-  if (originalList.lastAction.slice(0,19) !== previousAction.slice(0,19)) {
+  if (originalList.lastAction.slice(0, 19) !== previousAction.slice(0, 19)) {
     if (taskToAdd) {
       yield put(statusActions.setStatusMessage(statusMessages.msgAdding));
       const data = {
@@ -168,7 +167,6 @@ function* moveToListByNameSaga(action: Action<TodoListMoveByName>) {
   }
 }
 
-// *** Helpers ***
 function* prependToAList({ payload }: Action<TodoListCopy>) {
   try {
     const { toListId, task } = payload;
@@ -300,6 +298,10 @@ function* deleteAListSaga({ payload }: ReturnType<typeof appActions.deleteAList>
   yield put(appActions.setMode(appModes.MODE_LIST_OF_LISTS));
 }
 
+const isListRelevant = (listName: string, tryLists: string[]) => {
+  return tryLists.includes(listName);
+};
+
 /**
  * Creates lists for upcoming week
  */
@@ -308,7 +310,8 @@ function* planWeekSaga() {
   yield put(appActions.setMode(appModes.MODE_LOADING));
   try {
     // Refresh list
-    const listOfLists = yield apiGetListOfLists();
+    const listOfLists: TodoList[] = yield apiGetListOfLists();
+    const protectedLists = listOfLists.filter((l) => l.immutable);
     const now = new Date();
     let shiftDate = new Date();
 
@@ -316,7 +319,29 @@ function* planWeekSaga() {
       shiftDate = new Date(now.getTime() + 1000 * 60 * 60 * 24 * shift);
       const listName = dayString(shiftDate);
       if (!listOfLists.find((list: TodoList) => list.name === listName)) {
-        yield apiCreateAList(listName);
+        const list = yield apiCreateAList(listName);
+        const tryLists = [
+          `Auto - ${dayNumber(shiftDate)}d.`,
+          `Auto - ${dayWeekName(shiftDate)}`,
+          `Auto - ${dayMonthName(shiftDate)} ${dayNumber(shiftDate)}d.`,
+        ];
+
+        const relList = protectedLists.filter((l) => isListRelevant(l.name, tryLists)).map((l) => l.name);
+        // console.log('-****- protectedLists', protectedLists.map((l) => l.name));
+        // console.log('-****- tryLists', tryLists);
+        // console.log('-****- relList', relList);
+
+        const append = protectedLists
+          .filter((l) => isListRelevant(l.name, tryLists))
+          .flatMap((l) => JSON.parse(l.tasks));
+
+        if (append.length) {
+          const todayList = {
+            lastAction: new Date().toISOString(),
+            tasks: JSON.stringify(append),
+          } as TodoList;
+          yield apiUpdateAList(list.id, todayList);
+        }
       }
     }
     yield getListOfListsSagaHelper();
