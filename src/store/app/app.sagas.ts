@@ -263,7 +263,7 @@ function* collectPastDaysSaga() {
       prevDayList = listOfLists.find((list: TodoList) => list.name === prevDayString);
       if (prevDayList) {
         legacyListIds.push(prevDayList.id as string);
-        collectedTasks = utils.concatTwoJSONs(prevDayList.tasks, collectedTasks);
+        collectedTasks = utils.concatTwoJSONs(collectedTasks, prevDayList.tasks);
       }
     });
 
