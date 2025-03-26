@@ -64,8 +64,12 @@ class TaskList extends React.Component {
     if (task === CONFIG.separatorString) {
       return (
         <tr key={'tr' + i}>
-          <td>{CONFIG.separatorString}</td>
-          <td className="right-align">{CONFIG.separatorString}</td>
+          <td>
+            <div className="task-row separator-row">
+              <div>{CONFIG.separatorString}</div>
+              <div className='right-align'>{CONFIG.separatorString}</div>
+            </div>
+          </td>
         </tr>
       );
     }
@@ -87,40 +91,46 @@ class TaskList extends React.Component {
       return (
         <tr key={'tr' + i}>
           <td>
-            <span
-              className="glyphicon glyphicon-unchecked action-button"
-              aria-hidden="true"
-              onClick={this.props.done.bind(this, itemIndex)}
-            />
-            <span className="list-item task">{this.hightlightOnDemand(taskAsDisplayed, itemIndex)}</span>
-          </td>
-          <td className="actions">
-            <span
-              className="glyphicon glyphicon-trash delete-button"
-              aria-hidden="true"
-              onClick={this.props.delete.bind(this, itemIndex)}
-            />
-            <span className="list-item"> </span>
-            <span
-              className="glyphicon glyphicon-arrow-down action-button"
-              aria-hidden="true"
-              onClick={this.props.procrastinate.bind(this, itemIndex)}
-            />
-            <span
-              className="glyphicon glyphicon-arrow-up action-button"
-              aria-hidden="true"
-              onClick={this.props.toTop.bind(this, itemIndex)}
-            />
-            <span
-              className="glyphicon glyphicon-random action-button"
-              aria-hidden="true"
-              onClick={this.props.move.bind(this, task)}
-            />
-            <span
-              className="glyphicon glyphicon-thumbs-down action-button"
-              aria-hidden="true"
-              onClick={this.props.postpone.bind(this, itemIndex)}
-            />
+            <div className="task-row">
+              <div className="task-check">
+                <span
+                  className="glyphicon glyphicon-unchecked action-button"
+                  aria-hidden="true"
+                  onClick={this.props.done.bind(this, itemIndex)}
+                />
+              </div>
+              <div className="task-description">
+                <span className="list-item task">{this.hightlightOnDemand(taskAsDisplayed, itemIndex)}</span>
+              </div>
+              <div className="task-actions">
+                <span
+                  className="glyphicon glyphicon-trash delete-button"
+                  aria-hidden="true"
+                  onClick={this.props.delete.bind(this, itemIndex)}
+                />
+                <span className="list-item"> </span>
+                <span
+                  className="glyphicon glyphicon-arrow-down action-button"
+                  aria-hidden="true"
+                  onClick={this.props.procrastinate.bind(this, itemIndex)}
+                />
+                <span
+                  className="glyphicon glyphicon-arrow-up action-button"
+                  aria-hidden="true"
+                  onClick={this.props.toTop.bind(this, itemIndex)}
+                />
+                <span
+                  className="glyphicon glyphicon-random action-button"
+                  aria-hidden="true"
+                  onClick={this.props.move.bind(this, task)}
+                />
+                <span
+                  className="glyphicon glyphicon-thumbs-down action-button"
+                  aria-hidden="true"
+                  onClick={this.props.postpone.bind(this, itemIndex)}
+                />
+              </div>
+            </div>
           </td>
         </tr>
       );

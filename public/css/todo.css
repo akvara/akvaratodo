@@ -1,131 +1,159 @@
 @import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
+
 body {
-    font-family: Raleway, sans-serif;
-    font-size: 14px;
-    line-height: 1.6;
-    color: #636b6f;
-    background-color: #f5f8fa;
+  font-family: Raleway, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #636b6f;
+  background-color: #f5f8fa;
 }
 
-h1, h2{
-    display: inline;
+h1, h2 {
+  display: inline;
 }
 
-.done{
-	text-decoration: line-through;
+.done {
+  text-decoration: line-through;
 }
 
-.messenger{
-    font-style: italic;
+.messenger {
+  font-style: italic;
 }
 
-.messenger-info{
-    color: gray;
+.messenger-info {
+  color: gray;
 }
 
-.messenger-success{
-    color: green;
+.messenger-success {
+  color: green;
 }
 
-.messenger-error{
-    color: red;
+.messenger-error {
+  color: red;
 }
 
-.status-bar{
-    font-style: italic;
+.status-bar {
+  font-style: italic;
 }
 
-.right-align{
-    text-align: right;
+.right-align {
+  text-align: right;
 }
 
-.list-item{
-    padding-left: 15px;
-    padding-right: 15px;
+.list-item {
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
-.list-item .list-item-glyph{
-    cursor: pointer;
+.list-item .list-item-glyph {
+  cursor: pointer;
 }
 
-.list-last-item{
-    padding-left: 15px;
+.list-last-item {
+  padding-left: 15px;
 }
 
-.list-first-item{
-    padding-right: 15px;
+.list-first-item {
+  padding-right: 15px;
 }
 
-.list-item-immutable{
-    font-style: italic;
+.list-item-immutable {
+  font-style: italic;
 }
 
-.list-item-current{
-    font-style: bold italic;
+.list-item-current {
+  font-style: bold italic;
 }
 
-.settings-item{
-    font-style: bold italic;
-    color: red;
+.settings-item {
+  font-style: bold italic;
+  color: red;
 }
 
-.import-select{
-    padding: 4px 0px;
-    /*padding-top: 1px;*/
-    /*padding-right: 6px;*/
-    /*padding-bottom: 1px;*/
-    /*padding-left: 6px;*/
+.import-select {
+  padding: 4px 0px;
+  /*padding-top: 1px;*/
+  /*padding-right: 6px;*/
+  /*padding-bottom: 1px;*/
+  /*padding-left: 6px;*/
 }
 
-.task-input{
-    width: 85%;
+.task-input {
+  width: 85%;
 }
 
-.list-input{
-    width: 50%;
+.list-input {
+  width: 50%;
 }
 
-.actions{
-    text-align: right;
+.actions {
+  text-align: right;
 }
 
-.action-button{
-    padding-left: 8px;
-    padding-right: 8px;
+.action-button {
+  padding-left: 8px;
+  padding-right: 8px;
 }
 
-.delete-button{
-    padding-left: 4px;
-    padding-right: 4px;
+.delete-button {
+  padding-left: 4px;
+  padding-right: 4px;
 }
 
-.action-button:hover{
-    cursor: pointer;
-    -webkit-transform: scale(1.5);
+.action-button:hover {
+  cursor: pointer;
+  -webkit-transform: scale(1.5);
 }
 
-.delete-button:hover{
-    cursor: pointer;
-    color: red;
-    -webkit-transform: scale(1.5);
+.delete-button:hover {
+  cursor: pointer;
+  color: red;
+  -webkit-transform: scale(1.5);
 }
 
-.table-description-cell{
-    width:90%;
+.table-description-cell {
+  width: 90%;
 }
 
-.table-decorator-cell{
-    width:1%;
+.table-decorator-cell {
+  width: 1%;
 }
 
-.table-control-button-cell{
-    width:2%;
+.table-control-button-cell {
+  width: 2%;
 }
 
 .footer {
-    position: absolute;
-    bottom: 10px;
-    width: 100%;
-    margin: 0;
-    height: 10px;/* or however high you would like */
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  margin: 0;
+  height: 10px; /* or however high you would like */
+}
+
+.task-row {
+  display: flex;
+  width: 100%;
+}
+
+.task-description {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+
+.task-check {
+  flex: 0 0 auto;
+}
+
+.task-actions {
+  flex: 0 0 auto;
+  margin-left: auto;
+  text-align: right;
+}
+
+.separator-row {
+  justify-content: space-between;
 }
