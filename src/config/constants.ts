@@ -8,7 +8,7 @@ export enum appModes {
 }
 
 export const restrictions = {
-  maxTaskLength: 50,
+  maxTaskLength: 80,
   collectDaysBefore: 7,
 };
 
