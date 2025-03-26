@@ -128,11 +128,12 @@ h1, h2 {
   bottom: 10px;
   width: 100%;
   margin: 0;
-  height: 10px; /* or however high you would like */
+  height: 10px;
 }
 
 .task-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   width: 100%;
 }
 
@@ -140,19 +141,9 @@ h1, h2 {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  flex: 1;
-  min-width: 0;
+  min-width: 70px;
 }
 
-.task-check {
-  flex: 0 0 auto;
-}
-
-.task-actions {
-  flex: 0 0 auto;
-  margin-left: auto;
-  text-align: right;
-}
 
 .separator-row {
   justify-content: space-between;

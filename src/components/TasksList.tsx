@@ -19,8 +19,10 @@ class TaskList extends React.Component {
   };
 
   hightlightOnDemand(element, index) {
-    if (this.props.highlightIndex === index) return <strong>{element}</strong>;
-    else return <span>{element}</span>;
+    if (this.props.highlightIndex === index) {
+      return <strong>{element}</strong>;
+    }
+    return <span>{element}</span>;
   }
 
   processTaskText(task) {
@@ -59,7 +61,6 @@ class TaskList extends React.Component {
     return taskAsDisplayed;
   }
 
-  /* Display one line */
   displayTask(task, i, omitted) {
     if (task === CONFIG.separatorString) {
       return (
@@ -67,7 +68,7 @@ class TaskList extends React.Component {
           <td>
             <div className="task-row separator-row">
               <div>{CONFIG.separatorString}</div>
-              <div className='right-align'>{CONFIG.separatorString}</div>
+              <div className="right-align">{CONFIG.separatorString}</div>
             </div>
           </td>
         </tr>
@@ -92,17 +93,15 @@ class TaskList extends React.Component {
         <tr key={'tr' + i}>
           <td>
             <div className="task-row">
-              <div className="task-check">
                 <span
                   className="glyphicon glyphicon-unchecked action-button"
                   aria-hidden="true"
                   onClick={this.props.done.bind(this, itemIndex)}
                 />
-              </div>
               <div className="task-description">
                 <span className="list-item task">{this.hightlightOnDemand(taskAsDisplayed, itemIndex)}</span>
               </div>
-              <div className="task-actions">
+              <div>
                 <span
                   className="glyphicon glyphicon-trash delete-button"
                   aria-hidden="true"
