@@ -68,7 +68,8 @@ class ListsTable extends Component {
         )}
       </td>
       <td className="right-align">
-        (<strong>{list.noOfTasks}</strong>) {list.updatedDateOrTime}
+        <span>(<strong>{list.noOfTasks}</strong>)</span>
+        <span className='less-useful'>{list.updatedDateOrTime}</span>
       </td>
     </tr>
   );
@@ -96,8 +97,10 @@ class ListsTable extends Component {
   };
 
   displayList = (list, i) => {
-    if (list.isList) return this.contractedList(list, i);
-    let item = this.prepareListForDisplaying(list);
+    if (list.isList) {
+      return this.contractedList(list, i);
+    }
+    const item = this.prepareListForDisplaying(list);
 
     return this.displayListRow(item, i);
   };

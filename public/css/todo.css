@@ -16,22 +16,6 @@ h1, h2 {
   text-decoration: line-through;
 }
 
-.messenger {
-  font-style: italic;
-}
-
-.messenger-info {
-  color: gray;
-}
-
-.messenger-success {
-  color: green;
-}
-
-.messenger-error {
-  color: red;
-}
-
 .status-bar {
   font-style: italic;
 }
@@ -72,10 +56,6 @@ h1, h2 {
 
 .import-select {
   padding: 4px 0px;
-  /*padding-top: 1px;*/
-  /*padding-right: 6px;*/
-  /*padding-bottom: 1px;*/
-  /*padding-left: 6px;*/
 }
 
 .task-input {
@@ -90,14 +70,38 @@ h1, h2 {
   text-align: right;
 }
 
+.check-button {
+  margin-left: 2px;
+  margin-right: 16px;
+}
+
 .action-button {
-  padding-left: 8px;
-  padding-right: 8px;
+  margin-left: 8px;
+  margin-right: 8px;
 }
 
 .delete-button {
-  padding-left: 4px;
-  padding-right: 4px;
+  margin-left: 6px;
+  margin-right: 32px;
+}
+
+.less-useful {
+  margin-left: 12px;
+}
+
+@media (max-width: 480px) {
+  .check-button {
+    margin-right: 8px;
+  }
+  .delete-button {
+    margin-right: 16px;
+  }
+  .action-button {
+    margin-right: 6px;
+  }
+  .less-useful {
+     display: none;
+   }
 }
 
 .action-button:hover {
@@ -141,9 +145,8 @@ h1, h2 {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-width: 70px;
+  min-width: 120px;
 }
-
 
 .separator-row {
   justify-content: space-between;

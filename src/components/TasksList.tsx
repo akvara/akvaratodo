@@ -94,12 +94,12 @@ class TaskList extends React.Component {
           <td>
             <div className="task-row">
                 <span
-                  className="glyphicon glyphicon-unchecked action-button"
+                  className="glyphicon glyphicon-unchecked check-button"
                   aria-hidden="true"
                   onClick={this.props.done.bind(this, itemIndex)}
                 />
               <div className="task-description">
-                <span className="list-item task">{this.hightlightOnDemand(taskAsDisplayed, itemIndex)}</span>
+                <span className="task">{this.hightlightOnDemand(taskAsDisplayed, itemIndex)}</span>
               </div>
               <div>
                 <span
@@ -107,7 +107,6 @@ class TaskList extends React.Component {
                   aria-hidden="true"
                   onClick={this.props.delete.bind(this, itemIndex)}
                 />
-                <span className="list-item"> </span>
                 <span
                   className="glyphicon glyphicon-arrow-down action-button"
                   aria-hidden="true"
