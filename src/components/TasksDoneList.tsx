@@ -19,13 +19,13 @@ class TasksDoneList extends React.Component {
 
     return (
       <tr key={'tr' + i}>
-        <td>
+        <td className="task-row">
           <span
             className="glyphicon glyphicon-ok action-button"
             aria-hidden="true"
             onClick={this.props.undone.bind(this, i)}
           />
-          <span className="list-item task done">{task.substring(0, restrictions.maxTaskLength)}</span>
+          <span className="list-item task-description done">{task.substring(0, restrictions.maxTaskLength)}</span>
         </td>
       </tr>
     );
