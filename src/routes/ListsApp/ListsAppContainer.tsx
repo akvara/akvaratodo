@@ -26,9 +26,4 @@ const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
   );
 };
 
-export default compose<ListsPageProps, ListsPageProps>(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  ),
-)(ListsPage);
+export default compose<ListsPageProps, ListsPageProps>(connect(mapStateToProps, mapDispatchToProps))(ListsPage);

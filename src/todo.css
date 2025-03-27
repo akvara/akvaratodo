@@ -8,8 +8,13 @@ body {
   background-color: #f5f8fa;
 }
 
-h1, h2 {
+h1,
+h2 {
   display: inline;
+}
+
+.bottom-margin {
+  margin-bottom: 12px;
 }
 
 .done {
@@ -42,16 +47,18 @@ h1, h2 {
 }
 
 .list-item-current {
-  font-style: bold italic;
+  font-weight: bold;
+  font-style: italic;
 }
 
 .settings-item {
-  font-style: bold italic;
+  font-weight: bold;
+  font-style: italic;
   color: red;
 }
 
 .import-select {
-  padding: 4px 0px;
+  padding: 4px 0;
 }
 
 .task-input {
@@ -60,6 +67,21 @@ h1, h2 {
 
 .list-input {
   width: 50%;
+}
+
+.list-input {
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.button {
+  flex-shrink: 0;
+  width: auto;
 }
 
 .actions {
@@ -101,8 +123,8 @@ h1, h2 {
     margin-right: 4px;
   }
   .less-useful {
-     display: none;
-   }
+    display: none;
+  }
 }
 
 .action-button:hover {
@@ -150,5 +172,18 @@ h1, h2 {
 }
 
 .separator-row {
+  display: flex;
   justify-content: space-between;
+}
+
+.input-row {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.actions-row {
+  display: flex;
+  gap: 4px;
 }

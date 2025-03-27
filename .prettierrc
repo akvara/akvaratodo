@@ -1,6 +1,5 @@
 {
   "printWidth": 120,
-  "parser": "typescript",
   "trailingComma": "all",
   "singleQuote": true,
   "bracketSpacing": true,
@@ -8,5 +7,6 @@
   "arrowParens": "always",
   "useTabs": false,
   "tabWidth": 2,
-  "semi": true
+  "semi": true,
+  "htmlWhitespaceSensitivity": "css"
 }

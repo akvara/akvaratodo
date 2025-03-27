@@ -4,7 +4,6 @@ import { compose, lifecycle, withHandlers, withProps } from 'recompose';
 import { disableHotKeys, playSound, registerHotKeys } from '../../utils/hotkeys';
 import { ListCreds, TodoList } from '../../store/types';
 import { appActions } from '../../store/actions';
-import { config } from '../../config/config';
 import ListsFilter from './ListsFilter';
 import { restrictions } from '../../config/constants';
 import { dayString } from '../../utils/calendar';
@@ -65,9 +64,7 @@ const MovePage: React.FunctionComponent<MovePagePrivateProps> = (props) => {
       <button onClick={reloadHandler}>
         <span className={'glyphicon glyphicon-refresh'} aria-hidden="true" /> <u>R</u>eload
       </button>{' '}
-      <button onClick={moveToTomorrowHandler}>
-        {tomorrowListName}
-      </button>
+      <button onClick={moveToTomorrowHandler}>{tomorrowListName}</button>
       <hr />
       <ListsFilter pageHotKeys={pageHotKeys} />
       <button disabled={!newListName} onClick={moveToNewListHandler}>
@@ -100,43 +97,57 @@ const MovePage: React.FunctionComponent<MovePagePrivateProps> = (props) => {
 
 export default compose<MovePagePrivateProps, MovePageProps>(
   withHandlers<MovePagePrivateProps, MovePageHandlers>({
-    moveHandler: ({ moveToList, fromList, task }) => (toListId) => {
-      moveToList({ fromListId: fromList.listId, toListId, task });
-    },
-    copyHandler: ({ copyToAList, task }) => (toListId) => {
-      copyToAList({ toListId, task });
-    },
-    moveToNewListHandler: ({ moveToListByName, fromList, task, newListName }) => () => {
-      moveToListByName({
-        fromListId: fromList.listId,
-        task,
-        listName: newListName,
-        move: true,
-      });
-    },
-    moveToTomorrowHandler: ({ moveToListByName, fromList, task }) => () => {
-      moveToListByName({
-        fromListId: fromList.listId,
-        task,
-        listName: dayString(new Date(new Date().setDate(new Date().getDate() + 1))),
-        move: true,
-        backToOldList: true,
-      });
-    },
-    copyToNewListHandler: ({ moveToListByName, fromList, task, newListName }) => () => {
-      moveToListByName({
-        fromListId: fromList.listId,
-        task,
-        listName: newListName,
-        move: false,
-      });
-    },
-    backHandler: ({ openAList, fromList }) => () => {
-      openAList(fromList.listId);
-    },
-    reloadHandler: ({ reloadListOfListsPage }) => () => {
-      reloadListOfListsPage();
-    },
+    moveHandler:
+      ({ moveToList, fromList, task }) =>
+      (toListId) => {
+        moveToList({ fromListId: fromList.listId, toListId, task });
+      },
+    copyHandler:
+      ({ copyToAList, task }) =>
+      (toListId) => {
+        copyToAList({ toListId, task });
+      },
+    moveToNewListHandler:
+      ({ moveToListByName, fromList, task, newListName }) =>
+      () => {
+        moveToListByName({
+          fromListId: fromList.listId,
+          task,
+          listName: newListName,
+          move: true,
+        });
+      },
+    moveToTomorrowHandler:
+      ({ moveToListByName, fromList, task }) =>
+      () => {
+        moveToListByName({
+          fromListId: fromList.listId,
+          task,
+          listName: dayString(new Date(new Date().setDate(new Date().getDate() + 1))),
+          move: true,
+          backToOldList: true,
+        });
+      },
+    copyToNewListHandler:
+      ({ moveToListByName, fromList, task, newListName }) =>
+      () => {
+        moveToListByName({
+          fromListId: fromList.listId,
+          task,
+          listName: newListName,
+          move: false,
+        });
+      },
+    backHandler:
+      ({ openAList, fromList }) =>
+      () => {
+        openAList(fromList.listId);
+      },
+    reloadHandler:
+      ({ reloadListOfListsPage }) =>
+      () => {
+        reloadListOfListsPage();
+      },
   }),
   withProps(({ reloadHandler, backHandler }) => ({
     pageHotKeys: (e) => {

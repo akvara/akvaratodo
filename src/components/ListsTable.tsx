@@ -68,8 +68,10 @@ class ListsTable extends Component {
         )}
       </td>
       <td className="right-align">
-        <span>(<strong>{list.noOfTasks}</strong>)</span>
-        <span className='less-useful'>{list.updatedDateOrTime}</span>
+        <span>
+          (<strong>{list.noOfTasks}</strong>)
+        </span>
+        <span className="less-useful">{list.updatedDateOrTime}</span>
       </td>
     </tr>
   );

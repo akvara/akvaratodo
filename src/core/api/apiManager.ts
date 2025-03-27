@@ -1,12 +1,6 @@
 import ListsServiceFactory from './lists/lists.api';
 import { generateConf } from '../axios';
 
-// export interface APIManagerConfig {
-//   userId?: string;
-// }
-
-// const config: APIManagerConfig = {};
-
 type apiManagerParams = {
   HTTPBaseURL: string;
 };

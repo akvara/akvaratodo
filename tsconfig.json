@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "skipLibCheck": true,
-    "outDir": "dist/",
+    "outDir": "build/",
     "allowSyntheticDefaultImports": true,
     "allowJs": false,
     "checkJs": false,
