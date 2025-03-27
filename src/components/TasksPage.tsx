@@ -547,9 +547,9 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
           <div>
             <hr />
             <h3>Add new:</h3>
-            <form onSubmit={this.handleSubmit}>
+            <form onSubmit={this.handleSubmit} className="input-row">
               <input
-                className="task-input"
+                className="input"
                 ref={(input) => {
                   // @ts-ignore
                   this.taskInput = input;
@@ -560,31 +560,37 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
                 onKeyDown={this.handleKeyDownAtTask}
                 onChange={this.onChange}
               />
-              <button disabled={!this.state.task.trim()}>Add task</button>
+              <button disabled={!this.state.task.trim()} className="button">
+                Add task
+              </button>
             </form>
           </div>
         )}
         <hr />
-        {this.displayImportBlock()}
-        {this.displayExportBlock()}
+        <div className="actions-row">
+          {this.displayImportBlock()}
+          {this.displayExportBlock()}
+        </div>
         <br />
-        <button disabled={inputDirty} onClick={this.reload}>
-          <span className={'glyphicon glyphicon-refresh'} aria-hidden="true" /> <u>R</u>eload
-        </button>
-        <button disabled={inputDirty} onClick={this.mark}>
-          <span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true" /> {markTitle}
-        </button>
-        <button disabled={inputDirty} onClick={this.goLists}>
-          <span className="glyphicon glyphicon-tasks" aria-hidden="true" /> <u>L</u>ists
-        </button>
-        <button disabled={inputDirty} onClick={this.goToday}>
-          <span className="glyphicon glyphicon-subscript" aria-hidden="true" /> <u>T</u>oday
-        </button>
-        {this.props.previousList && this.props.previousList.listId && (
-          <button disabled={inputDirty} onClick={this.goPrevious}>
-            <span className="glyphicon glyphicon-chevron-left" aria-hidden="true" /> {this.props.previousList.name}
+        <div className="actions-row">
+          <button disabled={inputDirty} onClick={this.reload}>
+            <span className={'glyphicon glyphicon-refresh'} aria-hidden="true" /> <u>R</u>eload
           </button>
-        )}
+          <button disabled={inputDirty} onClick={this.mark}>
+            <span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true" /> {markTitle}
+          </button>
+          <button disabled={inputDirty} onClick={this.goLists}>
+            <span className="glyphicon glyphicon-tasks" aria-hidden="true" /> <u>L</u>ists
+          </button>
+          <button disabled={inputDirty} onClick={this.goToday}>
+            <span className="glyphicon glyphicon-subscript" aria-hidden="true" /> <u>T</u>oday
+          </button>
+          {this.props.previousList && this.props.previousList.listId && (
+            <button disabled={inputDirty} onClick={this.goPrevious}>
+              <span className="glyphicon glyphicon-chevron-left" aria-hidden="true" /> {this.props.previousList.name}
+            </button>
+          )}
+        </div>
       </div>
     );
   }

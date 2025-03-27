@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { compose } from 'recompose';
 
 import ListsTable from './ListsTable';
 
@@ -121,7 +120,7 @@ class ListsPage extends React.PureComponent {
       return;
     }
     this.hotKeys.forEach(
-      function(k) {
+      function (k) {
         if (k.key === pressed) {
           playSound();
           this.openAList(k.listId);
@@ -200,7 +199,7 @@ class ListsPage extends React.PureComponent {
     this.addHotKeys();
     return (
       <div>
-        <table width="100%">
+        <table width="100%" className="bottom-margin">
           <tbody>
             <tr>
               <td>
@@ -209,7 +208,7 @@ class ListsPage extends React.PureComponent {
               <td className="right-align">
                 {this.props.legacyExists && (
                   <span>
-                    <button onClick={this.props.collectPastDaysRequest}> >> T</button>{' '}
+                    <button onClick={this.props.collectPastDaysRequest}>{'  >> T '}</button>{' '}
                   </span>
                 )}
                 <button onClick={this.goToday}>
@@ -228,9 +227,9 @@ class ListsPage extends React.PureComponent {
         />
         <h3>Protected</h3>
         <ListsTable lists={this.state.immutableLists} openList={this.openAList} />
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={this.handleSubmit} className="input-row">
           <input
-            className="list-input"
+            className='input'
             ref={(input) => {
               this.listNameInput = input;
             }}
@@ -240,15 +239,17 @@ class ListsPage extends React.PureComponent {
             onKeyDown={this.handleKeyDownAtListInput}
             onChange={this.onNameChange}
           />
-          <button disabled={!this.state.listName.trim()}>Create new list</button>
+          <button disabled={!this.state.listName.trim()} className='button'>Create new list</button>
         </form>
         <hr />
-        <button onClick={this.props.planWeek}>
-          <u>P</u>lan week
-        </button>
-        <button onClick={this.reload}>
-          <span className={'glyphicon glyphicon-refresh'} aria-hidden="true" /> <u>R</u>eload
-        </button>
+        <div className="actions-row">
+          <button onClick={this.props.planWeek}>
+            <u>P</u>lan week
+          </button>
+          <button onClick={this.reload}>
+            <span className={'glyphicon glyphicon-refresh'} aria-hidden="true" /> <u>R</u>eload
+          </button>
+        </div>
       </div>
     );
   }

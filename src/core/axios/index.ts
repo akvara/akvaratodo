@@ -11,10 +11,10 @@ const defaultConf = {
 export const generateConf = (conf: AxiosRequestConfig): AxiosInstance => {
   const instance = axios.create({ ...defaultConf, ...conf });
   instance.interceptors.response.use(
-    function(r) {
+    function (r) {
       return r;
     },
-    function(err) {
+    function (err) {
       const response = err.response;
       console.error('API ERROR:', response);
       return Promise.reject(response);

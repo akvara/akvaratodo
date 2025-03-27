@@ -27,7 +27,7 @@ export const statusMessages = {
   msgLoadingLists: 'Loading lists ...',
   msgLoadingAList: 'Loading a list ...',
   msgListsLoaded: 'Lists loaded.',
-  msgTodaysLoaded: 'Today\'s list loaded.',
+  msgTodaysLoaded: "Today's list loaded.",
   msgLoaded: ' loaded.',
   msgCreatingAList: 'Creating a list: ',
   msgDeletingAList: 'Deleting a list ...',
