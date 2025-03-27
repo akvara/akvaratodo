@@ -25,16 +25,12 @@ h1, h2 {
 }
 
 .list-item {
-  padding-left: 15px;
-  padding-right: 15px;
+  margin-left: 5px;
+  margin-right: 15px;
 }
 
 .list-item .list-item-glyph {
   cursor: pointer;
-}
-
-.list-last-item {
-  padding-left: 15px;
 }
 
 .list-first-item {
@@ -80,6 +76,10 @@ h1, h2 {
   margin-right: 8px;
 }
 
+.action-button:last-of-type {
+  margin-right: 0px;
+}
+
 .delete-button {
   margin-left: 6px;
   margin-right: 32px;
@@ -91,13 +91,14 @@ h1, h2 {
 
 @media (max-width: 480px) {
   .check-button {
+    margin-left: 0px;
     margin-right: 8px;
   }
   .delete-button {
-    margin-right: 16px;
+    margin-right: 12px;
   }
   .action-button {
-    margin-right: 6px;
+    margin-right: 4px;
   }
   .less-useful {
      display: none;
