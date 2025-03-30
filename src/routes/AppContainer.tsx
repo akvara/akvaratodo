@@ -12,8 +12,6 @@ interface AppPrivateProps extends AppProps {
 
 const mapStateToProps = (state: RootState) => ({
   mode: state.app.mode,
-  // lists: listSelector.selectListOfLists(state),
-  // aList: listSelector.selectAList(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
