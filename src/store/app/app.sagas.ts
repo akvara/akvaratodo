@@ -326,11 +326,6 @@ function* planWeekSaga() {
           `Auto - ${dayMonthName(shiftDate)} ${dayNumber(shiftDate)}d.`,
         ];
 
-        const relList = protectedLists.filter((l) => isListRelevant(l.name, tryLists)).map((l) => l.name);
-        // console.log('-****- protectedLists', protectedLists.map((l) => l.name));
-        // console.log('-****- tryLists', tryLists);
-        // console.log('-****- relList', relList);
-
         const append = protectedLists
           .filter((l) => isListRelevant(l.name, tryLists))
           .flatMap((l) => JSON.parse(l.tasks));

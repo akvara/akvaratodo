@@ -22,9 +22,6 @@ interface AppContainerProps extends AppProps {
 
 const App: React.FunctionComponent<AppProps> = (props) => {
   const { mode } = props;
-  // const { mode, lists, aList } = props;
-  // console.log('-****- App: lists', lists);
-  // console.log('-****- App: aList', aList);
 
   if (!mode) {
     return <div className="error">Mode undefined!</div>;
@@ -54,7 +51,7 @@ const App: React.FunctionComponent<AppProps> = (props) => {
     return <Failure />;
   }
 
-  return <div className="error">Mode {mode} not impelemented</div>;
+  return <div className="error">Mode {mode} not implemented</div>;
 };
 
 export default compose(

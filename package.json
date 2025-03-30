@@ -1,6 +1,6 @@
 {
   "name": "akvaratodo-frontend",
-  "version": "2.03.27",
+  "version": "2.03.30",
   "private": true,
   "engines": {
     "node": "18.x"
@@ -15,7 +15,6 @@
     "recompose": "^0.30.0",
     "redux": "^4.0.1",
     "redux-form": "^8.2.4",
-    "redux-form-material-ui": "^4.3.4",
     "redux-logger": "^3.0.6",
     "redux-saga": "^0.16.2",
     "redux-thunk": "^2.3.0",
@@ -27,12 +26,17 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "echo `tests not implemented (yet)`",
+    "typelint": "echo `not (yet)`",
+    "lint:fix": "echo `not (yet)`"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
+    "@types/recompose": "^0.30.15",
+    "@types/underscore": "^1.13.0",
     "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^9.21.0",
     "eslint-plugin-react-hooks": "^5.1.0",

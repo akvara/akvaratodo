@@ -1,11 +1,24 @@
 @import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
 
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --black: #171717;
+  --grey: #EFEFEF;
+  --white: #f5f8fa;
+}
+
 body {
   font-family: Raleway, sans-serif;
   font-size: 14px;
   line-height: 1.6;
-  color: #636b6f;
-  background-color: #f5f8fa;
+  color: var(--black);
+  background-color: var(--white);
 }
 
 h1,
@@ -186,4 +199,19 @@ h2 {
 .actions-row {
   display: flex;
   gap: 4px;
+}
+
+.rounded-button {
+  display: inline-block;
+  padding: 4px 12px;
+  background-color: var(--grey);
+  text-align: center;
+  text-decoration: none;
+  border: 1px solid var(--black);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.rounded-button:disabled {
+  opacity: 0.3;
 }

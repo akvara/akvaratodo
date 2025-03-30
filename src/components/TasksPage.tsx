@@ -70,7 +70,6 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     registerHotKeys(this.checkKeyPressed.bind(this));
   }
 
-  /* cloning State */
   prepareClone(newProps: any) {
     return {
       lastAction: new Date().toISOString(),
@@ -104,10 +103,8 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     return res;
   }
 
-  /* Calculations */
   readonly calculatePostponePosition = (pos: number) => Math.floor(pos / 2);
 
-  /* Show full/contracted ist */
   readonly expand = (which: 'expandToDo' | 'expandDone') => {
     this.setState({
       [which]: !this.state[which],
@@ -187,7 +184,6 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.props.checkAndSave(this.serialize(dataToSave));
   };
 
-  /* Toggle immutable. No checking if changed */
   mark = () => {
     const dataToSave = this.prepareClone({ immutable: !this.state.immutable });
 
@@ -200,7 +196,6 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.props.checkAndSave(this.serialize(dataToSave));
   };
 
-  /* Move task to another list */
   moveOutside = (task: string) => {
     const data = {
       fromList: { listId: this.props.aList.id, name: this.state.listName },
@@ -209,7 +204,6 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.props.moveOutside(data);
   };
 
-  /* Move task to the end of the list */
   readonly procrastinateTask = (fromPos: number) => {
     const itemsToDo = Utils.moveToEnd(this.state.itemsToDo, fromPos);
 
@@ -224,7 +218,6 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.props.checkAndSave(this.serialize(dataToSave));
   };
 
-  /* Move task to the middle of the list */
   readonly postponeTask = (fromPos: number) => {
     const itemsToDo = Utils.moveFromTo(
       this.state.itemsToDo,
@@ -247,7 +240,6 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.props.checkAndSave(this.serialize(dataToSave));
   };
 
-  /* Change list name */
   readonly changeListName = (e: React.ChangeEvent<HTMLInputElement>) => {
     const dataToSave = this.prepareClone({ name: e.target.value.trim() });
 
@@ -267,27 +259,22 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.props.addOrOpenAList({ listName });
   };
 
-  /* Reload this list */
   reload = () => {
     this.props.reloadAList(this.props.aList.id);
   };
 
-  /* Go to today's list */
   goToday = () => {
     this.props.addOrOpenAList({ listName: dayString(new Date()) });
   };
 
-  /* Go to lists */
   goLists = () => {
     this.props.startupRequest();
   };
 
-  /* Go to previous lists */
   goPrevious = () => {
     this.listChanger(this.props.previousList.name);
   };
 
-  /* Mode: List name is on edit */
   editListName = () => {
     this.setState({
       listNameOnEdit: true,
@@ -329,7 +316,6 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     }
   };
 
-  /* Edit header submit */
   handleHeaderSubmit = (e: React.FormEvent) => {
     e.preventDefault();
   };
@@ -414,7 +400,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
 
     return (
       <select
-        className="import-select"
+        className="rounded-button import-select"
         onChange={(e) => {
           if (e.target.value) {
             this.importList(e.target.value);
@@ -435,7 +421,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
 
     return (
       <select
-        className="import-select"
+        className="rounded-button import-select"
         onChange={(e) => {
           if (e.target.value) {
             this.exportList(e.target.value);
@@ -560,7 +546,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
                 onKeyDown={this.handleKeyDownAtTask}
                 onChange={this.onChange}
               />
-              <button disabled={!this.state.task.trim()} className="button">
+              <button className="rounded-button" disabled={!this.state.task.trim()}>
                 Add task
               </button>
             </form>
@@ -573,20 +559,20 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
         </div>
         <br />
         <div className="actions-row">
-          <button disabled={inputDirty} onClick={this.reload}>
+          <button className="rounded-button" disabled={inputDirty} onClick={this.reload}>
             <span className={'glyphicon glyphicon-refresh'} aria-hidden="true" /> <u>R</u>eload
           </button>
-          <button disabled={inputDirty} onClick={this.mark}>
+          <button className="rounded-button" disabled={inputDirty} onClick={this.mark}>
             <span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true" /> {markTitle}
           </button>
-          <button disabled={inputDirty} onClick={this.goLists}>
+          <button className="rounded-button" disabled={inputDirty} onClick={this.goLists}>
             <span className="glyphicon glyphicon-tasks" aria-hidden="true" /> <u>L</u>ists
           </button>
-          <button disabled={inputDirty} onClick={this.goToday}>
+          <button className="rounded-button" disabled={inputDirty} onClick={this.goToday}>
             <span className="glyphicon glyphicon-subscript" aria-hidden="true" /> <u>T</u>oday
           </button>
           {this.props.previousList && this.props.previousList.listId && (
-            <button disabled={inputDirty} onClick={this.goPrevious}>
+            <button className="rounded-button" disabled={inputDirty} onClick={this.goPrevious}>
               <span className="glyphicon glyphicon-chevron-left" aria-hidden="true" /> {this.props.previousList.name}
             </button>
           )}
