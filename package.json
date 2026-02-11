@@ -1,9 +1,9 @@
 {
   "name": "akvaratodo-frontend",
-  "version": "2.03.30",
+  "version": "2.02.22",
   "private": true,
   "engines": {
-    "node": "22.x"
+    "node": ">18"
   },
   "dependencies": {
     "axios": "^1.12.0",
