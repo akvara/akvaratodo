@@ -23,7 +23,7 @@ export const config = {
   footerNode: document.getElementById('footer'),
   // clickSound: 'https://www.soundjay.com/buttons/button-20.mp3',
   clickSound: 'https://www.myinstants.com/media/sounds/clicksoundeffect.mp3',
-  version: '0211-08',
+  version: '0212-11',
 };
 
 export default config;

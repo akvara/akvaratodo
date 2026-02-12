@@ -1,8 +1,7 @@
 {
   "extends": [
     "tslint:recommended",
-    "tslint-react",
-    "tslint-plugin-graphql"
+    "tslint-react-recommended"
   ],
   "rules": {
     "arrow-parens": false,
@@ -102,9 +101,6 @@
       "property-declaration"
     ],
     "no-unused-variable": true,
-    "graphql": [
-      true
-    ],
     "variable-name": [
       true,
       "ban-keywords",
