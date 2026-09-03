@@ -1,4 +1,3 @@
-import { Error } from 'tslint/lib/error';
 import CONFIG from '../config/config.js';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
