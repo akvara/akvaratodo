@@ -1,8 +1,5 @@
 import CONFIG from '../config/config.js';
 
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-export type OmitId<T extends { id: string }> = Omit<T, 'id'>;
-
 export interface TodoList {
   id: string;
   userId: number;
@@ -11,16 +8,14 @@ export interface TodoList {
   done: string;
   immutable: boolean;
   lastAction: string;
+  updatedAt: string;
 }
 
 export interface SerializedTodoList {
   listId: string;
-  itemsDone: string[];
-  itemsTodo: string[];
-  lastAction: string;
   previousAction: string;
   taskToAdd?: string;
-  listData?: TodoList;
+  listData: Partial<TodoList>;
 }
 
 export interface TodoListImpEx {
@@ -54,15 +49,15 @@ export interface ListCreds {
 
 export interface HotKey {
   key: string;
-  listId: string;
-  listName: string;
+  listId?: string;
+  listName?: string;
 }
 
 export interface ListNameOnly {
   listName: string;
 }
 
-export const getNewTodoListEntity = (listName: string): OmitId<TodoList> => {
+export const getNewTodoListEntity = (listName: string): Omit<TodoList, 'id' | 'updatedAt'> => {
   if (!listName) {
     throw new Error('Trying create list without name!');
   }

@@ -1,4 +1,3 @@
-import { formValueSelector } from 'redux-form';
 import { createSelector } from 'reselect';
 
 import { RootState } from '../reducers';

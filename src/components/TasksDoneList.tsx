@@ -5,7 +5,13 @@ import CONFIG from '../config/config.js';
 import * as Utils from '../utils/utils.js';
 import { restrictions } from '../config/constants';
 
-class TasksDoneList extends React.Component {
+interface TasksDoneListProps {
+  items: string[];
+  undone: (atPos: number) => void;
+  expand?: boolean;
+}
+
+class TasksDoneList extends React.Component<TasksDoneListProps> {
   static propTypes = {
     items: PropTypes.array.isRequired,
     expand: PropTypes.bool,

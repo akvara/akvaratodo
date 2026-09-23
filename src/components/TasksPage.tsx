@@ -42,7 +42,21 @@ interface TasksPageState {
   expandDone: boolean;
 }
 
+interface PendingEdit {
+  lastAction: string;
+  listId: string;
+  previousAction: string;
+  name?: string;
+  itemsToDo?: string[];
+  itemsDone?: string[];
+  immutable?: boolean;
+  taskToAdd?: string;
+}
+
 class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
+  taskInput: HTMLInputElement | null = null;
+  headerInput: HTMLInputElement | null = null;
+
   constructor(props: any) {
     super(props);
     this.state = {
@@ -70,7 +84,9 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     registerHotKeys(this.checkKeyPressed.bind(this));
   }
 
-  prepareClone(newProps: any) {
+  prepareClone<T extends Partial<PendingEdit>>(
+    newProps: T,
+  ): Pick<PendingEdit, 'lastAction' | 'listId' | 'previousAction'> & T {
     return {
       lastAction: new Date().toISOString(),
       listId: this.props.aList.id,
@@ -79,7 +95,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     };
   }
 
-  serialize(entity: SerializedTodoList) {
+  serialize(entity: PendingEdit): SerializedTodoList {
     const res: SerializedTodoList = {
       listId: entity.listId,
       previousAction: entity.previousAction,
@@ -240,8 +256,8 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     this.props.checkAndSave(this.serialize(dataToSave));
   };
 
-  readonly changeListName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const dataToSave = this.prepareClone({ name: e.target.value.trim() });
+  readonly changeListName = (e: React.ChangeEvent<HTMLInputElement> | React.KeyboardEvent<HTMLInputElement>) => {
+    const dataToSave = this.prepareClone({ name: e.currentTarget.value.trim() });
 
     this.setState({
       lastAction: dataToSave.lastAction,
@@ -286,8 +302,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
       case 'a':
         playSound();
         e.preventDefault();
-        // @ts-ignore
-        this.taskInput.focus();
+        this.taskInput?.focus();
         break;
       case 'l':
         playSound();
@@ -322,8 +337,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
 
   handleKeyDownAtTask = (e: React.KeyboardEvent) => {
     if (e.keyCode === 27) {
-      // @ts-ignore
-      this.taskInput.blur();
+      this.taskInput?.blur();
       this.setState({
         task: '',
       });
@@ -331,7 +345,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   };
 
   /* Edit header keypress */
-  handleKeyDownAtHeader = (e: React.KeyboardEvent) => {
+  handleKeyDownAtHeader = (e: React.KeyboardEvent<HTMLInputElement>) => {
     switch (e.key) {
       case 'Enter':
       case 'Tab':
@@ -348,8 +362,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   /* New task submit */
   handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // @ts-ignore
-    this.taskInput.blur();
+    this.taskInput?.blur();
 
     const highlightIndex = Math.min(this.state.itemsToDo.length, CONFIG.user.settings.addNewAt - 1);
     const taskToAdd = this.state.task.replace(/(^\s+|\s+$)/g, '');
@@ -454,7 +467,6 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
         <form onSubmit={this.handleHeaderSubmit}>
           <input
             ref={(input) => {
-              // @ts-ignore
               this.headerInput = input;
             }}
             className="task-input"
@@ -537,7 +549,6 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
               <input
                 className="input"
                 ref={(input) => {
-                  // @ts-ignore
                   this.taskInput = input;
                 }}
                 value={this.state.task}

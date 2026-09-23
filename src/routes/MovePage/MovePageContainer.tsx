@@ -1,4 +1,4 @@
-import { bindActionCreators, compose } from 'redux';
+import { bindActionCreators } from 'redux';
 import { connect, Dispatch } from 'react-redux';
 import { getFormValues } from 'redux-form';
 
@@ -33,9 +33,4 @@ const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
   );
 };
 
-export default compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  ),
-)(MovePage);
+export default connect(mapStateToProps, mapDispatchToProps)(MovePage);

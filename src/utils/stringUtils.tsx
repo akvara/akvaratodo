@@ -23,7 +23,7 @@ export const strongify = (str: string, letter: string) => {
   );
 };
 
-export const hotKeyedListName = (listName: string, hotKeys: HotKey[]) => {
+export const hotKeyedListName = (listName: string, hotKeys?: HotKey[]) => {
   if (!hotKeys) {
     return listName;
   }

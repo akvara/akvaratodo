@@ -29,12 +29,13 @@ interface MovePageHandlers {
   copyToNewListHandler: () => void;
   backHandler: () => void;
   reloadHandler: () => void;
+}
+
+interface MovePageExtraProps {
   pageHotKeys: (e: any) => void;
 }
 
-interface MovePagePrivateProps extends MovePageProps, MovePageHandlers {
-  pageHotKeys: (e: any) => void;
-}
+interface MovePagePrivateProps extends MovePageProps, MovePageHandlers, MovePageExtraProps {}
 
 const MovePage: React.FunctionComponent<MovePagePrivateProps> = (props) => {
   const {
@@ -96,7 +97,7 @@ const MovePage: React.FunctionComponent<MovePagePrivateProps> = (props) => {
 };
 
 export default compose<MovePagePrivateProps, MovePageProps>(
-  withHandlers<MovePagePrivateProps, MovePageHandlers>({
+  withHandlers<MovePageProps, MovePageHandlers>({
     moveHandler:
       ({ moveToList, fromList, task }) =>
       (toListId) => {
@@ -149,7 +150,7 @@ export default compose<MovePagePrivateProps, MovePageProps>(
         reloadListOfListsPage();
       },
   }),
-  withProps(({ reloadHandler, backHandler }) => ({
+  withProps<MovePageExtraProps, MovePageProps & MovePageHandlers>(({ reloadHandler, backHandler }) => ({
     pageHotKeys: (e) => {
       const pressed = String.fromCharCode(e.which);
 

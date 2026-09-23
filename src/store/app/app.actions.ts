@@ -13,9 +13,9 @@ export const copyToListAction = actionCreator<TodoListCopy>('COPY_TO');
 export const importListAction = actionCreator<TodoListImpEx>('IMPORT_LIST');
 export const exportListAction = actionCreator<TodoListImpEx>('EXPORT_LIST');
 export const checkAndSaveAction = actionCreator<{}>('CHECK_AND_SAVE');
-export const planWeekAction = actionCreator<{}>('PLAN_WEEK');
+export const planWeekAction = actionCreator<void>('PLAN_WEEK');
 export const dataConflictAction = actionCreator<{}>('DATA_CONFLICT');
-export const errorAction = actionCreator<{}>('ERROR');
+export const errorAction = actionCreator<unknown>('ERROR');
 // New, correct
 export const setMode = actionCreator<string>('SET_MODE');
 export const reloadListOfLists = actionCreator<void>('RELOAD_LISTS');

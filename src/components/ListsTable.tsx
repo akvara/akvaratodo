@@ -3,8 +3,29 @@ import PropTypes from 'prop-types';
 
 import * as Utils from '../utils/utils.js';
 import { hotKeyedListName } from '../utils/stringUtils';
+import { HotKey } from '../store/types';
 
-class ListsTable extends Component {
+interface ListsTableProps {
+  hotKeys?: HotKey[];
+  lists: any[];
+  openList: (listId: string, listName?: string) => void;
+  removeList?: (listId: string) => void;
+  toggleContracted?: (listTitle: string, beContracted: boolean) => void;
+}
+
+interface ListRow {
+  id: string;
+  tasks: string;
+  noOfTasks: number;
+  name: string | React.ReactElement;
+  itemClass: string;
+  action: (...args: any[]) => void;
+  deletable: boolean;
+  updatedDateOrTime: string;
+  indent?: boolean;
+}
+
+class ListsTable extends Component<ListsTableProps> {
   static propTypes = {
     hotKeys: PropTypes.array,
     lists: PropTypes.array,
@@ -19,7 +40,7 @@ class ListsTable extends Component {
     }
     return (
       <tr key={'tr' + i}>
-        <td colSpan={2} onClick={this.props.toggleContracted.bind(this, list.contractedTitle, !list.isContracted)}>
+        <td colSpan={2} onClick={this.props.toggleContracted?.bind(this, list.contractedTitle, !list.isContracted)}>
           <span className={'glyphicon list-item list-item-glyph glyphicon ' + sign} aria-hidden="true" />
           {list.contractedTitle}
         </td>
@@ -38,11 +59,11 @@ class ListsTable extends Component {
   };
 
   contractedList = (list, i) => {
-    return [this.contractedListItemHeader(list, i), this.contractedListItems(list, i)];
+    return [this.contractedListItemHeader(list, i), this.contractedListItems(list)];
   };
 
   displayIndentedListRow = (list, i) => {
-    let item = this.prepareListForDisplaying(list);
+    const item = this.prepareListForDisplaying(list);
     item.indent = true;
     return this.displayListRow(item, i);
   };
@@ -63,7 +84,7 @@ class ListsTable extends Component {
           <span
             className="glyphicon glyphicon-trash action-button"
             aria-hidden="true"
-            onClick={this.props.removeList.bind(this, list.id)}
+            onClick={this.props.removeList?.bind(this, list.id)}
           />
         )}
       </td>
@@ -76,8 +97,8 @@ class ListsTable extends Component {
     </tr>
   );
 
-  prepareListForDisplaying = (list) => {
-    let item = {
+  prepareListForDisplaying = (list): ListRow => {
+    const item: ListRow = {
       id: list.id,
       tasks: list.tasks,
       noOfTasks: list.tasks ? JSON.parse(list.tasks).length : 0,

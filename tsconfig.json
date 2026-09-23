@@ -7,15 +7,11 @@
     "allowJs": false,
     "checkJs": false,
     "declaration": false,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
-    "importHelpers": true,
-    "noEmitHelpers": true,
     "jsx": "preserve",
     "lib": [
       "dom",
-      "es2019",
+      "es2019"
     ],
     "target": "es5",
     "module": "esnext",
@@ -35,10 +31,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true
-  },
-  "awesomeTypescriptLoaderOptions": {
-    "forkChecker": true,
-    "useWebpackText": true
   },
   "exclude": [
     "node_modules",

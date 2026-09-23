@@ -3,7 +3,7 @@ import * as React from 'react';
 import ListsTable from './ListsTable';
 
 import { disableHotKeys, playSound, registerHotKeys } from '../utils/hotkeys';
-import { TodoList } from '../store/types';
+import { HotKey, TodoList } from '../store/types';
 import { dayString } from '../utils/calendar';
 import { appActions } from '../store/actions';
 
@@ -15,39 +15,55 @@ export interface ListsPageProps {
   addOrOpenAList: typeof appActions.addOrOpenListByNameAction;
   removeList: typeof appActions.deleteAList;
   planWeek: typeof appActions.planWeekAction;
+  collectPastDaysRequest: typeof appActions.collectPastDays;
 }
 
 export interface ListsPagePrivateProps extends ListsPageProps {}
 
-const makeContractableList = (listOfLists) => {
-  const contractedList = [];
+interface ContractedListGroup {
+  isList: true;
+  isContracted: boolean;
+  contractedTitle: string;
+  list: TodoList[];
+}
 
-  listOfLists.map((list) => {
+type DisplayListItem = TodoList | ContractedListGroup;
+
+interface ListsPageState {
+  lists: DisplayListItem[];
+  immutableLists: TodoList[];
+  listName: string;
+}
+
+const makeContractableList = (listOfLists: TodoList[]): DisplayListItem[] => {
+  const contractedGroups: Record<string, { used: boolean; list: TodoList[] }> = {};
+
+  listOfLists.forEach((list) => {
     const dashPos = list.name.indexOf(' - ');
     if (dashPos > -1) {
       const contractedTitle = list.name.substring(0, dashPos);
-      if (!contractedList[contractedTitle]) {
-        contractedList[contractedTitle] = { used: false, list: [] };
+      if (!contractedGroups[contractedTitle]) {
+        contractedGroups[contractedTitle] = { used: false, list: [] };
       }
-      contractedList[contractedTitle].list.push(list);
+      contractedGroups[contractedTitle].list.push(list);
     }
-    return null;
   });
 
-  const displayList = [];
+  const displayList: DisplayListItem[] = [];
 
-  listOfLists.map((list) => {
+  listOfLists.forEach((list) => {
     const dashPos = list.name.indexOf(' - ');
     if (dashPos > -1) {
       const contractedTitle = list.name.substring(0, dashPos);
-      if (contractedList[contractedTitle].list.length > 1) {
-        if (!contractedList[contractedTitle].used) {
-          contractedList[contractedTitle].used = true;
+      const group = contractedGroups[contractedTitle];
+      if (group.list.length > 1) {
+        if (!group.used) {
+          group.used = true;
           displayList.push({
             isList: true,
             isContracted: true,
-            contractedTitle: contractedTitle,
-            list: contractedList[contractedTitle].list,
+            contractedTitle,
+            list: group.list,
           });
         }
       } else {
@@ -56,12 +72,14 @@ const makeContractableList = (listOfLists) => {
     } else {
       displayList.push(list);
     }
-    return null;
   });
   return displayList;
 };
 
-class ListsPage extends React.PureComponent {
+class ListsPage extends React.PureComponent<ListsPagePrivateProps, ListsPageState> {
+  hotKeys: HotKey[];
+  listNameInput: HTMLInputElement | null = null;
+
   constructor(props: ListsPagePrivateProps) {
     super(props);
     this.state = {
@@ -95,7 +113,7 @@ class ListsPage extends React.PureComponent {
     if (pressed === 'a') {
       playSound();
       e.preventDefault();
-      this.listNameInput.focus();
+      this.listNameInput?.focus();
       return;
     }
     if (pressed === 'r' || pressed === 'l') {
@@ -131,8 +149,8 @@ class ListsPage extends React.PureComponent {
 
   addHotKeys = () => {
     this.state.lists.forEach((list) => {
-      if (!list.isList) {
-        let newKey = this.findFreeKey(list.name);
+      if (!('isList' in list)) {
+        const newKey = this.findFreeKey(list.name);
         if (newKey) this.hotKeys.push({ key: newKey, listId: list.id, listName: list.name });
       }
     });
@@ -142,7 +160,7 @@ class ListsPage extends React.PureComponent {
 
   findFreeKey = (str) => {
     for (let i = 0, len = str.length; i < len; i++) {
-      let pretender = str[i].toLowerCase();
+      const pretender = str[i].toLowerCase();
       if ('abcdefghijklmnopqrstuvwxyz'.indexOf(pretender) !== -1 && this.keyIsNotOccupied(pretender)) return pretender;
     }
     return null;
@@ -168,7 +186,7 @@ class ListsPage extends React.PureComponent {
 
   toggleContracted = (listTitle, beContracted) => {
     const newList = this.state.lists.map((list) => {
-      if (list.isList && list.contractedTitle === listTitle) {
+      if ('isList' in list && list.contractedTitle === listTitle) {
         return {
           ...list,
           isContracted: beContracted,
@@ -186,7 +204,7 @@ class ListsPage extends React.PureComponent {
 
   handleKeyDownAtListInput = (e) => {
     if (e.keyCode === 27) {
-      this.listNameInput.blur();
+      this.listNameInput?.blur();
       this.setState({
         listName: '',
       });
@@ -208,7 +226,7 @@ class ListsPage extends React.PureComponent {
               <td className="right-align">
                 {this.props.legacyExists && (
                   <span>
-                    <button className='rounded-button' onClick={this.props.collectPastDaysRequest}>{'  >> T '}</button>{' '}
+                    <button className='rounded-button' onClick={() => this.props.collectPastDaysRequest()}>{'  >> T '}</button>{' '}
                   </span>
                 )}
                 <button className='rounded-button' onClick={this.goToday}>
@@ -243,7 +261,7 @@ class ListsPage extends React.PureComponent {
         </form>
         <hr />
         <div className="actions-row">
-          <button className='rounded-button' onClick={this.props.planWeek}>
+          <button className='rounded-button' onClick={() => this.props.planWeek()}>
             <u>P</u>lan week
           </button>
           <button className='rounded-button' onClick={this.reload}>

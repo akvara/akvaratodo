@@ -387,9 +387,8 @@ function* reloadAListSaga({ payload }: ReturnType<typeof appActions.reloadAList>
 
 /**
  * Fires Error action
- * @param e Error
  */
-export function* generalFailure(e: Action<{}>) {
+export function* generalFailure(e: unknown) {
   console.error(e);
   yield put(appActions.errorAction(e));
 }

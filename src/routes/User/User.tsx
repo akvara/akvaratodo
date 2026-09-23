@@ -21,7 +21,7 @@ const User: React.FunctionComponent<{}> = () => (
     <span className="list-item">
       <span style={{ color: versionColor() }}> {CONFIG.version}</span>{' '}
       <small>
-        <b>{process.env.NODE_ENV}</b>
+        <b>{import.meta.env.MODE}</b>
       </small>
     </span>
     <span className="glyphicon glyphicon-cog action-button" aria-hidden="true" />

@@ -5,7 +5,22 @@ import CONFIG from '../config/config.js';
 import * as Utils from '../utils/utils.js';
 import { restrictions } from '../config/constants';
 
-class TaskList extends React.Component {
+interface TaskListProps {
+  items: string[];
+  done: (atPos: number) => void;
+  delete: (atPos: number) => void;
+  toTop: (fromPos: number) => void;
+  move: (task: string) => void;
+  procrastinate: (fromPos: number) => void;
+  postpone: (fromPos: number) => void;
+  openListByName: (listName: string) => void;
+  highlightIndex?: number | null;
+  immutable?: boolean;
+  expand?: boolean;
+  reloadNeeded?: boolean;
+}
+
+class TaskList extends React.Component<TaskListProps> {
   static propTypes = {
     items: PropTypes.array.isRequired,
     done: PropTypes.func.isRequired,
@@ -80,7 +95,7 @@ class TaskList extends React.Component {
       itemIndex = i + omitted;
     }
 
-    let taskAsDisplayed = this.processTaskText(task);
+    const taskAsDisplayed = this.processTaskText(task);
 
     if (this.props.immutable) {
       return (

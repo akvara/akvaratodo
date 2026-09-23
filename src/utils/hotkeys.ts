@@ -9,6 +9,6 @@ export const disableHotKeys = () => {
 };
 
 export const playSound = () => {
-  let sound = document.getElementById('clickSound') as HTMLAudioElement;
+  const sound = document.getElementById('clickSound') as HTMLAudioElement;
   sound.play();
 };
