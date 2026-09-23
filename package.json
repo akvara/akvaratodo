@@ -1,6 +1,6 @@
 {
   "name": "akvaratodo-frontend",
-  "version": "6.08.07",
+  "version": "6.09.23",
   "private": true,
   "engines": {
     "node": ">=24"
