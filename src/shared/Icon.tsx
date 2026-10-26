@@ -20,6 +20,7 @@ export type IconName =
   | 'list'
   | 'sun'
   | 'chevron-left'
+  | 'chevron-down'
   | 'cog';
 
 interface IconProps {
