@@ -99,7 +99,7 @@ class TaskList extends React.Component<TaskListProps> {
     } else {
       return (
         <div className="task-card" key={'c' + i}>
-          <Icon name="circle" className="check-button" onClick={this.props.done.bind(this, itemIndex)} />
+          <Icon name="checkbox" className="check-button" onClick={this.props.done.bind(this, itemIndex)} />
           <div className="task-description">
             <span className="task">{this.hightlightOnDemand(taskAsDisplayed, itemIndex)}</span>
           </div>

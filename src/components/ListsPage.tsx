@@ -227,7 +227,7 @@ class ListsPage extends React.PureComponent<ListsPagePrivateProps, ListsPageStat
               </button>
             )}
             <button className='rounded-button' onClick={this.goToday}>
-              <u>T</u>oday
+              <span><u>T</u>oday</span>
             </button>
           </div>
         </div>
@@ -240,7 +240,7 @@ class ListsPage extends React.PureComponent<ListsPagePrivateProps, ListsPageStat
         />
         <h3>Protected</h3>
         <ListsTable lists={this.state.immutableLists} openList={this.openAList} />
-        <form onSubmit={this.handleSubmit} className="input-row">
+        <form onSubmit={this.handleSubmit} className="input-row new-list-row">
           <input
             className='input'
             ref={(input) => {
@@ -257,10 +257,10 @@ class ListsPage extends React.PureComponent<ListsPagePrivateProps, ListsPageStat
         <hr />
         <div className="actions-row">
           <button className='rounded-button' onClick={() => this.props.planWeek()}>
-            <u>P</u>lan week
+            <span><u>P</u>lan week</span>
           </button>
           <button className='rounded-button' onClick={this.reload}>
-            <Icon name="refresh" /> <u>R</u>eload
+            <Icon name="refresh" /> <span><u>R</u>eload</span>
           </button>
         </div>
       </div>
