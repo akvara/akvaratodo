@@ -554,16 +554,16 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
         <br />
         <div className="actions-row">
           <button className="rounded-button" disabled={inputDirty} onClick={this.reload}>
-            <Icon name="refresh" /> <u>R</u>eload
+            <Icon name="refresh" /> <span><u>R</u>eload</span>
           </button>
           <button className="rounded-button" disabled={inputDirty} onClick={this.mark}>
             <Icon name={markIcon} /> {markTitle}
           </button>
           <button className="rounded-button" disabled={inputDirty} onClick={this.goLists}>
-            <Icon name="list" /> <u>L</u>ists
+            <Icon name="list" /> <span><u>L</u>ists</span>
           </button>
           <button className="rounded-button" disabled={inputDirty} onClick={this.goToday}>
-            <Icon name="sun" /> <u>T</u>oday
+            <Icon name="sun" /> <span><u>T</u>oday</span>
           </button>
           {this.props.previousList && this.props.previousList.listId && (
             <button className="rounded-button" disabled={inputDirty} onClick={this.goPrevious}>

@@ -103,20 +103,20 @@ hr {
 /* ---------- icons ---------- */
 
 .icon {
-  width: 16px;
-  height: 16px;
+  width: 19px;
+  height: 19px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.7;
   stroke-linecap: round;
   stroke-linejoin: round;
-  vertical-align: -3px;
+  vertical-align: -4px;
   flex-shrink: 0;
 }
 
 .indent-spacer {
   display: inline-block;
-  width: 16px;
+  width: 19px;
 }
 
 /* ---------- generic layout helpers ---------- */
@@ -225,35 +225,53 @@ table tr:hover td {
   font-size: 0.8rem;
 }
 
+.check-button,
+.action-button,
+.delete-button {
+  cursor: pointer;
+  transition: transform 0.12s ease, color 0.12s ease;
+}
+
 .check-button {
   color: var(--line);
-  cursor: pointer;
 }
 
 .check-button:hover {
   color: var(--accent);
+  transform: scale(1.35);
 }
 
 .action-button {
   margin-left: 6px;
   color: var(--sub);
-  cursor: pointer;
 }
 
 .action-button:hover {
   color: var(--ink);
-  transform: scale(1.15);
+  transform: scale(1.35);
 }
 
 .delete-button {
   margin-left: 10px;
   color: var(--sub);
-  cursor: pointer;
 }
 
 .delete-button:hover {
   color: var(--danger);
-  transform: scale(1.15);
+  transform: scale(1.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .check-button,
+  .action-button,
+  .delete-button {
+    transition: none;
+  }
+  .check-button:hover,
+  .action-button:hover,
+  .delete-button:hover {
+    transform: none;
+  }
 }
 
 .list-first-item {
@@ -287,6 +305,10 @@ table tr:hover td {
   align-items: center;
   width: 100%;
   gap: 10px;
+}
+
+.new-list-row {
+  margin-top: 22px;
 }
 
 .input {

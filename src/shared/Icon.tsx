@@ -7,7 +7,7 @@ export type IconName =
   | 'folder'
   | 'trash'
   | 'check'
-  | 'circle'
+  | 'checkbox'
   | 'arrow-down'
   | 'arrow-up'
   | 'shuffle'
