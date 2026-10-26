@@ -15,7 +15,7 @@ export type AppState = {
 export const initialState: AppState = {
   mode: appModes.MODE_LOADING,
   lists: [],
-  aList: { id: '', userId: 0, name: '', tasks: '', done: '', immutable: false, lastAction: '' },
+  aList: { id: '', userId: 0, name: '', tasks: '', done: '', immutable: false, lastAction: '', updatedAt: '' },
   task: '',
   fromList: { listId: '', name: '' },
 };
@@ -30,21 +30,21 @@ const appReducer = createReducer(initialState, {
       task: action.payload.task,
     };
   },
-  [appActions.moveToListAction.type]: (state: AppState, action: any) => {
+  [appActions.moveToListAction.type]: (state: AppState) => {
     return {
       ...state,
       // statusMsg: 'Adding on top ...',
       mode: appModes.MODE_LOADING,
     };
   },
-  [appActions.importListAction.type]: (state: AppState, action: any) => {
+  [appActions.importListAction.type]: (state: AppState) => {
     return {
       ...state,
       // statusMsg: 'Adding a list on top ...',
       mode: appModes.MODE_LOADING,
     };
   },
-  [appActions.exportListAction.type]: (state: AppState, action: any) => {
+  [appActions.exportListAction.type]: (state: AppState) => {
     return {
       ...state,
       // statusMsg: 'Exporting to a list ...',
@@ -57,7 +57,7 @@ const appReducer = createReducer(initialState, {
       mode: appModes.MODE_ERROR,
     };
   },
-  [appActions.dataConflictAction.type]: (state: AppState, action: any) => {
+  [appActions.dataConflictAction.type]: (state: AppState) => {
     return {
       ...state,
       // statusMsg: new Date(action.payload).toLocaleTimeString('lt-LT'),

@@ -7,6 +7,7 @@ import { appActions } from '../../store/actions';
 import ListsFilter from './ListsFilter';
 import { restrictions } from '../../config/constants';
 import { dayString } from '../../utils/calendar';
+import Icon from '../../shared/Icon';
 
 export interface MovePageProps {
   task: string;
@@ -29,12 +30,13 @@ interface MovePageHandlers {
   copyToNewListHandler: () => void;
   backHandler: () => void;
   reloadHandler: () => void;
+}
+
+interface MovePageExtraProps {
   pageHotKeys: (e: any) => void;
 }
 
-interface MovePagePrivateProps extends MovePageProps, MovePageHandlers {
-  pageHotKeys: (e: any) => void;
-}
+interface MovePagePrivateProps extends MovePageProps, MovePageHandlers, MovePageExtraProps {}
 
 const MovePage: React.FunctionComponent<MovePagePrivateProps> = (props) => {
   const {
@@ -62,7 +64,7 @@ const MovePage: React.FunctionComponent<MovePagePrivateProps> = (props) => {
         {'<'} Back to {fromList.name}
       </button>{' '}
       <button onClick={reloadHandler}>
-        <span className={'glyphicon glyphicon-refresh'} aria-hidden="true" /> <u>R</u>eload
+        <Icon name="refresh" /> <u>R</u>eload
       </button>{' '}
       <button onClick={moveToTomorrowHandler}>{tomorrowListName}</button>
       <hr />
@@ -96,7 +98,7 @@ const MovePage: React.FunctionComponent<MovePagePrivateProps> = (props) => {
 };
 
 export default compose<MovePagePrivateProps, MovePageProps>(
-  withHandlers<MovePagePrivateProps, MovePageHandlers>({
+  withHandlers<MovePageProps, MovePageHandlers>({
     moveHandler:
       ({ moveToList, fromList, task }) =>
       (toListId) => {
@@ -149,7 +151,7 @@ export default compose<MovePagePrivateProps, MovePageProps>(
         reloadListOfListsPage();
       },
   }),
-  withProps(({ reloadHandler, backHandler }) => ({
+  withProps<MovePageExtraProps, MovePageProps & MovePageHandlers>(({ reloadHandler, backHandler }) => ({
     pageHotKeys: (e) => {
       const pressed = String.fromCharCode(e.which);
 

@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 import combineReducers from './reducers';
 import RootSaga from './sagas';
 
-// @ts-ignore
+// @ts-expect-error - injected by the Redux DevTools browser extension, not part of the Window type
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export function configureStore(middlewares: []) {

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { compose, lifecycle } from 'recompose';
+import { useEffect } from 'react';
 
 import Spinner from '../shared/Spinner';
 import { appModes } from '../config/constants';
@@ -14,14 +14,16 @@ export interface AppProps {
   mode: string;
   lists: TodoList[];
   aList: TodoList;
-}
-
-interface AppContainerProps extends AppProps {
   startupRequest: typeof appActions.startup;
 }
 
 const App: React.FunctionComponent<AppProps> = (props) => {
-  const { mode } = props;
+  const { mode, startupRequest } = props;
+
+  useEffect(() => {
+    startupRequest();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!mode) {
     return <div className="error">Mode undefined!</div>;
@@ -54,14 +56,4 @@ const App: React.FunctionComponent<AppProps> = (props) => {
   return <div className="error">Mode {mode} not implemented</div>;
 };
 
-export default compose(
-  lifecycle<AppContainerProps, {}>({
-    componentDidMount() {
-      //     if (this.props.openAtStartup) {
-      //       // Uncomment when opening list at startup is back in fashion
-      //       // this.props.dispatch(listActions.addOrOpenListByNameAction(this.props.openAtStartup));
-      //     }
-      this.props.startupRequest();
-    },
-  }),
-)(App);
+export default App;

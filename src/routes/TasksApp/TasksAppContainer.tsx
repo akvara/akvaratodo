@@ -1,6 +1,5 @@
 import { bindActionCreators } from 'redux';
 import { connect, Dispatch } from 'react-redux';
-import { compose } from 'recompose';
 
 import { RootState } from '../../store/reducers';
 import { appActions } from '../../store/actions';
@@ -32,9 +31,4 @@ const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
   );
 };
 
-export default compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  ),
-)(TasksPage);
+export default connect(mapStateToProps, mapDispatchToProps)(TasksPage);

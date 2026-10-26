@@ -1,17 +1,14 @@
 import * as React from 'react';
-import { compose, withProps } from 'recompose';
 import { Field, reduxForm } from 'redux-form';
 
 import { Forms } from '../../../store/forms';
 import { disableHotKeys, registerHotKeys } from '../../../utils/hotkeys';
 
 export interface ListsFilterProps {
-  pageHotKeys: () => void;
+  pageHotKeys: (e: any) => void;
 }
 
-interface ListsFilterPrivateProps extends ListsFilterProps {}
-
-const ListsFilterInput: React.FunctionComponent<ListsFilterPrivateProps> = ({ pageHotKeys }) => {
+const ListsFilterInput: React.FunctionComponent<ListsFilterProps> = ({ pageHotKeys }) => {
   return (
     <Field
       className="list-input"
@@ -24,12 +21,9 @@ const ListsFilterInput: React.FunctionComponent<ListsFilterPrivateProps> = ({ pa
   );
 };
 
-export default compose<ListsFilterPrivateProps, ListsFilterProps>(
-  // withForwardedRef,
-  reduxForm({
-    form: Forms.listsFilter,
-    initialValues: {
-      searchInput: '',
-    },
-  }),
-)(ListsFilterInput);
+export default reduxForm<{}, ListsFilterProps>({
+  form: Forms.listsFilter,
+  initialValues: {
+    searchInput: '',
+  },
+})(ListsFilterInput);

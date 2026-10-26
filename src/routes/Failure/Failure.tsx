@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { defaultProps } from 'recompose';
 
 import { TodoList } from '../../store/types';
 import { appActions } from '../../store/actions';
 
 export interface FailureProps {
-  msg: string;
+  msg?: string;
 }
 
 interface FailurePrivateProps extends FailureProps {
@@ -14,7 +13,7 @@ interface FailurePrivateProps extends FailureProps {
 }
 
 const Failure: React.FunctionComponent<FailurePrivateProps> = (props) => {
-  const { msg, openAListRequest, aList } = props;
+  const { msg = 'Ooops, something went wrong...', openAListRequest, aList } = props;
   return (
     <div>
       <br />

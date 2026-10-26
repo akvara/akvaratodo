@@ -1,10 +1,8 @@
-import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect, Dispatch } from 'react-redux';
-import { compose, defaultProps } from 'recompose';
 
 import { RootState } from '../../store/reducers';
-import Failure, { FailureProps } from './Failure';
+import Failure from './Failure';
 import * as appActions from '../../store/app/app.actions';
 
 const mapStateToProps = (state: RootState) => ({
@@ -20,12 +18,4 @@ const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
   );
 };
 
-export default compose<FailureProps>(
-  defaultProps({
-    msg: 'Ooops, something went wrong...',
-  }),
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  ),
-)(Failure);
+export default connect(mapStateToProps, mapDispatchToProps)(Failure);

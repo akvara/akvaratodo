@@ -1,9 +1,8 @@
 import { bindActionCreators } from 'redux';
 import { connect, Dispatch } from 'react-redux';
-import { compose } from 'recompose';
 
 import { RootState } from '../../store/reducers';
-import ListsPage, { ListsPageProps } from '../../components/ListsPage';
+import ListsPage from '../../components/ListsPage';
 import { appActions } from '../../store/actions';
 import { listSelector } from '../../store/selectors';
 
@@ -26,4 +25,4 @@ const mapDispatchToProps = (dispatch: Dispatch<RootState>) => {
   );
 };
 
-export default compose<ListsPageProps, ListsPageProps>(connect(mapStateToProps, mapDispatchToProps))(ListsPage);
+export default connect(mapStateToProps, mapDispatchToProps)(ListsPage);

@@ -4,8 +4,15 @@ import PropTypes from 'prop-types';
 import CONFIG from '../config/config.js';
 import * as Utils from '../utils/utils.js';
 import { restrictions } from '../config/constants';
+import Icon from '../shared/Icon';
 
-class TasksDoneList extends React.Component {
+interface TasksDoneListProps {
+  items: string[];
+  undone: (atPos: number) => void;
+  expand?: boolean;
+}
+
+class TasksDoneList extends React.Component<TasksDoneListProps> {
   static propTypes = {
     items: PropTypes.array.isRequired,
     expand: PropTypes.bool,
@@ -18,16 +25,10 @@ class TasksDoneList extends React.Component {
     }
 
     return (
-      <tr key={'tr' + i}>
-        <td className="task-row">
-          <span
-            className="glyphicon glyphicon-ok action-button"
-            aria-hidden="true"
-            onClick={this.props.undone.bind(this, i)}
-          />
-          <span className="list-item task-description done">{task.substring(0, restrictions.maxTaskLength)}</span>
-        </td>
-      </tr>
+      <div className="task-card task-card-done" key={'c' + i}>
+        <Icon name="check" className="action-button" onClick={this.props.undone.bind(this, i)} />
+        <span className="task-description done">{task.substring(0, restrictions.maxTaskLength)}</span>
+      </div>
     );
   };
 
@@ -35,9 +36,7 @@ class TasksDoneList extends React.Component {
     return (
       <div>
         {!this.props.expand && Utils.overLength('displayDoneLength', this.props.items) && CONFIG.separatorString}
-        <table className="table table-sm table-condensed table-hover">
-          <tbody>{this.props.items.map(this.displayTask)}</tbody>
-        </table>
+        <div className="task-cards">{this.props.items.map(this.displayTask)}</div>
       </div>
     );
   }
