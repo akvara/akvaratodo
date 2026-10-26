@@ -1,5 +1,20 @@
-@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
+/* ToDo App — Kortelės (warm cards, mobile-first) visual direction.
+   Table rows become touch-friendly cards; warm stone palette with a plum accent;
+   Fraunces for headings paired with Figtree for everything else. */
 
+:root {
+  --bg: #eee8dc;
+  --panel: #fffdf9;
+  --ink: #2b241c;
+  --sub: #7d7263;
+  --line: #e2d8c4;
+  --accent: #8c3f55;
+  --accent-ink: #ffffff;
+  --accent-soft: #f3dde3;
+  --done: #b2a98f;
+  --chip: #f6f1e6;
+  --danger: #a8402f;
+}
 
 *,
 *::before,
@@ -7,211 +22,392 @@
   box-sizing: border-box;
 }
 
-:root {
-  --black: #171717;
-  --grey: #EFEFEF;
-  --white: #f5f8fa;
+html,
+body {
+  height: 100%;
 }
 
 body {
-  font-family: Raleway, sans-serif;
-  font-size: 14px;
+  font-family: 'Figtree', system-ui, sans-serif;
+  font-size: 14.5px;
   line-height: 1.6;
-  color: var(--black);
-  background-color: var(--white);
+  color: var(--ink);
+  background-color: var(--bg);
 }
 
 h1,
-h2 {
-  display: inline;
+h2,
+h3 {
+  font-weight: 600;
+  margin: 0;
 }
 
-.bottom-margin {
-  margin-bottom: 12px;
+h1 {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 1.5rem;
 }
 
-.done {
-  text-decoration: line-through;
+h3 {
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  color: var(--sub);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 20px 0 10px;
+  font-weight: 700;
+}
+
+a {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 18px 0;
+}
+
+/* ---------- app shell ---------- */
+
+.app-shell {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px 16px 72px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
 }
 
 .status-bar {
-  font-style: italic;
+  font-size: 0.82rem;
+  color: var(--sub);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#footer {
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+/* ---------- icons ---------- */
+
+.icon {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vertical-align: -3px;
+  flex-shrink: 0;
+}
+
+.indent-spacer {
+  display: inline-block;
+  width: 17px;
+}
+
+/* ---------- generic layout helpers ---------- */
+
+.bottom-margin {
+  margin-bottom: 18px;
 }
 
 .right-align {
   text-align: right;
 }
 
-.list-item {
-  margin-left: 5px;
-  margin-right: 15px;
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-.list-item .list-item-glyph {
+.page-header .right-align {
+  display: flex;
+  gap: 8px;
+}
+
+/* ---------- list cards ---------- */
+
+.list-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.list-card,
+.list-card-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--panel);
+  box-shadow: 0 1px 2px rgba(60, 45, 30, 0.07);
   cursor: pointer;
-}
-
-.list-first-item {
-  padding-right: 15px;
 }
 
 .list-item-immutable {
   font-style: italic;
 }
 
-.list-item-current {
-  font-weight: bold;
-  font-style: italic;
-}
-
-.settings-item {
-  font-weight: bold;
-  font-style: italic;
-  color: red;
-}
-
-.import-select {
-  padding: 4px 0;
-}
-
-.task-input {
-  width: 85%;
-}
-
-.list-input {
-  width: 50%;
-}
-
-.list-input {
+.list-card-main {
   display: flex;
   align-items: center;
-}
-
-.input {
+  gap: 8px;
+  min-width: 0;
   flex: 1;
-  margin-right: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.button {
+.list-item-glyph {
+  color: var(--sub);
   flex-shrink: 0;
-  width: auto;
 }
 
-.actions {
-  text-align: right;
+.list-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--sub);
+  flex-shrink: 0;
 }
 
-.check-button {
-  margin-left: 2px;
-  margin-right: 16px;
-}
-
-.action-button {
-  margin-left: 8px;
-  margin-right: 8px;
-}
-
-.action-button:last-of-type {
-  margin-right: 0px;
-}
-
-.delete-button {
-  margin-left: 6px;
-  margin-right: 32px;
+.list-card-count {
+  background: var(--chip);
+  color: var(--accent);
+  border-radius: 20px;
+  padding: 2px 9px;
+  font-size: 0.76rem;
+  font-weight: 700;
 }
 
 .less-useful {
-  margin-left: 12px;
+  font-size: 0.76rem;
+  white-space: nowrap;
+}
+
+.list-card .action-button {
+  color: var(--sub);
+}
+
+.list-card .action-button:hover {
+  color: var(--danger);
 }
 
 @media (max-width: 480px) {
-  .check-button {
-    margin-left: 0px;
-    margin-right: 8px;
-  }
-  .delete-button {
-    margin-right: 12px;
-  }
-  .action-button {
-    margin-right: 4px;
-  }
   .less-useful {
     display: none;
   }
 }
 
-.action-button:hover {
-  cursor: pointer;
-  -webkit-transform: scale(1.5);
+/* ---------- task cards ---------- */
+
+.task-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
 }
 
-.delete-button:hover {
-  cursor: pointer;
-  color: red;
-  -webkit-transform: scale(1.5);
+.task-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--panel);
+  box-shadow: 0 1px 2px rgba(60, 45, 30, 0.06);
 }
 
-.table-description-cell {
-  width: 90%;
-}
-
-.table-decorator-cell {
-  width: 1%;
-}
-
-.table-control-button-cell {
-  width: 2%;
-}
-
-.footer {
-  position: absolute;
-  bottom: 10px;
-  width: 100%;
-  margin: 0;
-  height: 10px;
-}
-
-.task-row {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  width: 100%;
+.task-card-done {
+  background: transparent;
+  box-shadow: none;
+  padding: 8px 14px;
 }
 
 .task-description {
-  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-width: 120px;
+  white-space: nowrap;
+}
+
+.task {
+  font-size: 0.92rem;
+}
+
+.done {
+  text-decoration: line-through;
+  color: var(--done);
 }
 
 .separator-row {
   display: flex;
   justify-content: space-between;
+  color: var(--sub);
+  font-size: 0.8rem;
+  padding: 4px 14px;
 }
 
+.task-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.check-button {
+  color: var(--line);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.check-button:hover {
+  color: var(--accent);
+}
+
+.action-button {
+  color: var(--sub);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+}
+
+.action-button:hover {
+  background: var(--chip);
+  color: var(--accent);
+}
+
+.delete-button {
+  color: var(--sub);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.delete-button:hover {
+  background: var(--accent-soft);
+  color: var(--danger);
+}
+
+.list-first-item {
+  color: var(--accent);
+  margin-right: 2px;
+  cursor: pointer;
+}
+
+.small {
+  cursor: pointer;
+}
+
+/* ---------- forms & buttons ---------- */
+
+.task-input {
+  width: 85%;
+}
+
+.list-input,
 .input-row {
   display: flex;
+  align-items: center;
   width: 100%;
-  justify-content: space-between;
-  gap: 4px;
+  gap: 10px;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 15px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  font: inherit;
+  font-size: 0.92rem;
+  background: var(--panel);
+  color: var(--ink);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.rounded-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  background-color: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--ink);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.rounded-button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.rounded-button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.input-row .rounded-button {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.input-row .rounded-button:hover {
+  color: var(--accent-ink);
+  opacity: 0.9;
+}
+
+.import-select {
+  padding: 9px 14px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--panel);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.85rem;
 }
 
 .actions-row {
   display: flex;
-  gap: 4px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-.rounded-button {
-  display: inline-block;
-  padding: 4px 12px;
-  background-color: var(--grey);
-  text-align: center;
-  text-decoration: none;
-  border: 1px solid var(--black);
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.rounded-button:disabled {
-  opacity: 0.3;
+.error {
+  color: var(--danger);
+  padding: 20px;
 }

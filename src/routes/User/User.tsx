@@ -1,5 +1,6 @@
 import * as React from 'react';
 import CONFIG from '../../config/config.js';
+import Icon from '../../shared/Icon';
 
 const base256 = (val: number, base: number) => {
   return ('00' + Math.floor((val * 256) / base).toString(16)).substr(-2, 2);
@@ -24,7 +25,7 @@ const User: React.FunctionComponent<{}> = () => (
         <b>{import.meta.env.MODE}</b>
       </small>
     </span>
-    <span className="glyphicon glyphicon-cog action-button" aria-hidden="true" />
+    <Icon name="cog" className="action-button" />
     <span className="action-button">{CONFIG.user.name}</span>
     <audio id="clickSound" src={CONFIG.clickSound} />
     <hr />

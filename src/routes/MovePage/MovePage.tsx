@@ -7,6 +7,7 @@ import { appActions } from '../../store/actions';
 import ListsFilter from './ListsFilter';
 import { restrictions } from '../../config/constants';
 import { dayString } from '../../utils/calendar';
+import Icon from '../../shared/Icon';
 
 export interface MovePageProps {
   task: string;
@@ -63,7 +64,7 @@ const MovePage: React.FunctionComponent<MovePagePrivateProps> = (props) => {
         {'<'} Back to {fromList.name}
       </button>{' '}
       <button onClick={reloadHandler}>
-        <span className={'glyphicon glyphicon-refresh'} aria-hidden="true" /> <u>R</u>eload
+        <Icon name="refresh" /> <u>R</u>eload
       </button>{' '}
       <button onClick={moveToTomorrowHandler}>{tomorrowListName}</button>
       <hr />
