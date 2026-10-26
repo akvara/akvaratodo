@@ -9,6 +9,7 @@ import * as Utils from '../utils/utils.js';
 import { ListCreds, SerializedTodoList, TodoList } from '../store/types';
 import { appActions } from '../store/actions';
 import { dayString } from '../utils/calendar';
+import Icon, { IconName } from '../shared/Icon';
 
 export interface TaskPageProps {
   lists: TodoList[];
@@ -453,11 +454,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
       return (
         <div>
           <h1>{this.state.listName}</h1>{' '}
-          <span
-            className={'small action-button glyphicon glyphicon glyphicon-pencil'}
-            aria-hidden="true"
-            onClick={this.editListName}
-          />
+          <Icon name="pencil" className="small action-button" onClick={this.editListName} />
         </div>
       );
     }
@@ -491,40 +488,26 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
           <u>P</u>rotect
         </span>
       ),
-      markGlyphicon = this.state.immutable ? 'screen-shot' : 'exclamation-sign',
-      expandToDoGlyphicon = this.state.expandToDo ? 'glyphicon-resize-small' : 'glyphicon-resize-full',
-      expandDoneGlyphicon = this.state.expandDone ? 'glyphicon-resize-small' : 'glyphicon-resize-full';
+      markIcon: IconName = this.state.immutable ? 'shield-check' : 'shield',
+      expandToDoIcon: IconName = this.state.expandToDo ? 'collapse' : 'expand',
+      expandDoneIcon: IconName = this.state.expandDone ? 'collapse' : 'expand';
     return (
       <div>
         {this.manageHeader()}
         <h3>
           Finished ({this.state.itemsDone.length})
           {Utils.overLength('displayDoneLength', this.state.itemsDone) && (
-            <span
-              className={'small action-button glyphicon ' + expandDoneGlyphicon}
-              aria-hidden="true"
-              onClick={this.expand.bind(this, 'expandDone')}
-            />
+            <Icon name={expandDoneIcon} className="small action-button" onClick={this.expand.bind(this, 'expandDone')} />
           )}
           {'  '}
-          {this.state.itemsDone.length > 0 && (
-            <span
-              className="small action-button glyphicon glyphicon-trash"
-              aria-hidden="true"
-              onClick={this.clearDone}
-            />
-          )}
+          {this.state.itemsDone.length > 0 && <Icon name="trash" className="small action-button" onClick={this.clearDone} />}
         </h3>
         <TasksDoneList items={this.state.itemsDone} undone={this.unDoneTask} expand={this.state.expandDone} />
         <hr />
         <h3>
           Remaining ({this.state.itemsToDo.length})
           {Utils.overLength('displayListLength', this.state.itemsToDo) && (
-            <span
-              className={'small list-item action-button glyphicon ' + expandToDoGlyphicon}
-              aria-hidden="true"
-              onClick={this.expand.bind(this, 'expandToDo')}
-            />
+            <Icon name={expandToDoIcon} className="small list-item action-button" onClick={this.expand.bind(this, 'expandToDo')} />
           )}
         </h3>
         <TasksList
@@ -558,7 +541,7 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
                 onChange={this.onChange}
               />
               <button className="rounded-button" disabled={!this.state.task.trim()}>
-                Add task
+                <Icon name="plus" /> Add task
               </button>
             </form>
           </div>
@@ -571,20 +554,20 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
         <br />
         <div className="actions-row">
           <button className="rounded-button" disabled={inputDirty} onClick={this.reload}>
-            <span className={'glyphicon glyphicon-refresh'} aria-hidden="true" /> <u>R</u>eload
+            <Icon name="refresh" /> <u>R</u>eload
           </button>
           <button className="rounded-button" disabled={inputDirty} onClick={this.mark}>
-            <span className={'glyphicon glyphicon-' + markGlyphicon} aria-hidden="true" /> {markTitle}
+            <Icon name={markIcon} /> {markTitle}
           </button>
           <button className="rounded-button" disabled={inputDirty} onClick={this.goLists}>
-            <span className="glyphicon glyphicon-tasks" aria-hidden="true" /> <u>L</u>ists
+            <Icon name="list" /> <u>L</u>ists
           </button>
           <button className="rounded-button" disabled={inputDirty} onClick={this.goToday}>
-            <span className="glyphicon glyphicon-subscript" aria-hidden="true" /> <u>T</u>oday
+            <Icon name="sun" /> <u>T</u>oday
           </button>
           {this.props.previousList && this.props.previousList.listId && (
             <button className="rounded-button" disabled={inputDirty} onClick={this.goPrevious}>
-              <span className="glyphicon glyphicon-chevron-left" aria-hidden="true" /> {this.props.previousList.name}
+              <Icon name="chevron-left" /> {this.props.previousList.name}
             </button>
           )}
         </div>

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import * as Utils from '../utils/utils.js';
 import { hotKeyedListName } from '../utils/stringUtils';
 import { HotKey } from '../store/types';
+import Icon from '../shared/Icon';
 
 interface ListsTableProps {
   hotKeys?: HotKey[];
@@ -34,14 +35,10 @@ class ListsTable extends Component<ListsTableProps> {
   };
 
   contractedListItemHeader = (list, i) => {
-    let sign = 'glyphicon-minus';
-    if (list.isContracted) {
-      sign = 'glyphicon-plus';
-    }
     return (
       <tr key={'tr' + i}>
         <td colSpan={2} onClick={this.props.toggleContracted?.bind(this, list.contractedTitle, !list.isContracted)}>
-          <span className={'glyphicon list-item list-item-glyph glyphicon ' + sign} aria-hidden="true" />
+          <Icon name={list.isContracted ? 'plus' : 'minus'} className="list-item list-item-glyph" />
           {list.contractedTitle}
         </td>
         <td className="right-align">
@@ -71,22 +68,12 @@ class ListsTable extends Component<ListsTableProps> {
   displayListRow = (list, i) => (
     <tr key={'tr' + i}>
       <td className={list.itemClass} onClick={list.action}>
-        {list.indent && (
-          <span className={'glyphicon list-item list-item-glyph'} aria-hidden="true">
-            {' '}
-          </span>
-        )}
-        <span className={'glyphicon list-item list-item-glyph glyphicon-folder-open'} aria-hidden="true" />
+        {list.indent && <span className="list-item list-item-glyph indent-spacer" aria-hidden="true" />}
+        <Icon name="folder" className="list-item list-item-glyph" />
         {list.name}
       </td>
       <td className="actions">
-        {list.deletable && (
-          <span
-            className="glyphicon glyphicon-trash action-button"
-            aria-hidden="true"
-            onClick={this.props.removeList?.bind(this, list.id)}
-          />
-        )}
+        {list.deletable && <Icon name="trash" className="action-button" onClick={this.props.removeList?.bind(this, list.id)} />}
       </td>
       <td className="right-align">
         <span>
