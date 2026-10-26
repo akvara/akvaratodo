@@ -10,6 +10,7 @@ import { ListCreds, SerializedTodoList, TodoList } from '../store/types';
 import { appActions } from '../store/actions';
 import { dayString } from '../utils/calendar';
 import Icon, { IconName } from '../shared/Icon';
+import Dropdown from '../shared/Dropdown';
 
 export interface TaskPageProps {
   lists: TodoList[];
@@ -400,51 +401,37 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
     });
   };
 
-  makeListOption = (list: TodoList) => (
-    <option key={'o-' + list.id} value={list.id}>
-      {list.name}
-    </option>
-  );
-
-  /* Select for loading tasks from another list */
+  /* Dropdown for loading tasks from another list */
   displayImportBlock = () => {
     if (this.state.immutable) {
       return null;
     }
 
     return (
-      <select
-        className="rounded-button import-select"
-        onChange={(e) => {
-          if (e.target.value) {
-            this.importList(e.target.value);
-          }
-        }}
-      >
-        <option value="">Import list</option>
-        {this.props.immutables.map((list) => this.makeListOption(list))}
-      </select>
+      <Dropdown
+        label="Import list"
+        icon="folder"
+        emptyLabel="No protected lists to import from"
+        options={this.props.immutables.map((list) => ({ value: list.id, label: list.name }))}
+        onSelect={this.importList}
+      />
     );
   };
 
-  /* Select for exporting tasks to another list */
+  /* Dropdown for exporting tasks to another list */
   displayExportBlock = () => {
     if (this.state.immutable) {
       return null;
     }
 
     return (
-      <select
-        className="rounded-button import-select"
-        onChange={(e) => {
-          if (e.target.value) {
-            this.exportList(e.target.value);
-          }
-        }}
-      >
-        <option value="">Export to</option>
-        {this.props.exportables.map((list) => this.makeListOption(list))}
-      </select>
+      <Dropdown
+        label="Export to"
+        icon="shuffle"
+        emptyLabel="No other lists to export to"
+        options={this.props.exportables.map((list) => ({ value: list.id, label: list.name }))}
+        onSelect={this.exportList}
+      />
     );
   };
 
