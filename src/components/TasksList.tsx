@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import CONFIG from '../config/config.js';
 import * as Utils from '../utils/utils.js';
 import { restrictions } from '../config/constants';
+import Icon from '../shared/Icon';
 
 interface TaskListProps {
   items: string[];
@@ -63,11 +64,7 @@ class TaskList extends React.Component<TaskListProps> {
     if (task.substring(0, 1) === '[') {
       taskAsDisplayed = (
         <span>
-          <span
-            className={'glyphicon glyphicon-folder-open list-first-item'}
-            aria-hidden="true"
-            onClick={this.props.openListByName.bind(this, task.substring(1))}
-          />
+          <Icon name="folder" className="list-first-item" onClick={this.props.openListByName.bind(this, task.substring(1))} />
           {taskTruncated.substring(1)}
         </span>
       );
@@ -107,40 +104,16 @@ class TaskList extends React.Component<TaskListProps> {
       return (
         <tr key={'tr' + i}>
           <td className="task-row">
-            <span
-              className="glyphicon glyphicon-unchecked check-button"
-              aria-hidden="true"
-              onClick={this.props.done.bind(this, itemIndex)}
-            />
+            <Icon name="circle" className="check-button" onClick={this.props.done.bind(this, itemIndex)} />
             <div className="task-description">
               <span className="task">{this.hightlightOnDemand(taskAsDisplayed, itemIndex)}</span>
             </div>
             <div>
-              <span
-                className="glyphicon glyphicon-trash delete-button"
-                aria-hidden="true"
-                onClick={this.props.delete.bind(this, itemIndex)}
-              />
-              <span
-                className="glyphicon glyphicon-arrow-down action-button"
-                aria-hidden="true"
-                onClick={this.props.procrastinate.bind(this, itemIndex)}
-              />
-              <span
-                className="glyphicon glyphicon-arrow-up action-button"
-                aria-hidden="true"
-                onClick={this.props.toTop.bind(this, itemIndex)}
-              />
-              <span
-                className="glyphicon glyphicon-random action-button"
-                aria-hidden="true"
-                onClick={this.props.move.bind(this, task)}
-              />
-              <span
-                className="glyphicon glyphicon-thumbs-down action-button"
-                aria-hidden="true"
-                onClick={this.props.postpone.bind(this, itemIndex)}
-              />
+              <Icon name="trash" className="delete-button" onClick={this.props.delete.bind(this, itemIndex)} />
+              <Icon name="arrow-down" className="action-button" onClick={this.props.procrastinate.bind(this, itemIndex)} />
+              <Icon name="arrow-up" className="action-button" onClick={this.props.toTop.bind(this, itemIndex)} />
+              <Icon name="shuffle" className="action-button" onClick={this.props.move.bind(this, task)} />
+              <Icon name="postpone" className="action-button" onClick={this.props.postpone.bind(this, itemIndex)} />
             </div>
           </td>
         </tr>
