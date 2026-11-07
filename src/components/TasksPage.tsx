@@ -438,10 +438,20 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
   /* Header - edit mode or not */
   manageHeader = () => {
     if (!this.state.listNameOnEdit) {
+      const inputDirty = !!this.state.task.trim();
       return (
-        <div>
-          <h1>{this.state.listName}</h1>{' '}
-          <Icon name="pencil" className="small action-button" onClick={this.editListName} />
+        <div className="page-header bottom-margin">
+          <h1>
+            {this.state.listName} <Icon name="pencil" className="small action-button" onClick={this.editListName} />
+          </h1>
+          <div className="right-align">
+            <button className="rounded-button" onClick={this.goLists}>
+              <Icon name="list" /> <span><u>L</u>ists</span>
+            </button>
+            <button className="rounded-button" disabled={inputDirty} onClick={this.goToday}>
+              <Icon name="sun" /> <span><u>T</u>oday</span>
+            </button>
+          </div>
         </div>
       );
     }
@@ -534,30 +544,27 @@ class TasksPage extends React.PureComponent<TaskPageProps, TasksPageState> {
           </div>
         )}
         <hr />
-        <div className="actions-row">
-          {this.displayImportBlock()}
-          {this.displayExportBlock()}
+        <div className="page-header">
+          <div className="actions-row">
+            {this.displayImportBlock()}
+            {this.displayExportBlock()}
+          </div>
+          <div className="right-align">
+            <button className="rounded-button" disabled={inputDirty} onClick={this.reload}>
+              <Icon name="refresh" /> <span><u>R</u>eload</span>
+            </button>
+            <button className="rounded-button" disabled={inputDirty} onClick={this.mark}>
+              <Icon name={markIcon} /> {markTitle}
+            </button>
+          </div>
         </div>
-        <br />
-        <div className="actions-row">
-          <button className="rounded-button" disabled={inputDirty} onClick={this.reload}>
-            <Icon name="refresh" /> <span><u>R</u>eload</span>
-          </button>
-          <button className="rounded-button" disabled={inputDirty} onClick={this.mark}>
-            <Icon name={markIcon} /> {markTitle}
-          </button>
-          <button className="rounded-button" disabled={inputDirty} onClick={this.goLists}>
-            <Icon name="list" /> <span><u>L</u>ists</span>
-          </button>
-          <button className="rounded-button" disabled={inputDirty} onClick={this.goToday}>
-            <Icon name="sun" /> <span><u>T</u>oday</span>
-          </button>
-          {this.props.previousList && this.props.previousList.listId && (
+        {this.props.previousList && this.props.previousList.listId && (
+          <div className="actions-row">
             <button className="rounded-button" disabled={inputDirty} onClick={this.goPrevious}>
               <Icon name="chevron-left" /> {this.props.previousList.name}
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     );
   }
