@@ -60,19 +60,21 @@ const MovePage: React.FunctionComponent<MovePagePrivateProps> = (props) => {
       <hr />
       <h2>{task.substring(0, restrictions.maxTaskLength)}</h2>
       <hr />
-      <button onClick={backHandler}>
-        {'<'} Back to {fromList.name}
+      <button className="rounded-button" onClick={backHandler}>
+        <Icon name="chevron-left" /> Back to {fromList.name}
       </button>{' '}
-      <button onClick={reloadHandler}>
+      <button className="rounded-button" onClick={reloadHandler}>
         <Icon name="refresh" /> <u>R</u>eload
       </button>{' '}
-      <button onClick={moveToTomorrowHandler}>{tomorrowListName}</button>
+      <button className="rounded-button" onClick={moveToTomorrowHandler}>
+        {tomorrowListName}
+      </button>
       <hr />
       <ListsFilter pageHotKeys={pageHotKeys} />
-      <button disabled={!newListName} onClick={moveToNewListHandler}>
+      <button className="rounded-button" disabled={!newListName} onClick={moveToNewListHandler}>
         Move to new list
       </button>{' '}
-      <button disabled={!newListName} onClick={copyToNewListHandler}>
+      <button className="rounded-button" disabled={!newListName} onClick={copyToNewListHandler}>
         Copy to new list
       </button>
       <hr />
@@ -85,8 +87,12 @@ const MovePage: React.FunctionComponent<MovePagePrivateProps> = (props) => {
                   To: <strong>{list.name}</strong>
                 </td>
                 <td>
-                  <button onClick={() => moveHandler(list.id)}>Move</button>{' '}
-                  <button onClick={() => copyHandler(list.id)}>Copy</button>
+                  <button className="rounded-button" onClick={() => moveHandler(list.id)}>
+                    Move
+                  </button>{' '}
+                  <button className="rounded-button" onClick={() => copyHandler(list.id)}>
+                    Copy
+                  </button>
                 </td>
               </tr>
             ),
