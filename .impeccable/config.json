@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "fraunces",
+        "createdAt": "2026-11-07T10:02:38.962Z",
+        "reason": "Pre-existing deliberate choice from master's merged 'Kortelės (warm cards)' redesign (PR #132), documented in todo.css's own header comment as an intentional Fraunces/Figtree pairing — not introduced by this session."
+      }
+    ]
+  }
+}

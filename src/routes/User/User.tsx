@@ -28,7 +28,6 @@ const User: React.FunctionComponent<{}> = () => (
     <Icon name="cog" className="action-button" />
     <span className="action-button">{CONFIG.user.name}</span>
     <audio id="clickSound" src={CONFIG.clickSound} />
-    <hr />
   </div>
 );
 

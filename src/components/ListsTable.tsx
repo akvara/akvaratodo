@@ -77,9 +77,9 @@ class ListsTable extends Component<ListsTableProps> {
         {list.name}
       </span>
       <span className="list-card-meta">
-        <span className="less-useful">{list.updatedDateOrTime}</span>
         <span className="list-card-count">{list.noOfTasks}</span>
         {list.deletable && <Icon name="trash" className="action-button" onClick={this.props.removeList?.bind(this, list.id)} />}
+        <span className="less-useful">{list.updatedDateOrTime}</span>
       </span>
     </div>
   );

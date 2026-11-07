@@ -85,7 +85,6 @@ hr {
   gap: 16px;
   padding-bottom: 16px;
   margin-bottom: 20px;
-  border-bottom: 1px solid var(--line);
   flex-wrap: wrap;
 }
 
@@ -206,6 +205,9 @@ hr {
 .less-useful {
   font-size: 0.76rem;
   white-space: nowrap;
+  width: 72px;
+  flex-shrink: 0;
+  text-align: right;
 }
 
 .list-card .action-button {
@@ -283,6 +285,8 @@ hr {
 .check-button,
 .action-button,
 .delete-button {
+  width: 24px;
+  height: 24px;
   cursor: pointer;
   transition: transform 0.12s ease, color 0.12s ease, background 0.12s ease;
 }
