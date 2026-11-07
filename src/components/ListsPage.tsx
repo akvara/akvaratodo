@@ -6,6 +6,7 @@ import { disableHotKeys, playSound, registerHotKeys } from '../utils/hotkeys';
 import { HotKey, TodoList } from '../store/types';
 import { dayString } from '../utils/calendar';
 import { appActions } from '../store/actions';
+import Icon from '../shared/Icon';
 
 export interface ListsPageProps {
   lists: TodoList[];
@@ -217,25 +218,19 @@ class ListsPage extends React.PureComponent<ListsPagePrivateProps, ListsPageStat
     this.addHotKeys();
     return (
       <div>
-        <table width="100%" className="bottom-margin">
-          <tbody>
-            <tr>
-              <td>
-                <h1>Lists</h1>
-              </td>
-              <td className="right-align">
-                {this.props.legacyExists && (
-                  <span>
-                    <button className='rounded-button' onClick={() => this.props.collectPastDaysRequest()}>{'  >> T '}</button>{' '}
-                  </span>
-                )}
-                <button className='rounded-button' onClick={this.goToday}>
-                  <u>T</u>oday
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div className="page-header bottom-margin">
+          <h1>Lists</h1>
+          <div className="right-align">
+            {this.props.legacyExists && (
+              <button className="rounded-button" onClick={() => this.props.collectPastDaysRequest()}>
+                <Icon name="arrow-down" /> Collect
+              </button>
+            )}
+            <button className='rounded-button' onClick={this.goToday}>
+              <span><u>T</u>oday</span>
+            </button>
+          </div>
+        </div>
         <ListsTable
           lists={this.state.lists}
           openList={this.openAList}
@@ -245,7 +240,7 @@ class ListsPage extends React.PureComponent<ListsPagePrivateProps, ListsPageStat
         />
         <h3>Protected</h3>
         <ListsTable lists={this.state.immutableLists} openList={this.openAList} />
-        <form onSubmit={this.handleSubmit} className="input-row">
+        <form onSubmit={this.handleSubmit} className="input-row new-list-row">
           <input
             className='input'
             ref={(input) => {
@@ -262,10 +257,10 @@ class ListsPage extends React.PureComponent<ListsPagePrivateProps, ListsPageStat
         <hr />
         <div className="actions-row">
           <button className='rounded-button' onClick={() => this.props.planWeek()}>
-            <u>P</u>lan week
+            <span><u>P</u>lan week</span>
           </button>
           <button className='rounded-button' onClick={this.reload}>
-            <span className={'glyphicon glyphicon-refresh'} aria-hidden="true" /> <u>R</u>eload
+            <Icon name="refresh" /> <span><u>R</u>eload</span>
           </button>
         </div>
       </div>
