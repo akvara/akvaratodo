@@ -72,6 +72,8 @@ h2 {
 
 .import-select {
   padding: 4px 0;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .task-input {

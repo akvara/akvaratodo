@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-07T08:53:59Z",
+  "title": "Design System: akvaratodo",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "primary",
+        "displayName": "Ink",
+        "canonical": "#171717",
+        "tonalRamp": ["#0a0a0a", "#171717", "#2b2b2b", "#404040", "#595959", "#8c8c8c", "#c2c2c2", "#f5f5f5"]
+      },
+      "alert-red": {
+        "role": "tertiary",
+        "displayName": "Alert Red",
+        "canonical": "#ff0000",
+        "tonalRamp": ["#330000", "#660000", "#990000", "#cc0000", "#ff0000", "#ff4d4d", "#ff9999", "#ffe5e5"]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "#f5f8fa",
+        "tonalRamp": ["#1a1d1e", "#33383a", "#4d5457", "#808a8d", "#b3bcc0", "#cfd8db", "#e8eef0", "#f5f8fa"]
+      },
+      "fog": {
+        "role": "neutral",
+        "displayName": "Fog",
+        "canonical": "#efefef",
+        "tonalRamp": ["#1e1e1e", "#333333", "#4d4d4d", "#808080", "#b3b3b3", "#cccccc", "#e0e0e0", "#efefef"]
+      }
+    },
+    "typographyMeta": {
+      "body": { "displayName": "Body", "purpose": "All task text, list names, labels, and button text." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "icon-hover-scale", "value": "transform: scale(1.5)", "purpose": "The system's only interactive feedback for icon-driven actions (trash, arrows, random, thumbs-down)." }
+    ],
+    "breakpoints": [
+      { "name": "narrow", "value": "480px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The system's one canonical button style, used for every primary action (Today, Plan week, Reload, Add task).",
+      "html": "<button class=\"ds-btn-primary\">Today</button>",
+      "css": ".ds-btn-primary { display: inline-block; padding: 4px 12px; background-color: #efefef; color: #171717; text-align: center; text-decoration: none; border: 1px solid #171717; border-radius: 4px; font-family: Raleway, sans-serif; font-size: 14px; cursor: pointer; } .ds-btn-primary:disabled { opacity: 0.3; }"
+    },
+    {
+      "name": "Action Icon",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "A clickable glyph (delete, refresh, move, etc.) whose only state treatment is a 1.5x hover scale; delete additionally turns red.",
+      "html": "<span class=\"ds-icon-action\" aria-hidden=\"true\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"currentColor\"><path d=\"M5 2h6l1 1h3v2H1V3h3l1-1zm-2 4h10l-1 9H4L3 6z\"/></svg></span>",
+      "css": ".ds-icon-action { display: inline-flex; color: #171717; cursor: pointer; margin: 0 8px; transition: transform 0.1s; } .ds-icon-action:hover { transform: scale(1.5); } .ds-icon-action.ds-icon-delete:hover { color: #ff0000; }"
+    },
+    {
+      "name": "List Row",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "A single list entry in the Lists table: a folder glyph, the list name (italic when Protected), a task count, and a delete icon.",
+      "html": "<table class=\"ds-table\"><tbody><tr><td class=\"ds-list-item\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 16 16\" fill=\"currentColor\" style=\"vertical-align:-2px;margin-right:4px\"><path d=\"M1 3h5l1 1h8v9H1V3z\"/></svg>Monday</td><td class=\"ds-list-actions\"><span class=\"ds-icon-action ds-icon-delete\" aria-hidden=\"true\">✕</span></td><td class=\"ds-list-count\">(<strong>4</strong>)</td></tr></tbody></table>",
+      "css": ".ds-table { width: 100%; font-family: Raleway, sans-serif; font-size: 14px; color: #171717; border-collapse: collapse; } .ds-table td { padding: 6px 4px; border-top: 1px solid #efefef; } .ds-list-item { cursor: pointer; margin-left: 5px; margin-right: 15px; } .ds-list-actions { text-align: right; } .ds-list-count { text-align: right; }"
+    },
+    {
+      "name": "Task Row",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "A single task row: check icon, truncated task text (strikethrough when done), and a cluster of action icons.",
+      "html": "<table class=\"ds-table ds-table-condensed\"><tbody><tr><td class=\"ds-task-row\"><span class=\"ds-icon-action\" aria-hidden=\"true\">○</span><span class=\"ds-task-text\">Write the quarterly report</span><span class=\"ds-icon-action ds-icon-delete\" aria-hidden=\"true\">✕</span></td></tr></tbody></table>",
+      "css": ".ds-table-condensed td { padding: 3px 4px; } .ds-task-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; width: 100%; } .ds-task-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 120px; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": null,
+      "description": "Plain Bootstrap-default text input used for adding tasks and lists; unstyled focus state.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Add task\" />",
+      "css": ".ds-input { font-family: Raleway, sans-serif; font-size: 14px; color: #171717; background: #fff; border: 1px solid #cccccc; border-radius: 4px; padding: 6px 12px; flex: 1; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Field Notebook",
+    "overview": "akvaratodo is a tool you reach for dozens of times a day without ever looking at the chrome. It is built on top of Bootstrap 3.3.7 (loaded straight from a CDN) for its grid, tables, forms, and Glyphicon iconography, with a thin custom stylesheet (src/todo.css) laid over it to add exactly as much personality as the workflow needs and no more. There is no brand identity to perform here: the product is a single person's daily/weekly task list, and the visual system exists only to keep that person moving fast with a keyboard, not to impress anyone.\n\nThe system is deliberately flat and terse: a near-black ink on off-white paper, one grey button shape, Bootstrap's default Glyphicon set for every action, and a single red accent reserved for destructive or attention states. Interaction feedback leans on sound and motion rather than color: every hotkey-triggered action plays an audible click, and the small action icons (trash, arrow, random, thumbs-down) scale up 1.5x on hover as their only state treatment.",
+    "keyCharacteristics": [
+      "Flat by construction: no shadows, no gradients, no elevation anywhere in the system.",
+      "Bootstrap 3 is the structural and iconographic base; todo.css only adds what Bootstrap doesn't already provide.",
+      "One custom interactive primitive — the grey .rounded-button — carries almost all button chrome in the app.",
+      "Feedback is audible and kinetic before it is colorful: a click sound confirms hotkey actions, hover scales icons.",
+      "A single functional accent (red) is reserved for destructive/alert meaning; it is not a brand color.",
+      "Layout is column-constrained (Bootstrap grid, col-md-10 col-lg-8), not full-bleed, with one responsive breakpoint at 480px."
+    ],
+    "rules": [
+      { "name": "The One Accent Rule", "body": "Red appears only on destructive/alert affordances (delete on hover). It never decorates a label, a heading, or a non-destructive action.", "section": "colors" },
+      { "name": "The Inline Heading Rule", "body": "h1/h2 are always display: inline so a heading and the action button beside it share one line — there is no stacked page-header pattern in this system.", "section": "typography" },
+      { "name": "The No-Shadow Rule", "body": "This system never uses box-shadow for depth or state. If something needs to read as \"elevated\" or \"focused,\" reach for weight, italics, color, or transform — not a shadow.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use .rounded-button for every button in the app — fog background, ink border and text, 4px radius.",
+      "Do keep icon feedback as a scale(1.5) hover transform, not a color or shadow change.",
+      "Do reserve red for destructive/alert meaning only (e.g. delete-on-hover); never use it decoratively.",
+      "Do play the confirmation click sound on hotkey-triggered actions, so keyboard-only use gets feedback without looking at the screen."
+    ],
+    "donts": [
+      "Don't introduce shadows, gradients, or elevation anywhere — this system is flat by design.",
+      "Don't add a new icon set; Bootstrap 3 Glyphicons cover every action already in the app.",
+      "Don't add a plain unstyled native <button> anywhere — every button in the app uses .rounded-button."
+    ]
+  }
+}
